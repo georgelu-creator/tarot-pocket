@@ -9,10 +9,10 @@ const url=process.env.DEMO_URL||require('node:url').pathToFileURL(path.join(root
  const ctx=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,reducedMotion:'reduce'}),p=await ctx.newPage();
  await p.goto(url+'?lang=en');await p.locator('[data-home-choice]').first().waitFor();
  await p.screenshot({path:path.join(out,'home.png')});
- await p.locator('.bottomnav [data-page=library]').click();await p.locator('.advanced-learning summary').click();await p.locator('[data-learn-start=p04]').first().click();await p.locator('.learn-main').waitFor();
+ await p.locator('[data-home-choice][data-journey=continue]').click();await p.locator('[data-journey=next]').click();await p.locator('.journey-stage').waitFor();
  await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  await p.screenshot({path:path.join(out,'practice.png')});
- await p.locator('[data-learn=home]').first().click();await p.locator('.bottomnav [data-page=reading]').click();
+ await p.locator('[data-action=nav][data-page=home]').first().click();await p.locator('.bottomnav [data-page=reading]').click();
  await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  await p.screenshot({path:path.join(out,'reading.png')});
  const phone=fs.readFileSync(path.join(out,'home.png')).toString('base64');

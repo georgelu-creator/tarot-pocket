@@ -4,6 +4,19 @@ Changes describe the product included in each version. Deployment and device acc
 
 版本记录描述该版产品内容；部署与实机验收分别记录，出现一个版本条目不代表两者都已完成。
 
+## v1.0.0 — Continuous learning / 连续学习
+
+- All 78 cards now have seven-stage first lessons, card-specific visual explanations and memory anchors, close distractors, quiet recall, comparisons, contextual application and reversal practice. / 78 张牌均有七步初学、专属图像解释与助记、接近选项、静默回忆、对比、情境应用和逆位练习。
+- Six skill records per card, SM-2 interval scheduling with same-day retry protection, adaptive reviews and per-card pause/resume. Finishing a card leads directly to the next. / 每牌六种能力记录，SM-2 复习与同日保护、自适应回访、逐牌暂停续学；完成可直接学下一张。
+- A two-choice home, searchable learning library, richer dossiers, visible progress and foundations under the library. / 首页只保留学牌与抽牌，牌库可搜索、资料更完整、进度可见，基础知识收在牌库。
+- Eight separate reading flows with optional questions, optional domain wording and interpretation based on actual card combinations and spread roles. Input is local and is not semantically analyzed. / 八种独立抽牌流程，问题与领域措辞均可选，按实际组合和牌位解读；输入只保存在本地，不做语义解析。
+- Explicit verified offline download, installable PWA, safe deferred updates and retained standalone HTML; no account, analytics or external runtime service. / 明确下载并校验完整离线内容，可安装 PWA，更新延后生效，保留单文件；无账号、追踪或外部运行服务。
+- Existing storage keys and backups remain compatible. New bilingual product plan, handoff and refreshed actual application screenshots. / 旧存储键与备份保持兼容，新增双语完整方案与接力说明，更新真实应用截图。
+
+Physical iPhone acceptance, independent teacher review and long-term retention effectiveness remain open. Desktop Chromium and WebKit checks do not establish those outcomes.
+
+iPhone 实机验收、独立教师审核与长期记忆效果尚待验证，桌面 Chromium 和 WebKit 检查不能代替这些证据。
+
 ## v0.4.0 — Moonlit design preview / 静光设计预览版
 
 A visual update to the existing learning demo; course coverage is unchanged.

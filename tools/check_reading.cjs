@@ -1,3 +1,4 @@
+require('./check_reading_quality.cjs');
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..'),model={window:{}};
@@ -13,7 +14,7 @@ const url=process.env.DEMO_URL||'http://127.0.0.1:8765/tarot-demo.html';
 const KEY='tarot-reading-v3',LKEY='tarot-learning-units-v2';
 const state=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);
 const lstate=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),LKEY);
-const click=(p,a,v)=>p.locator(`[data-reading="${a}"]${v?`[data-value="${v}"]`:''}`).first().click();
+const click=async(p,a,v)=>{if(a==='topic'&&await p.locator('.context-picker:not([open])').count())await p.locator('.context-picker>summary').click();await p.locator(`[data-reading="${a}"]${v?`[data-value="${v}"]`:''}`).first().click();};
 const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}`).last().click();
 const width=async p=>assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 (async()=>{
@@ -74,7 +75,7 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
  for(const d of content.spreads){
    await click(p,'guide',d.id);await click(p,'use-spread',d.id);
    assert.equal(await p.locator('[data-reading-question]').count(),1);
-   const question=`${d.name}：我现在最值得核对和采取的下一步是什么？`;
+   const question=d.id==='one'?'':`${d.name}：我现在最值得核对和采取的下一步是什么？`;
    await p.locator('[data-reading-question]').fill(question);
    if(d.id==='study')assert.equal((await state(p)).settings.topic,'study');
    else if(d.topics.includes('love'))await click(p,'topic','love');
@@ -98,7 +99,9 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
    await p.locator('.reading-slot img').evaluateAll(ims=>Promise.all(ims.map(im=>im.decode())));
    assert.equal(await p.locator('.reading-slot img').count(),d.positions.length);
    if(d.positions.length>1){await p.locator('[data-reading=card][data-index="0"]').click();const text=await p.locator('.reading-interpretation').innerText();await p.locator('[data-reading=card][data-index="1"]').click();assert.notEqual(text,await p.locator('.reading-interpretation').innerText());}
-   assert.equal(await p.locator('.reading-rhythm article').count(),5,'complete reading has a professional five-step rhythm');
+   assert.equal(await p.locator('.reading-rhythm article').count(),5,'complete reading has five role-aware sections');
+   assert.equal(await p.locator('.reading-position-details:not([open])').count(),1,'detailed positions start folded on mobile');
+   if(d.positions.length>1){assert(await p.locator('[data-reading-relation]').count()>0);const drawnIds=s.picked.map(i=>s.pool[i].id);for(const r of await p.locator('[data-reading-relation]').evaluateAll(els=>els.map(el=>({left:el.dataset.left,right:el.dataset.right})))){assert(drawnIds.includes(r.left));assert(drawnIds.includes(r.right));}}
    assert((await p.locator('.professional-report').innerText()).includes(question));
    assert.equal(await p.locator('.professional-report [data-learn-start]').count(),0,'professional reading does not mix in teaching');
    for(const w of [320,390,1280]){await p.setViewportSize({width:w,height:900});await width(p);}
@@ -119,6 +122,6 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
  await ctx.setOffline(true);await p.locator('.bottomnav [data-page=reading]').click();await click(p,'new');await click(p,'guide','three');await click(p,'use-spread','three');await p.locator('[data-reading-question]').fill('离线时，我现在最值得先处理的卡点是什么？');await click(p,'start');await p.locator('[data-reading=pick]').first().waitFor();await p.locator('[data-reading=pick][data-index="0"]').click();await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),1);
  await p.locator('[data-reading=pause]').click();await p.screenshot({path:'/tmp/tarot-v3-home.png',fullPage:true});
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
- console.log(JSON.stringify({status:'PASS',deck:78,spreads:8,newLessonSteps:24,checks:['three-item navigation','explicit wrong and partially-correct lesson verdicts','all context lessons remain reachable from library','eight visual spread guides and capacity notes','question-first setup after spread selection','domain and position specific interpretations','professional five-step reading separated from teaching','full-deck unique shuffling and no replacement','no premature card face in DOM','resume without reshuffle','upright mode','all eight live spreads','small and desktop widths','question and history persist','no drawing counted as study mastery','backup/reset/atomic restore','offline live draw','no external requests or console errors'],limitations:['real iPhone not tested','context interpretations are authored prompts, not bespoke predictions']},null,2));
+ console.log(JSON.stringify({status:'PASS',deck:78,spreads:8,newLessonSteps:24,checks:['three-item navigation','explicit wrong and partially-correct lesson verdicts','all context lessons remain reachable from library','eight visual spread guides and capacity notes','optional question and context after spread selection','domain and position specific interpretations','role-aware five-section reading separated from teaching','full-deck unique shuffling and no replacement','no premature card face in DOM','resume without reshuffle','upright mode','all eight live spreads','small and desktop widths','question and history persist','no drawing counted as study mastery','backup/reset/atomic restore','offline live draw','no external requests or console errors'],limitations:['real iPhone not tested','context interpretations are authored prompts, not bespoke predictions']},null,2));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});

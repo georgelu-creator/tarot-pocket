@@ -108,3 +108,9 @@ Before calling the change complete:
 This contract changes the presentation of the existing learning product. It does not claim full 78-card guided courses, proven memory scheduling, teacher review, native iOS materials or verified phone offline readiness.
 
 本规范改变既有学习产品的呈现，不宣称已有 78 套深入单牌课、经验证的记忆调度、教师审核、原生 iOS 材质或手机离线验收。
+
+## v1.0.0 behavior alignment / 行为对齐
+
+Home has Learn/Draw only; Learn starts the saved or recommended card directly. Reference structures unfold in the library; Records keeps progress and offline tools. New seven-stage learning uses the same Moonlit tokens, explicit error/success, full verified faces, and one clear next action. The current behavioral contract is [PRODUCT_PLAN.md](../PRODUCT_PLAN.md), superseding earlier preview navigation references.
+
+首页只保留学牌与抽牌，学习直接接续；基础知识在牌库展开，记录集中管理进度与离线。七步学习延续静光令牌、明确对错、完整历史牌面与清楚下一步。产品方案优先于旧预览导航描述。

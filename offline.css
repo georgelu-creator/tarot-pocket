@@ -1,0 +1,8 @@
+.offline-panel{padding:18px 0;border-top:1px solid var(--border,#ded8cd);margin-top:16px;text-align:left;overflow-wrap:anywhere}
+.offline-heading{display:flex;align-items:center;gap:10px}.offline-heading h3{margin:0;font-size:17px;line-height:1.5}
+.offline-dot{width:9px;height:9px;flex:none;border-radius:50%;background:#986a36}.offline-dot.is-ready{background:#406750}
+.offline-live p,.offline-help p,.offline-update{font-size:14px;line-height:1.7;color:var(--muted,#655f55)}
+.offline-panel progress{width:100%;height:7px;accent-color:#406750}.offline-count{font-variant-numeric:tabular-nums}
+.offline-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.offline-actions button{min-height:44px;flex:1;white-space:normal}
+.offline-help summary{min-height:44px;display:flex;align-items:center;font-size:14px;cursor:pointer}.offline-help summary:before{content:'＋';margin-right:8px}.offline-help[open] summary:before{content:'−'}
+.offline-revision{display:block;opacity:.65;font-size:11px;margin-top:12px}.offline-update{padding:12px;border-radius:12px;background:#ece8dc}

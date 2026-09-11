@@ -25,7 +25,7 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: python -m pip install -r requirements-dev.txt
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm test
       - name: Package the verified website
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

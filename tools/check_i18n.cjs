@@ -26,8 +26,8 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
  await p.goto(url+'?lang=en');await english(p,'home');
  assert.deepEqual(await p.locator('.navitem').allTextContents(),['Home','Learn','Draw']);
  const openUnit=async id=>{
-   if(!(await p.locator('.advanced-learning').count()))await p.locator('.bottomnav [data-page=library]').click();
-   if(!(await p.locator('.advanced-learning[open]').count()))await p.locator('.advanced-learning summary').click();
+   if(!(await p.locator('.library-grid').count()))await p.locator('.bottomnav [data-page=library]').click();
+   if(!(await p.locator('.advanced-learning[open]').count()))await p.locator('.advanced-learning>summary').click();
    await p.locator(`[data-learn-start="${id}"]`).first().click();
  };
  for(const u of units){
@@ -63,7 +63,7 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
  await p.locator('.bottomnav [data-page=library]').click();await english(p,'library');
  await p.locator('[data-action=filter][data-value=全部]').click();
  for(const card of model.window.TAROT_READING_DECK.cards){
-   await p.locator(`[data-action=card][data-id="${card.id}"]`).click();await english(p,card.id+' detail');
+   await p.locator(`.library-card[data-id="${card.id}"]`).click();await english(p,card.id+' detail');
    await p.locator('[data-action=face][data-value=reversed]').click();await english(p,card.id+' reversed');
    await p.locator('#overlay [data-action=close]').click();
  }

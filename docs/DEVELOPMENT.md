@@ -15,7 +15,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 npm ci
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run build
 npm run serve
 ```
@@ -33,6 +33,8 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | File / 文件 | Responsibility / 职责 |
 | --- | --- |
 | `index.html` | Source page and script order / 源页面与脚本加载顺序 |
+| `curriculum-content.js`, `journey.js`, `journey.css` | 78 card plans, per-skill SM-2, saved lessons and mobile learning / 78 牌课程、分能力复习、续学与学习 UI |
+| `offline.js`, `sw.js`, `manifest.webmanifest` | Explicit offline preparation, atomic cache and installation / 离线下载、完整缓存与安装 |
 | `app.js` | Navigation, quick practice, card library, backup integration / 导航、快练、牌库与备份整合 |
 | `learning.js` | Lesson interactions, scoring, recall, progress / 单元交互、评分、回忆与进度 |
 | `reading.js` | Spread selection, shuffle, draw, position guidance, history / 选阵、洗牌、抽牌、牌位引导与历史 |
@@ -119,7 +121,7 @@ Existing browser storage keys:
 
 | Key | State |
 | --- | --- |
-| `tarot-pocket-demo-v1` | Quick practice, saved cards, schedules / 快练、收藏与演示调度 |
+| `tarot-pocket-demo-v1` | Quick practice, saved cards, optional journey memory and paused sessions / 快练、收藏、连续学习与暂停进度 |
 | `tarot-learning-units-v2` | Learning sessions and history / 学习单元与作答历史 |
 | `tarot-reading-v3` | Reading setup, current table, saved readings, spread practice / 抽牌设置、当前牌桌、历史与牌阵练习 |
 
@@ -150,3 +152,5 @@ Verify the source and built artifact separately. Update [CHANGELOG](../CHANGELOG
 Do not commit browser backups, reading histories, credentials, private workspace paths, or personal assistant memory. Code and documentation in this repository are sufficient to resume project work; they do not configure an external assistant's long-term memory.
 
 不要提交浏览器备份、私人抽牌记录、凭据、个人工作区路径或私人助理记忆。本仓库支持恢复项目工作，不代表已经配置外部助理的长期记忆。
+
+The build discovers scripts/styles from `index.html` and translations from `locales/en-*.json`. `check_journey.cjs` checks memory semantics and continuity; `check_offline.cjs` tests versioned PWA caches in Chromium and WebKit. / 构建从 index 与语言目录发现资源，新增连续学习与双引擎 PWA 检查。
