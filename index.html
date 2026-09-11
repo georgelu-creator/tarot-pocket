@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3ec">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'">
+  <meta name="description" content="Tarot Pocket: offline tarot learning with 78 historical RWS cards, active recall, contextual lessons, and eight spreads. 中英双语塔罗随身学。">
+  <meta property="og:title" content="Tarot Pocket · 塔罗随身学">
+  <meta property="og:description" content="Learn the picture. Remember the meaning. Read the spread. Offline, in English and Chinese.">
+  <meta property="og:image" content="https://georgelu-creator.github.io/tarot-pocket/social-preview.png">
+  <title>Tarot Pocket · 塔罗随身学</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="learning.css">
+  <link rel="stylesheet" href="reading.css">
+</head>
+<body>
+  <button class="language-toggle" data-language-toggle data-i18n-ignore aria-label="Switch to English">EN</button>
+  <div id="app"><p class="startup">正在准备你的牌桌…</p></div>
+  <div id="overlay"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+  <noscript>这个交互 Demo 需要在支持 JavaScript 的浏览器中打开。</noscript>
+  <script src="content.js"></script>
+  <script src="learning-content.js"></script>
+  <script src="spread-content.js"></script>
+  <script src="reading-deck.js"></script>
+  <script src="locales/en.js"></script>
+  <script src="i18n.js"></script>
+  <script src="learning.js"></script>
+  <script src="reading.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

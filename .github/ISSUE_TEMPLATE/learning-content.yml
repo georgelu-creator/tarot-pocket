@@ -1,0 +1,57 @@
+name: "Lesson or translation / 课程与翻译"
+description: "Improve an explanation, answer, distractor, source, or translation / 修订解释、答案、干扰项、来源或翻译"
+title: "[Content] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tell us what made the lesson difficult to understand. A different supported interpretation is welcome; please include its context or tradition.
+        请说清哪里影响了理解。欢迎提出其他有依据的解读，并说明所用情境或体系。
+  - type: dropdown
+    id: kind
+    attributes:
+      label: "Type of feedback / 问题类型"
+      options:
+        - "Incorrect fact or visual evidence / 事实或图像依据错误"
+        - "Ambiguous question or answer / 题目或答案有歧义"
+        - "Distractors are too easy or misleading / 干扰项太简单或误导"
+        - "Translation mismatch / 翻译偏差"
+        - "Spread or context logic / 牌阵或情境逻辑"
+        - "Source or attribution / 来源或署名"
+        - "Other content improvement / 其他内容改进"
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: "Card, lesson, and position / 卡牌、课程与牌位"
+      placeholder: "Four of Pentacles, career, resource position / 星币四，事业，资源位"
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: "Affected language / 涉及语言"
+      options:
+        - "English"
+        - "简体中文"
+        - "Both / 两种语言"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: "Current text and problem / 原文与具体问题"
+      description: "Quote only the relevant short passage. Explain which answer seems supportable and why. / 只摘录相关短句，说明哪个答案也可能成立及依据。"
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: "Suggested improvement / 修改建议"
+      description: "A clearer condition, explanation, alternate answer, or translation is useful. / 可补充条件、解释、合理答案或翻译。"
+  - type: textarea
+    id: evidence
+    attributes:
+      label: "Evidence or source / 依据或来源"
+      description: "Link the source and state the relevant tradition or visual detail. Do not upload copyrighted course material. / 提供来源链接、体系或牌面细节，不上传受版权保护的课程资料。"

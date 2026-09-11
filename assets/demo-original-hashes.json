@@ -1,0 +1,89 @@
+{
+  "description": "Immutable hashes of the first 12 demo assets before full-deck expansion; preserve their bytes.",
+  "items": [
+    {
+      "card_id": "m00",
+      "local_path": "assets/cards/m00.webp",
+      "sha256": "6a2c6d175a736825054f86c914c728207219c6935f57c11111dd72683e55111e",
+      "original_path": "assets/originals/RWS_Tarot_00_Fool.jpg",
+      "original_sha256": "557c6592b73107508eac65ef140d090d2ccd657ac5a2d5d4fe31c6c2ceacbcb5"
+    },
+    {
+      "card_id": "m01",
+      "local_path": "assets/cards/m01.webp",
+      "sha256": "11f36ce2a063828986e2393a78eb381121ca70adb9dde238e009c9ce396be21d",
+      "original_path": "assets/originals/RWS_Tarot_01_Magician.jpg",
+      "original_sha256": "e0569e468545abfd2987ec0af5d3c51da3a9d478e37077aeaa1d715ddfc9941b"
+    },
+    {
+      "card_id": "m02",
+      "local_path": "assets/cards/m02.webp",
+      "sha256": "c7d2f304cc053f7d9212ed07139b8dc3d9affa6574bac689d449ddc11fad8124",
+      "original_path": "assets/originals/RWS_Tarot_02_High_Priestess.jpg",
+      "original_sha256": "0e87b5a22187a299334188c2e8fd178125151f9015c122f6946367489cfd252a"
+    },
+    {
+      "card_id": "m09",
+      "local_path": "assets/cards/m09.webp",
+      "sha256": "e2ddf99cced73b403cd3232042f5b0da70a640b29601ebedb26d7bc0c902b7d2",
+      "original_path": "assets/originals/RWS_Tarot_09_Hermit.jpg",
+      "original_sha256": "0f86ac4560e598ced039665e21023d329e7a7e58872c46b3e9a9d85bb6cb2a50"
+    },
+    {
+      "card_id": "w01",
+      "local_path": "assets/cards/w01.webp",
+      "sha256": "00b854da4ba4bdd083f608ed1f88f74e9815f9d0c4396303ec3308e0a5b4f5e2",
+      "original_path": "assets/originals/Wands01.jpg",
+      "original_sha256": "c29a4231878072d66be3aa344b348ea77cf12617571db4836a270730ae5a04e0"
+    },
+    {
+      "card_id": "c04",
+      "local_path": "assets/cards/c04.webp",
+      "sha256": "824d7e91c9dc01b7c97240c1c0aeb3832c49ff27251d5d7a54c4df6c0467abb6",
+      "original_path": "assets/originals/Cups04.jpg",
+      "original_sha256": "92097fe69d21dd0a0c9d5ece68ed465fa4a53d5107509cde3689840b67ed3f13"
+    },
+    {
+      "card_id": "c08",
+      "local_path": "assets/cards/c08.webp",
+      "sha256": "a4a05e229f596843a63781735fba07f5348d752ddfe2e7225f479bd5f1b03250",
+      "original_path": "assets/originals/Cups08.jpg",
+      "original_sha256": "727c07c60753aa7925c9421ca3a93e80eaadd0053018e68c819b2ac5e6562312"
+    },
+    {
+      "card_id": "c14",
+      "local_path": "assets/cards/c14.webp",
+      "sha256": "6c7dec8e115660e0b8e98f69694c72f664fea863c0713aa5af3829daa3c667db",
+      "original_path": "assets/originals/Cups14.jpg",
+      "original_sha256": "79ae249016aaafb01279007e2da5ad00dffd6dc7d3017526853cfa6efc989372"
+    },
+    {
+      "card_id": "s04",
+      "local_path": "assets/cards/s04.webp",
+      "sha256": "e0d9f93fd3a531e65cef458eef514a833fd7bb685110ff4daf276c5dd3c640ea",
+      "original_path": "assets/originals/Swords04.jpg",
+      "original_sha256": "d4f9dad59b25daf3c9e98e50107dd692e9682f058cdc8424ce61fd448e941a78"
+    },
+    {
+      "card_id": "s06",
+      "local_path": "assets/cards/s06.webp",
+      "sha256": "6777f343e2353c34da9fa764cb318b2fa78fd43cdb912f9ff31712167e2ccaf7",
+      "original_path": "assets/originals/Swords06.jpg",
+      "original_sha256": "25279d7133301f59748f9ec0c6517a56fc4b8f76477ecfb4495f039adbc9aed5"
+    },
+    {
+      "card_id": "p04",
+      "local_path": "assets/cards/p04.webp",
+      "sha256": "add3169eacc6a1f2a839c786d2af4dd23ce298d553d46d90ccb3d432d0bacadc",
+      "original_path": "assets/originals/Pents04.jpg",
+      "original_sha256": "37e44050b8ac86dc7db3c1bb00e80154e97986b028a1499504ab89c5612e5989"
+    },
+    {
+      "card_id": "p08",
+      "local_path": "assets/cards/p08.webp",
+      "sha256": "999de5664e540e70846df99dc3709d350962b8754b98cccff257ee403801320e",
+      "original_path": "assets/originals/Pents08.jpg",
+      "original_sha256": "13c82cbdec9ce101f157ee502663eb38bbd8117cec5e019b8400474056caebd9"
+    }
+  ]
+}

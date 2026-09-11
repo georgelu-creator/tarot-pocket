@@ -1,0 +1,39 @@
+name: "Feature idea / 功能建议"
+description: "Propose a better way to remember, practice, or read / 提出更好记、更好练、更好解读的方法"
+title: "[Idea] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start with the learning need. The project is validating the demo before expanding a full app.
+        请从学习需求出发。项目当前先验证 Demo 体验，再决定完整 App 的扩展。
+  - type: textarea
+    id: need
+    attributes:
+      label: "What are you trying to learn or do? / 你想学会或完成什么？"
+      description: "Describe a concrete situation. Use invented personal details. / 描述具体使用场景，个人细节请用虚构内容。"
+    validations:
+      required: true
+  - type: textarea
+    id: friction
+    attributes:
+      label: "What is difficult now? / 现在困难在哪里？"
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Your idea / 你的建议"
+      description: "An interaction sketch or a short example is enough. / 简单的交互描述或例子即可。"
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: "How would you know it helps? / 怎样判断真的有帮助？"
+      placeholder: "I can recall the difference without looking at the choices. / 不看选项也能回忆出两张牌的区别。"
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives tried / 已试过的办法"
+      description: "Optional. Include device or offline constraints if relevant. / 可选，也可补充设备或离线限制。"

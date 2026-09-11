@@ -1,0 +1,550 @@
+{
+  "items": [
+    {
+      "card_id": "m00",
+      "sha256": "6a2c6d175a736825054f86c914c728207219c6935f57c11111dd72683e55111e",
+      "observation": "0; THE FOOL; traveller, dog, cliff and white flower visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m01",
+      "sha256": "11f36ce2a063828986e2393a78eb381121ca70adb9dde238e009c9ce396be21d",
+      "observation": "I; THE MAGICIAN; raised wand, four suit objects and infinity sign visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m02",
+      "sha256": "c7d2f304cc053f7d9212ed07139b8dc3d9affa6574bac689d449ddc11fad8124",
+      "observation": "II; THE HIGH PRIESTESS; B/J pillars, crescent and scroll visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m03",
+      "sha256": "ed708982352cad12a18141e09684d92403d7d90d2c9f97f115d7ecca7ab70365",
+      "observation": "III; THE EMPRESS; crowned seated woman, wheat field, sceptre and Venus shield visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m04",
+      "sha256": "e6982291d82ee1017aeaa06ad4f12a1fa707697d31bed14570d80f621d590f1e",
+      "observation": "IV; THE EMPEROR; seated crowned ruler, ram-headed stone throne and orb visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m05",
+      "sha256": "1282f464ab9f4f691e859786b2f93b6dbd6d6eae0f2e057551cc125785b64ad9",
+      "observation": "V; THE HIEROPHANT; enthroned figure, raised blessing hand, two followers and crossed keys visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m06",
+      "sha256": "4f09595606131733441ff8aee39ed01ea9640101df98fbbe2d5e7679f1e0e4ee",
+      "observation": "VI; THE LOVERS; two figures, angel, mountain and two trees visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m07",
+      "sha256": "21dbc3a580250577536fbd392b2630bf931b2e314dda674a9e257c23e92a8d0f",
+      "observation": "VII; THE CHARIOT; armoured figure, canopy and black/white sphinxes visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m08",
+      "sha256": "c755fdb3af320781bdca80b7761a518b8ffb4eb0944e6307684033eecd5fffc7",
+      "observation": "VIII; STRENGTH; woman with infinity sign holding the lion jaws visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m09",
+      "sha256": "e2ddf99cced73b403cd3232042f5b0da70a640b29601ebedb26d7bc0c902b7d2",
+      "observation": "IX; THE HERMIT; cloaked figure holding lantern and staff visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m10",
+      "sha256": "99922113beb6f434d7c1b86b033f4e51ed59a4f9d365076bd6fadb396c18925b",
+      "observation": "X; WHEEL OF FORTUNE; orange wheel, sphinx, snake and four corner beings visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m11",
+      "sha256": "8dbe4e8e43cba5c6a35fffcba58d0563b850798e9443592a31235d6d80f9f00a",
+      "observation": "XI; JUSTICE; crowned figure with upright sword and scales visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m12",
+      "sha256": "d5b55a500f7638d4bb368059187c80a91468f058e4fe858a3dd159bed1d6c330",
+      "observation": "XII; THE HANGED MAN; figure suspended by one foot, crossed leg and halo visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m13",
+      "sha256": "37e226c2dc500eaa5cc52b9212286e72c0721926ffda01a6f93623684ef173a5",
+      "observation": "XIII; DEATH; armoured skeleton on white horse, black flag and fallen figure visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m14",
+      "sha256": "d155ccad18ed5e137e41cab1e0b876d3dd1e83d314433d819585adea9a5f3ab7",
+      "observation": "XIV; TEMPERANCE; winged figure pours between cups, one foot in water and one on land visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m15",
+      "sha256": "df19b13086ec041f52804d90095ccdfd080ffa7714bdd882133cf6a01a566c86",
+      "observation": "XV; THE DEVIL; horned winged figure above two chained figures visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m16",
+      "sha256": "c8d0d272661b60cbe48a72a0ff146074cb8f5a84923633f855f9e1a357e2a9ec",
+      "observation": "XVI; THE TOWER; lightning, displaced crown, flames and two falling figures visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m17",
+      "sha256": "3717eb6757c2c7e35668b77c185c2018e2480a536ef5535500e3b99668ca44a3",
+      "observation": "XVII; THE STAR; kneeling figure pours two jugs, one large and seven small stars visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m18",
+      "sha256": "68e7dbe8ab74226c6caf1e7d9aaa2aea041395824e8fe8bcda717bb3faaa8751",
+      "observation": "XVIII; THE MOON; moon face, dog and wolf, two towers and crayfish visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m19",
+      "sha256": "ab34d0eb4605af0abc7f7e35d53f382edc3f3f2be493c3180e9c7a5f83abc8e9",
+      "observation": "XIX; THE SUN; sun, child on white horse, red banner and sunflowers visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m20",
+      "sha256": "287ce3cf62c54400838207d9e301d2d6f65926ba56828124c648986e5e294e64",
+      "observation": "XX; JUDGEMENT; angel blows trumpet above figures rising from coffins visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "m21",
+      "sha256": "5753a0b7a93a1fe7e80412de4f4c365f67640e758f5641b2d20c4f738f8854b7",
+      "observation": "XXI; THE WORLD; central figure within wreath, four corner beings visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w01",
+      "sha256": "00b854da4ba4bdd083f608ed1f88f74e9815f9d0c4396303ec3308e0a5b4f5e2",
+      "observation": "ACE OF WANDS; cloud hand holds a sprouting wand above a landscape",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w02",
+      "sha256": "81a75fdcfe9f6d029b0c44fe0f79b41f9846c44df50d78cd08e4a04e75067d18",
+      "observation": "II; figure holds globe on battlement between two wands",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w03",
+      "sha256": "681dca9df7fad9258c0fc0edde96181a6be570abfc35bd37dc99a1747918422d",
+      "observation": "III; cloaked figure looks outward between three wands toward distant ships",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w04",
+      "sha256": "9e72a116ee9aed35807c31565feb4469f44088c1f89666e579e3c9ab39a3f2fb",
+      "observation": "IV; four upright wands support a floral garland with two celebrating figures behind",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w05",
+      "sha256": "b6212d34b9bfa57c54c62b50a71d21070b235da8cea8567a0d0aca137c61210d",
+      "observation": "V; five figures hold crossing raised wands",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w06",
+      "sha256": "860ae7fd363c09e171ae59042968733e2eb4e6e4446a98443ddcb404e6f98309",
+      "observation": "VI; laurel-crowned rider on white horse carries a wand with victory wreath",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w07",
+      "sha256": "4963a93a2477b3e8094e485b0da84a53fcc4c14feb0abd28f96ee79c8291c7fe",
+      "observation": "VII; figure holds one wand across body above six rising wands on uneven ground",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w08",
+      "sha256": "1494f8bbaddf11aa150fbd5be44574d11b0f09a2dc717408ecb4a2f7c48e9d16",
+      "observation": "VIII; eight diagonal flying wands cross sky above river and green landscape",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w09",
+      "sha256": "7aed15b2001758c95bd35201f41df9fb7320c951094ef548b14767a052f9d4d3",
+      "observation": "IX; bandaged figure holds one wand before eight upright wands",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w10",
+      "sha256": "b3a3e31b4170993366f352c3cd040ad0864dc4c02da239eb6c2a8e88ccb03c7f",
+      "observation": "X; bent figure carries a bundle of ten wands toward a distant town",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w11",
+      "sha256": "acebef712f98f3c701dd71c0f8d3bfd5c0f16619df42bc202edd3599edb521f2",
+      "observation": "PAGE OF WANDS; standing figure in patterned tunic studies a tall wand in desert",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w12",
+      "sha256": "2b2d762f4fa0c20e40b1796cc0b1467d3004b02c608da815c7d7b434654e13f0",
+      "observation": "KNIGHT OF WANDS; armoured rider with red plume holds wand on a rearing horse",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w13",
+      "sha256": "be01d33c8bcc89a9462b760667138f1f60b9e2a6badce6e3f290868b515af828",
+      "observation": "QUEEN OF WANDS; crowned seated figure holds sunflower and wand; black cat at feet",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "w14",
+      "sha256": "d99a71e1524461c1dac33e4cbe3e2846623d1a659d2c2de1927bb21a69d65e20",
+      "observation": "KING OF WANDS; crowned figure sits with wand on a lion-and-salamander decorated throne",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c01",
+      "sha256": "4657f5e7620f8b8759e6986dbba6d29f8a010231e6474212318ecea0d300058f",
+      "observation": "ACE OF CUPS; hand supports an overflowing cup, dove and water lilies visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c02",
+      "sha256": "a6b99f8cb0ff5bbd99b81149a51d38ad5d5aa6adff0962b3ce2a03ddf46065ab",
+      "observation": "II; two figures exchange cups beneath a winged lion and caduceus",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c03",
+      "sha256": "497e0ea14028de5dc1f9dba72bcd4b2ad6ecbb9ff9d5e9502f6dd5504b74ed8e",
+      "observation": "III; three figures raise cups with fruit and crops around their feet",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c04",
+      "sha256": "824d7e91c9dc01b7c97240c1c0aeb3832c49ff27251d5d7a54c4df6c0467abb6",
+      "observation": "IV; seated figure under tree, three ground cups and one offered by a cloud hand",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c05",
+      "sha256": "6484d12425750f412d1f6a2dc7f88cdc67a8b5eec1620fa6d8dc0f05f20c62c9",
+      "observation": "V; black-cloaked figure faces three spilled cups; two upright cups behind and bridge visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c06",
+      "sha256": "b7f822cf6dab59aade8f3ab25b08dc2daae8f1359aac42b7894e812dbaf3581e",
+      "observation": "VI; six flower-filled cups and two figures in a courtyard visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c07",
+      "sha256": "6cabce635c5033fbb94e3333a28b17fd8553bbad626bb11a24cb42ca00e82da4",
+      "observation": "VII; silhouetted figure faces seven cups bearing different visions in clouds",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c08",
+      "sha256": "a4a05e229f596843a63781735fba07f5348d752ddfe2e7225f479bd5f1b03250",
+      "observation": "VIII; red-cloaked figure departs with staff, eight cups in foreground and moon above",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c09",
+      "sha256": "4716a6f64f8ea1b46a371e9b534fc3f59050a3f3d3291e3e99ad5f9f56162dc0",
+      "observation": "IX; seated figure with crossed arms before nine cups in an arc",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c10",
+      "sha256": "0bae94ef790b062d76cb402b74c1a0ec966dffdb66be35b122d1e3ea14ec088a",
+      "observation": "X; rainbow of ten cups, two adults with raised arms and two children visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c11",
+      "sha256": "720037b078fd3511e6014fab19dfcf1a681bfa88f463ba66f57bf60a0779a3cd",
+      "observation": "PAGE OF CUPS; standing figure holds a cup containing a fish",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c12",
+      "sha256": "cd27f040185699e703ddce1b6dabcbf09b5aec3df67531dbef146e4c5bbd7da0",
+      "observation": "KNIGHT OF CUPS; armoured rider on pale horse holds a cup forward",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c13",
+      "sha256": "ace198cb8db5dde304a82178357ac5fb748cb19a33a901bd6728b10d97bf4ca7",
+      "observation": "QUEEN OF CUPS; seated crowned figure contemplates a lidded cup beside water",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "c14",
+      "sha256": "6c7dec8e115660e0b8e98f69694c72f664fea863c0713aa5af3829daa3c667db",
+      "observation": "KING OF CUPS; crowned seated figure holds cup and sceptre on a throne amid water",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s01",
+      "sha256": "28f85e99d4be2edc10546974bacbf9bf6b8d6ab1fd558e12d9cf6117852c4f03",
+      "observation": "ACE OF SWORDS; cloud hand holds upright sword through a crown and branches",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s02",
+      "sha256": "9c1407875ecaefd8fddd0598eb96efe60863d3c75f384a94db0a03f0f889f2da",
+      "observation": "II; blindfolded seated figure holds two crossed swords before sea and crescent moon",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s03",
+      "sha256": "9e6d05d1877181e015d3a7c05edede15b0a32b45addecf67d2bb85514cd78a96",
+      "observation": "III; three swords pierce a red heart under rain clouds",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s04",
+      "sha256": "e0d9f93fd3a531e65cef458eef514a833fd7bb685110ff4daf276c5dd3c640ea",
+      "observation": "IV; recumbent figure, three hanging swords and one horizontal lower sword visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s05",
+      "sha256": "3b6f89697a065a752d6d8269ee763b430833cb3954713d85514d7bee20e44157",
+      "observation": "V; foreground figure gathers swords while two figures retreat; two blades on ground",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s06",
+      "sha256": "6777f343e2353c34da9fa764cb318b2fa78fd43cdb912f9ff31712167e2ccaf7",
+      "observation": "VI; boat with two passengers, ferryman and six swords visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s07",
+      "sha256": "5158988c2f95e43c7f8feeb7b08e6c50cfcade9c24f2f845e66b7d88cfaf2d4c",
+      "observation": "VII; figure carries five swords away while two remain upright near tents",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s08",
+      "sha256": "62698fe457a10ec083b2617bde70bc26870906fd8fa382448f5a3a9153fd96f9",
+      "observation": "VIII; blindfolded bound figure stands among eight upright swords",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s09",
+      "sha256": "2bab7160e86b352454a137103f124de90cbf95c8f88e85a13020b33e209f0c4d",
+      "observation": "IX; figure sits in bed with face in hands beneath nine horizontal swords",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s10",
+      "sha256": "e0d025e8dad9ab8f9ba0ddae0bf7f1ed0ca26d3ede4f8262699e4ad8e3529415",
+      "observation": "X; prone figure with ten swords in back and dawn horizon visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s11",
+      "sha256": "130e087261d32b5aad791eb8adb213c4e4b7445aed5969c729b98fc62803527e",
+      "observation": "PAGE OF SWORDS; standing figure turns with upright sword against windy clouds",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s12",
+      "sha256": "26be2c896067b33c2e8e3c4c1a5cb5febe16892e3a6575361a8eeac2e06b9e9e",
+      "observation": "KNIGHT OF SWORDS; armoured rider charges on white horse with raised sword",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s13",
+      "sha256": "ffa925e77cec6bb79d114a55329c6efc9af049c33386c10aad304b1157e25d78",
+      "observation": "QUEEN OF SWORDS; crowned figure sits in profile with upright sword and open raised hand",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "s14",
+      "sha256": "9c0d277ab128ce6fc6d4cc0a859a229675cd8bd3d24bf1da2aa1382c4c5b6122",
+      "observation": "KING OF SWORDS; front-facing crowned figure sits on butterfly throne holding sword",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p01",
+      "sha256": "b84a6117e06aa8d404f7738e0bc2aaf49e778d48ad6bc5b4772aa15bfbec13aa",
+      "observation": "ACE OF PENTACLES; cloud hand supports a pentacle above a garden path and arch",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p02",
+      "sha256": "646898b9ec48a7f8346bb29f2aa6a655a556b1e0201d330b6b027e3c86159fc4",
+      "observation": "II; red-clad figure juggles two pentacles in an infinity loop; ships on waves behind",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p03",
+      "sha256": "e6941576c479f59b2ab9df030a39af53ba6fa2fac15b5913b281255f09c9f522",
+      "observation": "III; artisan and two other figures stand beneath an arch containing three pentacles",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p04",
+      "sha256": "add3169eacc6a1f2a839c786d2af4dd23ce298d553d46d90ccb3d432d0bacadc",
+      "observation": "IV; seated figure holds one pentacle, one rests on head and two are under feet",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p05",
+      "sha256": "c2f6939ebe77149466d1f10c9898531d8302c4138929f8fa06cfba3c8624dfe8",
+      "observation": "V; two figures walk through snow beneath a stained-glass window with five pentacles",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p06",
+      "sha256": "e1ff9d9ccedde45c623c4da6b5000fb0cc1516152c32461fb3398f5390656e81",
+      "observation": "VI; standing figure holds scales and gives coins to one of two kneeling figures",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p07",
+      "sha256": "3dc459b634a1816dfd55f926b8fdd06a40cd295b43e7f341c7c3453af40fc4eb",
+      "observation": "VII; figure leans on a tool and looks at a plant bearing pentacles",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p08",
+      "sha256": "999de5664e540e70846df99dc3709d350962b8754b98cccff257ee403801320e",
+      "observation": "VIII; seated artisan works on pentacles; completed coins arranged on a post",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p09",
+      "sha256": "e91e4b8bf08f20a611a95b31fea965b13f0ae64f12fb7739b07ca6465b10e574",
+      "observation": "IX; robed figure with bird on gloved hand stands in a vineyard with nine pentacles",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p10",
+      "sha256": "f2d48508b8672a1af9c52dc47fed0573c1ed64c9694c6d5997f0c5cde24fae7f",
+      "observation": "X; archway, elderly seated figure, family group, two dogs and ten pentacles visible",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p11",
+      "sha256": "298e5947b0da23a13d4b6729a46bd468d71c393cfd93c403e18b0e7085485132",
+      "observation": "PAGE OF PENTACLES; standing figure raises a pentacle and studies it against yellow sky",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p12",
+      "sha256": "3df13cd14ef0d71543a489288226f19de4ec5798c5c948e6d78a4552cf19e681",
+      "observation": "KNIGHT OF PENTACLES; armoured rider on a dark standing horse holds a pentacle",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p13",
+      "sha256": "e265263bbf3848396822c455fa05a4a794bd66a8eb6ea947c36af51ea37690f5",
+      "observation": "QUEEN OF PENTACLES; crowned seated figure holds pentacle in lap amid flowers and greenery",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    },
+    {
+      "card_id": "p14",
+      "sha256": "6b63cc7b05cd40cdfc737e98262e472ab0a646a2c9e9287895897f107f73b60d",
+      "observation": "KING OF PENTACLES; crowned figure on a bull-decorated throne with pentacle, sceptre and vines",
+      "reviewed_on": "2026-09-11",
+      "method": "Agent inspected contact sheet via view_image; card number, caption, distinguishing figures and intact composition checked."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Roadmap / 后续计划"
+    url: "https://github.com/georgelu-creator/tarot-pocket/blob/main/docs/ROADMAP.md"
+    about: "See current scope and planned learning improvements / 查看当前范围与候选学习改进"
+  - name: "Security reporting / 安全问题"
+    url: "https://github.com/georgelu-creator/tarot-pocket/blob/main/SECURITY.md"
+    about: "Read the reporting guidance before sharing sensitive details / 分享敏感细节前先阅读报告说明"

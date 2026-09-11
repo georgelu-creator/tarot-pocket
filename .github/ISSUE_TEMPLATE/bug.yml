@@ -1,0 +1,62 @@
+name: "Bug report / 交互问题"
+description: "Something did not work as expected / 某个交互或显示没有按预期工作"
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Tarot Pocket. Please use invented examples and remove private information from screenshots.
+        感谢体验。请用虚构案例，截图中去掉私人信息。安全漏洞请先阅读 SECURITY.md，不要公开利用细节。
+  - type: input
+    id: version
+    attributes:
+      label: "Version or URL / 版本或打开的网址"
+      placeholder: "v0.3.0 offline HTML, or the hosted demo / 离线版或在线演示"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: "Device, OS, and browser / 设备、系统与浏览器"
+      placeholder: "iPhone, iOS version, Safari / 或电脑与浏览器版本"
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: "Interface language / 界面语言"
+      options:
+        - "English"
+        - "简体中文"
+        - "Both / 两种语言"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce / 怎样复现"
+      description: "Name the screen, card, lesson, or spread if relevant. / 写清相关页面、卡牌、课程或牌阵。"
+      placeholder: |
+        1. Open… / 打开……
+        2. Tap… / 点击……
+        3. Observe… / 出现……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior / 期望发生什么"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual behavior / 实际发生什么"
+      description: "Attach a cropped screenshot if useful. Do not attach a personal backup. / 可附裁剪截图，不要上传私人备份。"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: "Additional context / 补充情况"
+      description: "For offline or storage issues: did this follow a reload, import, language switch, or change of URL? / 离线与保存问题请补充是否发生在刷新、导入、切换语言或更换网址之后。"
