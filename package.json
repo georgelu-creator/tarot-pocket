@@ -1,10 +1,12 @@
 {
   "name": "tarot-pocket",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Offline tarot learning through images, recall, and contextual readings. English and Chinese.",
   "license": "MIT",
-  "engines": {"node": ">=22"},
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "python3 tools/build_demo.py",
     "serve": "python3 -m http.server 8765 --bind 127.0.0.1",
@@ -12,5 +14,7 @@
     "test:locales": "node tools/check_locales.cjs",
     "test:assets": "python3 tools/verify_assets.py"
   },
-  "devDependencies": {"playwright": "1.62.1"}
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
 }

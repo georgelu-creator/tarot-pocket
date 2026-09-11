@@ -5,10 +5,11 @@ The original teaching content and documentation in Tarot Pocket are licensed und
 The authoritative terms are in [the full license](LICENSES/CC-BY-SA-4.0.txt).
 
 This covers the authored text in `content.js`, `learning-content.js`, `spread-content.js`,
-`reading-deck.js`, the translations in `locales/*.json`, README files, project-authored
+`reading-deck.js`, `curriculum-content.js`, authored educational text in `journey.js` and `reading.js`, the translations in `locales/*.json`, README files, project-authored
 files under `docs/`, and the newly authored geometric card-back artwork at
 [`assets/design/card-back.svg`](assets/design/card-back.svg). The card back uses
-CC BY-SA 4.0; its SVG format does not make it application code.
+CC BY-SA 4.0; its SVG format does not make it application code. The original app icons
+in `assets/icons/` also use CC BY-SA 4.0.
 Code that loads or presents this content, including CSS and build tools, remains
 under the [MIT License](LICENSE).
 
@@ -27,7 +28,7 @@ source and license, indicate modifications, and share adaptations under the same
 license. Suggested attribution: “Adapted from Tarot Pocket, by Tarot Pocket
 contributors, CC BY-SA 4.0.” This short explanation does not replace the license.
 
-塔罗随身学的原创课程、题目、释义、翻译、项目文档及新设计的几何牌背
+塔罗随身学的原创课程（含 `curriculum-content.js` 与交互文件中的教学文字）、题目、释义、翻译、项目文档、`assets/icons/` 原创应用图标及新设计的几何牌背
 `assets/design/card-back.svg` 采用 **CC BY-SA 4.0**。牌背使用 SVG 格式，并不因此
 成为适用 MIT 的应用代码。`docs/design/handoff/` 中原样保存的用户提供设计说明与
 生成式概念参考属于归档来源资料，不纳入上述项目原创文档的概括授权；其来源和

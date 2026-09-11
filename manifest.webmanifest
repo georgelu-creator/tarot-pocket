@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "Tarot Pocket · 塔罗随身学",
+  "short_name": "Tarot Pocket",
+  "description": "Learn, recall and read tarot, with the full deck available offline.",
+  "start_url": "./?source=homescreen",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F6F1E9",
+  "theme_color": "#F6F1E9",
+  "icons": [
+    {"src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

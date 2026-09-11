@@ -2,18 +2,18 @@
 
 **Learn to read the cards. Remember why they mean something.**
 
-A bilingual, image-first tarot learning playground. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
+A bilingual, image-first tarot learning companion. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
 
-[**Try the demo →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.5.0/tarot-pocket-v0.5.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
+[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
 
 ![Tarot Pocket — practice, remember, and read](docs/images/hero.png)
 
-![Preview](https://img.shields.io/badge/status-v0.5.0_preview-60465C)
+![v1.0.0](https://img.shields.io/badge/release-v1.0.0-60465C)
 ![Languages](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![Code license](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![Content license](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-The v0.5.0 preview reduces the mobile home to two decisions: learn one card or draw a spread for your own question. The library shows learned and new cards, elements, and numbers. Drawing starts with visual spread scope, then asks for the question and ends with a five-stage professional reading. The [six feedback points and UI responses](docs/UX_FEEDBACK.md) are recorded.
+v1.0.0 provides **continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. Open it on your phone; prepare offline content and add it to your home screen for travel. [Full product and design plan](docs/PRODUCT_PLAN.md).
 
 ## A small lesson that stays with you
 
@@ -21,20 +21,21 @@ A keyword flashcard might say “Four of Pentacles = holding on.” Tarot Pocket
 
 You choose both an interpretation and its evidence. Feedback tells you clearly when an answer is wrong and explains the difference. Quiet recall is recorded as self-assessment; an open reading is not graded as an objective prediction.
 
-Start with **Learn → Four of Pentacles**. Read the full guide, mark it learned, and then test it with questions. Its 12-step unit remains the deepest sample. Elements, numbers 1–10, and optional skill practice now live inside the library.
+Tap **Start learning** on Home to meet your next card, or choose any card in **Learn**. Each card has seven stages: introduction, image evidence, close meanings, silent recall, a near-card comparison, contextual application, and reversals. Continue directly to the next card, or pause and return. Switching cards preserves each unfinished place.
 
 <img src="docs/images/practice.png" width="390" alt="Practice: look closely, make a judgment, and find evidence">
 
 ## What you can do now
 
-| Experience | In this preview |
+| Experience | Current version |
 | --- | --- |
 | Learn from real artwork | 78 historical Rider–Waite–Smith cards from one Pam-A scan set, with individual sources and checksums |
-| Practice beyond recognition | 56 learning steps across 8 units, plus 24 mixed practice questions |
+| Practice beyond recognition | 78 seven-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
 | Build a mental framework | Elements, numbers, visual evidence, similar-card distinctions, position changes, and contextual reversals |
-| Learn how spreads work | 8 visual spreads with scope, limits, position questions, and a professional reading order |
+| Learn how spreads work | 8 visual spreads with scope, limits, position questions, and a clear reading order |
 | Change the question | Love, career, and study contexts; the same card can play different roles |
-| Draw without a physical deck | Write your own question, shuffle all 78 cards, pick without replacement, reveal cards, and optionally include reversals |
+| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, pick without replacement, reveal cards, and optionally include reversals |
+| Review by performance | Six skills follow SM-2 intervals; immediate retries do not count as delayed recall |
 | Keep your place | Local progress, a resumable card table, up to 40 saved readings, and JSON export/import |
 | Switch language | English and Simplified Chinese interface and learning content |
 
@@ -44,24 +45,25 @@ The eight spreads are **Single-card Focus**, **Situation–Obstacle–Advice**, 
 
 ## Built for a trip with patchy internet
 
-The downloadable HTML contains the application, all 78 images, and the current bilingual lessons. It needs no account, API key, CDN, external font, or image server to run. Building it uses the assets already in this repository.
+The recommended phone entry is the public website:
 
-1. Download [`tarot-pocket-v0.5.0.html`](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.5.0/tarot-pocket-v0.5.0.html) while connected.
-2. Open the file in a browser that can run local HTML and JavaScript.
-3. Try an unfamiliar card, finish a lesson, close and reopen the file, and verify your progress on the **actual device** you will take.
-4. Export a backup from **My progress** before switching browsers, devices, or site addresses.
+1. Open [Tarot Pocket](https://georgelu-creator.github.io/tarot-pocket/?lang=en) in Safari.
+2. Go to **Records → Check offline content and installation**, then download the complete offline content. Keep the page open until validation finishes.
+3. In Safari’s Share menu, choose **Add to Home Screen**. Open the installed site and check its offline status again.
+4. Before travel, test airplane mode, closing/reopening, an unfamiliar card, and saved progress on the actual phone.
 
-**A saved file and saved progress are different things.** Progress lives in your browser, not inside the downloaded HTML. Local-file storage varies between browsers, and iPhone Safari has not yet completed real-device acceptance. The hosted page is an easy way to try the demo; it is not currently an installable PWA or a guarantee of offline availability.
+Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html) remains available for browsers that support local JavaScript.
 
-## An honest preview
+**Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Runtime uses no accounts, external fonts, analytics, or AI service.
 
-This is **v0.5.0, an alpha product experience**, made to test whether the learning and reading flows are useful before expanding the app.
+## Capabilities and limits
 
-- All 78 cards have basic reference material and can be drawn. The deep single-card course currently centers on **Four of Pentacles**, with other cards used for comparison. There are not yet 78 complete deep courses.
-- Review uses a disclosed **1-day / 3-day demonstration rule**, not FSRS, SM-2, or a validated long-term memory model.
-- Lessons and translations still need independent editorial and tarot-teacher review. Number and element associations are learning aids, not a formula that determines every reading.
-- Reference readings support reflection and grounded interpretation. They do not establish facts about future events or other people's private thoughts.
-- There is no account, cloud sync, AI reading service, native app, or App Store release. Expansion follows experience feedback; see the [roadmap](docs/ROADMAP.md).
+- All 78 cards have authored visual mnemonics, near-card distinctions, and three plausible distractors within a complete shared learning flow.
+- Records distinguish encounters, first lessons, self-ratings, objective application, and delayed reviews. Marking a card read never means mastery.
+- Six skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
+- Eight reading spreads organize actual cards, positions, and optional domains. Written questions are preserved, not semantically analyzed or uploaded. Quizzes do not interrupt readings.
+- Content and translations still need independent tarot-teacher review. Automated checks do not replace expert review, physical iPhone tests, phone-restart tests, or extended offline travel. See [Handoff](docs/HANDOFF.md) for exact evidence.
+- This release is an installable mobile website, not a native App Store application.
 
 ## Run it locally
 
@@ -74,7 +76,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 npm ci
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run build
 npm run serve
 ```
@@ -83,7 +85,7 @@ Open [the local demo](http://127.0.0.1:8765/demo/tarot-demo.html). Run `npm test
 
 ## Help make the next lesson better
 
-The most useful feedback is concrete: **which card, which position, which answer, and what made you hesitate?** Try the demo, then [report an experience issue](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=bug.yml), [improve a lesson or translation](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=learning-content.yml), or [propose a feature](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=feature.yml).
+The most useful feedback is concrete: **which card, which position, which answer, and what made you hesitate?** Use the app, then [report an experience issue](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=bug.yml), [improve a lesson or translation](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=learning-content.yml), or [propose a feature](https://github.com/georgelu-creator/tarot-pocket/issues/new?template=feature.yml).
 
 Teachers, learners, translators, and accessibility testers are welcome. Read [Contributing](CONTRIBUTING.md) before opening a pull request. Please use invented examples instead of sharing private reading histories. If this approach is useful to you, a star helps others find the project.
 

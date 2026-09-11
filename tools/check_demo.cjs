@@ -40,10 +40,11 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('[data-action=status]').first().click();
  await page.getByText('78 / 78',{exact:true}).waitFor();
  await page.locator('#overlay [data-action=close]').click();
- await page.locator('[data-home-choice][data-page=library]').click();
+ await page.locator('.bottomnav [data-page=library]').click();
  await page.locator('[data-action=filter][data-value=全部]').click();
  assert.equal(await page.locator('.library-card').count(),78);
- assert.equal(await page.locator('[data-action=knowledge]').count(),2);
+ assert.equal(await page.locator('[data-action=knowledge]').count(),4);
+ await page.locator('.advanced-learning>summary').click();
  await page.locator('.learning-progress [data-action=start]').click();
  await page.locator('button.primary[data-action=draw]').click();
  if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
@@ -57,7 +58,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  assert.equal(s.schedules[q.id]-s.history[0].at,3*86400000);
  const order=JSON.stringify(s.session.order);
  await page.reload();
- await page.locator('[data-home-choice][data-page=library]').click();await page.locator('.learning-progress [data-action=resume]').click();
+ await page.locator('.bottomnav [data-page=library]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.learning-progress [data-action=resume]').click();
  assert.equal(JSON.stringify((await state(page)).session.order),order);
  assert.equal(await page.locator('[data-action=answer]:disabled').count(),4);
  assert.equal((await state(page)).history.length,1);
@@ -79,18 +80,18 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
    await Promise.all(images.map(image=>image.decode()));
  });
  assert(await page.locator('.library-card img').evaluateAll(xs=>xs.every(x=>x.naturalWidth>100)));
- await page.locator('[data-action=card][data-id=p04]').click();
+ await page.locator('.library-card[data-id=p04]').click();
  await page.locator('[data-action=face][data-value=reversed]').click();
  assert.equal(await page.locator('#overlay .reversed-img').count(),1);
  await page.locator('[data-action=detail-position][data-value=advice]').click();
- await page.locator('[data-action=learn-card]').click();
+ await page.locator('#overlay details').filter({has:page.locator('[data-action=learn-card]')}).locator('summary').click();await page.locator('[data-action=learn-card]').click();
  assert((await state(page)).viewed.includes('p04'));
  await page.locator('[data-action=save]').click();
  assert((await state(page)).saved.includes('p04'));
  await page.locator('#overlay [data-action=zoom]').click();
  await page.locator('#overlay [data-action=close]').click();
  assert.equal(await page.locator('#overlay [data-action=save]').count(),1,'zoom should return to details');
- await page.locator('#overlay [data-action=card-practice]').click();
+ await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('#overlay [data-action=card-practice]').click();
  const practiced='p04';await page.locator('button.primary[data-action=draw]').click();if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
  while((await state(page)).session.phase!=='complete'){const current=await state(page);const live=data.questions.find(x=>x.id===current.session.ids[current.session.index]);await page.locator(`[data-action=answer][data-value="${live.correct}"]`).click();await page.locator('[data-action=next]').click();}
  assert.equal(await page.locator('[data-action=next-card]').count(),1,'card lesson completion offers the next card immediately');
@@ -99,7 +100,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('[data-action=filter][data-value=收藏]').click();
  assert.equal(await page.locator('.library-card').count(),1);
  await page.locator('.topbar [data-page=me]').click();
- await page.locator('[data-action=advance]').click();assert.equal((await state(page)).offsetDays,3);
+ await page.locator('.advanced-learning>summary').click();await page.locator('.advanced-learning details>summary').last().click();await page.locator('[data-action=advance]').click();assert.equal((await state(page)).offsetDays,3);
  const download=page.waitForEvent('download');await page.locator('[data-action=export]').click();
  const saved=await download;const file=await saved.path();const exported=JSON.parse(fs.readFileSync(file,'utf8'));const exportedHistory=exported.state.history.length;assert(exportedHistory>6);
  await page.locator('[data-action=reset]').click();await page.locator('[data-action=confirm-reset]').click();assert.equal((await state(page)).history.length,0);
@@ -112,7 +113,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('[data-action=status]').first().click();await page.getByText('78 / 78',{exact:true}).waitFor();await page.locator('[data-action=sources]').click();assert.equal(await page.locator('#overlay a[href*="commons.wikimedia.org/wiki/File:"]').count(),78);await page.locator('#overlay [data-action=close]').click();
  await context.setOffline(true);
  await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=filter][data-value=全部]').click();
- await page.locator('[data-action=card][data-id=c14]').click();await page.locator('[data-action=card-practice]').click();await page.locator('button.primary[data-action=draw]').click();
+ await page.locator('[data-action=card][data-id=c14]').click();await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('[data-action=card-practice]').click();await page.locator('button.primary[data-action=draw]').click();
  if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();await page.locator('[data-action=unknown]').click();
  assert(await page.locator('.answer-feedback').count());
  await context.setOffline(false);
@@ -120,6 +121,6 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  const desktop=await context.newPage();await desktop.setViewportSize({width:1280,height:900});await desktop.goto(url);await widthCheck(desktop);await desktop.screenshot({path:'/tmp/tarot-demo-home-desktop.png',fullPage:true});
  for(const w of [320,375,430]){await desktop.setViewportSize({width:w,height:844});await widthCheck(desktop);}
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
- console.log(JSON.stringify({status:'PASS',cards:78,teachingSampleCards:12,questions:24,checks:['two-choice mobile home','three-item navigation','78 images decode','library progress and knowledge entry','6-question session','answer scoring','confidence scheduling','reload resume and no duplicate answer','rich card detail/reversal/learned/favorite','zoom return','demo date','export/import/reset','invalid import preserves records','feedback local-only','embedded asset provenance','offline navigation','offline file cold start in desktop Chromium','320/375/390/430/1280 widths','no runtime errors','no external runtime requests'],screenshots:'/tmp/tarot-demo-*.png',limitations:['real iPhone Safari not tested','PWA not implemented','demo scheduling only']},null,2));
+ console.log(JSON.stringify({status:'PASS',cards:78,teachingSampleCards:12,questions:24,checks:['two-choice mobile home','three-item navigation','78 images decode','library progress and knowledge entry','6-question session','answer scoring','confidence scheduling','reload resume and no duplicate answer','rich card detail/reversal/learned/favorite','zoom return','demo date','export/import/reset','invalid import preserves records','feedback local-only','embedded asset provenance','offline navigation','offline file cold start in desktop Chromium','320/375/390/430/1280 widths','no runtime errors','no external runtime requests'],screenshots:'/tmp/tarot-demo-*.png',limitations:['real iPhone Safari not tested','earlier quick-practice scheduling stays compatible; new SM-2 journey tested separately']},null,2));
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1);});
