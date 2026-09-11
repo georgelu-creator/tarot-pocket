@@ -9,7 +9,9 @@ window.createTarotReading = function (bridge) {
   const topics=Object.fromEntries(content.topics.map(t=>[t.id,t]));
   const KEY='tarot-reading-v3';
   const blank=()=>({version:1,settings:{topic:'career',spreadId:'three',questionId:topics.career.questions[0].id,reversals:false},draft:null,history:[],practice:[]});
-  let data=blank(),storageOK=true,guide=null,timer=null,flipped=-1;
+  let data=blank(),storageOK=true,guide=null,timer=null,flipped=-1,entered=-1;
+  const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function finishShuffle(){clearTimeout(timer);timer=null;if(data.draft?.phase==='shuffling'){data.draft.phase='pick';persist();redraw();}}
   function validDraft(raw){
     if(!raw||!spreads[raw.spreadId]||!topics[raw.topic]||!Array.isArray(raw.pool)||raw.pool.length!==catalog.cards.length||new Set(raw.pool.map(c=>c?.id)).size!==catalog.cards.length||raw.pool.some(c=>!cards[c?.id]))return null;
     const count=spreads[raw.spreadId].positions.length;
@@ -46,14 +48,14 @@ window.createTarotReading = function (bridge) {
     }catch(e){toast('当前浏览器无法随机洗牌，请换用支持的浏览器。');return;}
     persist();redraw();
     const id=data.draft.id;
-    timer=setTimeout(()=>{if(data.draft?.id===id){data.draft.phase='pick';persist();if(document.querySelector('.reading-shuffle'))redraw();}timer=null;},850);
+    timer=setTimeout(()=>{if(data.draft?.id===id){data.draft.phase='pick';persist();if(document.querySelector('.reading-shuffle'))redraw();}timer=null;},reducedMotion()?0:950);
   }
   function drawBoard(s,guideMode=false,hideLabels=false){
     const d=spreads[s.spreadId];
     return `${d.layout==='celtic'?'<p class="subtleline">展开视图：第 2 张交叉牌放在第 1 张右侧，方便分别点选。</p>':''}<div class="reading-board layout-${esc(d.layout)} count-${d.positions.length}" aria-label="${esc(d.name)}牌位">${d.positions.map((pos,i)=>{
       const drawn=!guideMode&&s.picked[i]!==undefined,revealed=drawn&&s.revealed.includes(i),c=drawn?s.pool[s.picked[i]]:null;
       const selected=guideMode?guide.active===i:s.active===i;
-      return `<button class="reading-slot slot-${i+1} ${selected?'active':''} ${revealed?'revealed':''} ${flipped===i?'just-flipped':''}" data-reading="${guideMode?'guide-position':'card'}" data-index="${i}" ${!guideMode&&!drawn?'disabled':''} aria-label="${i+1} ${hideLabels?'待回忆的牌位':esc(pos.label)}${drawn?(revealed?'，'+esc(cards[c.id].name)+(c.reversed?'逆位':'正位'):'，点击翻开'):''}"><span class="reading-card ${c?.reversed?'is-reversed':''}">${revealed?img(c.id):`<span class="reading-back"><b>${guideMode?i+1:drawn?'✧':i+1}</b></span>`}</span><span class="reading-label">${i+1} · ${hideLabels?'？':esc(pos.label.replace(/^\d+ · /,''))}</span>${revealed?`<small>${esc(cards[c.id].name)} · ${c.reversed?'逆位':'正位'}</small>`:''}</button>`;
+      return `<button class="reading-slot slot-${i+1} ${selected?'active':''} ${revealed?'revealed':''} ${flipped===i?'just-flipped':''} ${entered===i?'reading-enter':''}" data-reading="${guideMode?'guide-position':'card'}" data-index="${i}" ${!guideMode&&!drawn?'disabled':''} aria-label="${i+1} ${hideLabels?'待回忆的牌位':esc(pos.label)}${drawn?(revealed?'，'+esc(cards[c.id].name)+(c.reversed?'逆位':'正位'):'，点击翻开'):''}"><span class="reading-card ${c?.reversed?'is-reversed':''}">${revealed?img(c.id)+(flipped===i?'<span class="reading-flip-back" aria-hidden="true"></span>':''):`<span class="reading-back ${guideMode||!drawn?'reading-placeholder':''}"><b>${guideMode?i+1:drawn?'':i+1}</b></span>`}</span><span class="reading-label">${i+1} · ${hideLabels?'？':esc(pos.label.replace(/^\d+ · /,''))}</span>${revealed?`<small>${esc(cards[c.id].name)} · ${c.reversed?'逆位':'正位'}</small>`:''}</button>`;
     }).join('')}</div>`;
   }
   function readingText(card,topic,pos,reversed=false){
@@ -71,7 +73,7 @@ window.createTarotReading = function (bridge) {
     const d=spreads[s.spreadId],i=s.active,pos=d.positions[i],drawn=s.pool[s.picked[i]];
     if(!drawn||!s.revealed.includes(i))return '';
     const c=cards[drawn.id],r=readingText(c,s.topic,pos,drawn.reversed);
-    return `<section class="reading-interpretation" aria-live="polite"><div class="eyebrow">${esc(topics[s.topic].label)}问题 · ${esc(pos.label)}位</div><h2>${esc(c.name)} <small>${drawn.reversed?'逆位':'正位'}</small></h2><p class="reading-position-question">这个位置问：${esc(pos.question)}</p><div class="reading-evidence"><strong>先看画面</strong><p>${esc(c.observation)}</p></div><div><strong>${drawn.reversed?'先辨认牌的主题':'放进这次的问题与牌位'}</strong><p>${esc(r.text)}</p></div>${drawn.reversed?`<div class="reading-reversal"><strong>逆位时，再检查</strong><p>${esc(r.reversal)}</p><small>这会改变上面主题的表达方式；需要结合实际情况选择，不能直接套用正位结论。</small></div>`:''}<div class="reading-check"><strong>回到现实核对</strong><p>${esc(r.check)}</p></div><button class="linkbtn" data-action="zoom" data-id="${esc(c.id)}">放大看牌图 ${icon('zoom')}</button><details class="learn-other"><summary>同一张牌，换个问题会怎样？</summary>${content.topics.map(t=>`<p><strong>${esc(t.label)} · ${esc(pos.label)}</strong><br>${esc(readingText(c,t.id,pos,drawn.reversed).text)}</p>`).join('')}<p>这里仅用于学习比较，保存的抽牌问题仍是「${esc(topics[s.topic].label)}」。</p></details></section>`;
+    return `<section class="reading-interpretation ${flipped===i?'is-entering':''}" aria-live="polite"><div class="eyebrow">${esc(topics[s.topic].label)}问题 · ${esc(pos.label)}位</div><h2>${esc(c.name)} <small>${drawn.reversed?'逆位':'正位'}</small></h2><p class="reading-position-question">这个位置问：${esc(pos.question)}</p><div class="reading-evidence"><strong>先看画面</strong><p>${esc(c.observation)}</p></div><div><strong>${drawn.reversed?'先辨认牌的主题':'放进这次的问题与牌位'}</strong><p>${esc(r.text)}</p></div>${drawn.reversed?`<div class="reading-reversal"><strong>逆位时，再检查</strong><p>${esc(r.reversal)}</p><small>这会改变上面主题的表达方式；需要结合实际情况选择，不能直接套用正位结论。</small></div>`:''}<div class="reading-check"><strong>回到现实核对</strong><p>${esc(r.check)}</p></div><button class="linkbtn" data-action="zoom" data-id="${esc(c.id)}">放大看牌图 ${icon('zoom')}</button><details class="learn-other"><summary>同一张牌，换个问题会怎样？</summary>${content.topics.map(t=>`<p><strong>${esc(t.label)} · ${esc(pos.label)}</strong><br>${esc(readingText(c,t.id,pos,drawn.reversed).text)}</p>`).join('')}<p>这里仅用于学习比较，保存的抽牌问题仍是「${esc(topics[s.topic].label)}」。</p></details></section>`;
   }
   function setup(){const s=data.settings;
     return `<div class="pagehead"><div class="eyebrow">随身牌桌 · 完整 78 张 RWS</div><h1>牌不在身边，<br>也能安静抽一组。</h1><p>选好问题与牌阵，洗牌、选牌，再逐张翻开。</p></div><section class="reading-setup"><h2>这次想看什么？</h2><div class="reading-topic">${content.topics.map(t=>`<button class="secondary ${s.topic===t.id?'chosen':''}" data-reading="topic" data-value="${t.id}" aria-pressed="${s.topic===t.id}">${esc(t.label)}</button>`).join('')}</div><div class="reading-questions" role="group" aria-label="本次问题">${[...topics[s.topic].questions,{id:'own',text:'在心里想好自己的具体问题'}].map(q=>`<button class="reading-question ${s.questionId===q.id?'chosen':''}" data-reading="question" data-value="${esc(q.id)}" aria-pressed="${s.questionId===q.id}">${esc(q.text)}</button>`).join('')}</div><div class="sectionhead section"><h2>选一个合适的牌阵</h2><span class="tiny muted">8 种 · 点开了解位置</span></div><div class="reading-spread-grid">${content.spreads.map(d=>`<article class="reading-spread-choice ${s.spreadId===d.id?'chosen':''}"><button data-reading="spread" data-value="${d.id}" aria-pressed="${s.spreadId===d.id}"><span class="spread-count">${d.positions.length}</span><span><strong>${esc(d.name)}</strong><small>${esc(d.summary)}</small></span></button><button class="linkbtn" data-reading="guide" data-value="${d.id}">了解牌位与读法</button></article>`).join('')}</div><div class="reading-selected"><strong>${esc(spreads[s.spreadId].name)}适合这样用</strong><p>${esc(spreads[s.spreadId].bestFor)}</p><small>${esc(spreads[s.spreadId].avoid)}</small></div><label class="reading-toggle"><input type="checkbox" data-reading-setting="reversals" ${s.reversals?'checked':''}><span>加入逆位<small>关闭时全部为正位；开启后每张牌独立随机方向。</small></span></label><button class="primary wide" data-reading="start">洗牌并开始 · ${spreads[s.spreadId].positions.length} 张 ${icon('arrow')}</button><p class="footnote">每次从 78 张牌中随机抽取、不放回。记录保存在本机。</p></section>${historySection()}`;
@@ -80,7 +82,7 @@ window.createTarotReading = function (bridge) {
     const s=data.draft;if(!s)return setup();
     const d=spreads[s.spreadId];
     const header=`<div class="spread-intro"><button class="iconbtn" data-reading="pause" aria-label="保存进度并返回练习">${icon('back')}</button><div><div class="eyebrow">${esc(topics[s.topic].label)} · ${s.reversals?'含正逆位':'仅正位'}</div><h1>${esc(d.name)}</h1></div></div><div class="scenario"><strong>这次的问题</strong>${esc(question(s))}</div>${!storageOK?'<p class="storage-warning">当前浏览器不能保存，请导出备份。</p>':''}`;
-    if(s.phase==='shuffling')return `${header}<div class="reading-shuffle"><div class="shuffle-pack">${[0,1,2].map(i=>`<div class="reading-back"><b>✧</b></div>`).join('')}</div><h2 role="status">正在洗牌…</h2><p>在心里想好这次的问题。</p></div>`;
+    if(s.phase==='shuffling')return `${header}<div class="reading-shuffle"><div class="shuffle-pack">${[0,1,2].map(i=>`<div class="reading-back"><b>✧</b></div>`).join('')}</div><h2 role="status">正在洗牌…</h2><p>在心里想好这次的问题。</p><div class="reading-motion-actions"><button class="secondary" data-reading="skip-animation">跳过动画</button></div></div>`;
     const complete=s.revealed.length===d.positions.length;
     return `${header}<div class="reading-stage"><h2>${s.phase==='pick'?`选第 ${s.picked.length+1} 张 · ${esc(d.positions[s.picked.length].label)}`:complete?'你的牌阵已展开':'轻点牌背，逐张翻开'}</h2><span>${s.phase==='pick'?s.picked.length:s.revealed.length} / ${d.positions.length}</span></div>${drawBoard(s)}${s.phase==='pick'?`<div class="reading-deck-label"><strong>从下面的牌背中选一张</strong><span>${78-s.picked.length} 张可选 · 左右滑动</span></div><div class="reading-deck" aria-label="洗好的完整牌组">${s.pool.map((_,i)=>`<button class="reading-pick" data-reading="pick" data-index="${i}" ${s.picked.includes(i)?'disabled':''} aria-label="选择第 ${i+1} 张牌背"><span class="reading-back"><b>${s.picked.includes(i)?'✓':'✧'}</b></span></button>`).join('')}</div><p class="subtleline">选出的牌按顺序进入牌位；洗牌后顺序保持不变。</p>`:''}${s.phase==='reveal'?'<p class="subtleline">可以先自己观察；翻开后点牌，查看这个位置的解读提示。</p>':''}${panel(s)}${complete?`<section class="reading-whole"><div class="eyebrow">把各个位置连起来</div><h2>这组牌该怎样一起看？</h2><p>${esc(d.readingTip)}</p><p>${esc(d.compareTip)}</p><ol>${d.positions.map((p,i)=>`<li><strong>${esc(p.label)} · ${esc(cards[s.pool[s.picked[i]].id].name)}</strong><span>${esc(p.question)}</span></li>`).join('')}</ol><p class="notice">以上是结合问题与牌位的参考线索；你可以形成自己的解读，再用现实信息核对。</p><button class="primary wide" data-reading="finish">收好这次牌阵 ${icon('save')}</button><button class="secondary wide" data-learn-start="${s.topic+'-context'}">练一练${esc(topics[s.topic].label)}问题怎么读</button></section>`:''}<button class="linkbtn" data-reading="new">保留这组记录，开始新问题</button>`;
   }
@@ -101,7 +103,7 @@ window.createTarotReading = function (bridge) {
   }
   document.addEventListener('change',e=>{if(e.target.matches('[data-reading-setting=reversals]')&&!data.draft){data.settings.reversals=e.target.checked;persist();}});
   document.addEventListener('click',e=>{
-    const b=e.target.closest('[data-reading]');if(!b)return;const a=b.dataset.reading,v=b.dataset.value,i=Number(b.dataset.index),s=data.draft;flipped=-1;
+    const b=e.target.closest('[data-reading]');if(!b)return;const a=b.dataset.reading,v=b.dataset.value,i=Number(b.dataset.index),s=data.draft;flipped=-1;entered=-1;
     if(a==='resume'){redraw();return;}
     if(a==='guide'){openGuide(v);return;}
     if(a==='guide-back'){go('home');return;}
@@ -124,6 +126,7 @@ window.createTarotReading = function (bridge) {
     if(a==='pause'){persist();go('home');return;}
     if(a==='finish'||a==='new'){archive();data.draft=null;clearTimeout(timer);timer=null;persist();redraw();return;}
     if(a==='start'){start();return;}
+    if(a==='skip-animation'){finishShuffle();return;}
     if(!s){
       if(a==='topic'&&topics[v]){data.settings.topic=v;if(!spreads[data.settings.spreadId].topics.includes(v))data.settings.spreadId='three';data.settings.questionId=data.settings.spreadId==='choice'?topics[v].questions.find(q=>q.id.endsWith('-choice')).id:topics[v].questions[0].id;}
       if(a==='question'&&(v==='own'||topics[data.settings.topic].questions.some(q=>q.id===v)))data.settings.questionId=v;
@@ -132,16 +135,17 @@ window.createTarotReading = function (bridge) {
     }
     const deckScroll=document.querySelector('.reading-deck')?.scrollLeft||0;
     if(a==='pick'&&s.phase==='pick'&&Number.isInteger(i)&&i>=0&&i<s.pool.length&&!s.picked.includes(i)){
-      s.picked.push(i);s.active=s.picked.length-1;
+      s.picked.push(i);s.active=s.picked.length-1;entered=s.active;
       if(s.picked.length===spreads[s.spreadId].positions.length)s.phase='reveal';
-      persist();redraw('reading',true);const deck=document.querySelector('.reading-deck');if(deck)deck.scrollLeft=deckScroll;if(s.phase==='reveal')requestAnimationFrame(()=>document.querySelector('.reading-stage')?.scrollIntoView({block:'start',behavior:'smooth'}));return;
+      persist();redraw('reading',true);const deck=document.querySelector('.reading-deck');if(deck)deck.scrollLeft=deckScroll;if(s.phase==='reveal')requestAnimationFrame(()=>document.querySelector('.reading-stage')?.scrollIntoView({block:'start',behavior:reducedMotion()?'auto':'smooth'}));return;
     }
     if(a==='card'&&Number.isInteger(i)&&s.picked[i]!==undefined){
+      if(s.revealed.includes(i)&&s.active===i)return;
       if(!s.revealed.includes(i)){s.revealed.push(i);flipped=i;}
       s.active=i;if(s.revealed.length===spreads[s.spreadId].positions.length)s.phase='read';
       persist();redraw('reading',true);return;
     }
   });
   window.addEventListener('pagehide',persist);
-  return {render,renderGuide,learningHub,dashboard,validate,export:()=>data,restore:raw=>{data=validate(raw);persist();},reset:()=>{clearTimeout(timer);timer=null;data=blank();guide=null;persist();}};
+  return {isFocused:()=>!!data.draft&&data.draft.phase!=='read',render,renderGuide,learningHub,dashboard,validate,export:()=>data,restore:raw=>{data=validate(raw);persist();},reset:()=>{clearTimeout(timer);timer=null;data=blank();guide=null;persist();}};
 };

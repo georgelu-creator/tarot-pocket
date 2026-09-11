@@ -83,7 +83,7 @@
   function toast(text){clearTimeout(toastTimer);document.getElementById('toast').innerHTML=`<div class="toast">${esc(text)}</div>`;toastTimer=setTimeout(()=>document.getElementById('toast').replaceChildren(),3400);}
   function topbar(){return `<header class="topbar"><button class="brand" data-action="nav" data-page="home"><span class="brandmark" aria-hidden="true">✧</span>塔罗随身学</button><div class="toplinks"><span class="badge">交互体验版</span><button class="iconbtn" data-action="status" aria-label="查看本机内容状态">${icon('cloud')}</button></div></header>`;}
   function nav(){return `<nav class="bottomnav" aria-label="主要导航"><div class="navinner">${[['home','练习','practice'],['reading','抽牌','cards'],['library','牌库','home'],['me','我的','me']].map(([id,label,ico])=>`<button class="navitem ${page===id?'active':''}" data-action="nav" data-page="${id}" ${page===id?'aria-current="page"':''}><span class="iconwrap">${icon(ico)}</span>${label}</button>`).join('')}</div></nav>`;}
-  function shell(body){return `<div class="shell">${topbar()}${!storageOK?'<div class="storage-warning">当前打开方式无法持久保存记录。你仍可体验，并在「我的」导出学习记录。</div>':''}${body}</div>${nav()}`;}
+  function shell(body){const focused=page==='reading'&&reading.isFocused();return `<div class="shell ${focused?'reading-focus':''}">${topbar()}${!storageOK?'<div class="storage-warning">当前打开方式无法持久保存记录。你仍可体验，并在「我的」导出学习记录。</div>':''}${body}</div>${focused?'':nav()}`;}
   function render(){
     if(page==='learning')root.innerHTML=learning.render();
     else if(page==='study')root.innerHTML=renderStudy();
@@ -93,7 +93,7 @@
     else if(page==='spread-guide')root.innerHTML=shell(reading.renderGuide());
     else if(page==='me')root.innerHTML=shell(renderMe());
     else root.innerHTML=shell(renderHome());
-    root.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.alt='图片未能载入，请使用完整 Demo';image.style.background='#e7e3d5';},{once:true}));
+    root.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.alt='图片未能载入，请使用完整 Demo';image.style.background='var(--soft)';},{once:true}));
   }
   function go(destination){page=destination==='practice'?'home':destination;closeModal();render();window.scrollTo(0,0);}
   function renderHome(){

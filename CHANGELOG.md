@@ -4,6 +4,23 @@ Changes describe the product included in each version. Deployment and device acc
 
 版本记录描述该版产品内容；部署与实机验收分别记录，出现一个版本条目不代表两者都已完成。
 
+## v0.4.0 — Moonlit design preview / 静光设计预览版
+
+A visual update to the existing learning demo; course coverage is unchanged.
+Implementation checks, deployment and real-device acceptance remain separate evidence.
+
+本版更新既有学习 Demo 的视觉体验，课程覆盖范围不变；实现检查、部署与实机验收分别记录。
+
+- Shared warm-white, plum and charcoal tokens, local serif display headings, opaque learning and reading surfaces, and restrained frosted navigation. / 共用暖白、梅紫与炭墨令牌，本地衬线展示标题、不透明学习和阅读表面，以及克制的磨砂导航。
+- A newly constructed celestial card back, shared by all cards, with exact half-turn geometry and its own asset check. All 78 verified historical faces are retained. / 新构建统一天体牌背，使用精确半周旋转几何并增加独立牌背检查；完整保留 78 张已核验历史正面。
+- Focused shuffle, selection and reveal screens retain an exit; skipping the shuffle animation preserves the existing shuffled pool. Reduced-motion presentation preserves the same reading result. / 洗牌、选牌和翻牌进入保留退出操作的专注视图；跳过洗牌动画保持既有牌序，减少动态模式呈现同一次结果。
+- Chinese/English language behavior, practice-first navigation, explicit wrong-answer feedback, lessons, spreads, stored IDs and JSON backup compatibility remain intact. / 保留中英语言行为、练习优先导航、明确判错、课程、牌阵、存档 ID 与 JSON 备份兼容性。
+- A bilingual [design contract](docs/design/README.md), the supplied reference archive, shared design tokens and repeatable gallery capture document the adaptation for future contributors. / 用双语设计规范、原始参考归档、公共设计令牌与可重复的界面截图支持后续协作。
+
+No journal, daily-draw limit, system-language mode, account or native app is added by this design update. The deep single-card sample remains Four of Pentacles; iPhone Safari and long-term phone offline use remain unverified.
+
+本次设计更新不增加手记、每日抽牌限制、跟随系统语言、账号或原生 App。深入单牌样本仍为星币四；iPhone Safari 与手机长期离线仍待验证。
+
 ## v0.3.0 — Preview / 预览版
 
 First public-preview release of **Tarot Pocket · 塔罗随身学**.

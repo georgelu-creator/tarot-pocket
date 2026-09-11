@@ -29,9 +29,12 @@ license_text = '\n\n'.join((ROOT / name).read_text() for name in
     ['LICENSE', 'CONTENT_LICENSE.md', 'LICENSES/CC-BY-SA-4.0.txt', 'ARTWORK_LICENSE.md'])
 license_notices = '<template id="license-notices"><pre>' + html_module.escape(license_text) + '</pre></template>\n'
 html = html.replace('</body>', license_notices + '</body>')
-css_names = ['styles.css','learning.css','reading.css']
+css_names = ['design-tokens.css','styles.css','learning.css','reading.css']
 script_names = ['content.js','learning-content.js','spread-content.js','reading-deck.js','locales/en.js','i18n.js','learning.js','reading.js','app.js']
 css = '\n'.join((ROOT / name).read_text() for name in css_names)
+card_back = (ROOT/'assets/design/card-back.svg').read_bytes()
+css = css.replace('url("assets/design/card-back.svg")', 'url("data:image/svg+xml;base64,' + base64.b64encode(card_back).decode() + '")')
+assert 'url("assets/' not in css
 app = '\n'.join((ROOT / name).read_text() for name in script_names)
 needle = 'const path = id => `assets/cards/${id}.webp`;'
 assert needle in app
@@ -40,7 +43,7 @@ asset_sources = json.dumps({'checked_on': manifest['checked_on'], 'items':[{key:
 code = 'window.TAROT_IMAGES=' + json.dumps(images) + ';\nwindow.TAROT_ASSET_SOURCES=' + asset_sources + ';\n' + app
 assert '</script' not in code.lower()
 script_hash = base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()
-html = html.replace('<link rel="stylesheet" href="styles.css">','<style>'+css+'</style>')
+html = html.replace('<link rel="stylesheet" href="design-tokens.css">','<style>'+css+'</style>')
 for name in css_names[1:]:
     html = html.replace(f'  <link rel="stylesheet" href="{name}">', '')
 script_tags = '\n'.join(f'  <script src="{name}"></script>' for name in script_names)
@@ -66,6 +69,8 @@ for name in css_names+script_names:
     target=web/name
     target.parent.mkdir(parents=True,exist_ok=True)
     shutil.copyfile(ROOT/name,target)
+(web/'assets/design').mkdir(parents=True,exist_ok=True)
+shutil.copyfile(ROOT/'assets/design/card-back.svg',web/'assets/design/card-back.svg')
 (web/'assets/cards').mkdir(parents=True,exist_ok=True)
 (web/'assets/provenance.js').write_text(provenance_code)
 for entry in manifest['items']:
