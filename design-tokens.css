@@ -1,0 +1,27 @@
+/* Moonlit design system. See docs/design/README.md. No runtime font service. */
+:root {
+  --bg: #F6F1E9;
+  --paper: #FFFCF7;
+  --ink: #302C32;
+  --muted: #736B73;
+  --accent: #60465C;
+  --soft: #E7DEE8;
+  --line: #DCD4DC;
+  --control-line: #8C7A89;
+  --success: #245C37;
+  --success-bg: #E6F0E2;
+  --error: #96362B;
+  --error-bg: #FFF0EB;
+  --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, Georgia, serif;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px;
+  --radius-button: 14px; --radius-panel: 18px; --radius-card: 7px;
+  --shadow-card: 0 2px 2px #302C3212, 4px 12px 22px #302C3224;
+  --shadow-float: 0 4px 20px #302C3212, inset 0 1px #FFFCF7;
+  --glass: rgb(255 252 247 / 92%);
+  --ease-settle: cubic-bezier(.22, 1, .36, 1);
+  --motion-press: 140ms; --motion-page: 220ms; --motion-flip: 620ms;
+  --card-back: url("assets/design/card-back.svg");
+}
+html[lang="en"] { --font-display: "Noto Serif", Georgia, serif; }

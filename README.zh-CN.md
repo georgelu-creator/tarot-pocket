@@ -4,14 +4,16 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.3.0/tarot-pocket-v0.3.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.4.0/tarot-pocket-v0.4.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![预览版](https://img.shields.io/badge/status-v0.3.0_preview-52755c)
-![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-52755c)
-[![代码许可](https://img.shields.io/badge/code-MIT-52755c)](LICENSE)
-[![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-52755c)](CONTENT_LICENSE.md)
+![预览版](https://img.shields.io/badge/status-v0.4.0_preview-60465C)
+![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
+[![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
+[![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
+
+v0.4.0 预览版采用暖白与梅紫、安静的阅读表面和统一天体牌背，抽牌进入专注视图，动效可以跳过。练习优先的学习过程保持完整。[双语设计规范](docs/design/README.md)记录可复用规则，并区分用户提供的静态概念与实际实现的组件。
 
 ## 让一张牌，真正留在记忆里
 
@@ -44,7 +46,7 @@
 
 下载的 HTML 包含应用、78 张牌图和当前全部双语学习内容。运行不需要账号、API Key、CDN、外部字体或图片服务器；重新构建也直接使用仓库中的本地素材。
 
-1. 联网时下载 [`tarot-pocket-v0.3.0.html`](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.3.0/tarot-pocket-v0.3.0.html)。
+1. 联网时下载 [`tarot-pocket-v0.4.0.html`](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.4.0/tarot-pocket-v0.4.0.html)。
 2. 用能运行本地 HTML 与 JavaScript 的浏览器打开。
 3. 在**实际要带出门的设备**上，打开陌生牌、完成一段学习，关闭后重新打开，确认内容与进度都能使用。
 4. 换浏览器、换电脑或换网址前，在 **我的** 中导出备份。
@@ -53,7 +55,7 @@
 
 ## 这个版本做到哪一步
 
-这是 **v0.3.0 alpha 体验版**。先确认这种学习方式是否好用，再扩展完整产品。
+这是 **v0.4.0 alpha 体验版**。先确认这种学习方式是否好用，再扩展完整产品。
 
 - 78 张牌均可查阅基础释义、参与实际抽牌。深入单牌课程目前以**星币四**为样本，并使用其他牌作对照；还没有 78 套同等深度的完整课程。
 - 间隔复习使用明确标注的 **1 天／3 天演示规则**，不是 FSRS、SM-2 或经过验证的长期记忆模型。
@@ -90,7 +92,7 @@ npm run serve
 牌图由 **Pamela Colman Smith** 绘制，使用历史 Rider–Waite–Smith **Pam-A** 版本的 [Wikimedia Commons TaionWC 扫描集合](https://commons.wikimedia.org/wiki/Category:Rider-Waite-Smith_tarot_deck_(TaionWC))。项目保留图片身份、来源、尺寸与哈希，不混入现代重绘或生成式替代图。
 
 - **应用代码与工具：**[MIT](LICENSE)。
-- **原创课程、翻译与文档：**[CC BY-SA 4.0](CONTENT_LICENSE.md)。
+- **原创课程、翻译、文档与新设计牌背：**[CC BY-SA 4.0](CONTENT_LICENSE.md)。
 - **历史牌图：**独立的[牌图权利说明](ARTWORK_LICENSE.md)、[来源说明](assets/SOURCES.md)和[逐牌清单](assets/manifest.json)。来源页标注公共领域；这与代码、课程的许可分别处理。
 
 Tarot Pocket 是独立学习项目。[版本记录](CHANGELOG.md) · [安全问题](SECURITY.md) · [社区约定](CODE_OF_CONDUCT.md)

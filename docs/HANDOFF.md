@@ -8,7 +8,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v0.3.0 preview / 预览版 |
+| Release target / 发布版本 | v0.4.0 preview / 预览版 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Demo feedback before full curriculum or native app expansion / 先验证体验，再扩完整课程和原生 App |
 | Source baseline / 源码能力 | 78 card images and basic references; 56 lesson steps; 24 quick questions; 8 spreads; 3 topics; English and Chinese / 78 张牌图与基础参考、56 步课程、24 道快练、8 阵、3 主题、中英文 |
@@ -21,21 +21,40 @@ The source baseline describes implemented features, not proof of a successful de
 
 源码能力不等于部署已成功。接手时分别查看 Actions、Releases 和实际演示；排队中的任务或已经上传的文件，不能代替浏览器验收。
 
-### v0.3.0 handoff checkpoint · 本次接力检查点
+### v0.4.0 design checkpoint · 设计接力检查点
 
-- Completed: bilingual application, all current content and public docs; source-verified
-  artwork; static website and standalone HTML builds; gallery, contribution templates,
-  CI/Pages workflow, and split licenses. / 已完成：应用、当前全部内容和文档双语化，
-  牌图来源校验，网页与单文件构建，展示图、贡献模板、CI/Pages 流程及分层许可。
-- Local validation on 2026-09-11: `npm test` passed all asset, locale, practice, lesson,
-  reading, backup, layout and offline checks. A separate modular-website smoke check
-  loaded all 78 images and sources and started the English course successfully.
-  / 本地完整检查通过；网页发行目录另行检查了 78 张图与来源、英文课程启动。
-- Published-state evidence lives in [the v0.3.0 release](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v0.3.0)
-  and [the deployment workflow](https://github.com/georgelu-creator/tarot-pocket/actions/workflows/ci.yml).
-  Check their actual state when resuming. / 发布结果以该版本 Release 和工作流实际状态为准。
-- Next action: reproduce the user's experience feedback before making a product change;
-  iPhone testing and teacher review are still open. / 下一步先复现体验反馈，手机实测与教师审核仍待完成。
+- Completed on `design/moonlit-system`: adapted the supplied Moonlit visual system,
+  shared design tokens, an engineered celestial card back, focused drawing with an
+  exit and skip action, reduced-motion/opaque-material fallbacks, and refreshed gallery.
+  / 已完成静光视觉适配、公共样式令牌、几何天体牌背、带退出和跳过操作的专注抽牌、
+  减少动态与实体材质回退，以及新版展示图。
+- Reuse [the bilingual design contract](design/README.md). The four original supplied
+  files are archived with matching hashes; generated concept PNGs are not production
+  screenshots or historical RWS faces. / 后续复用双语设计规范；四份原始文件按哈希原样
+  归档，生成式概念图与真实界面截图、历史 RWS 正面分别标明。
+- Preserved: all 78 historical faces and their hashes, existing lessons and spreads,
+  Chinese/English behavior, three storage keys and JSON backup compatibility.
+  / 保留 78 张历史牌面及哈希、既有课程和牌阵、中英文行为、三个存储键与 JSON 备份兼容。
+- Local validation on 2026-09-11: full `npm test` passed asset, locale, card-back,
+  practice, lesson, reading, backup, layout, offline and design checks. Added checks
+  cover the visible home action, stacked shuffle cards, skip without reroll, rapid
+  reveal, language/resume stability, reduced motion, large text and opaque contrast
+  fallback. / 本地完整检查通过，新增检查覆盖首页主按钮、洗牌叠放、跳过不重抽、快速翻牌、
+  切语言与续接、减少动态、大字及实体高对比回退。
+- Visual inspection used isolated desktop Chromium data: English home, lesson,
+  reading and gallery, plus the card back at small widths. Automated layout checks
+  include Chinese/English at 320, 390, 430 and 1280 px; this is not an iPhone test.
+  / 视觉检查使用隔离桌面 Chromium 数据，观察英文首页、课程、解读、展示图及小尺寸牌背；
+  自动布局检查包含中英 320、390、430 与 1280 px，不等于 iPhone 实测。
+- Delivery evidence: [v0.4.0 release](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v0.4.0),
+  [CI/Pages workflow](https://github.com/georgelu-creator/tarot-pocket/actions/workflows/ci.yml)
+  and [public demo](https://georgelu-creator.github.io/tarot-pocket/?lang=zh).
+  Check those actual states separately from this source checkpoint. / 发行附件、CI/Pages
+  与实际页面各自提供发布证据，本源码检查点不能代替其真实状态。
+- Next action: try a full lesson and a three-card draw on the actual phone, including
+  language switching, pause/resume and reduced motion; collect concrete friction
+  before expanding courses or choosing a native platform. / 下一步在实际手机上体验完整课程
+  和三牌抽取，包含切语言、暂停恢复与减少动态，收集具体卡点，再决定课程或平台扩展。
 
 ## Start at home · 回家后的第一步
 
