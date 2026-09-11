@@ -4,16 +4,16 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.4.0/tarot-pocket-v0.4.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.5.0/tarot-pocket-v0.5.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![预览版](https://img.shields.io/badge/status-v0.4.0_preview-60465C)
+![预览版](https://img.shields.io/badge/status-v0.5.0_preview-60465C)
 ![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v0.4.0 预览版采用暖白与梅紫、安静的阅读表面和统一天体牌背，抽牌进入专注视图，动效可以跳过。练习优先的学习过程保持完整。[双语设计规范](docs/design/README.md)记录可复用规则，并区分用户提供的静态概念与实际实现的组件。
+v0.5.0 预览版把移动端收成两件事：学一张牌，或为自己的问题抽一组牌。牌库显示已学与新牌、元素和数字；抽牌先看牌阵缩略图与能力范围，再输入问题，最后按五步专业节拍解读。[六条体验反馈与对应调整](docs/UX_FEEDBACK.md)已经记录。
 
 ## 让一张牌，真正留在记忆里
 
@@ -21,7 +21,7 @@ v0.4.0 预览版采用暖白与梅紫、安静的阅读表面和统一天体牌�
 
 你需要选择解释，也需要选择依据。答错会明确显示错误，并解释差异；静默回忆单独记录自评，自由解读不会被当作客观预测题评分。
 
-建议先打开 **练习 → 星币四**。这套 12 步单元能体验最完整的学习过程。之后进入元素与数字实验室，拼出一段三牌解读，再换个情境回来检验自己是否还记得。
+建议先打开 **学牌 → 星币四**。先读完整牌义并记录为学过，再用题目检验；这套 12 步单元仍是最完整的深入样本。四元素、数字 1–10 和可选的能力练习都收在牌库里。
 
 <img src="docs/images/practice.png" width="390" alt="练习：观察牌面、作出判断，再找到支持它的依据">
 
@@ -32,21 +32,21 @@ v0.4.0 预览版采用暖白与梅紫、安静的阅读表面和统一天体牌�
 | 看真实牌图 | 同一套 Pam-A 历史 RWS 扫描，共 78 张；逐张保留来源与哈希 |
 | 不止看图选名字 | 8 个单元、56 个学习环节，另有 24 道混合快练题 |
 | 建立理解框架 | 元素、数字、图像证据、相似牌辨析、换牌位与逆位情境 |
-| 学会用牌阵 | 8 种牌阵，学习用途、各位置的问题，并练习辨认牌位 |
+| 学会用牌阵 | 8 种视觉牌阵，先看能力范围、限制、各位置的问题与专业读牌顺序 |
 | 换个问题再理解 | 感情、事业、学业三个主题，同牌换情境、换角色 |
-| 没带实体牌也能抽 | 完整 78 张随机洗牌、无放回选牌、逐张翻牌，可选正逆位 |
+| 没带实体牌也能抽 | 输入自己的问题后，用完整 78 张随机洗牌、无放回选牌、逐张翻牌，可选正逆位 |
 | 随时暂停和回来 | 本地进度、可续抽的牌桌、最近 40 组抽牌记录、JSON 导入导出 |
 | 中英文切换 | 应用界面与学习内容均提供简体中文和英文 |
 
 八种牌阵包括：**单牌聚焦、现状—阻碍—建议、过去—现在—趋势、二择一、关系觉察、行动路径、学习突破、凯尔特十字**。每个位置都有明确的问题。“学习突破”专用于学业；凯尔特十字采用本项目指南中标明的位置顺序。
 
-<img src="docs/images/reading.png" width="390" alt="抽牌：先选问题和牌阵，亲自选牌，再逐个查看牌位">
+<img src="docs/images/reading.png" width="390" alt="抽牌：先看牌阵缩略图和能力范围，再输入自己的问题">
 
 ## 为网络不稳定的旅途准备
 
 下载的 HTML 包含应用、78 张牌图和当前全部双语学习内容。运行不需要账号、API Key、CDN、外部字体或图片服务器；重新构建也直接使用仓库中的本地素材。
 
-1. 联网时下载 [`tarot-pocket-v0.4.0.html`](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.4.0/tarot-pocket-v0.4.0.html)。
+1. 联网时下载 [`tarot-pocket-v0.5.0.html`](https://github.com/georgelu-creator/tarot-pocket/releases/download/v0.5.0/tarot-pocket-v0.5.0.html)。
 2. 用能运行本地 HTML 与 JavaScript 的浏览器打开。
 3. 在**实际要带出门的设备**上，打开陌生牌、完成一段学习，关闭后重新打开，确认内容与进度都能使用。
 4. 换浏览器、换电脑或换网址前，在 **我的** 中导出备份。
@@ -55,7 +55,7 @@ v0.4.0 预览版采用暖白与梅紫、安静的阅读表面和统一天体牌�
 
 ## 这个版本做到哪一步
 
-这是 **v0.4.0 alpha 体验版**。先确认这种学习方式是否好用，再扩展完整产品。
+这是 **v0.5.0 alpha 体验版**。先确认这种学习与抽牌流程是否好用，再扩展完整产品。
 
 - 78 张牌均可查阅基础释义、参与实际抽牌。深入单牌课程目前以**星币四**为样本，并使用其他牌作对照；还没有 78 套同等深度的完整课程。
 - 间隔复习使用明确标注的 **1 天／3 天演示规则**，不是 FSRS、SM-2 或经过验证的长期记忆模型。

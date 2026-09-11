@@ -24,10 +24,14 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
  p.setDefaultTimeout(60000);p.setDefaultNavigationTimeout(120000);
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.goto(url+'?lang=en');await english(p,'home');
- assert.deepEqual(await p.locator('.navitem').allTextContents(),['Practice','Draw','Library','My progress']);
+ assert.deepEqual(await p.locator('.navitem').allTextContents(),['Home','Learn','Draw']);
+ const openUnit=async id=>{
+   if(!(await p.locator('.advanced-learning').count()))await p.locator('.bottomnav [data-page=library]').click();
+   if(!(await p.locator('.advanced-learning[open]').count()))await p.locator('.advanced-learning summary').click();
+   await p.locator(`[data-learn-start="${id}"]`).first().click();
+ };
  for(const u of units){
-   if(u.id==='return')await p.locator('[data-learn-start=return]').first().click();
-   else await p.locator(`[data-learn-start="${u.id}"]`).first().click();
+   await openUnit(u.id);
    const session=await p.evaluate(()=>JSON.parse(localStorage.getItem('tarot-learning-units-v2')));
    const ids=session.sessions[u.id].stepIds;
    for(const id of ids){const s=u.steps.find(x=>x.id===id);
@@ -50,15 +54,14 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
    await english(p,u.id+' completion');await p.locator('[data-learn=home]').last().click();
  }
  console.log('PASS: all guided units render in English; mid-answer switching preserves records.');
+ await p.locator('.bottomnav [data-page=reading]').click();
  for(const d of model.window.TAROT_SPREAD_CONTENT.spreads){
-   await p.locator('.spread-guide-list summary').filter({hasText:'spreads:'}).click();
    await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();
-   for(let i=0;i<d.positions.length;i++){await p.locator(`[data-reading=guide-position][data-index="${i}"]`).click();await english(p,d.id+' position '+i);}
-   await p.locator('[data-reading=guide-test]').click();await english(p,d.id+' test');
-   await p.locator('[data-reading=guide-answer]').first().click();await english(p,d.id+' verdict');
+   for(let i=0;i<d.positions.length;i++){await p.locator(`[data-reading=guide-position][data-index="${i}"]`).last().click();await english(p,d.id+' position '+i);}
    await p.locator('[data-reading=guide-back]').click();
  }
  await p.locator('.bottomnav [data-page=library]').click();await english(p,'library');
+ await p.locator('[data-action=filter][data-value=全部]').click();
  for(const card of model.window.TAROT_READING_DECK.cards){
    await p.locator(`[data-action=card][data-id="${card.id}"]`).click();await english(p,card.id+' detail');
    await p.locator('[data-action=face][data-value=reversed]').click();await english(p,card.id+' reversed');
@@ -66,14 +69,16 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
  }
  await p.locator('.bottomnav [data-page=reading]').click();await english(p,'drawing setup');
  for(const d of model.window.TAROT_SPREAD_CONTENT.spreads){
-   await p.locator(`[data-reading=spread][data-value="${d.id}"]`).click();
+   await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();await english(p,'guide '+d.id);
+   await p.locator(`[data-reading=use-spread][data-value="${d.id}"]`).click();
+   await p.locator('[data-reading-question]').fill('What should I understand and verify before choosing my next step?');
    await p.locator('[data-reading-setting=reversals]').setChecked(true);
    await p.locator('[data-reading=start]').click();await p.locator('[data-reading=pick]').first().waitFor();await english(p,'pick '+d.id);
    for(let i=0;i<d.positions.length;i++)await p.locator(`[data-reading=pick][data-index="${i}"]`).click();
    for(let i=0;i<d.positions.length;i++){await p.locator(`[data-reading=card][data-index="${i}"]`).click();await english(p,'reading '+d.id+' '+i);}
    await p.locator('[data-reading=finish]').click();
  }
- await p.locator('.bottomnav [data-page=me]').click();await english(p,'records');
+ await p.locator('.topbar [data-page=me]').click();await english(p,'records');
  await p.locator('[data-action=status]').first().click();await p.getByText('78 / 78',{exact:true}).waitFor();await english(p,'content status');
  await p.locator('[data-action=sources]').click();await english(p,'sources');await p.locator('#overlay [data-action=close]').click();
  for(const width of [320,430,1280]){await p.setViewportSize({width,height:900});await english(p,'responsive '+width);}

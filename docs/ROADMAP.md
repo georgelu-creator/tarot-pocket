@@ -14,7 +14,7 @@ The next release should help someone remember and interpret a card better. This 
 - Explicit right/wrong feedback, separate interpretation/evidence checks, and ungraded quiet recall. / 明确判错、解释与依据分别检查、静默回忆独立自评。
 - Local progress, resumable readings, and portable JSON backups. / 本地进度、抽牌续接与 JSON 备份迁移。
 - A self-contained downloadable HTML edition. / 可下载、内容自包含的 HTML 版本。
-- The v0.4.0 warm-white/plum design, shared celestial card back and focused drawing, following the [project design contract](design/README.md). / v0.4.0 暖白梅紫设计、统一天体牌背与专注抽牌，沿用[项目设计规范](design/README.md)。
+- The v0.5.0 two-choice home, learning-centered library, visual spread selection, question input and five-stage professional reading, following the [recorded experience feedback](UX_FEEDBACK.md). / v0.5.0 双选择首页、学习型牌库、可视牌阵选择、问题输入与五步专业解读，依据[体验反馈记录](UX_FEEDBACK.md)完成。
 
 ## Next: make the experience trustworthy · 下一步：把体验验证扎实
 
