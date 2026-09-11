@@ -8,7 +8,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v0.4.0 preview / 预览版 |
+| Release target / 发布版本 | v0.5.0 mobile-flow preview / 移动流程预览版 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Demo feedback before full curriculum or native app expansion / 先验证体验，再扩完整课程和原生 App |
 | Source baseline / 源码能力 | 78 card images and basic references; 56 lesson steps; 24 quick questions; 8 spreads; 3 topics; English and Chinese / 78 张牌图与基础参考、56 步课程、24 道快练、8 阵、3 主题、中英文 |
@@ -20,6 +20,37 @@
 The source baseline describes implemented features, not proof of a successful deployment. Use the repository's [Actions](https://github.com/georgelu-creator/tarot-pocket/actions), [Releases](https://github.com/georgelu-creator/tarot-pocket/releases), and actual [demo](https://georgelu-creator.github.io/tarot-pocket/) to check the state you receive. A pending job or an uploaded file is not a completed browser acceptance test.
 
 源码能力不等于部署已成功。接手时分别查看 Actions、Releases 和实际演示；排队中的任务或已经上传的文件，不能代替浏览器验收。
+
+### v0.5.0 mobile-flow checkpoint · 移动流程接力检查点
+
+- The home screen now has two primary decisions: Learn and Draw. Records are in the
+  top bar, and the bottom navigation contains Home, Learn, and Draw. / 首页只保留学牌
+  与抽牌两个决定；记录放在顶栏，底部导航收为首页、学牌、抽牌。
+- The library is the learning home: it shows learned/due counts, New/Learned filters,
+  richer card summaries, a deliberate learned marker, and element/number references.
+  Existing advanced units remain in an optional collapsed section. / 牌库成为学习主页，
+  展示已学与待复习、未学/已学筛选、丰富卡片简介、主动学过标记及元素/数字知识；原能力
+  单元收在可选折叠区。
+- Drawing starts with eight visual spread thumbnails and scope. Selecting a spread
+  opens its limits, positions and reading order; only then does the user write a real
+  question, choose a wording context and shuffle. / 抽牌先看 8 个牌阵缩略图与能力范围，
+  进入说明后才填写真实问题、选择措辞语境并洗牌。
+- A completed reading now uses five stages: task, position readings, card relationships,
+  throughline, and reality checks. Teaching prompts are not shown inside the professional
+  report. Card-specific practice ends with a direct Learn the next card action. / 完整
+  解牌采用任务、逐位、牌间关系、主线、现实核对五步，专业报告不混教学；单牌练完可直接
+  进入下一张。
+- Storage keys, stable IDs, content, historical card faces and the build pipeline remain
+  compatible. The existing main state accepts an optional learned-card list, and reading
+  drafts/history accept an optional local question string; older backups remain valid.
+  / 存储键、稳定 ID、内容、历史牌面与构建流程保持兼容；主记录新增可选学过列表，抽牌草稿
+  与历史新增可选问题文本，旧备份仍可导入。
+- See [the bilingual UX feedback log](UX_FEEDBACK.md) for the six reported issues and
+  their UI response. Full local `npm test` covers 78 images, 56 guided steps, 24 quick
+  questions, eight live spreads, bilingual rendering, offline Chromium, backup round trips,
+  and 320/375/390/430/1280 widths. Physical iPhone Safari remains unverified. / 六条问题与
+  对应改动见双语体验记录；本地完整检查覆盖内容、抽牌、双语、离线、备份与多宽度，仍不
+  等于 iPhone Safari 实机验收。
 
 ### v0.4.0 design checkpoint · 设计接力检查点
 

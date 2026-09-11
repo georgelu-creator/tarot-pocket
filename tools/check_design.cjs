@@ -21,11 +21,14 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
    for(const w of [320,390,430,1280]){
      await p.setViewportSize({width:w,height:844});
      assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-     if(w===390)assert(await p.evaluate(()=>document.querySelector('[data-learn-start=p04]').getBoundingClientRect().bottom<document.querySelector('.bottomnav').getBoundingClientRect().top),'start lesson stays visible above floating navigation');
+     if(w===390)assert.equal(await p.locator('[data-home-choice]').count(),2,'home keeps only the two primary choices');
    }
  }
  await p.setViewportSize({width:390,height:844});
  await p.locator('.bottomnav [data-page=reading]').click();
+ await p.locator('[data-reading=guide][data-value=three]').click();
+ await p.locator('[data-reading=use-spread][data-value=three]').click();
+ await p.locator('[data-reading-question]').fill('我想推进这个项目，当前最值得先核对和行动的是什么？');
  await p.locator('[data-reading-setting=reversals]').check();
  await p.locator('[data-reading=start]').click();
  const before=(await state(p)).draft;

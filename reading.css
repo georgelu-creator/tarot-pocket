@@ -204,6 +204,74 @@
 .reading-question,.reading-spread-choice{background:transparent}
 .reading-question.chosen,.reading-spread-choice.chosen{background:var(--soft)}
 .reading-shuffle{padding:48px 0 24px}
+
+/* The draw flow starts with visual spread selection, then asks for the question. */
+.reading-gallery-head{max-width:620px}
+.reading-spread-choice{width:100%;min-height:220px;padding:17px;border:1px solid var(--line);display:grid;grid-template-columns:150px 1fr;gap:17px;align-items:center;text-align:left}
+.reading-spread-choice:hover{border-color:var(--accent)}
+.spread-choice-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.spread-choice-copy>small{font-size:10px;color:var(--accent);margin:0 0 5px}
+.spread-choice-copy>strong{font:500 20px/1.35 var(--font-display)}
+.spread-choice-copy>p{font-size:12px;color:var(--muted);line-height:1.65;margin-top:7px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.spread-choice-copy>span{font-size:12px;color:var(--accent);display:flex;gap:6px;align-items:center;margin-top:10px}
+.spread-choice-copy .icon{width:16px;height:16px}
+.spread-thumb{height:142px;min-width:0;padding:10px;border-radius:12px;background:var(--soft);display:grid;gap:5px;align-items:center;justify-items:center;align-content:center}
+.spread-thumb i{width:26px;box-shadow:0 3px 8px #302c3220}
+.spread-thumb.thumb-one{grid-template-columns:1fr}
+.spread-thumb.thumb-row{grid-template-columns:repeat(3,1fr)}
+.spread-thumb.thumb-choice{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)}
+.spread-thumb.thumb-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr)}
+.spread-thumb.thumb-cross{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
+.spread-thumb.thumb-cross i:nth-child(1){grid-column:1;grid-row:2}.spread-thumb.thumb-cross i:nth-child(2){grid-column:3;grid-row:2}.spread-thumb.thumb-cross i:nth-child(3){grid-column:2;grid-row:2}.spread-thumb.thumb-cross i:nth-child(4){grid-column:2;grid-row:1}.spread-thumb.thumb-cross i:nth-child(5){grid-column:2;grid-row:3}
+.spread-thumb.thumb-celtic{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,1fr);gap:3px;padding:7px}
+.spread-thumb.thumb-celtic i{width:16px}
+.spread-thumb.thumb-celtic i:nth-child(1){grid-column:2;grid-row:2}.spread-thumb.thumb-celtic i:nth-child(2){grid-column:3;grid-row:2}.spread-thumb.thumb-celtic i:nth-child(3){grid-column:2;grid-row:1}.spread-thumb.thumb-celtic i:nth-child(4){grid-column:2;grid-row:3}.spread-thumb.thumb-celtic i:nth-child(5){grid-column:1;grid-row:2}.spread-thumb.thumb-celtic i:nth-child(6){grid-column:4;grid-row:2}.spread-thumb.thumb-celtic i:nth-child(7){grid-column:5;grid-row:4}.spread-thumb.thumb-celtic i:nth-child(8){grid-column:5;grid-row:3}.spread-thumb.thumb-celtic i:nth-child(9){grid-column:5;grid-row:2}.spread-thumb.thumb-celtic i:nth-child(10){grid-column:5;grid-row:1}
+.selected-spread-mini{display:grid;grid-template-columns:145px 1fr;gap:18px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
+.selected-spread-mini .spread-thumb{height:118px}
+.selected-spread-mini strong{font-size:17px}
+.selected-spread-mini p{font-size:12px;color:var(--muted);margin-top:5px}
+.question-field{display:block;margin:27px 0}
+.question-field>span{display:block;font-size:18px;font-weight:600;margin-bottom:10px}
+.question-field textarea{width:100%;min-height:128px;resize:vertical;border:1px solid var(--control-line);border-radius:14px;background:var(--paper);padding:15px;color:var(--ink);font:16px/1.65 var(--font-body)}
+.question-field textarea:focus{outline:3px solid var(--accent);outline-offset:3px}
+.question-field small{display:block;color:var(--muted);margin-top:8px}
+.context-picker{margin:25px 0}
+.spread-position-list{margin:30px 0}
+.spread-position-list h2{margin-bottom:12px}
+.spread-position-list button{width:100%;min-height:72px;padding:14px 0;border:0;border-bottom:1px solid var(--line);background:none;display:grid;grid-template-columns:34px 1fr;gap:12px;text-align:left}
+.spread-position-list button>span{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--muted);font-size:12px}
+.spread-position-list button.active>span{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.spread-position-list strong{font-size:14px}
+.spread-position-list p{font-size:12px;color:var(--muted);margin-top:3px}
+.professional-report{margin:34px 0;padding-top:25px;border-top:1px solid var(--line)}
+.professional-report>h2{font:500 26px/1.4 var(--font-display);margin:7px 0 16px}
+.reading-rhythm{counter-reset:rhythm}
+.reading-rhythm article{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:18px 0;border-bottom:1px solid var(--line)}
+.reading-rhythm article>span{font:500 17px var(--font-display);color:var(--accent)}
+.reading-rhythm strong{font-size:15px}
+.reading-rhythm p{font-size:15px;line-height:1.75;margin-top:7px}
+.reading-rhythm p b{font-size:13px}
+.reading-rhythm small{display:block;color:var(--muted);font-size:12px;line-height:1.7;margin-top:7px}
+.professional-report>.primary{margin-top:22px}
+@media(max-width:700px){
+ .reading-spread-grid{grid-template-columns:1fr;gap:12px}
+ .reading-spread-choice{min-height:177px;grid-template-columns:116px 1fr;padding:13px;gap:14px}
+ .spread-thumb{height:145px;padding:8px}
+ .spread-thumb i{width:23px}
+ .spread-thumb.thumb-celtic i{width:14px}
+ .spread-choice-copy>strong{font-size:19px}
+ .spread-choice-copy>p{-webkit-line-clamp:4}
+ .selected-spread-mini{grid-template-columns:106px 1fr;padding:13px;gap:14px}
+ .selected-spread-mini .spread-thumb{height:104px}
+ .reading-rhythm article{grid-template-columns:34px 1fr;gap:10px}
+}
+@media(max-width:360px){
+ .reading-spread-choice{grid-template-columns:100px 1fr;padding:11px;gap:11px}
+ .spread-thumb{height:132px}
+ .spread-thumb i{width:20px}
+ .spread-thumb.thumb-celtic i{width:12px}
+ .spread-choice-copy>p{font-size:11px}
+}
 @keyframes face-turn{from{transform:rotateY(-180deg) rotate(var(--orientation))}to{transform:rotateY(0) rotate(var(--orientation))}}
 @keyframes back-turn{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
 @keyframes card-settle{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}

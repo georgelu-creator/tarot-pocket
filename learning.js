@@ -160,7 +160,7 @@ window.createTarotLearning = function (bridge) {
     if(entry){start(entry.dataset.learnStart);return;}
     const el=event.target.closest('[data-learn]');if(!el)return;
     const action=el.dataset.learn;
-    if(action==='home'){persist();go('home');return;}
+    if(action==='home'){persist();go('library');return;}
     const s=currentSession();if(!s)return;
     if(action==='restart'){start(s.unitId,true);return;}
     const step=stepAt(s);if(!step)return;
