@@ -6,6 +6,8 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   child.on('error',reject);child.on('exit',code=>code===0?resolve():reject(Error(`${cmd} ${args.join(' ')} exited ${code}`)));
 });
 (async()=>{
+  await run(process.execPath,['tools/check_ai_server.cjs']);
+  await run(process.execPath,['tools/check_cloud_functions.cjs']);
   await run(process.env.PYTHON||'python3',['tools/verify_assets.py']);
   await run(process.execPath,['tools/check_locales.cjs']);
   await run(process.execPath,['tools/check_card_back.cjs']);
@@ -17,6 +19,6 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const env={...process.env,DEMO_URL:`http://127.0.0.1:${server.address().port}/tarot-demo.html`};
-  try{for(const file of ['check_demo.cjs','check_learning.cjs','check_reading.cjs','check_ritual_ui.cjs','check_ui_v11.cjs','check_i18n.cjs','check_design.cjs','check_curriculum.cjs','check_journey.cjs','check_offline.cjs'])await run(process.execPath,[`tools/${file}`],env);}
+  try{for(const file of ['check_reading_v12.cjs','check_demo.cjs','check_learning.cjs','check_reading.cjs','check_ritual_ui.cjs','check_ui_v11.cjs','check_i18n.cjs','check_design.cjs','check_curriculum.cjs','check_journey.cjs','check_offline.cjs'])await run(process.execPath,[`tools/${file}`],env);}
   finally{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 })().catch(e=>{console.error(e.message);process.exitCode=1;});

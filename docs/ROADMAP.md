@@ -2,7 +2,13 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Delivered in v1.1.0 · 本版实现
+## Implemented in v1.2.0 · 本版实现
+
+Seven sourced spread structures and daily tarot replace the expanded authored catalog. Nineteen earlier templates remain available only when reopening old records. Guides are compact; whole-spread readings precede optional, dismissible card details. DeepSeek/OpenAI integration is implemented and a live DeepSeek smoke check passed; public hosting remains a separate deployment check. See [spread sources](SPREAD_SOURCES.md) and [AI service](AI_SERVICE.md).
+
+七种有出处的牌阵结构及日签取代扩充的自编目录；十九种旧模板仅用于重开旧记录。介绍紧凑，整组解读优先，单牌详情可关闭。DeepSeek/OpenAI 接入代码已完成，真实 DeepSeek 调用通过；公网服务仍须单独验证。
+
+## Previous v1.1.0 checkpoint · 上版记录
 
 Freely selectable learning, visual game variants, non-jumping reference sheets, 23 scenario spreads, daily tarot and a complete shuffle/cut/pick/reveal ritual. Safe upgrade preserves old records. [Detailed contract](EXPERIENCE_V1_1.md).
 

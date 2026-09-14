@@ -52,7 +52,7 @@ needle = 'const path = id => `assets/cards/${id}.webp`;'
 assert needle in app
 app = app.replace(needle, 'const path = id => window.TAROT_IMAGES[id];')
 asset_sources = json.dumps({'checked_on': manifest['checked_on'], 'items':[{key:item[key] for key in ('card_id','source_page','visual_edition','artist','license_status_as_listed','sha256')} for item in manifest['items']]},ensure_ascii=False)
-code = 'window.TAROT_IMAGES=' + json.dumps(images) + ';\nwindow.TAROT_ASSET_SOURCES=' + asset_sources + ';\n' + app
+code = 'window.TAROT_STANDALONE=true;window.TAROT_IMAGES=' + json.dumps(images) + ';\nwindow.TAROT_ASSET_SOURCES=' + asset_sources + ';\n' + app
 assert '</script' not in code.lower()
 script_hash = base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()
 html = html.replace('<link rel="stylesheet" href="design-tokens.css">','<style>'+css+'</style>')
@@ -63,7 +63,7 @@ assert script_tags in html
 html = html.replace(script_tags,'  <script>'+code+'</script>')
 html = html.replace("script-src 'self'", "script-src 'sha256-" + script_hash + "'")
 html = html.replace("style-src 'self' 'unsafe-inline'", "style-src 'unsafe-inline'")
-html = html.replace("connect-src 'self'; worker-src 'self'; manifest-src 'self'", "connect-src 'none'; worker-src 'none'; manifest-src 'none'")
+html = re.sub(r"connect-src [^;]+; worker-src 'self'; manifest-src 'self'", "connect-src 'none'; worker-src 'none'; manifest-src 'none'", html)
 html = html.replace('  <link rel="manifest" href="manifest.webmanifest">','')
 for name in extra_names:
     if name.endswith('.png'):

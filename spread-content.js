@@ -1059,3 +1059,176 @@ window.TAROT_SPREAD_CONTENT = {
   }
 ]);
 })();
+
+// Curated public catalog. Legacy IDs and positions remain immutable for saved readings.
+(() => {
+  const c=window.TAROT_SPREAD_CONTENT;
+  const kept=new Set(['one','daily','three','timeline','celtic']);
+  for(const d of c.spreads)d.legacy=!kept.has(d.id);
+  const sources={"choice": {"title": "科技紫微网 · 二选一占卜法（2013）", "url": "https://m.click108.com.tw/article/201309/9094_1.php", "note": "采用原文五牌 V 形的位置与交替编号：1 为共同起点，2、4 为 A，3、5 为 B。使用本应用的洗牌、切牌和点选抽牌；未采用原文的数牌步骤。时间范围由问题约定，结果表示发展趋势。"}, "linear": {"title": "Brigit Esselmont · Biddy Tarot", "url": "https://biddytarot.com/blog/easy-three-card-tarot-spreads/", "note": "采用作者列出的三张牌位置定义；本文以原创中文说明用途，并将未来视为条件延续下的趋势。"}, "relationship": {"title": "Tina Gong · Labyrinthos", "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/examining-relationships-with-tarot-3-love-tarot-spreads-to-understand-you-your-partner", "note": "依据 Tina Gong 的关系牌阵位置定义与布局。关系中的角色和感受是解读视角，不等于已经知道对方的内心。"}, "celtic": {"title": "A. E. Waite · The Pictorial Key to the Tarot, III §7", "url": "https://sacred-texts.com/tarot/pkt/pkt0307.htm", "note": "依据 Waite 的十个位置定义。本应用省略额外指示牌；第 2 张交叉牌在展开视图中放在第 1 张右侧，便于点选。其他流派的编号可能不同。"}, "one": {"title": "Labyrinthos · Daily single-card reading", "url": "https://labyrinthos.co/pages/free-online-tarot-readings", "note": "采用每日单牌聚焦的简单抽牌方式。日签提供反思主题，并非新增一种复杂牌阵。"}};
+  for(const d of c.spreads.filter(d=>!d.legacy)){d.source=sources[d.id==='three'||d.id==='timeline'?'linear':d.id==='daily'?'one':d.id];d.categories=d.id==='daily'?['life']:['love','work','study','life','self','choice'];}
+  c.spreads.push(...[
+  {
+    "id": "decision-five",
+    "name": "二择一 · 五牌 V 形",
+    "layout": "decision",
+    "category": "choice",
+    "categories": [
+      "choice",
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "career",
+    "topics": [
+      "love",
+      "career",
+      "study"
+    ],
+    "contextEnabled": false,
+    "summary": "从同一个起点，看 A 与 B 各自的发展和结果趋势。",
+    "bestFor": "两个明确选项怎么选？适合比较工作去留、关系选择、学习方向或生活安排。",
+    "avoid": "选项尚未明确，或把结果当成必然发生。",
+    "positions": [
+      {
+        "id": "current",
+        "label": "当前状况",
+        "question": "这次选择发生在怎样的处境里？",
+        "role": "state"
+      },
+      {
+        "id": "a-development",
+        "label": "A · 当前发展",
+        "question": "选择 A，会以怎样的状态展开？",
+        "role": "state"
+      },
+      {
+        "id": "b-development",
+        "label": "B · 当前发展",
+        "question": "选择 B，会以怎样的状态展开？",
+        "role": "state"
+      },
+      {
+        "id": "a-outcome",
+        "label": "A · 结果趋势",
+        "question": "沿着 A 继续，可能走向怎样的状态？",
+        "role": "trend"
+      },
+      {
+        "id": "b-outcome",
+        "label": "B · 结果趋势",
+        "question": "沿着 B 继续，可能走向怎样的状态？",
+        "role": "trend"
+      }
+    ],
+    "readingTip": "共同起点连接两条路径：1→2→4 与 1→3→5。",
+    "compareTip": "比较同一时间范围；若两条路径各有所长，保留取舍而不强选赢家。",
+    "source": {
+      "title": "科技紫微网 · 二选一占卜法（2013）",
+      "url": "https://m.click108.com.tw/article/201309/9094_1.php",
+      "note": "采用原文五牌 V 形的位置与交替编号：1 为共同起点，2、4 为 A，3、5 为 B。使用本应用的洗牌、切牌和点选抽牌；未采用原文的数牌步骤。时间范围由问题约定，结果表示发展趋势。"
+    }
+  },
+  {
+    "id": "relationship-three",
+    "name": "关系动态 · 三牌",
+    "layout": "relation-row",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "positions": [
+      {
+        "id": "self",
+        "label": "我的角色",
+        "question": "我以怎样的状态参与这段关系？",
+        "role": "state"
+      },
+      {
+        "id": "partner",
+        "label": "对方的角色",
+        "question": "对方在互动中呈现怎样的角色？",
+        "role": "unknown"
+      },
+      {
+        "id": "dynamic",
+        "label": "关系动态",
+        "question": "双方之间形成了怎样的互动？",
+        "role": "state"
+      }
+    ],
+    "summary": "快速梳理自己、对方和关系整体，适合了解当下的互动模式。",
+    "bestFor": "快速梳理自己、对方和关系整体，适合了解当下的互动模式。",
+    "avoid": "把牌的象征当成对方已确认的想法。",
+    "readingTip": "把双方的角色放回关系动态中理解。",
+    "compareTip": "结合真实的互动和沟通核对。",
+    "source": {
+      "title": "Tina Gong · Labyrinthos",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/examining-relationships-with-tarot-3-love-tarot-spreads-to-understand-you-your-partner",
+      "note": "依据 Tina Gong 的关系牌阵位置定义与布局。关系中的角色和感受是解读视角，不等于已经知道对方的内心。"
+    }
+  },
+  {
+    "id": "relationship-five",
+    "name": "关系十字 · 五牌",
+    "layout": "relation-cross",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "positions": [
+      {
+        "id": "self",
+        "label": "我的角色",
+        "question": "我以怎样的状态参与这段关系？",
+        "role": "state"
+      },
+      {
+        "id": "partner",
+        "label": "对方的角色",
+        "question": "对方在互动中呈现怎样的角色？",
+        "role": "unknown"
+      },
+      {
+        "id": "foundation",
+        "label": "过去基础",
+        "question": "这段关系建立在怎样的基础上？",
+        "role": "past"
+      },
+      {
+        "id": "present",
+        "label": "关系现状",
+        "question": "目前的关系呈现怎样的状态？",
+        "role": "state"
+      },
+      {
+        "id": "direction",
+        "label": "后续方向",
+        "question": "照目前的相处方式，关系可能怎样发展？",
+        "role": "trend"
+      }
+    ],
+    "summary": "想理解关系如何走到现在、双方的角色，以及延续目前模式的可能走向。",
+    "bestFor": "想理解关系如何走到现在、双方的角色，以及延续目前模式的可能走向。",
+    "avoid": "把牌的象征当成对方已确认的想法。",
+    "readingTip": "把双方的角色放回关系动态中理解。",
+    "compareTip": "结合真实的互动和沟通核对。",
+    "source": {
+      "title": "Tina Gong · Labyrinthos",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/examining-relationships-with-tarot-3-love-tarot-spreads-to-understand-you-your-partner",
+      "note": "依据 Tina Gong 的关系牌阵位置定义与布局。关系中的角色和感受是解读视角，不等于已经知道对方的内心。"
+    }
+  }
+]);
+})();

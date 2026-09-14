@@ -34,7 +34,7 @@ Tap **Start learning** on Home to meet your next card, or choose any card in **L
 | Learn from real artwork | 78 historical Rider–Waite–Smith cards from one Pam-A scan set, with individual sources and checksums |
 | Practice beyond recognition | 78 seven-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
 | Build a mental framework | Elements, numbers, visual evidence, similar-card distinctions, position changes, and contextual reversals |
-| Learn how spreads work | 23 visual scenario spreads and a daily draw with scope, limits, position questions, and a clear reading order |
+| Learn how spreads work | 7 sourced spread structures and a daily draw, with compact guides and exact position definitions |
 | Change the question | Love, career, and study contexts; the same card can play different roles |
 | Draw without a physical deck | Optionally write a question, shuffle all 78 cards, cut the deck, pick without replacement, reveal cards, and optionally include reversals |
 | Review by performance | Six skills follow SM-2 intervals; immediate retries do not count as delayed recall |
@@ -58,14 +58,14 @@ The recommended phone entry is the public website:
 
 Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.1.0/tarot-pocket-v1.1.0.html) remains available for browsers that support local JavaScript.
 
-**Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Runtime uses no accounts, external fonts, analytics, or AI service.
+**Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Learning and drawing need no account, external fonts or analytics. Optional AI interpretation sends only the current question and drawn cards to the configured service after an explicit request; provider keys remain server-side. See [AI service](docs/AI_SERVICE.md).
 
 ## Capabilities and limits
 
 - All 78 cards have authored visual mnemonics, near-card distinctions, and three plausible distractors within a complete shared learning flow.
 - Records distinguish encounters, first lessons, self-ratings, objective application, and delayed reviews. Marking a card read never means mastery.
 - Six skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
-- Scenario spreads supply their context and organize actual cards and positions. Written questions are preserved, not semantically analyzed or uploaded. Quizzes do not interrupt readings.
+- Offline references are labeled as basic references. The optional DeepSeek/OpenAI service analyzes the written question and the whole spread; saved answers remain available offline. Quizzes do not interrupt readings. See [spread sources](docs/SPREAD_SOURCES.md).
 - Content and translations still need independent tarot-teacher review. Automated checks do not replace expert review, physical iPhone tests, phone-restart tests, or extended offline travel. See [Handoff](docs/HANDOFF.md) for exact evidence.
 - This release is an installable mobile website, not a native App Store application.
 

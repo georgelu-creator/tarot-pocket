@@ -56,7 +56,7 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
  }
  console.log('PASS: all guided units render in English; mid-answer switching preserves records.');
  await p.locator('.bottomnav [data-page=reading]').click();
- for(const d of model.window.TAROT_SPREAD_CONTENT.spreads.filter(d=>d.id!=='daily')){
+ for(const d of model.window.TAROT_SPREAD_CONTENT.spreads.filter(d=>d.id!=='daily'&&!d.legacy)){
    if(d.id==='daily')await p.locator('[data-reading=daily]').click();else await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();
    for(let i=0;i<d.positions.length;i++){await p.locator(`[data-reading=guide-position][data-index="${i}"]`).last().click();await english(p,d.id+' position '+i);}
    await p.locator('[data-reading=guide-back]').click();
@@ -69,7 +69,7 @@ const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}
    await p.locator('#overlay [data-action=close]').click();
  }
  await p.locator('.bottomnav [data-page=reading]').click();await english(p,'drawing setup');
- for(const d of model.window.TAROT_SPREAD_CONTENT.spreads.filter(d=>d.id!=='daily')){
+ for(const d of model.window.TAROT_SPREAD_CONTENT.spreads.filter(d=>d.id!=='daily'&&!d.legacy)){
    if(d.id==='daily')await p.locator('[data-reading=daily]').click();else await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();await english(p,'guide '+d.id);
    await p.locator(`[data-reading=use-spread][data-value="${d.id}"]`).click();
    await p.locator('[data-reading-question]').fill('What should I understand and verify before choosing my next step?');

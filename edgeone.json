@@ -1,0 +1,10 @@
+{
+  "buildCommand": "node tools/build_edgeone_ai.cjs",
+  "installCommand": "node --version",
+  "outputDirectory": ".edgeone-ai/public",
+  "nodeVersion": "22.11.0",
+  "cloudFunctions": {
+    "overseasRegions": ["ap-singapore"],
+    "nodejs": {"maxDuration": 120}
+  }
+}

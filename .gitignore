@@ -1,6 +1,8 @@
 .DS_Store
 .venv/
 node_modules/
+.edgeone/
+.edgeone-ai/
 __pycache__/
 *.pyc
 demo/

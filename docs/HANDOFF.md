@@ -1,5 +1,14 @@
 # Continue on another computer · 跨电脑接力
 
+## Current work: 1.2.0 / 本次改动
+
+- Seven sourced spread structures plus daily tarot; nineteen earlier templates remain solely for saved-record compatibility. `decision-five` uses 1→2→4 and 1→3→5. See [sources](SPREAD_SOURCES.md). / 七种有出处结构及日签；十九个旧定义仅兼容历史记录。
+- Compact guides; whole-spread interpretation precedes optional card details, which can be deselected. Offline references are collapsed. / 压紧介绍；整组解读优先，单牌可取消选中，离线参考默认收起。
+- Optional DeepSeek/OpenAI backend, explicit requests, cancellation and honest error states. Answers are saved inside existing reading records; access codes remain in memory and provider keys remain server-side. / 可选服务端 AI；主动请求、取消、错误状态与回答保存；访问码仅内存，密钥仅服务端。
+- A real DeepSeek official call returned a 1,407-character coherent reading for a generic study-choice fixture on 2026-09-14. This is a live smoke check, not expert-quality certification. No private reading was sent or committed. / 通用学习案例真实调用成功，不代表专家质量验收。
+- Full local npm test PASS on 2026-09-14, revision `1.2.0-d56327539064f103`, 105 offline assets. Coverage includes all 78 courses, bilingual UI, sourced positions, all 19 legacy reading records, AI request/auth/error/cancellation behavior, safe answer formatting, Chromium/WebKit offline checks and the actual v1.0.0 upgrade. Physical iPhone acceptance remains unverified. / 本地完整检查通过；包含旧记录兼容、AI 边界、双浏览器离线与真实旧版升级，仍非 iPhone 实机验收。
+- Hosting is not yet connected. The public endpoint is intentionally empty until an HTTPS service is verified. The intended mainland host cannot serve an unfiled public domain; an eligible overseas host or completed filing is needed. See [AI service](AI_SERVICE.md). / 云端尚未接通；未备案域名不能直接用于现有大陆主机，需可用的境外托管或完成备案，待 HTTPS 验证后再配置地址。
+
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Development / 开发](DEVELOPMENT.md)
 
 ## Current project card · 当前项目接力卡
@@ -8,10 +17,10 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.1.0 choice and ritual / 自主学牌与仪式牌桌 |
+| Release target / 发布版本 | v1.2.0 sourced spreads and optional AI / 有出处牌阵与可选 AI |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
-| Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 23 scenario spreads + daily tarot / 78 套七步变式课、56 步进阶、23 场景牌阵与日运 |
+| Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |
 | Deep-course coverage / 深课覆盖 | 78 authored memory anchors, explanations, contrasts and 234 close distractors / 78 组专属助记、依据、对比及 234 个接近干扰项 |
 | Persistence / 保存 | Local browser state plus explicit JSON backups; no account or cloud sync / 本地浏览器记录与手动 JSON 备份，无账号或云同步 |
 | Review scheduling / 复习 | SM-2 per skill with same-day guard; old quick practice retains legacy rule / 新流程按能力点 SM-2 调度并限制同日晋级，旧快练规则保留 |

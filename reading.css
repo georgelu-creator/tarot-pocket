@@ -355,3 +355,58 @@
 /* Keep hit rectangles inside the horizontal scroller; fan only the printed backs. */
 .ritual-fan .reading-pick,.ritual-fan .reading-pick:hover:enabled,.ritual-fan .reading-pick:focus-visible,.ritual-fan .reading-pick:disabled{transform:none}.ritual-fan .reading-pick>.reading-back{transform:rotate(var(--fan-angle));transform-origin:center bottom;transition:transform 180ms ease}.ritual-fan .reading-pick:hover:enabled>.reading-back,.ritual-fan .reading-pick:focus-visible>.reading-back{transform:translateY(-18px) rotate(0)}
 @media(prefers-reduced-motion:reduce){.ritual-fan .reading-pick>.reading-back{transition:none}.ritual-fan .reading-pick:hover:enabled>.reading-back,.ritual-fan .reading-pick:focus-visible>.reading-back{transform:rotate(var(--fan-angle))}}
+
+/* Compact, factual spread introductions; references stay secondary to the result. */
+.reading-guide-overview{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:24px;align-items:center;margin:14px 0 22px}
+.reading-guide-overview .reading-selected{margin:0;padding:0;background:transparent;border:0}
+.reading-guide-overview h2{font-size:18px}.reading-guide-overview .reading-selected>p{font-size:16px;line-height:1.7;margin:10px 0 18px}
+.reading-guide-diagram .reading-board{width:100%;max-width:210px;margin:0 auto;gap:8px}
+.reading-guide-diagram .reading-board.layout-one{width:65px}
+.reading-guide-diagram .reading-card{height:60px;aspect-ratio:auto;max-width:37px;margin:auto}
+.reading-guide-diagram .reading-label{display:none}
+.reading-guide-diagram .reading-placeholder{border-radius:4px;background:var(--soft);color:var(--accent);border:1px solid var(--control-line);box-shadow:none}
+.reading-guide-diagram .reading-placeholder b{display:block;font-size:15px}
+.reading-guide-diagram .subtleline{display:none}
+.reading-guide-diagram .reading-board.layout-celtic{max-width:240px}
+.reading-guide-diagram .reading-board.layout-celtic .reading-card{height:46px;max-width:28px}
+.reading-guide-position{padding:0;border:0;background:none;margin:18px 0}
+.reading-guide-position h2{font-size:18px;margin-bottom:8px}
+.spread-position-list button{padding:12px 8px;min-height:64px}.spread-position-list button p{font-size:14px;line-height:1.65;margin:4px 0 0}
+.reading-source{margin:18px 0 28px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;line-height:1.7}
+.reading-source summary{cursor:pointer;min-height:36px}.reading-source a{color:var(--accent);text-decoration:underline}
+.reading-board.phase-read{max-width:410px;gap:12px}
+.reading-board.phase-read .reading-card{height:115px;aspect-ratio:auto}
+.reading-board.phase-read.layout-one{max-width:100px}
+.reading-board.phase-read.layout-celtic .reading-card{height:76px}
+.reading-close-reference{float:right;font-size:13px}
+.reading-report-intro{font-size:13px;color:var(--muted)}
+@media(max-width:600px){.reading-guide-overview{grid-template-columns:minmax(0,1fr) 135px;gap:16px;margin:10px 0 18px}.reading-guide-overview .primary{font-size:14px;padding:12px 14px}.reading-guide-overview .reading-selected>p{font-size:14px;line-height:1.7}.reading-guide-diagram .reading-board{gap:7px}.reading-guide-diagram .reading-card{height:47px;max-width:28px}.reading-guide-diagram .reading-board.layout-celtic .reading-card{height:32px;max-width:20px}.reading-guide-overview h2{font-size:16px}.reading-board.phase-read .reading-card{height:95px}.reading-board.phase-read.layout-celtic .reading-card{height:57px}}
+@media(max-width:350px){.reading-guide-overview{grid-template-columns:minmax(0,1fr) 108px;gap:12px}.reading-guide-diagram .reading-card{height:40px;max-width:24px}}
+.reading-board.layout-decision,.spread-thumb.thumb-decision{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,auto)}
+.layout-decision .slot-1,.thumb-decision i:nth-child(1){grid-row:3;grid-column:2}
+.layout-decision .slot-2,.thumb-decision i:nth-child(2){grid-row:2;grid-column:1}
+.layout-decision .slot-3,.thumb-decision i:nth-child(3){grid-row:2;grid-column:3}
+.layout-decision .slot-4,.thumb-decision i:nth-child(4){grid-row:1;grid-column:1}
+.layout-decision .slot-5,.thumb-decision i:nth-child(5){grid-row:1;grid-column:3}
+.layout-relation-cross,.spread-thumb.thumb-relation-cross{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,auto)}
+.layout-relation-cross .slot-1,.thumb-relation-cross i:nth-child(1){grid-row:2;grid-column:1}
+.layout-relation-cross .slot-2,.thumb-relation-cross i:nth-child(2){grid-row:2;grid-column:3}
+.layout-relation-cross .slot-3,.thumb-relation-cross i:nth-child(3){grid-row:1;grid-column:2}
+.layout-relation-cross .slot-4,.thumb-relation-cross i:nth-child(4){grid-row:2;grid-column:2}
+.layout-relation-cross .slot-5,.thumb-relation-cross i:nth-child(5){grid-row:3;grid-column:2}
+.layout-relation-row .slot-1,.thumb-relation-row i:nth-child(1){grid-column:1;grid-row:1}
+.layout-relation-row .slot-2,.thumb-relation-row i:nth-child(2){grid-column:3;grid-row:1}
+.layout-relation-row .slot-3,.thumb-relation-row i:nth-child(3){grid-column:2;grid-row:1}
+.spread-thumb.thumb-relation-row{grid-template-columns:repeat(3,1fr)}
+.reading-ai{border-top:1px solid var(--line);padding:24px 0;margin:12px 0 18px}
+.reading-ai>h2{font:500 27px/1.4 var(--font-display);margin:8px 0 14px}.reading-ai>p{font-size:15px;line-height:1.8;margin-bottom:16px}
+.reading-ai .ai-disclosure,.ai-connection{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+.ai-answer{white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px;line-height:1.95;color:var(--ink);margin:20px 0}
+.ai-attribution{font-size:12px!important;color:var(--muted)}.ai-error{border-left:3px solid var(--error);padding-left:12px}
+.ai-connection label,.reading-options label{display:grid;gap:8px;margin:12px 0;font-size:13px}
+.ai-connection input,.reading-options input{border:1px solid var(--control-line);background:var(--paper);color:var(--ink);border-radius:8px;min-width:0;width:100%;font:inherit;font-size:16px;padding:12px}
+.reading-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 18px}
+.reading-offline-reference>summary{cursor:pointer;min-height:44px;font-size:15px;padding:12px 0;border-top:1px solid var(--line)}
+.reading-offline-reference .professional-report{margin-top:10px;padding-top:8px}.reading-offline-reference .reading-report-intro{font-size:12px}
+
+.ai-answer{white-space:normal}.ai-answer>p{white-space:pre-line;margin:14px 0}.ai-answer>h3{font-size:18px;line-height:1.6;margin:26px 0 12px}.ai-answer strong{font-weight:600}

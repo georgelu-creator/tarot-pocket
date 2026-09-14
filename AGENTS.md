@@ -14,8 +14,10 @@ conversations, personal readings, credentials and browser backups do not belong 
 - Use only verified historical artwork from assets/manifest.json. Do not replace
   missing images with another edition, generated artwork, or commercial redraws.
 - Verify a change with the relevant checks. Before a release, run npm test in full.
-  Test failures must be investigated, not bypassed. App runtime has no third-party
-  requests, account requirement, analytics, or AI service.
+  Test failures must be investigated, not bypassed. Offline learning and drawing
+  have no third-party requests, account requirement, or analytics. Optional online
+  interpretation requires an explicit user action; provider keys stay server-side.
+  Never replace a failed AI response with an offline reference labelled as AI.
 - Use focused branches and pull requests. Do not force-push, rewrite history, or
   discard another device's uncommitted work. Update docs/HANDOFF.md with actual
   completed work, verification, blockers, and the next useful step before handing off.
