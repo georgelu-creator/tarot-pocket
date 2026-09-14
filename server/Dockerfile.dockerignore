@@ -1,0 +1,8 @@
+**
+!server/
+!server/reading-service.cjs
+!server/Dockerfile
+!reading-deck.js
+!spread-content.js
+**/.env
+**/.env.*

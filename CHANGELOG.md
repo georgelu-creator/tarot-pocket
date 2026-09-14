@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.2.0 — 2026-09-14
+
+- Replace unsourced reading catalog entries with seven sourced structures plus daily tarot; retain nineteen legacy definitions for saved readings. Correct five-card decision and relationship layouts with versioned IDs. / 采用有出处的七种结构及日签；十九个旧定义仅兼容存档，五牌二择一与关系阵使用独立 ID。
+- Compact purpose-first guides; overall results precede optional, dismissible card references. / 介绍页聚焦用途、缩略图和牌位，结果先于可收起的单牌释义。
+- Optional server-side DeepSeek/OpenAI interpretation, explicit requests, cancellation, errors and offline saved answers. No provider credentials in static files or backups. / 可选服务端 AI 完整解读，主动请求、取消、错误提示及离线保存；静态文件与备份不含供应商密钥。
+- Sources and deployment details: [SPREAD_SOURCES](docs/SPREAD_SOURCES.md), [AI_SERVICE](docs/AI_SERVICE.md).
+
+
 Changes describe the product included in each version. Deployment and device acceptance are recorded separately; a release entry alone does not prove either.
 
 版本记录描述该版产品内容；部署与实机验收分别记录，出现一个版本条目不代表两者都已完成。
