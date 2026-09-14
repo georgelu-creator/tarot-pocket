@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.3.0 — 2026-09-14
+
+- Deliberate shuffle/cut/reveal animation, explicit viewing time, six large candidates per page and confirmed placement. All 78 remain selectable; interruption and reduced motion preserve the result. / 洗切翻动效和自主观看、六张大牌背候选与确认入位；78 张可选，中断与减少动态保留结果。
+- Image-first discovery, evidence-to-meaning connection and reversible paired-card matching, with specific feedback and honest first-attempt memory records. Old lesson sessions remain compatible. / 先看图、连接依据与含义、双牌配对可撤回；明确错因并保留首次记忆成绩，兼容旧课程。
+- 78 expanded bilingual card guides with chapters, contextual tables, visible positions, paired images and uninterrupted sheet interactions. / 78 张双语图文手册、情境表、可见牌位、双牌对照与不跳页查阅。
+- Existing AI API, sourced spreads and scheduling rules remain unchanged in this UI-focused release. / 本轮聚焦 UI，保留既有 AI 接口、牌阵来源及调度规则。
+- Details and research: [EXPERIENCE_V1_3](docs/EXPERIENCE_V1_3.md).
+
 ## 1.2.0 — 2026-09-14
 
 - Replace unsourced reading catalog entries with seven sourced structures plus daily tarot; retain nineteen legacy definitions for saved readings. Correct five-card decision and relationship layouts with versioned IDs. / 采用有出处的七种结构及日签；十九个旧定义仅兼容存档，五牌二择一与关系阵使用独立 ID。

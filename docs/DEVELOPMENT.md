@@ -41,6 +41,7 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | `content.js` | Original teaching-card metadata and 24 quick questions / 原有教学牌资料与 24 道快练 |
 | `learning-content.js` | Four original units: 32 steps / 四个原有单元，共 32 步 |
 | `spread-content.js` | 8 active definitions including daily plus 19 legacy definitions, and four contextual units: 24 steps / 含日签共 8 个当前定义及 19 个旧版定义，以及四个情境单元 24 步 |
+| `card-notes.js`, `dossier.css` | 78 original guide paragraphs and illustrated reference UI / 78 张专属解说及图文手册样式 |
 | `reading-deck.js` | Basic reference content for 78 cards and three topics / 78 张牌与三个主题的基础参考 |
 | `i18n.js` | Display-text and accessibility translation; keeps business IDs and stored values / 显示文字与无障碍翻译，保留业务 ID 和存档值 |
 | `locales/en-deck.json`, `locales/en-lessons.json`, `locales/en-ui.json` | Editable English translations / 可编辑的英文翻译源 |

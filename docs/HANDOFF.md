@@ -1,6 +1,20 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.2.0 / 本次改动
+## Current work: 1.3.0 / 本次改动
+
+- UI-focused release: held shuffle/cut animation, six large candidates per page, tap/confirm placement and large sequential reveals with unlimited viewing time. / 本轮聚焦 UI：洗切等待、六张大牌背、候选确认及逐张大图观看。
+- New lesson `playVersion: 3` adds image-first observation, evidence-to-meaning links and editable close-card matching. Existing v1/v2 sessions retain their original steps; first-attempt memory scores remain unchanged by a guided retry. / 新玩法兼容旧课程；引导后重练不改写首次成绩。
+- All 78 original bilingual guide paragraphs live in `card-notes.js` / `locales/en-card-notes.json`; `dossier.css` and the card sheet in `app.js` provide chapter navigation, context matrices and visual comparisons without replacing the sheet on every tap. / 78 张双语解说及图文资料页，切换时不重建整页。
+- `reading.js` keeps the existing three application storage keys and adds optional candidate/page/reveal fields inside the existing reading record. Normal motion, skip and reduced motion preserve the already randomized result. / 沿用既有存储键，新增可选候选、页码、翻牌字段，动效路径不改变牌序。
+- The backend prompt, AI service settings, spread catalog and memory scheduling rules are unchanged. Question-grounded interpretation-quality refinement is deferred to the next independent task after this UI delivery. / 本轮不修改模型提示、AI 配置、牌阵目录或记忆调度；针对问题的解读质量优化留待后续。
+- Design and source references: [EXPERIENCE_V1_3.md](EXPERIENCE_V1_3.md). Real isolated screenshots and the normal-motion recording are under `docs/images/*v13*`; reproduce with `node tools/capture_ritual_v13.cjs`. / 设计依据、真实截图及录屏可在仓库继续复现。
+- Validation: full local `npm test` PASS on 2026-09-14 for `1.3.0-8d1beedff364d94d` (107 offline assets). It includes 14,040 legacy configurations, 702 new contextual configurations, all 78 expanded bilingual guides, normal/reduced ritual and save/resume checks, desktop WebKit 320/390px actual face visibility, Chromium/WebKit offline checks and upgrade from the actual v1.0.0 build. / 最终完整本机检查通过；含旧题、新情境、78 张图文资料、动效与续用、WebKit 正面可见性、双浏览器离线及真实旧版升级。
+- A WebKit visual check caught a temporary card back covering the revealed face despite successful image decode. The fix removes the temporary 3D layer at the end of the turn; `check_reveal_webkit.cjs` now checks decoded faces, hit visibility, reduced motion and reload recovery. Real 320/390px screenshots were inspected. / 目视抓到 WebKit 翻牌遮挡，已修复并加入正面可见性、减少动态及重载回归；320/390px 实图已核对。
+- Two configured credentials were checked in memory against public source and built files; zero matches were found. Credentials and private questions remain excluded from the repository. / 内存读取配置完成公开文件扫描，未发现实际密钥或访问码；私人内容不入库。
+- Publication: this handoff is prepared before the single UI publication. The matching v1.3 pull request and Actions checks record the checked commit and Pages deployment; a runtime build ID identifies the installed copy. / 接力文件在统一发布前准备，具体提交、检查与 Pages 上线以 v1.3 PR 和 Actions 回执为准。
+- Next physical-phone check: update while retaining records; pause in the middle of a draw, reopen, pick another candidate, finish all reveals, and browse a card without scroll jumps. Then test offline reopening after downloading the new complete pack. Desktop WebKit is not a physical iPhone test. / 下一步实机：保留记录更新、中断续抽、更换候选、完整翻牌、单牌查阅不跳页；下载完整包后再测断网重开。
+
+## Previous delivery: 1.2.0 / 前一版交付
 
 - Seven sourced spread structures plus daily tarot; nineteen earlier templates remain solely for saved-record compatibility. `decision-five` uses 1→2→4 and 1→3→5. See [sources](SPREAD_SOURCES.md). / 七种有出处结构及日签；十九个旧定义仅兼容历史记录。
 - Compact guides; whole-spread interpretation precedes optional card details, which can be deselected. Offline references are collapsed. / 压紧介绍；整组解读优先，单牌可取消选中，离线参考默认收起。
@@ -21,7 +35,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.2.0 sourced spreads and optional AI / 有出处牌阵与可选 AI |
+| Release target / 发布版本 | v1.3.0 tactile ritual and illustrated learning / 抽牌仪式与图文学习交互 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |
