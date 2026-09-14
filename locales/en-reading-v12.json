@@ -86,5 +86,6 @@
   "AI 服务正在处理其他解读，请稍后再试。": "The AI service is busy. Please try again shortly.",
   "此网页尚未获准连接该 AI 服务。": "This page is not authorized to connect to the AI service.",
   "问题内容过长，请缩短后再试。": "The question is too long. Please shorten it and try again.",
-  "这是独立离线文件。联网 AI 解读请打开网页版；已保存的解读可在这里阅读。": "This is a standalone offline file. Open the web app for new AI readings; saved readings remain available here."
+  "这是独立离线文件。联网 AI 解读请打开网页版；已保存的解读可在这里阅读。": "This is a standalone offline file. Open the web app for new AI readings; saved readings remain available here.",
+  "请先填写解读访问码。": "Please enter your reading access code first."
 }

@@ -9,11 +9,13 @@ Drawing and learning still work offline. An explicit AI-reading action sends the
 - 已提供 Node.js 22+ 服务、容器配置、精确来源限制、访问码校验、请求额度/并发上限及自动化模拟测试。运行时没有第三方软件依赖。
 - 本地模拟已核验两种供应商的请求和响应格式。模拟不能证明真实模型的解读质量、账户额度、网络可达性或生产部署成功。
 - 2026-09-14 已用无私人信息的学习案例完成一次 DeepSeek 官方真实调用，返回 1,407 字连贯正文。它证明该次调用成功，不等于持续质量或公网部署验收。腾讯云境外云函数的适配与部署要求见 [EDGEONE.md](EDGEONE.md)。
+- 同日腾讯云境外 HTTPS 服务也已真实返回五牌逆位案例解读（1,081 字）；已核对未持码请求 401 和正确来源预检 204。当前地址见 `ai-config.js`，上线版本与设备验收见 [HANDOFF.md](HANDOFF.md)。
 - 这份文档与代码不包含真实密钥、用户问题、虚构的服务地址或“已完成部署”的声明。部署时由维护者填写实际云平台环境变量，之后才能执行真实连通性与质量验收。
 
 - The Node.js 22+ service, container setup, exact-origin restrictions, access-code checks, request/concurrency limits and mock tests are provided without third-party runtime dependencies.
 - Local mocks validate both provider contracts. They do not verify live model quality, account credit, network reachability or production deployment.
 - A live official DeepSeek request with a synthetic study example returned 1,407 characters on 2026-09-14. This verifies that request, not sustained quality or public deployment. See [EDGEONE.md](EDGEONE.md) for the overseas Tencent Cloud Functions adapter and hosting requirements.
+- The overseas Tencent HTTPS service also returned a synthetic five-card reading with reversals (1,081 characters), with unauthorized requests returning 401 and valid-origin preflight returning 204. See `ai-config.js` for its current address and [HANDOFF.md](HANDOFF.md) for publication and device acceptance.
 - No real key, personal question or invented service URL is included. The maintainer must configure the actual hosting environment before live acceptance can be performed.
 
 ## 密钥放在哪里 / Where credentials belong

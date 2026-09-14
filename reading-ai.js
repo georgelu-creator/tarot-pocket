@@ -11,7 +11,7 @@ window.TarotReadingAI = (() => {
     if(!Array.isArray(raw)||raw.length>2)throw Error('AI 解读记录格式不正确');
     const seen=new Set();return raw.map(x=>{if(!x||!['zh','en'].includes(x.language)||seen.has(x.language)||typeof x.text!=='string'||!x.text.trim()||x.text.length>30000||!['deepseek','openai'].includes(x.provider)||typeof x.model!=='string'||x.model.length>100||!Number.isFinite(x.at))throw Error('AI 解读记录格式不正确');seen.add(x.language);return {language:x.language,text:x.text,provider:x.provider,model:x.model,at:x.at};});
   };
-  const messages={AUTH_REQUIRED:'访问码不正确，请检查后重试。',RATE_LIMITED:'本次解读暂时达到使用上限，请稍后再试。',NOT_CONFIGURED:'AI 服务尚未配置完成。牌阵与离线参考仍可使用。',TIMEOUT:'解读等待超时，牌阵已保留，可以重试。',UPSTREAM_ERROR:'AI 暂时没有返回完整解读，请稍后再试。',INVALID_REQUEST:'这组牌的信息不完整，请回到牌阵核对。',UNAVAILABLE:'暂时无法连接 AI 服务。你的牌阵没有改变。',INCOMPLETE_RESPONSE:'AI 暂时没有返回完整解读，请稍后再试。',MODEL_REFUSAL:'AI 无法解读这次问题，可以修改问题后重新抽牌。',BUSY:'AI 服务正在处理其他解读，请稍后再试。',ORIGIN_NOT_ALLOWED:'此网页尚未获准连接该 AI 服务。',PAYLOAD_TOO_LARGE:'问题内容过长，请缩短后再试。'};
+  const messages={MISSING_ACCESS_CODE:'请先填写解读访问码。',AUTH_REQUIRED:'访问码不正确，请检查后重试。',RATE_LIMITED:'本次解读暂时达到使用上限，请稍后再试。',NOT_CONFIGURED:'AI 服务尚未配置完成。牌阵与离线参考仍可使用。',TIMEOUT:'解读等待超时，牌阵已保留，可以重试。',UPSTREAM_ERROR:'AI 暂时没有返回完整解读，请稍后再试。',INVALID_REQUEST:'这组牌的信息不完整，请回到牌阵核对。',UNAVAILABLE:'暂时无法连接 AI 服务。你的牌阵没有改变。',INCOMPLETE_RESPONSE:'AI 暂时没有返回完整解读，请稍后再试。',MODEL_REFUSAL:'AI 无法解读这次问题，可以修改问题后重新抽牌。',BUSY:'AI 服务正在处理其他解读，请稍后再试。',ORIGIN_NOT_ALLOWED:'此网页尚未获准连接该 AI 服务。',PAYLOAD_TOO_LARGE:'问题内容过长，请缩短后再试。'};
   function render(s){
     if(lastReading!==s.id){lastReading=s.id;error='';}
     const saved=s.ai?.find(x=>x.language===locale()),working=pending?.id===s.id;
@@ -21,6 +21,7 @@ window.TarotReadingAI = (() => {
   async function request(s,save,current){
     if(pending||!endpoint()||s.phase!=='read')return;
     const language=locale();if(s.ai?.some(x=>x.language===language))return;
+    if(!accessCode.trim()){error='MISSING_ACCESS_CODE';patch(s);const connection=document.querySelector('.ai-connection');if(connection){connection.open=true;connection.querySelector('input')?.focus();}return;}
     let url;try{url=new URL(endpoint(),location.href);if(url.protocol!=='https:'&&!(url.origin===location.origin&&['localhost','127.0.0.1'].includes(url.hostname)))throw Error();if(url.username||url.password||url.hash||url.search)throw Error();}catch(_){error='NOT_CONFIGURED';patch(s);return;}
     const controller=new AbortController(),job={id:s.id,controller};pending=job;error='';patch(s);
     const timeout=setTimeout(()=>{job.timeout=true;controller.abort();},125000);

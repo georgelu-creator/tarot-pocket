@@ -1,2 +1,2 @@
-/* Public service URL only. Never put a provider API key or access code here. */
-window.TAROT_AI_CONFIG = Object.assign({ endpoint: '' }, window.TAROT_AI_CONFIG || {});
+/* Public service URL only. Never add a provider key or access code. */
+window.TAROT_AI_CONFIG = {"endpoint":"https://tarot-pocket-ai-x1xpktdj.edgeone.dev/api/reading"};
