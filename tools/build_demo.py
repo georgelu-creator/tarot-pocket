@@ -33,7 +33,7 @@ for name in css_names+script_names:
     assert (ROOT/name).is_file(), f'Missing runtime file: {name}'
 extra_names = ['manifest.webmanifest'] + [str(p.relative_to(ROOT)) for p in sorted((ROOT/'assets/icons').glob('*.png'))]
 fingerprint=hashlib.sha256()
-for name in ['index.html','sw.js','assets/design/card-back.svg','LICENSE','CONTENT_LICENSE.md','LICENSES/CC-BY-SA-4.0.txt','ARTWORK_LICENSE.md']+css_names+script_names+extra_names:
+for name in ['index.html','update.html','sw.js','assets/design/card-back.svg','LICENSE','CONTENT_LICENSE.md','LICENSES/CC-BY-SA-4.0.txt','ARTWORK_LICENSE.md']+css_names+script_names+extra_names:
     fingerprint.update(name.encode()+b'\0'+(ROOT/name).read_bytes())
 fingerprint.update(json.dumps(manifest,sort_keys=True).encode())
 revision=version+'-'+fingerprint.hexdigest()[:16]
@@ -80,7 +80,16 @@ web_html=source_html
 web_html=web_html.replace('</body>', license_notices+'</body>')
 provenance_code='window.TAROT_ASSET_SOURCES='+asset_sources+';\n'
 web_html=web_html.replace('<script src="content.js"></script>','<script src="assets/provenance.js"></script>\n  <script src="content.js"></script>')
+# The document and every executable/style resource belong to one exact release.
+# Source filenames remain stable for standalone bundling and offline inventory.
+for name in css_names+script_names+['assets/provenance.js']:
+    web_html=web_html.replace('"'+name+'"','"'+name+'?v='+revision+'"')
 (web/'index.html').write_text(web_html)
+update_html=(ROOT/'update.html').read_text().replace('TAROT_BUILD_REVISION',revision)
+update_script=re.search(r'<script>(.*?)</script>',update_html,re.S).group(1)
+update_hash=base64.b64encode(hashlib.sha256(update_script.encode()).digest()).decode()
+update_html=update_html.replace('TAROT_UPDATE_SCRIPT_HASH',update_hash)
+(web/'update.html').write_text(update_html)
 (web/'.nojekyll').touch()
 for name in css_names+script_names+extra_names:
     target=web/name

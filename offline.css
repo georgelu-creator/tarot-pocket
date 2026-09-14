@@ -6,3 +6,5 @@
 .offline-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.offline-actions button{min-height:44px;flex:1;white-space:normal}
 .offline-help summary{min-height:44px;display:flex;align-items:center;font-size:14px;cursor:pointer}.offline-help summary:before{content:'＋';margin-right:8px}.offline-help[open] summary:before{content:'−'}
 .offline-revision{display:block;opacity:.65;font-size:11px;margin-top:12px}.offline-update{padding:12px;border-radius:12px;background:#ece8dc}
+
+.offline-update-link{display:block;min-height:44px;padding:10px 12px;margin:8px 0;color:var(--plum,#654763);text-decoration:underline;text-underline-offset:3px;border-radius:10px;text-align:center}

@@ -8,10 +8,10 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.0.0 continuous learning / 连续学习网页版 |
+| Release target / 发布版本 | v1.1.0 choice and ritual / 自主学牌与仪式牌桌 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
-| Source baseline / 源码能力 | 78 seven-stage card courses plus 56 further steps, 24 earlier questions, 8 spreads, bilingual / 78 套七步课程，加 56 步进阶、24 道旧快练、8 阵与双语 |
+| Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 23 scenario spreads + daily tarot / 78 套七步变式课、56 步进阶、23 场景牌阵与日运 |
 | Deep-course coverage / 深课覆盖 | 78 authored memory anchors, explanations, contrasts and 234 close distractors / 78 组专属助记、依据、对比及 234 个接近干扰项 |
 | Persistence / 保存 | Local browser state plus explicit JSON backups; no account or cloud sync / 本地浏览器记录与手动 JSON 备份，无账号或云同步 |
 | Review scheduling / 复习 | SM-2 per skill with same-day guard; old quick practice retains legacy rule / 新流程按能力点 SM-2 调度并限制同日晋级，旧快练规则保留 |
@@ -20,6 +20,20 @@
 The source baseline describes implemented features, not proof of a successful deployment. Use the repository's [Actions](https://github.com/georgelu-creator/tarot-pocket/actions), [Releases](https://github.com/georgelu-creator/tarot-pocket/releases), and actual [demo](https://georgelu-creator.github.io/tarot-pocket/) to check the state you receive. A pending job or an uploaded file is not a completed browser acceptance test.
 
 源码能力不等于部署已成功。接手时分别查看 Actions、Releases 和实际演示；排队中的任务或已经上传的文件，不能代替浏览器验收。
+
+### v1.1.0 checkpoint · 自主性与仪式感接力
+
+- Product decisions and primary learning references: [EXPERIENCE_V1_1.md](EXPERIENCE_V1_1.md). / 本轮产品构思与一手学习参考见体验方案。
+- New / Continue / Review use different queues. Unseen-only random recommendations replace hardcoded p04/m16 priority. All 78 cards remain directly selectable. / 新学、继续、复习分开；移除固定首牌，78 张可自选。
+- Visual game variants, four-suit number and court families, and visible three-position applications; old sessions retain original semantics. / 视觉变式、数字与宫廷四花色对照、可见三位应用；旧课存档题意保留。
+- Card sheets retain DOM, open sections, scroll and current favorite state through orientation/position changes, zoom and comparisons. Search and filters retain focus. / 资料不重建，放大与对比保留位置并更新收藏；搜索筛选保留焦点。
+- 23 scenario spreads plus a local-date daily card, stored under the existing reading key. Every shuffle/cut/pick/reveal stage exits and resumes without rerolling. Distinct rapid taps are accepted; duplicate outcomes are blocked by state. / 23 场景阵加本地日期日签，仍用旧键；洗切抽翻可退可续，快速操作不丢，重复结果由状态排除。
+- Dedicated update.html bypasses the old root-navigation cache. It verifies the full release before explicit activation, without clearing records or refreshing other active tabs. / 独立更新页绕过旧首页缓存，完整校验后明确切换，不清记录或刷新其他在用页面。
+- CI checks out full history because the upgrade test builds the actual v1.0.0 tag. New browser checks are included in npm test. / 升级回归构建真实旧标签，因此 CI 取完整历史；新增浏览器检查纳入完整测试。
+- Local validation on 2026-09-14: full npm test PASS for revision 1.1.0-32020928a8dff743 (103 offline assets). It covers 14,040 learning configurations, both languages, 23 scenario reading flows plus daily tarot, actual animation transforms, reference DOM/scroll/focus, backup compatibility, Chromium/WebKit offline behavior and a real v1.0.0 upgrade preserving unfinished records. / 本地全量通过：14,040 学习配置、双语、23 场景与日签、实际动画、资料原位、备份、双引擎离线及真实旧版升级。
+- Visually inspected isolated mobile home, picture-choice lesson, scene gallery, shuffle, cut and fan screens. The fan appears within the mobile viewport with compact placement slots. / 已目视检查隔离手机首页、识图题、场景列表、洗牌、切牌与扇形选牌；选牌时使用紧凑位置预览。
+- Publication: the matching PR, CI and deployment are tracked in GitHub Actions and Releases; public runtime verification follows deployment. / 发布状态以对应 PR、Actions 和 Releases 为准；部署后核对公网实际版本。
+- Next useful work: physical iPhone update and next-day return, motion on the actual device, independent tarot/translation review and learning transfer. / 下一步实证：iPhone 更新、隔日续学、实际设备动效、独立审校与迁移效果。
 
 ### v1.0.0 checkpoint · 连续学习交接
 

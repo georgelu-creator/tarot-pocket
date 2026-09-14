@@ -40,11 +40,11 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('[data-action=status]').first().click();
  await page.getByText('78 / 78',{exact:true}).waitFor();
  await page.locator('#overlay [data-action=close]').click();
- await page.locator('.bottomnav [data-page=library]').click();
+ await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();
  await page.locator('[data-action=filter][data-value=全部]').click();
  assert.equal(await page.locator('.library-card').count(),78);
  assert.equal(await page.locator('[data-action=knowledge]').count(),4);
- await page.locator('.advanced-learning>summary').click();
+ if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();
  await page.locator('.learning-progress [data-action=start]').click();
  await page.locator('button.primary[data-action=draw]').click();
  if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
@@ -58,7 +58,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  assert.equal(s.schedules[q.id]-s.history[0].at,3*86400000);
  const order=JSON.stringify(s.session.order);
  await page.reload();
- await page.locator('.bottomnav [data-page=library]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.learning-progress [data-action=resume]').click();
+ await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.learning-progress [data-action=resume]').click();
  assert.equal(JSON.stringify((await state(page)).session.order),order);
  assert.equal(await page.locator('[data-action=answer]:disabled').count(),4);
  assert.equal((await state(page)).history.length,1);
@@ -72,7 +72,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.getByRole('heading',{name:'又多懂了一点。'}).waitFor();
  assert.equal((await state(page)).history.length,6);
  await page.locator('.complete [data-action=nav][data-page=library]').click();
- await page.locator('[data-action=filter][data-value=全部]').click();
+ await page.locator('[data-action=library-view][data-value=cards]').click();await page.locator('[data-action=filter][data-value=全部]').click();
  assert.equal(await page.locator('.library-card').count(),78);
  // Load off-screen lazy images before checking the entire 78-card asset set.
  await page.locator('.library-card img').evaluateAll(async images=>{
@@ -91,16 +91,16 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('#overlay [data-action=zoom]').click();
  await page.locator('#overlay [data-action=close]').click();
  assert.equal(await page.locator('#overlay [data-action=save]').count(),1,'zoom should return to details');
- await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('#overlay [data-action=card-practice]').click();
+ if(!(await page.locator('#overlay details[open]').filter({has:page.locator('[data-action=card-practice]')}).count()))await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('#overlay [data-action=card-practice]').click();
  const practiced='p04';await page.locator('button.primary[data-action=draw]').click();if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
  while((await state(page)).session.phase!=='complete'){const current=await state(page);const live=data.questions.find(x=>x.id===current.session.ids[current.session.index]);await page.locator(`[data-action=answer][data-value="${live.correct}"]`).click();await page.locator('[data-action=next]').click();}
  assert.equal(await page.locator('[data-action=next-card]').count(),1,'card lesson completion offers the next card immediately');
  await page.locator('[data-action=next-card]').click();const nextSession=await state(page);assert.notEqual(data.questions.find(x=>x.id===nextSession.session.ids[0]).cardId,practiced);
- await page.locator('.study-top [data-action=nav]').click();await page.locator('.bottomnav [data-page=library]').click();
+ await page.locator('.study-top [data-action=nav]').click();await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();
  await page.locator('[data-action=filter][data-value=收藏]').click();
  assert.equal(await page.locator('.library-card').count(),1);
  await page.locator('.topbar [data-page=me]').click();
- await page.locator('.advanced-learning>summary').click();await page.locator('.advanced-learning details>summary').last().click();await page.locator('[data-action=advance]').click();assert.equal((await state(page)).offsetDays,3);
+ if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.advanced-learning details>summary').last().click();await page.locator('[data-action=advance]').click();assert.equal((await state(page)).offsetDays,3);
  const download=page.waitForEvent('download');await page.locator('[data-action=export]').click();
  const saved=await download;const file=await saved.path();const exported=JSON.parse(fs.readFileSync(file,'utf8'));const exportedHistory=exported.state.history.length;assert(exportedHistory>6);
  await page.locator('[data-action=reset]').click();await page.locator('[data-action=confirm-reset]').click();assert.equal((await state(page)).history.length,0);
@@ -112,7 +112,7 @@ const widthCheck=async page=>assert(await page.evaluate(()=>document.documentEle
  await page.locator('[data-action=feedback]').click();await page.locator('[data-action=feedback-save]').first().click();assert.equal((await state(page)).feedback.length,1);
  await page.locator('[data-action=status]').first().click();await page.getByText('78 / 78',{exact:true}).waitFor();await page.locator('[data-action=sources]').click();assert.equal(await page.locator('#overlay a[href*="commons.wikimedia.org/wiki/File:"]').count(),78);await page.locator('#overlay [data-action=close]').click();
  await context.setOffline(true);
- await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=filter][data-value=全部]').click();
+ await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();await page.locator('[data-action=filter][data-value=全部]').click();
  await page.locator('[data-action=card][data-id=c14]').click();await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('[data-action=card-practice]').click();await page.locator('button.primary[data-action=draw]').click();
  if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();await page.locator('[data-action=unknown]').click();
  assert(await page.locator('.answer-feedback').count());

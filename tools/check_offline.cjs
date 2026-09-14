@@ -65,7 +65,7 @@ async function browserCheck(type,name,updates){
     if(updates){
       const originalController=await reopened.evaluate(()=>navigator.serviceWorker.controller.scriptURL);
       const next=structuredClone(release);next.revision=release.revision+'-update';
-      const html=fs.readFileSync(path.join(web,'index.html'),'utf8').replace('content="'+release.revision+'"','content="'+next.revision+'"');
+      const html=fs.readFileSync(path.join(web,'index.html'),'utf8').replaceAll(release.revision,next.revision);
       next.assets.find(a=>a.path==='index.html').sha256=hash(html);
       update={html,worker:workerSource.replace(/^const RELEASE = .+;$/m,'const RELEASE = '+JSON.stringify(next)+';')};
       mode='mismatch';
@@ -117,6 +117,7 @@ async function browserCheck(type,name,updates){
     const results=[await browserCheck(chromium,'chromium',true)];
     if(fs.existsSync(webkit.executablePath()))results.push(await browserCheck(webkit,'webkit',false));
     else results.push({browser:'webkit',status:'NOT_RUN',reason:'Playwright WebKit is not installed; this does not establish physical iPhone readiness.'});
-    console.log(JSON.stringify({status:'PASS',revision:release.revision,offlineAssets:release.assets.length,results}));
+    const upgrade=await require('./check_upgrade.cjs')(web);
+    console.log(JSON.stringify({status:'PASS',revision:release.revision,offlineAssets:release.assets.length,results,upgrade}));
   }finally{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

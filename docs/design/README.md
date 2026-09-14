@@ -114,3 +114,9 @@ This contract changes the presentation of the existing learning product. It does
 Home has Learn/Draw only; Learn starts the saved or recommended card directly. Reference structures unfold in the library; Records keeps progress and offline tools. New seven-stage learning uses the same Moonlit tokens, explicit error/success, full verified faces, and one clear next action. The current behavioral contract is [PRODUCT_PLAN.md](../PRODUCT_PLAN.md), superseding earlier preview navigation references.
 
 首页只保留学牌与抽牌，学习直接接续；基础知识在牌库展开，记录集中管理进度与离线。七步学习延续静光令牌、明确对错、完整历史牌面与清楚下一步。产品方案优先于旧预览导航描述。
+
+## v1.1.0 interaction alignment / 交互对齐
+
+The explicitly requested daily tarot and reading ritual follow [EXPERIENCE_V1_1.md](../EXPERIENCE_V1_1.md). Scenario-first thumbnails are authored layouts, not copied reference screenshots. Shuffle/cut/fan/flip transforms express real state changes; fast distinct taps are accepted and duplicate outcomes prevented by state, not hidden timing gates. Card references retain their sheet, scroll, open sections and current saved-state labels.
+
+用户明确要求的日运与抽牌仪式按新版体验合同执行。缩略图原创，场景前置；动画表达真实状态变化，快速点击不同牌仍响应，用状态防重复，不用隐藏时间锁吞操作。单牌资料保留原位与展开状态，返回时同步最新收藏状态。

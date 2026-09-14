@@ -17,15 +17,38 @@ assert.throws(()=>api.validate({version:1,cards:{},session:{cardId:'p04',seed:1,
 const blank=api.validate(null,Object.keys(deck));assert.equal(Object.keys(blank.cards).length,0);
 let questionCount=0;
 for(const lesson of lessons){const card=deck[lesson.id];
- for(const topic of ['love','career','study'])for(const position of ['state','tension','advice'])for(const kind of api.skills.filter(x=>x!=='recall')){
-   const step=api.makeStep(kind,card,lesson,deck,{topic,position});
+ for(const topic of ['love','career','study'])for(const position of ['state','tension','advice'])for(const kind of api.skills.filter(x=>x!=='recall'))for(const variant of [-1,0,1,2]){
+   const step=api.makeStep(kind,card,lesson,deck,{topic,position,...(variant>=0?{playVersion:2,variant}:{})});
    assert(step.options.some(x=>x.id===step.correct),`${card.id}/${kind} answer exists`);
    assert.equal(new Set(step.options.map(x=>x.id)).size,step.options.length);
    assert.equal(new Set(step.options.map(x=>x.text)).size,step.options.length,`${card.id}/${kind} unique alternatives`);
-   assert(step.explanation.length>15);if(kind==='application')assert.equal(step.options.find(x=>x.id===step.correct).text,card.contexts[topic][position]);questionCount++;
+   assert(step.explanation.length>15);if(kind==='application')assert.equal(step.kind==='place'?step.statement:step.options.find(x=>x.id===step.correct).text,card.contexts[topic][position]);questionCount++;
  }
 }
 console.log(JSON.stringify({status:'PASS',model:'SM-2 intervals, lapse reset, same-day guard, 78 full card plans across 9 contexts',questionsChecked:questionCount}));
+// Recommendation, due-review separation, and legacy session validation use the
+// actual bridge, with no browser storage or random first-card assumptions.
+let journeyData=api.blank(),destination='',clockAt=epoch;
+model.document={addEventListener(){}};
+model.structuredClone=structuredClone;
+const journey=api.create({esc:x=>x,img:()=>'',icon:()=>'',go:x=>{destination=x;},toast:()=>{},now:()=>clockAt,cardMap:deck,get:()=>journeyData,set:x=>{journeyData=x;}});
+assert.equal(journey.unlearned().length,78);
+journey.new();const firstId=journeyData.session.cardId;
+assert.equal(journeyData.session.playVersion,2);assert.equal(journeyData.session.mode,'new');assert.equal(journey.unlearned().length,77);
+journeyData.session.index=1;journey.start();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.index,1);
+journey.new();assert.notEqual(journeyData.session.cardId,firstId);assert(journeyData.paused[firstId]);
+journey.start(firstId);assert.equal(journeyData.session.index,1);assert.equal(journeyData.session.playVersion,2);
+journeyData.cards[firstId].rounds=1;journeyData.cards[firstId].skills.meaning=api.rate(null,4,epoch-DAY);journeyData.session.complete=true;
+assert(journey.due().includes(firstId));assert.notEqual(journey.recommendation(),firstId);journey.new();assert.equal(journeyData.session.mode,'new');journey.review();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.mode,'review');
+const migrated=api.validate(journeyData,Object.keys(deck));assert.equal(migrated.session.playVersion,2);
+delete journeyData.session.playVersion;delete journeyData.session.variant;assert.equal(api.validate(journeyData,Object.keys(deck)).session.playVersion,undefined,'old question semantics must remain unchanged');
+for(const id of Object.keys(deck))journeyData.cards[id]||={introducedAt:epoch,lastAt:epoch,rounds:0,skills:{}};
+assert.equal(journey.unlearned().length,0);assert.equal(journey.recommendation(),null);journey.new();assert.equal(destination,'library');
+const bridge={esc:x=>x,img:()=>'',icon:()=>'',go:()=>{},toast:()=>{},now:()=>epoch,cardMap:deck,get:()=>api.blank(),set:()=>{}};
+model.Math=Object.create(Math);model.Math.random=()=>0;
+const alternateA=api.create(bridge).recommendation();model.Math.random=()=>0.999999;
+const alternateB=api.create(bridge).recommendation();assert.notEqual(alternateA,alternateB,'new-card recommendations must not have a fixed prefix');
+if(process.env.JOURNEY_MODEL_ONLY==='1')process.exit(0);
 const key='tarot-pocket-demo-v1',state=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
 const url=process.env.DEMO_URL||'http://127.0.0.1:8765/tarot-demo.html';
 const session=async p=>(await state(p)).journey.session;
@@ -36,7 +59,11 @@ async function complete(p,lang){
    const s=await session(p),kind=s.steps[s.index];if(lang==='en')await english(p);
    if(kind==='intro'){await p.locator('[data-journey=next]').click();continue;}
    if(kind==='recall'){await p.locator('[data-journey=reveal]').click();await p.locator('[data-journey=rate][data-value="4"]').click();}
-   else{const id=kind==='compare'?s.cardId:kind==='application'?s.position:'yes';await p.locator(`[data-journey=answer][data-value="${id}"]`).click();assert.match(await p.locator('.journey-feedback>strong').innerText(),lang==='en'?/Correct|correct|right/:/答对/);}
+   else{const id=kind==='compare'?s.cardId:kind==='application'?s.position:'yes';
+     if(kind==='application'&&s.playVersion===2){assert.equal(await p.locator('.journey-board .journey-slot').count(),3,'application shows labelled, visible positions');const viewport=p.viewportSize();for(const width of [320,390,430]){await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'visual spread must fit narrow phones');}await p.setViewportSize(viewport);if(process.env.JOURNEY_SCREENSHOTS)await p.screenshot({path:path.join(process.env.JOURNEY_SCREENSHOTS,`journey-application-${lang}.png`),fullPage:true});}
+     await p.locator(`[data-journey=answer][data-value="${id}"]`).click();assert.match(await p.locator('.journey-feedback>strong').innerText(),lang==='en'?/Correct|correct|right/:/答对/);
+     if(kind==='application'&&s.playVersion===2){const saved=await session(p);await p.locator('[data-journey=position]').first().click();assert.deepEqual((await session(p)).answers,saved.answers,'post-answer position exploration does not regrade');assert.equal(await p.locator('.journey-slot.occupied').count(),1);}
+   }
    if(lang==='en')await english(p);await p.locator('[data-journey=next]').click();count++;
  }
  return count;
@@ -45,23 +72,32 @@ async function complete(p,lang){
 try{
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',acceptDownloads:true}),p=await context.newPage();p.setDefaultTimeout(15000);p.setDefaultNavigationTimeout(120000);
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(url);await p.locator('[data-home-choice][data-journey=continue]').click();assert.equal((await session(p)).cardId,'p04');
+ await p.goto(url);await p.locator('[data-home-choice][data-journey=continue]').click();const firstCardId=(await session(p)).cardId;assert(deck[firstCardId]);
+ assert.equal(await p.locator('.journey-family-cards img').count(),firstCardId[0]==='m'?2:4);
+ const introAnswers=Object.keys((await session(p)).answers).length;
+ await p.locator('[data-journey=family]').last().click();assert.equal(Object.keys((await session(p)).answers).length,introAnswers,'foundation exploration does not count as an answer');
  await p.locator('[data-journey=next]').click();
+ assert.equal(await p.locator('.picture-options img').count(),3,'new lessons use actual card images as choices');
+ await p.locator('.picture-options img').evaluateAll(images=>Promise.all(images.map(image=>image.decode())));
+ assert.equal(await p.locator('.picture-options img').first().evaluate(image=>getComputedStyle(image).animationName),'none','reduced motion retains a static image');
+ await p.emulateMedia({reducedMotion:'no-preference'});assert.equal(await p.locator('.picture-options img').first().evaluate(image=>getComputedStyle(image).animationName),'learning-arrive');await p.emulateMedia({reducedMotion:'reduce'});
+ if(process.env.JOURNEY_SCREENSHOTS)await p.screenshot({path:path.join(process.env.JOURNEY_SCREENSHOTS,'journey-picture-zh.png'),fullPage:true});
  await p.locator('[data-journey=answer]:not([data-value=yes])').first().click();assert.match(await p.locator('.journey-feedback>strong').innerText(),/答错/);
  let before=await session(p);assert.equal(Object.keys(before.answers).length,1);
  await p.reload();await p.locator('[data-home-choice][data-journey=continue]').click();assert.deepEqual((await session(p)).answers,before.answers,'reload retains exact answer and does not double-score');
  await p.locator('[data-journey=next]').click();await complete(p,'zh');
- let data=(await state(p)).journey;assert.equal(data.cards.p04.rounds,1);assert.equal(Object.keys(data.cards.p04.skills).length,6);assert.equal(data.cards.p04.skills.image.grade,2);assert.equal(api.level(data.cards.p04),'待巩固');
- await p.locator('[data-journey=next-card]').click();assert.notEqual((await session(p)).cardId,'p04');
+ let data=(await state(p)).journey;assert.equal(data.cards[firstCardId].rounds,1);assert.equal(Object.keys(data.cards[firstCardId].skills).length,6);assert.equal(data.cards[firstCardId].skills.image.grade,2);assert.equal(api.level(data.cards[firstCardId]),'待巩固');
+ await p.locator('[data-journey=next-card]').click();assert.notEqual((await session(p)).cardId,firstCardId);
  const nextId=(await session(p)).cardId;await p.locator('[data-journey=next]').click();before=await session(p);
  await p.locator('[data-action=nav][data-page=home]').click();await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=filter][data-value=全部]').click();
- await p.locator('[data-action=card][data-id=c08]').click();await p.locator('[data-journey=start][data-id=c08]').click();assert((await state(p)).journey.paused[nextId]);
+ const chosenId=Object.keys(deck).find(id=>![nextId,firstCardId,'p14'].includes(id));
+ await p.locator(`.library-card[data-id=${chosenId}]`).click();await p.locator(`[data-journey=start][data-id=${chosenId}]`).click();assert((await state(p)).journey.paused[nextId]);
  await p.locator('[data-action=nav][data-page=home]').click();await p.locator('.bottomnav [data-page=library]').click();await p.locator(`.library-card[data-id=${nextId}]`).click();await p.locator(`[data-journey=start][data-id=${nextId}]`).click();assert.equal((await session(p)).index,before.index,'switching cards retains each unfinished place');
  await complete(p,'zh');
  await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=filter][data-value=全部]').click();
- await p.locator('[data-action=card][data-id=p14]').click();await p.locator('[data-journey=start][data-id=p14]').click();await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('html').getAttribute('lang'),'en');await complete(p,'en');await english(p);
+ await p.locator('.library-card[data-id=p14]').click();await p.locator('[data-journey=start][data-id=p14]').click();await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('html').getAttribute('lang'),'en');await complete(p,'en');await english(p);
  // Actual delayed review and all nine topic/position combinations are distinct.
- await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await p.locator('.advanced-learning>summary').click();await p.locator('.advanced-learning details>summary').last().click();await p.locator('[data-action=advance]').click();await p.locator('.bottomnav [data-page=home]').click();await p.locator('[data-home-choice][data-journey=continue]').click();assert.equal((await session(p)).mode,'review');assert.equal((await session(p)).steps[0],'recall');await complete(p,'en');
+ await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await p.locator('.advanced-learning>summary').click();await p.locator('.advanced-learning details>summary').last().click();await p.locator('[data-action=advance]').click();await p.locator('.bottomnav [data-page=home]').click();await p.locator('[data-journey=review]').first().click();assert.equal((await session(p)).mode,'review');assert.equal((await session(p)).steps[0],'recall');await complete(p,'en');
  data=(await state(p)).journey;assert(Object.values(data.cards).some(r=>Object.values(r.skills).some(x=>x.passes>0)));
  await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await english(p);
  const dl=p.waitForEvent('download');await p.locator('[data-action=export]').click();const download=await dl,backup=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.deepEqual(backup.state.journey,data);

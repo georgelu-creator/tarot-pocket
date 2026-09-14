@@ -4,6 +4,16 @@ Changes describe the product included in each version. Deployment and device acc
 
 版本记录描述该版产品内容；部署与实机验收分别记录，出现一个版本条目不代表两者都已完成。
 
+## v1.1.0 — Choice and ritual / 自主学牌与抽牌仪式
+
+- Choose any of 78 cards; unseen-only new recommendations, exact continuation and due review are separate. / 78 张自由选择，新牌推荐只含未开始内容，继续与到期复习明确分开。
+- Image choices, real four-suit comparisons and visible placement exercises vary the learning action. Reference sheets, search and comparisons preserve context and focus. / 图像选择、四花色对照和可见放牌训练改变学习动作；资料切换、搜索与对比保留上下文和焦点。
+- 23 scenario spreads plus daily tarot; inspect all roles before using a spread. Shuffle, cut, fan selection and reveal have meaningful animations with reduced-motion support. / 23 个场景牌阵加日运，先看全部位置；洗、切、挑、翻有对应动画及减少动态支持。
+- Every reading stage can exit and resume; a daily draw stays fixed within the local date. References contain no teaching task. / 抽牌每步可退可续，日签当天固定，解读不混教学题。
+- Explicit update page escapes old cached homepages, verifies all assets and preserves old progress. Existing storage keys and JSON backups remain compatible. / 独立更新页绕过旧首页缓存、核验完整资源并保留进度；存储键与 JSON 备份兼容。
+
+See [the experience contract](docs/EXPERIENCE_V1_1.md) and [actual handoff evidence](docs/HANDOFF.md). / 详见体验方案与实际接力证据。
+
 ## v1.0.0 — Continuous learning / 连续学习
 
 - All 78 cards now have seven-stage first lessons, card-specific visual explanations and memory anchors, close distractors, quiet recall, comparisons, contextual application and reversal practice. / 78 张牌均有七步初学、专属图像解释与助记、接近选项、静默回忆、对比、情境应用和逆位练习。

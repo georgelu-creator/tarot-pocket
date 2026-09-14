@@ -2,7 +2,13 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Delivered in v1.0.0 · 本版实现
+## Delivered in v1.1.0 · 本版实现
+
+Freely selectable learning, visual game variants, non-jumping reference sheets, 23 scenario spreads, daily tarot and a complete shuffle/cut/pick/reveal ritual. Safe upgrade preserves old records. [Detailed contract](EXPERIENCE_V1_1.md).
+
+自由选牌、视觉玩法变式、连续资料弹层、23 场景牌阵、日运与完整洗切抽翻仪式；安全升级保留旧记录。
+
+## Retained from v1.0.0 · 保留能力
 
 - 78 seven-stage card courses with independent memory anchors, visual evidence, recall, comparisons and application. / 78 套七步课程，每张牌有独立助记、图像依据、回忆、辨析和应用。
 - Per-skill SM-2 scheduling, same-day retry protection, resumable card sessions and continuous next-card learning. / 按能力点安排 SM-2 复习，限制同日晋级，支持中断续学与连续学下一张。
