@@ -4,7 +4,7 @@
   "outputDirectory": ".edgeone-ai/public",
   "nodeVersion": "22.11.0",
   "cloudFunctions": {
-    "overseasRegions": ["ap-singapore"],
-    "nodejs": {"maxDuration": 120}
+    "regions": {"overseas": ["ap-singapore"]},
+    "maxDuration": 120
   }
 }

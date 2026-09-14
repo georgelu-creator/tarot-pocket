@@ -139,9 +139,9 @@ Errors use `{ "error": "CODE" }`:
 | `BUSY` | 503 | 同时处理的请求已到上限 / concurrency limit reached |
 | `TIMEOUT` | 504 | 达到时间上限 / timeout |
 
-取消页面请求会向上游发送取消信号，但供应商已开始的计算仍可能计费。离线参考和已保存的解读应继续可读；不得因为联网失败清空牌桌或学习记录。
+普通 Node HTTP 服务会把取消信号传给上游；当前 EdgeOne 打包器不保留浏览器的取消信号，云函数中的上游请求可能继续到完成或 90 秒超时。页面仍可立即退出等待，供应商已开始的计算可能计费。离线参考和已保存的解读继续可读；不得因为联网失败清空牌桌或学习记录。
 
-Client cancellation aborts the upstream request, but work already performed may still be billable. Offline references and saved readings should remain readable; a network failure must never erase the card table or learning records.
+The Node HTTP transport propagates cancellation upstream. The current EdgeOne bundler does not preserve browser abort signals, so a cloud request may continue until completion or its 90-second deadline after the page stops waiting. Work already performed may be billable. Offline references and saved readings remain readable; a network failure must never erase the card table or learning records.
 
 ## 内容与隐私 / Content and privacy
 

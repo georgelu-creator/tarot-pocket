@@ -23,8 +23,8 @@ root `edgeone.json` configuration is for that AI project:
   "outputDirectory": ".edgeone-ai/public",
   "nodeVersion": "22.11.0",
   "cloudFunctions": {
-    "overseasRegions": ["ap-singapore"],
-    "nodejs": {"maxDuration": 120}
+    "regions": {"overseas": ["ap-singapore"]},
+    "maxDuration": 120
   }
 }
 ```
@@ -46,12 +46,19 @@ repository root or its `server` directory.
 | `cloud-functions/api/reading.js` | `POST /api/reading` |
 | `cloud-functions/api/health.js` | `GET /api/health` |
 
-Handlers receive a Web `Request` and return a Web `Response`. Only the platform's
+Handlers receive a platform-compatible `Request` and return a Web `Response`.
+Export an explicit `onRequest` function: the platform source scanner otherwise
+ignores a default-exported factory expression. The current builder shadows
+`request.body` with parsed data, so the adapter reads the native body stream to
+retain byte limits. It also evaluates entry modules per request; a process-local
+Symbol cache preserves the shared handler and warm-instance counters. Only the platform's
 `context.env` / process environment supplies configuration; only
 `context.clientIp` supplies the rate counter's client address. Request headers
 cannot override either. No HTTP listener is opened inside a function.
 
-函数接收 Request 并返回 Response。配置仅来自平台运行时环境变量；客户端地址
+入口必须显式导出 `onRequest`；直接默认导出工厂调用会被构建器忽略。平台会覆盖
+`request.body`，因此适配层读取原生数据流以保留字节限制；固定 Symbol 缓存用于
+保留热实例计数。配置仅来自平台环境变量；客户端地址
 仅使用平台提供的 `context.clientIp`，不信任请求中的转发 IP。云函数内部不监听端口。
 
 ## Private runtime configuration / 私有运行时配置
@@ -99,6 +106,15 @@ boundary. Before broad public multi-user access, add a shared atomic quota store
 不能当作整个项目的每日费用上限。严格控费需要供应商侧余额或预算限制；开放给
 大量用户前需增加共享的原子配额存储。
 
+The current platform wrapper removes `request.signal`. Browser cancellation
+therefore stops the browser wait, but cannot be promised to cancel an already
+started cloud model call; the server deadline still aborts it after the configured
+timeout. The ordinary Node HTTP service propagates client disconnects.
+
+当前平台会移除 `request.signal`。浏览器取消只能停止等待，不能保证终止已经
+开始的云端模型调用；服务端仍会在配置的超时截止时取消。普通 Node HTTP 服务
+保留客户端断连取消。
+
 ## Verification / 验证
 
 ```sh
@@ -106,6 +122,26 @@ node tools/build_edgeone_ai.cjs
 node tools/check_cloud_functions.cjs
 node tools/check_ai_server.cjs
 ```
+
+When the official EdgeOne CLI is available, also build and test its actual bundle:
+
+有官方 EdgeOne CLI 时，还应直接检验平台打包产物：
+
+```sh
+edgeone makers build
+node tools/check_cloud_functions.cjs --bundle
+```
+
+This requires local port 9000 to be free. It verifies both generated routes and
+runs the real platform wrapper with a mocked provider, including its modified
+Request behavior and preservation of warm-instance counters. No paid API is
+called. The generated `.edgeone/` directory is private and ignored: a platform
+bundle may contain build environment values and must never be published as a
+static asset.
+
+此项验证需要本机9000端口空闲，会运行真实平台封装，但模型仍为模拟上游。
+`.edgeone/` 是忽略的私有生成目录；平台函数包可能包含构建环境值，不能作为
+静态资源公开。
 
 These checks use synthetic credentials and mock providers. They validate the
 actual cloud entrypoint imports, all current/legacy positions, auth, exact CORS,
@@ -124,6 +160,11 @@ prove that a cloud deployment or a paid provider call has succeeded.
   runtime, overseas regions and a maximum execution duration of 120 seconds.
 - [edgeone.json](https://pages.edgeone.ai/document/edgeone-json): build/install
   commands, static output, build Node version and function deployment settings.
+
+The deployed CLI 1.6.28 accepts `cloudFunctions.maxDuration` and
+`cloudFunctions.regions.overseas`; the older nested `nodejs.maxDuration` and
+`overseasRegions` examples trigger deprecation mappings. Actual generated route
+metadata is part of deployment verification.
 
 The build Node version and function Node runtime are separate platform settings.
 Deployment must still verify the actual function bundle and runtime environment.

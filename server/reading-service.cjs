@@ -335,8 +335,13 @@ function createReadingServer(options = {}) {
 }
 
 async function readWebBody(request, signal) {
-  if (!request.body) fail('INVALID_REQUEST');
-  const reader = request.body.getReader(), chunks = [];
+  // EdgeOne preserves the native Request but shadows .body with parsed JSON.
+  // Read its native stream to retain byte limits and malformed-JSON handling.
+  const body = request instanceof Request
+    ? Object.getOwnPropertyDescriptor(Request.prototype, 'body').get.call(request)
+    : request.body;
+  if (!body || typeof body.getReader !== 'function') fail('INVALID_REQUEST');
+  const reader = body.getReader(), chunks = [];
   let total = 0;
   const cancel = () => { void reader.cancel().catch(() => {}); };
   signal.addEventListener('abort', cancel, {once: true});
