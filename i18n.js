@@ -15,6 +15,7 @@
   const count = (n,word) => `${n} ${word}${Number(n)===1?'':'s'}`;
   // Whole-sentence rules keep dynamic grammar out of shared glossary entries.
   const patterns = [
+    [/^这张牌在(现状|阻碍|建议)位，哪种表达更回应当前问题？$/,m=>`In the ${translate(m[1]).toLowerCase()} position, which reading best addresses this question?`],
     [/^(\d+) 组记录 · (\d+) 张日签$/,m=>`${count(m[1],'saved reading')} · ${count(m[2],'daily card')}`],
     [/^第 (\d+) 个位置$/,m=>`Position ${m[1]}`],
     [/^选择第 (\d+) 张牌背$/,m=>`Choose card back ${m[1]}`],

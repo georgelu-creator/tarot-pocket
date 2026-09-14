@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),han=/[\u3400-\u9fff]/;
-const files=['content.js','learning-content.js','spread-content.js','reading-deck.js','curriculum-content.js'];
+const files=['content.js','learning-content.js','spread-content.js','reading-deck.js','curriculum-content.js','guided-major.js','guided-minor.js'];
 const dict=Object.assign({},...fs.readdirSync(path.join(root,'locales')).filter(n=>/^en-.*\.json$/.test(n)).sort().map(n=>JSON.parse(fs.readFileSync(path.join(root,'locales',n),'utf8'))));
 const source=new Set();
 function walk(v){if(typeof v==='string'&&han.test(v))source.add(v);else if(v&&typeof v==='object')Object.values(v).forEach(walk);}

@@ -4,30 +4,30 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.3.0/tarot-pocket-v1.3.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.4.0/tarot-pocket-v1.4.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![v1.3.0](https://img.shields.io/badge/release-v1.3.0-60465C)
+![v1.4.0](https://img.shields.io/badge/release-v1.4.0-60465C)
 ![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.3.0 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。手机打开网页即可使用，下载离线内容后可添加主屏幕，在旅途中继续学习。[本次体验设计与完整学习方案](docs/EXPERIENCE_V1_3.md)。
+v1.4.0 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。手机打开网页即可使用，下载离线内容后可添加主屏幕，在旅途中继续学习。[本次体验设计与完整学习方案](docs/EXPERIENCE_V1_4.md)。
 
 **已经用过旧版？** 请打开[保留记录更新](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh)，选择“检查并下载新版”，完成后点“保留记录，进入新版”。无需清缓存或删除学习进度。
 
-v1.3 新增有停留节奏的洗牌／切牌／翻牌、六张大牌背挑选、画面与含义连接、双牌配对，以及完整 78 张图文手册。[查看真实界面录屏](docs/images/ritual-v13.webm)。
+v1.4 把明显的识图题改成 78 张逐步理解课程：从动作推导、近义辨析、同题换位，到遮住图与提示独立回忆。首页随机学新牌，继续上次单独保留。抽牌保留有停留节奏的洗牌／切牌／翻牌。[查看真实界面录屏](docs/images/ritual-v13.webm)。
 
 ## 让一张牌，真正留在记忆里
 
 只背“星币四＝抓紧不放”，很容易忘。这里会带你看清人物的手与脚，先在脑中回忆，再分辨接近的解释，联系土元素与数字四，最后把同一张牌放进不同牌位。
 
-你需要选择解释，也需要选择依据。答错会明确显示错误，并解释差异；静默回忆单独记录自评，自由解读不会被当作客观预测题评分。
+有明确判据的题，答错会指出所选解释错在哪里；开放的牌位应用先在心里解一句，再核对参考并自评。最后遮住牌图与线索，自己回忆；展开提示会记成辅助回忆。
 
-首页点 **开始学习**，直接进入推荐的一张牌；也可以在 **学牌** 中自己挑选。每张牌都有认识、画面依据、近义辨析、静默回忆、相似牌、情境应用和逆位七个环节。完成后继续下一张；中途暂停、换牌、关闭网页，都保留对应进度。
+首页点 **随机学一张**，优先遇见还没开始的牌；**接着上次**单独保留，也可以在 **学牌** 中自己挑选。每张牌都有观察、推导、理解、辨析、换位、逆位和回忆七个环节。完成后继续下一张；中途暂停、换牌、关闭网页，都保留对应进度。
 
-<img src="docs/images/practice.png" width="390" alt="练习：观察牌面、作出判断，再找到支持它的依据">
+<img src="docs/images/practice-v14.png" width="390" alt="练习：观察牌面、作出判断，再找到支持它的依据">
 
 ## 现在就能使用
 
@@ -45,7 +45,7 @@ v1.3 新增有停留节奏的洗牌／切牌／翻牌、六张大牌背挑选、
 
 牌阵按**感情、工作、学业、生活、自我与选择**分类。每个牌阵先展示真实布局缩略图和全部位置，再进入洗牌、切牌与抽牌；另有每天保留同一张牌的**塔罗日运**。
 
-<img src="docs/images/reading.png" width="390" alt="抽牌：先看牌阵缩略图和能力范围，再输入自己的问题">
+<img src="docs/images/reading-guide-v14.png" width="390" alt="抽牌：先看牌阵缩略图和能力范围，再输入自己的问题">
 <img src="docs/images/ritual-select-v13.png" width="280" alt="Lift a candidate and confirm / 大牌背候选与确认"><img src="docs/images/dossier-v13.png" width="280" alt="Illustrated card handbook / 图文单牌手册">
 
 
@@ -58,7 +58,7 @@ v1.3 新增有停留节奏的洗牌／切牌／翻牌、六张大牌背挑选、
 3. Safari 分享菜单选择 **添加到主屏幕**。从主屏幕打开后，再检查一次离线状态。
 4. 出发前在实际手机上开飞行模式，退出重开、查看陌生牌，并确认记录保留。
 
-页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.3.0/tarot-pocket-v1.3.0.html)，用支持本地 JavaScript 的浏览器打开。
+页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.4.0/tarot-pocket-v1.4.0.html)，用支持本地 JavaScript 的浏览器打开。
 
 **网页内容和个人记录是两回事。** 浏览器可能清理网站数据；换设备或浏览器前，在记录页导出 JSON。Git 只同步源码，不上传私人问题和学习记录。学习、课程、图片和语言包均本地运行，无账号、外部字体或统计。主动选择 AI 解读时，仅发送本次问题与实际抽牌；密钥只在服务端配置。见 [AI 服务配置](docs/AI_SERVICE.md)。
 

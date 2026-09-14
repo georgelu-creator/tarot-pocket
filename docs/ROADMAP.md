@@ -2,7 +2,13 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.2.0 · 本版实现
+## Implemented in v1.4.0 · 本版实现
+
+Random new learning is separate from resume. All 78 cards now have authored causal and contextual-reversal questions, open teach-back, same-question position changes and hidden-cue recall. The compact spread guide and visible AI connection form reduce navigation. See [v1.4 experience](EXPERIENCE_V1_4.md).
+
+随机新学与继续分开。78 张牌新增专属因果与逆位情境题，配合开放解释、同题换位及真正遮住线索的回忆。牌阵说明紧凑，联网解读明确连接码入口。下一步以实机与学习迁移验证为主。
+
+## Previous v1.2.0 checkpoint · 前版记录
 
 Seven sourced spread structures and daily tarot replace the expanded authored catalog. Nineteen earlier templates remain available only when reopening old records. Guides are compact; whole-spread readings precede optional, dismissible card details. DeepSeek/OpenAI integration is implemented and a live DeepSeek smoke check passed; public hosting remains a separate deployment check. See [spread sources](SPREAD_SOURCES.md) and [AI service](AI_SERVICE.md).
 

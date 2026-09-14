@@ -469,3 +469,50 @@
 
 .ritual-question{font-size:12px;margin:6px 0 4px;color:var(--muted);border-bottom:1px solid var(--line)}.ritual-question>summary{display:flex;gap:12px;align-items:center;min-height:44px;cursor:pointer;list-style:none}.ritual-question>summary::after{content:'+';font-size:18px;margin-left:auto}.ritual-question[open]>summary::after{content:'−'}.ritual-question strong{font-weight:500;white-space:nowrap;color:var(--ink)}.ritual-question>summary>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.ritual-question>p{line-height:1.7;margin:0 0 12px}.ritual-selection-tray .tray-card.is-reversed>img{transform:rotate(180deg)}
 @media(max-width:699px){.ritual-selection-heading .eyebrow{display:none}.ritual-selection-tray{margin:10px 0 4px;padding-bottom:4px}.ritual-selection-tray .tray-card{width:23px;height:37px;margin-bottom:5px}.ritual-selection-tray .tray-position{max-height:27px;font-size:9px}.ritual-card-window.reading-deck{max-width:276px;gap:12px 17px;padding-block:12px 8px}.ritual-selection-action p{margin-block:0 6px}.ritual-reveal .ritual-selection-tray{margin-top:15px}}
+
+/* The layout itself is the selector; only the chosen position expands. */
+.compact-spread-guide{max-width:610px;margin-inline:auto}
+.compact-spread-guide .reading-sticky-head{margin-bottom:10px;padding-block:8px}
+.compact-spread-guide .reading-guide-overview{display:block;margin:0 0 12px}
+.compact-spread-guide .reading-selected>p{font-size:14px;line-height:1.65;margin:0 0 10px}
+.guide-position-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 10px}
+.guide-position-heading h2{font-size:15px;margin:0}.guide-position-heading>span{font-size:12px;color:var(--muted)}
+.compact-spread-guide .spread-position-list{margin:0;padding:12px;background:var(--soft);border-radius:14px}
+.compact-spread-guide .reading-guide-diagram .reading-board{max-width:252px;width:100%;gap:7px;margin:0 auto}
+.compact-spread-guide .reading-guide-diagram .reading-board.layout-one{max-width:52px}
+.compact-spread-guide .reading-guide-diagram .reading-board.layout-one.guide-labelled{max-width:100px}
+.compact-spread-guide .reading-guide-diagram .reading-slot{display:block;width:100%;min-width:44px;min-height:44px;padding:0;border:0;border-radius:7px;text-align:center}
+.compact-spread-guide .reading-guide-diagram .reading-card{height:48px;width:44px;max-width:44px;aspect-ratio:auto;margin:auto}
+.compact-spread-guide .reading-guide-diagram .guide-labelled{gap:6px}
+.compact-spread-guide .reading-guide-diagram .guide-labelled .reading-card{height:44px;border:0;background:transparent;border-radius:0}
+.compact-spread-guide .reading-guide-diagram .guide-labelled .reading-label{display:block;width:100%;height:auto;min-height:14px;margin:4px 0 0;border:0;border-radius:0;background:transparent;font:400 11px/14px var(--font-body);color:var(--muted);overflow-wrap:normal}
+.compact-spread-guide .reading-guide-diagram .guide-labelled .active .reading-label{color:var(--accent);font-weight:600}
+.compact-spread-guide .reading-guide-diagram .reading-placeholder{display:grid;place-items:center;width:100%;height:100%;border-radius:7px;background:var(--paper);border:1px solid var(--control-line);color:var(--accent);outline:0}
+.compact-spread-guide .reading-guide-diagram .reading-placeholder b{font-size:14px;font-weight:600}
+.compact-spread-guide .reading-slot.active .reading-placeholder{color:var(--paper);background:var(--accent);border-color:var(--accent);box-shadow:0 2px 8px #382b3020}
+.compact-spread-guide .reading-slot.active:not(.revealed) .reading-back{outline:0}
+.compact-spread-guide .reading-slot:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.compact-spread-guide .reading-guide-position{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start;min-height:68px;margin:8px 0}
+.guide-position-number{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--accent);font-size:13px}
+.compact-spread-guide .reading-guide-position h2{font:600 14px/1.6 var(--font-body);margin:0 0 3px}
+.compact-spread-guide .reading-guide-position p{font-size:13px;line-height:1.6;margin:0;color:var(--muted)}
+.compact-spread-guide .reading-source,.guide-all-positions{margin:0;border:0;border-top:1px solid var(--line);padding:0;font-size:13px}
+.compact-spread-guide details>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;min-height:44px;padding:9px 0;color:var(--muted)}
+.compact-spread-guide details>summary::after{content:'＋';font-size:16px}.compact-spread-guide details[open]>summary::after{content:'−'}
+.guide-all-positions table{border-collapse:collapse;width:100%;margin:0 0 14px;font-size:12px;line-height:1.65;text-align:left}
+.guide-all-positions th,.guide-all-positions td{vertical-align:top;padding:8px 6px;border-bottom:1px solid var(--line)}
+.guide-all-positions th:first-child{width:35%;font-weight:500}.guide-all-positions thead{color:var(--muted)}
+.compact-spread-guide .reading-source>p{margin:0 0 8px}.compact-spread-guide .reading-source>a{display:inline-block;padding:0 0 15px}
+.reading-ai .ai-connection{margin:12px 0 0;color:var(--ink)}
+.ai-connection>p:first-child{font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 12px}
+.ai-connection label{margin:0 0 6px;gap:6px;font-size:14px;font-weight:500}
+.ai-connection input{min-height:46px;margin:0;font-weight:400}
+.ai-connection-meta{font-size:12px;color:var(--muted);margin-bottom:12px}
+.ai-connection-meta>small{font-size:11px}.ai-connection-help{margin-top:0}
+.ai-connection-help>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--accent);font-size:12px}
+.ai-connection-help>summary::after{content:'＋';margin-left:8px}.ai-connection-help[open]>summary::after{content:'−'}
+.ai-connection-help p{font-size:12px;line-height:1.75;margin:0 0 9px}
+.ai-connection-help code{overflow-wrap:anywhere;font-size:11px}
+.ai-connection-help a{display:inline-block;min-height:44px;padding:8px 0;color:var(--accent);text-decoration:underline}
+.reading-ai .ai-connection .ai-disclosure{font-size:11px;line-height:1.65;margin:10px 0 0;color:var(--muted)}
+@media(max-width:350px){.compact-spread-guide .reading-guide-diagram .reading-board{gap:5px}.compact-spread-guide .spread-position-list{padding:10px}.guide-position-heading>span{font-size:11px}}
