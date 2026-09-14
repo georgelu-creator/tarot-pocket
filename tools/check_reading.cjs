@@ -17,6 +17,20 @@ const KEY='tarot-reading-v3',LKEY='tarot-learning-units-v2';
 const state=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);
 const lstate=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),LKEY);
 const click=async(p,a,v)=>{if(a==='topic'&&await p.locator('.context-picker:not([open])').count())await p.locator('.context-picker>summary').click();await p.locator(`[data-reading="${a}"]${v?`[data-value="${v}"]`:''}`).first().click();};
+const openShuffledDeck=async p=>{
+ await click(p,'motion-continue');await click(p,'cut-default');await click(p,'motion-continue');await p.locator('[data-reading=pick]').first().waitFor();
+};
+const pick=async(p,index)=>{
+ const targetPage=Math.floor(index/6);
+ let page=Math.floor(Number(await p.locator('[data-reading=pick]').first().getAttribute('data-index'))/6);
+ while(page!==targetPage){page+=Math.sign(targetPage-page);await p.locator(`[data-reading=pick-page][data-index="${page}"]`).click();}
+ await p.locator(`[data-reading=pick][data-index="${index}"]`).click();
+ await p.locator(`[data-reading=pick-confirm][data-index="${index}"]`).click();
+};
+const reveal=async(p,index)=>{
+ await p.locator(`[data-reading=reveal-next][data-index="${index}"]`).first().click();
+ await p.locator(`[data-reading=reveal-place][data-index="${index}"]`).click();
+};
 const learn=(p,a,v)=>p.locator(`[data-learn="${a}"]${v?`[data-value="${v}"]`:''}`).last().click();
 const openUnits=async p=>{if(!await p.locator('.library-views').count())await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=library-view][data-value=spreads]').click();if(!await p.locator('[data-library-section=spreads] .advanced-learning[open]').count())await p.locator('[data-library-section=spreads] .advanced-learning>summary').click();};
 const width=async p=>assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
@@ -82,13 +96,14 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
    if(d.id==='study')assert.equal((await state(p)).settings.topic,'study');
    assert.equal(await p.locator('.context-picker').count(),0);assert.equal((await state(p)).settings.topic,d.topic);
    const reversals=d.id==='celtic';await p.locator('[data-reading-setting=reversals]').setChecked(reversals);
-   await click(p,'start');await p.locator('[data-reading=cut-default]').waitFor();await click(p,'cut-default');await p.locator('[data-reading=pick]').first().waitFor();
+   await click(p,'start');await openShuffledDeck(p);
    let s=(await state(p)).draft;assert.equal(s.pool.length,78);assert.equal(new Set(s.pool.map(c=>c.id)).size,78);assert.equal(s.questionText,question);
    if(!reversals)assert(s.pool.every(c=>c.reversed===false));
    assert(previousPools.every(pool=>pool!==s.pool.map(c=>c.id).join(',')));previousPools.push(s.pool.map(c=>c.id).join(','));
    assert.equal(await p.locator('.reading-slot img').count(),0,'unrevealed card identity must not be rendered');
+   assert.equal(await p.locator('.ritual-card-window img,.ritual-selection-tray img').count(),0,'selection candidates and placement tray do not disclose identities');
    for(let i=0;i<d.positions.length;i++){
-     await p.locator(`[data-reading=pick][data-index="${i*3}"]`).click();
+     await pick(p,i*3);
      if(i===0&&d.id==='three'){
        const before=(await state(p)).draft;await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
        const after=(await state(p)).draft;assert.deepEqual(after.pool,before.pool);assert.deepEqual(after.picked,before.picked);
@@ -96,7 +111,7 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
      }
    }
    assert.equal(new Set((await state(p)).draft.picked).size,d.positions.length);
-   for(let i=0;i<d.positions.length;i++)await p.locator(`[data-reading=card][data-index="${i}"]`).click();
+   for(let i=0;i<d.positions.length;i++)await reveal(p,i);
    s=(await state(p)).draft;assert.equal(s.phase,'read');assert.equal(s.revealed.length,d.positions.length);
    await p.locator('.reading-slot img').evaluateAll(ims=>Promise.all(ims.map(im=>im.decode())));
    assert.equal(await p.locator('.reading-slot img').count(),d.positions.length);
@@ -122,7 +137,9 @@ const width=async p=>assert(await p.evaluate(()=>document.documentElement.scroll
  const upload=b=>p.locator('#import-file').setInputFiles({name:'reading.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(b))});
  await upload({...backup,reading:{version:0}});await p.locator('.toast').filter({hasText:'无法导入'}).waitFor();assert.equal((await lstate(p)).history.length,0,'bad reading section must not partly restore learning');
  await upload(backup);await p.locator('[data-action=confirm-import]').click();assert.deepEqual(await state(p),backup.reading);
- await ctx.setOffline(true);await p.locator('.bottomnav [data-page=reading]').click();await click(p,'new');await click(p,'guide','three');await click(p,'use-spread','three');await p.locator('[data-reading-question]').fill('离线时，我现在最值得先处理的卡点是什么？');await click(p,'start');await p.locator('[data-reading=cut-default]').waitFor();await click(p,'cut-default');await p.locator('[data-reading=pick]').first().waitFor();await p.locator('[data-reading=pick][data-index="0"]').click();await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),0,'revealing does not open a single-card interpretation');await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),1);
+ await ctx.setOffline(true);await p.locator('.bottomnav [data-page=reading]').click();await click(p,'new');await click(p,'guide','three');await click(p,'use-spread','three');await p.locator('[data-reading-question]').fill('离线时，我现在最值得先处理的卡点是什么？');await click(p,'start');await openShuffledDeck(p);
+ for(let i=0;i<3;i++)await pick(p,i);
+ await p.locator('[data-reading=reveal-next][data-index="0"]').first().click();assert.equal(await p.locator('.reading-interpretation').count(),0,'revealing does not open a single-card interpretation');await p.locator('[data-reading=reveal-place][data-index="0"]').click();for(let i=1;i<3;i++)await reveal(p,i);assert.equal(await p.locator('.reading-interpretation').count(),0,'whole spread opens before optional single-card interpretation');await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),1);
  await p.locator('[data-reading=pause]').click();await p.screenshot({path:'/tmp/tarot-v3-home.png',fullPage:true});
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  console.log(JSON.stringify({status:'PASS',deck:78,spreads:8,legacySpreads:19,newLessonSteps:24,checks:['three-item navigation','explicit wrong and partially-correct lesson verdicts','all context lessons remain reachable from library','7 sourced spread guides and capacity notes','optional question with context already in the spread','domain and position specific interpretations','role-aware five-section reading separated from teaching','full-deck unique shuffling and no replacement','no premature card face in DOM','resume without reshuffle','upright mode','all 7 sourced spreads','small and desktop widths','question and history persist','no drawing counted as study mastery','backup/reset/atomic restore','offline live draw','no external requests or console errors'],limitations:['real iPhone not tested','context interpretations are authored prompts, not bespoke predictions']},null,2));

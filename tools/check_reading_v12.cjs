@@ -1,6 +1,23 @@
 /* Curated positions, dense guide UI, optional references, and explicit AI requests. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),KEY='tarot-reading-v3';
+const openShuffledDeck=async p=>{
+ await p.locator('[data-reading=motion-continue]').click();
+ await p.locator('[data-reading=cut-default]').click();
+ await p.locator('[data-reading=motion-continue]').click();
+ await p.locator('[data-reading=pick]').first().waitFor();
+};
+const pick=async(p,index)=>{
+ const targetPage=Math.floor(index/6);
+ let page=Math.floor(Number(await p.locator('[data-reading=pick]').first().getAttribute('data-index'))/6);
+ while(page!==targetPage){page+=Math.sign(targetPage-page);await p.locator(`[data-reading=pick-page][data-index="${page}"]`).click();}
+ await p.locator(`[data-reading=pick][data-index="${index}"]`).click();
+ await p.locator(`[data-reading=pick-confirm][data-index="${index}"]`).click();
+};
+const reveal=async(p,index)=>{
+ await p.locator(`[data-reading=reveal-next][data-index="${index}"]`).first().click();
+ await p.locator(`[data-reading=reveal-place][data-index="${index}"]`).click();
+};
 (async()=>{
  const requests=[];let next='success',held=[];
  const server=http.createServer(async(req,res)=>{
@@ -33,8 +50,8 @@ const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),KEY='ta
    await p.locator('[data-reading=guide-back]').click();
   }
   await p.setViewportSize({width:390,height:844});await p.locator('[data-reading=guide][data-value="decision-five"]').click();await p.screenshot({path:'/tmp/tarot-v12-guide.png',fullPage:true});await p.locator('[data-reading=use-spread]').click();
-  await p.locator('[data-reading-question]').fill('两个课程安排应如何权衡？');await p.locator('[data-reading-option=optionA]').fill('周末上课');await p.locator('[data-reading-option=optionB]').fill('平日自学');await p.locator('[data-reading-setting=reversals]').check();await p.locator('[data-reading=start]').click();await p.locator('[data-reading=cut-default]').click();await p.locator('[data-reading=pick]').first().waitFor();
-  for(let i=0;i<5;i++)await p.locator(`[data-reading=pick][data-index="${i}"]`).click();for(let i=0;i<5;i++)await p.locator(`[data-reading=card][data-index="${i}"]`).click();
+  await p.locator('[data-reading-question]').fill('两个课程安排应如何权衡？');await p.locator('[data-reading-option=optionA]').fill('周末上课');await p.locator('[data-reading-option=optionB]').fill('平日自学');await p.locator('[data-reading-setting=reversals]').check();await p.locator('[data-reading=start]').click();await openShuffledDeck(p);
+  for(let i=0;i<5;i++)await pick(p,i);for(let i=0;i<5;i++)await reveal(p,i);
   assert.equal(await p.locator('.reading-slot.active').count(),0);assert.equal(await p.locator('.reading-interpretation').count(),0);assert.equal(requests.length,0,'never auto-send private questions');
   await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),1);assert(await p.locator('[data-reading-panel]').evaluate(e=>e.compareDocumentPosition(document.querySelector('[data-reading-completion]'))&Node.DOCUMENT_POSITION_PRECEDING));
   await p.locator('[data-reading=card][data-index="0"]').click();assert.equal(await p.locator('.reading-interpretation').count(),0);await p.locator('[data-reading=card][data-index="1"]').click();await p.locator('[data-reading=close-reference]').click();assert.equal(await p.locator('.reading-slot.active').count(),0);

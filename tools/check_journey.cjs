@@ -34,13 +34,13 @@ model.structuredClone=structuredClone;
 const journey=api.create({esc:x=>x,img:()=>'',icon:()=>'',go:x=>{destination=x;},toast:()=>{},now:()=>clockAt,cardMap:deck,get:()=>journeyData,set:x=>{journeyData=x;}});
 assert.equal(journey.unlearned().length,78);
 journey.new();const firstId=journeyData.session.cardId;
-assert.equal(journeyData.session.playVersion,2);assert.equal(journeyData.session.mode,'new');assert.equal(journey.unlearned().length,77);
+assert.equal(journeyData.session.playVersion,3);assert.equal(journeyData.session.mode,'new');assert.equal(journey.unlearned().length,77);
 journeyData.session.index=1;journey.start();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.index,1);
 journey.new();assert.notEqual(journeyData.session.cardId,firstId);assert(journeyData.paused[firstId]);
-journey.start(firstId);assert.equal(journeyData.session.index,1);assert.equal(journeyData.session.playVersion,2);
+journey.start(firstId);assert.equal(journeyData.session.index,1);assert.equal(journeyData.session.playVersion,3);
 journeyData.cards[firstId].rounds=1;journeyData.cards[firstId].skills.meaning=api.rate(null,4,epoch-DAY);journeyData.session.complete=true;
 assert(journey.due().includes(firstId));assert.notEqual(journey.recommendation(),firstId);journey.new();assert.equal(journeyData.session.mode,'new');journey.review();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.mode,'review');
-const migrated=api.validate(journeyData,Object.keys(deck));assert.equal(migrated.session.playVersion,2);
+const migrated=api.validate(journeyData,Object.keys(deck));assert.equal(migrated.session.playVersion,3);
 delete journeyData.session.playVersion;delete journeyData.session.variant;assert.equal(api.validate(journeyData,Object.keys(deck)).session.playVersion,undefined,'old question semantics must remain unchanged');
 for(const id of Object.keys(deck))journeyData.cards[id]||={introducedAt:epoch,lastAt:epoch,rounds:0,skills:{}};
 assert.equal(journey.unlearned().length,0);assert.equal(journey.recommendation(),null);journey.new();assert.equal(destination,'library');
@@ -57,12 +57,17 @@ async function complete(p,lang){
  let count=0;
  while(!(await session(p)).complete){
    const s=await session(p),kind=s.steps[s.index];if(lang==='en')await english(p);
-   if(kind==='intro'){await p.locator('[data-journey=next]').click();continue;}
+   if(kind==='intro'){if(s.playVersion===3&&!s.inspected)await p.locator('[data-journey=inspect]').click();await p.locator('[data-journey=next]').click();continue;}
    if(kind==='recall'){await p.locator('[data-journey=reveal]').click();await p.locator('[data-journey=rate][data-value="4"]').click();}
+   else if(s.playVersion===3&&['meaning','compare'].includes(kind)){
+     if(kind==='meaning'){await p.locator('[data-journey=pick-evidence][data-value=yes]').click();await p.locator('[data-journey=pick-meaning][data-value=yes]').click();}
+     else{const cards=await p.locator('[data-journey=match-card]').evaluateAll(es=>es.map(e=>e.dataset.value));for(const id of cards){await p.locator(`[data-journey=hold-meaning][data-value=${id}]`).click();await p.locator(`[data-journey=match-card][data-value=${id}]`).click();}}
+     await p.locator('[data-journey=check-link]').click();assert.match(await p.locator('.journey-feedback>strong').innerText(),lang==='en'?/Correct|correct|right/:/答对/);
+   }
    else{const id=kind==='compare'?s.cardId:kind==='application'?s.position:'yes';
-     if(kind==='application'&&s.playVersion===2){assert.equal(await p.locator('.journey-board .journey-slot').count(),3,'application shows labelled, visible positions');const viewport=p.viewportSize();for(const width of [320,390,430]){await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'visual spread must fit narrow phones');}await p.setViewportSize(viewport);if(process.env.JOURNEY_SCREENSHOTS)await p.screenshot({path:path.join(process.env.JOURNEY_SCREENSHOTS,`journey-application-${lang}.png`),fullPage:true});}
+     if(kind==='application'&&s.playVersion>=2){assert.equal(await p.locator('.journey-board .journey-slot').count(),3,'application shows labelled, visible positions');const viewport=p.viewportSize();for(const width of [320,390,430]){await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'visual spread must fit narrow phones');}await p.setViewportSize(viewport);if(process.env.JOURNEY_SCREENSHOTS)await p.screenshot({path:path.join(process.env.JOURNEY_SCREENSHOTS,`journey-application-${lang}.png`),fullPage:true});}
      await p.locator(`[data-journey=answer][data-value="${id}"]`).click();assert.match(await p.locator('.journey-feedback>strong').innerText(),lang==='en'?/Correct|correct|right/:/答对/);
-     if(kind==='application'&&s.playVersion===2){const saved=await session(p);await p.locator('[data-journey=position]').first().click();assert.deepEqual((await session(p)).answers,saved.answers,'post-answer position exploration does not regrade');assert.equal(await p.locator('.journey-slot.occupied').count(),1);}
+     if(kind==='application'&&s.playVersion>=2){const saved=await session(p);await p.locator('[data-journey=position]').first().click();assert.deepEqual((await session(p)).answers,saved.answers,'post-answer position exploration does not regrade');assert.equal(await p.locator('.journey-slot.occupied').count(),1);}
    }
    if(lang==='en')await english(p);await p.locator('[data-journey=next]').click();count++;
  }
@@ -73,6 +78,7 @@ try{
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',acceptDownloads:true}),p=await context.newPage();p.setDefaultTimeout(15000);p.setDefaultNavigationTimeout(120000);
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.goto(url);await p.locator('[data-home-choice][data-journey=continue]').click();const firstCardId=(await session(p)).cardId;assert(deck[firstCardId]);
+ assert.equal(await p.locator('[data-journey=next]').count(),0,'first encounter has no automatic or premature next action');await p.locator('[data-journey=inspect]').click();
  assert.equal(await p.locator('.journey-family-cards img').count(),firstCardId[0]==='m'?2:4);
  const introAnswers=Object.keys((await session(p)).answers).length;
  await p.locator('[data-journey=family]').last().click();assert.equal(Object.keys((await session(p)).answers).length,introAnswers,'foundation exploration does not count as an answer');
@@ -88,7 +94,7 @@ try{
  await p.locator('[data-journey=next]').click();await complete(p,'zh');
  let data=(await state(p)).journey;assert.equal(data.cards[firstCardId].rounds,1);assert.equal(Object.keys(data.cards[firstCardId].skills).length,6);assert.equal(data.cards[firstCardId].skills.image.grade,2);assert.equal(api.level(data.cards[firstCardId]),'待巩固');
  await p.locator('[data-journey=next-card]').click();assert.notEqual((await session(p)).cardId,firstCardId);
- const nextId=(await session(p)).cardId;await p.locator('[data-journey=next]').click();before=await session(p);
+ const nextId=(await session(p)).cardId;await p.locator('[data-journey=inspect]').click();await p.locator('[data-journey=next]').click();before=await session(p);
  await p.locator('[data-action=nav][data-page=home]').click();await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=filter][data-value=全部]').click();
  const chosenId=Object.keys(deck).find(id=>![nextId,firstCardId,'p14'].includes(id));
  await p.locator(`.library-card[data-id=${chosenId}]`).click();await p.locator(`[data-journey=start][data-id=${chosenId}]`).click();assert((await state(p)).journey.paused[nextId]);

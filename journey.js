@@ -24,7 +24,18 @@
       for(const k of s.steps){const a=s.answers?.[k];if(a && typeof a.selected==='string' && a.selected.length<30 && Number.isInteger(a.grade) && a.grade>=0 && a.grade<=5)out.session.answers[k]={selected:a.selected,grade:a.grade,correct:!!a.correct,hint:!!a.hint};}
       out.session.hint=!!s.hint;
       // Versioned presentation keeps already answered v1 sessions stable.
-      if(s.playVersion===2){out.session.playVersion=2;out.session.variant=Math.floor(clamp(s.variant,0,2));}
+      if(s.playVersion===2 || s.playVersion===3){out.session.playVersion=s.playVersion;out.session.variant=Math.floor(clamp(s.variant,0,2));}
+      if(s.playVersion===3){
+        out.session.inspected=!!s.inspected;
+        const a=s.activity;
+        if(a && ['meaning','compare'].includes(a.key) && a.key===s.steps[s.index]){
+          const choice=x=>typeof x==='string' && /^(yes|d[0-2]|[mwcsp][0-9]{2})$/.test(x);
+          out.session.activity={key:a.key,pairs:{},repair:!!a.repair};
+          for(const k of ['evidence','meaning','holding'])if(choice(a[k]))out.session.activity[k]=a[k];
+          if(typeof a.result==='boolean')out.session.activity.result=a.result;
+          if(a.pairs && typeof a.pairs==='object')for(const [id,value] of Object.entries(a.pairs))if(valid.has(id)&&valid.has(value))out.session.activity.pairs[id]=value;
+        }
+      }
       const missing=out.session.steps.findIndex((key,i)=>i<out.session.index && key!=='intro' && !out.session.answers[key]);
       if(missing>=0)out.session.index=missing;
       out.session.complete=out.session.index===out.session.steps.length;
@@ -54,17 +65,18 @@
   function makeStep(key,c,lesson,deck,s) {
     const topic={love:'感情',career:'事业',study:'学业'}[s.topic];
     const context=c.contexts[s.topic];
-    const visual=s.playVersion===2,variant=s.variant||0;
+    const visual=s.playVersion===2||s.playVersion===3,variant=s.variant||0;
     const near=deck[lesson.compareId];
     const neighbors=Object.values(deck).filter(x=>x.id!==c.id).sort((a,b)=>Number(b.suit===c.suit)-Number(a.suit===c.suit));
     const alternatives=[near,...neighbors.filter(x=>x.id!==near.id)].slice(0,3);
     if(key==='image'&&visual&&variant!==1)return {kind:'picture',title:variant===2?'让画面和动作对上号':'在牌图里找到它',prompt:variant===2?c.observation:lesson.anchor,correct:'yes',options:[{id:'yes',text:c.name,card:c.id},...alternatives.slice(0,2).map(x=>({id:x.id,text:x.name,card:x.id}))],explanation:lesson.why};
     if(key==='image')return {title:'看见什么，才这样理解？',prompt:lesson.anchor,correct:'yes',options:[{id:'yes',text:c.observation},...alternatives.slice(0,2).map(x=>({id:x.id,text:x.observation}))],explanation:lesson.why};
+    if(key==='meaning'&&s.playVersion===3)return {kind:'link',title:'把画面和含义连起来',prompt:'先选你看见的，再选它支持的含义。两端都可以改，想好后一起核对。',correct:'yes',options:[{id:'yes',text:c.core},...lesson.distractors.map((text,i)=>({id:'d'+i,text}))],evidence:[{id:'yes',text:c.observation},...alternatives.slice(0,2).map(x=>({id:x.id,text:x.observation}))],explanation:lesson.why};
     if(key==='meaning')return {title:'这些说法很接近，哪句更贴合？',prompt:'结合画面动作，选出这张牌的核心主题。',correct:'yes',options:[{id:'yes',text:c.core},...lesson.distractors.map((text,i)=>({id:'d'+i,text}))],explanation:lesson.why};
     if(key==='compare'){
       const family=visual&&variant>0&&c.id[0]!=='m'?Object.values(deck).find(x=>x.id!==c.id&&x.id.slice(1)===c.id.slice(1)):null;
       const other=family||near;
-      return {kind:'picture',title:family?'同一个数字或角色，画面有何不同？':'两张都像，差别在哪里？',prompt:c.core,correct:c.id,options:[{id:c.id,text:c.name,card:c.id},{id:other.id,text:other.name,card:other.id}],explanation:family?c.observation+' '+lesson.why+' '+other.observation:lesson.distinction};
+      return {kind:s.playVersion===3?'match':'picture',pairs:[{id:c.id,text:c.core},{id:other.id,text:other.core}],title:s.playVersion===3?'为两张牌找回各自的含义':family?'同一个数字或角色，画面有何不同？':'两张都像，差别在哪里？',prompt:c.core,correct:c.id,options:[{id:c.id,text:c.name,card:c.id},{id:other.id,text:other.name,card:other.id}],explanation:family?c.observation+' '+lesson.why+' '+other.observation:lesson.distinction};
     }
     if(key==='application'&&visual&&variant!==1)return {kind:'place',title:'把这句解读放回牌阵',prompt:c.questions[s.topic],statement:context[s.position],context:topic,position:'现状 · 阻碍 · 建议',correct:s.position,options:[{id:'state',text:'现状位'},{id:'tension',text:'阻碍位'},{id:'advice',text:'建议位'}],explanation:{state:'现状位描述目前的状态；这里先观察发生了什么，不直接给行动指令。',tension:'阻碍位指出让事情卡住的表达方式；它与现状描述和行动建议承担不同任务。',advice:'建议位回应可以怎样行动；它不把某种状态当成确定会发生的结果。'}[s.position]};
     if(key==='application')return {title:'同一张牌，换一个位置。',prompt:c.questions[s.topic],context:topic,position:{state:'现状位',tension:'阻碍位',advice:'建议位'}[s.position],correct:s.position,options:['state','tension','advice'].map(id=>({id,text:context[id]})),explanation:{state:'现状位描述目前的状态；这里先观察发生了什么，不直接给行动指令。',tension:'阻碍位指出让事情卡住的表达方式；它与现状描述和行动建议承担不同任务。',advice:'建议位回应可以怎样行动；它不把某种状态当成确定会发生的结果。'}[s.position]};
@@ -102,16 +114,18 @@
       const weak=skills.filter(k=>k!=='recall').sort((a,b)=>Number((r?.skills[b]?.grade??4)<3)-Number((r?.skills[a]?.grade??4)<3)||(r?.skills[a]?.due||0)-(r?.skills[b]?.due||0));
       const steps=review?['recall',...weak.slice(0,3)]:['intro','image','meaning','recall','compare','application','reversal'];
       data.cards[id] ||= {introducedAt:now(),lastAt:now(),rounds:0,skills:{}};
-      data.session={cardId:id,seed:Math.floor(Math.random()*999999999)+1,playVersion:2,variant:(r?.rounds||0)%3,mode:review?'review':'new',topic:['career','love','study'][(r?.rounds||0)%3],position:['advice','tension','state'][Math.floor((r?.rounds||0)/3)%3],steps,index:0,startedAt:now(),answers:{},revealed:false,hint:false,complete:false};
+      data.session={cardId:id,seed:Math.floor(Math.random()*999999999)+1,playVersion:3,inspected:false,variant:(r?.rounds||0)%3,mode:review?'review':'new',topic:['career','love','study'][(r?.rounds||0)%3],position:['advice','tension','state'][Math.floor((r?.rounds||0)/3)%3],steps,index:0,startedAt:now(),answers:{},revealed:false,hint:false,complete:false};
       set(data);go('journey');
     }
     function ordered(options,s){return options.map((o,i)=>({o,n:Math.sin(s.seed*(i+1)+s.index*101)*10000})).sort((a,b)=>a.n-b.n).map(x=>x.o);}
-    function refresh(){
+    function refresh(focusAction){
       const shell=document.querySelector('.journey-shell');
       if(!shell){go('journey');return;}
       const y=window.scrollY;
       shell.outerHTML=render();
+      if(current()?.playVersion===3)document.querySelector('.journey-shell')?.classList.add('is-updating');
       window.scrollTo(0,y);
+      if(focusAction)document.querySelector(focusAction)?.focus({preventScroll:true});
     }
     function saveAnswer(selected,grade,correct){
       const d=get(),s=d.session,key=s.steps[s.index];if(s.answers[key])return;
@@ -121,8 +135,9 @@
     }
     function next(){
       const d=get(),s=d.session;if(!s||s.complete)return;
+      if(s.steps[s.index]==='intro'&&s.playVersion===3&&!s.inspected)return;
       if(s.steps[s.index]!=='intro'&&!s.answers[s.steps[s.index]])return;
-      s.index++;s.revealed=false;s.hint=false;previewPosition=null;familyFocus=null;
+      s.index++;s.revealed=false;s.hint=false;delete s.activity;previewPosition=null;familyFocus=null;
       if(s.index===s.steps.length){s.complete=true;d.cards[s.cardId].rounds++;d.cards[s.cardId].lastAt=now();}
       set(d);go('journey');
     }
@@ -144,9 +159,64 @@
       const place=step.kind==='place',selected=previewPosition||(answer?(place&&answer.selected!=='unknown'?answer.selected:s.position):place?null:s.position);
       return `<div class="journey-board-wrap"><p class="tiny"><strong>基础三张牌阵</strong> · <span>现状 · 阻碍 · 建议</span></p><div class="journey-board ${answer?'has-answer':''}">${['state','tension','advice'].map((role,i)=>{const occupied=role===selected,correct=answer&&role===step.correct;return `<button class="journey-slot ${occupied?'occupied':''} ${correct?'correct':''} ${answer&&!answer.correct&&role===answer.selected?'incorrect':''}" ${place&&!answer?`data-journey="answer" data-value="${role}"`:`data-journey="position" data-value="${role}"`} ${!place&&!answer?'disabled':''} aria-label="${roleNames[role]}" aria-pressed="${occupied}"><span class="journey-slot-card">${occupied?img(c.id):`<span class="journey-slot-number">${i+1}</span>`}</span><strong>${roleNames[role]}</strong><small>${roleTasks[role]}</small>${correct?'<b class="answer-marker">✓</b>':''}</button>`;}).join('')}</div>${answer?`<div class="journey-placement-note" role="status"><strong>${roleNames[selected]||roleNames[s.position]}</strong><p>${esc(c.contexts[s.topic][selected]||c.contexts[s.topic][s.position])}</p><small>答题已记录。现在点其他位置，看看同牌怎样换一种表达。</small></div>`:''}</div>`;
     }
+    // A small guide has one job at a time. It never advances a lesson for the learner.
+    function guide(key,s,answer){
+      const hints={intro:'先看一眼画面，找一个让你记得住的动作。',image:'别急着认牌名。把这句话和画面里的动作对上。',meaning:'让依据和含义一起成立，比猜中一个词更有用。',recall:'答案先收起来。在心里说出来，就算一次真正的尝试。',compare:'这两张很接近。把两句含义各自交还给它们。',application:'牌还在眼前。点一个位置，看看它在这里承担什么任务。',reversal:'把逆位想成核心主题的另一种表达，再回到画面核对。'};
+      return `<aside class="journey-guide"><span class="journey-guide-spark" aria-hidden="true">✦</span><p>${answer?'这一笔已经记下。看清差别，再由你决定继续。':hints[key]||''}</p></aside>`;
+    }
+    function introduction(c,lesson,s,cardImage){
+      return `<div class="journey-discovery"><span class="journey-discovery-ring" aria-hidden="true"></span>${cardImage}<span class="journey-discovery-caption">${esc(c.name)}</span></div><div class="journey-copy"><span class="eyebrow">和这张牌第一次见面</span><h1>${s.inspected?esc(lesson.anchor):'先看，不急着背。'}</h1>${!s.inspected?'<p>留意人物在做什么、目光朝向哪里、什么东西最突出。点牌可以放大，准备好了再打开线索。</p><button class="primary wide" data-journey="inspect">看看画面线索</button><p class="tiny muted">这里没有倒计时，按自己的节奏看。</p>':`<div class="journey-observation"><span class="eyebrow">我看见</span><p>${esc(c.observation)}</p></div><div class="journey-note"><strong>为什么是这个含义？</strong><p>${esc(lesson.why)}</p></div><button class="primary wide" data-journey="next">记住这个画面，试一试 ${icon('arrow')}</button><details class="journey-scaffold"><summary>元素、数字与这张牌</summary>${scaffold(c)}</details>${familyPanel(c)}`}</div>`;
+    }
+    function construction(c,lesson,s,step,answer,cardImage){
+      const a=s.activity?.key===s.steps[s.index]?s.activity:{pairs:{}},locked=!!answer;
+      const pick=(o,kind,chosen)=>`<button class="journey-piece ${chosen===o.id?'is-picked':''}" data-journey="${kind}" data-value="${o.id}" aria-pressed="${chosen===o.id}" ${locked?'disabled':''}><span>${esc(o.text)}</span>${chosen===o.id?'<b aria-hidden="true">✓</b>':''}</button>`;
+      let work='';
+      if(step.kind==='link'){
+        const evidence=step.evidence.find(x=>x.id===a.evidence),meaning=step.options.find(x=>x.id===a.meaning);
+        work=`<div class="journey-link-scene">${cardImage}<div><span class="eyebrow">让两端彼此支持</span><strong>${esc(c.name)}</strong><p>画面证据 → 核心含义</p></div></div><div class="journey-link-work"><section class="journey-link-half"><h2><span>1</span> <span>我看见什么</span></h2><details ${!evidence?'open':''}><summary>${evidence?esc(evidence.text):'选择一条画面证据'}${evidence&&!locked?'<small>点此更换</small>':''}</summary><div class="journey-pieces">${ordered(step.evidence,s).map(o=>pick(o,'pick-evidence',a.evidence)).join('')}</div></details></section><span class="journey-link-thread ${evidence?'connected':''}" aria-hidden="true">↓</span><section class="journey-link-half ${evidence?'':'is-waiting'}"><h2><span>2</span> <span>它支持什么含义</span></h2>${evidence?`<details ${!meaning?'open':''}><summary>${meaning?esc(meaning.text):'选择它最支持的含义'}${meaning&&!locked?'<small>点此更换</small>':''}</summary><div class="journey-pieces">${ordered(step.options,s).map(o=>pick(o,'pick-meaning',a.meaning)).join('')}</div></details>`:'<p class="tiny muted">先选好画面这一端，再连向含义。</p>'}</section></div>`;
+      }else{
+        work=`<p class="tiny muted">先点一句含义，再点它属于的牌。点已放好的含义可以收回。</p><div class="journey-match-cards">${step.options.map(o=>{const paired=step.pairs.find(x=>x.id===a.pairs?.[o.id]);return `<button class="journey-match-target ${paired?'is-filled':''} ${a.holding?'is-ready':''} ${locked?(a.pairs?.[o.id]===o.id?'correct':'incorrect'):''}" data-journey="match-card" data-value="${o.id}" ${locked?'disabled':''} aria-label="${esc(o.text)}"><span class="journey-match-image">${img(o.card)}</span><strong>${esc(o.text)}</strong><span class="journey-match-label">${paired?esc(paired.text):'把含义放到这里'}</span></button>`;}).join('')}</div><div class="journey-match-bank"><span class="eyebrow">待归位的含义</span>${ordered(step.pairs,s).filter(o=>!Object.values(a.pairs||{}).includes(o.id)).map(o=>pick(o,'hold-meaning',a.holding)).join('')}${Object.keys(a.pairs||{}).length===2?'<p class="tiny muted">两句已归位。还可以点牌收回，确认后再核对。</p>':''}<p class="journey-action-tip" role="status">${a.holding?'已拿起这句含义，再点它属于的牌。':'点一句，开始配对。'}</p></div>`;
+      }
+      const ready=step.kind==='link'?a.evidence&&a.meaning:Object.keys(a.pairs||{}).length===2;
+      let feedback='';
+      if(locked){
+        const success=typeof a.result==='boolean'?a.result:answer.correct;
+        const title=typeof a.result==='boolean'?(success?'✓ 这次连对了':'✕ 这次还没连对'):answer.selected==='unknown'?'这题还不确定':answer.correct?'✓ 答对了':'✕ 答错了';
+        const evidenceOK=a.evidence==='yes',meaningOK=a.meaning==='yes';
+        feedback=`<section class="journey-feedback ${success?'correct':'incorrect'}" role="status"><strong>${title}</strong>${typeof a.result==='boolean'?'<p class="tiny muted">这是看过反馈后的巩固，保留第一次的记录，不提前延长复习间隔。</p>':''}${step.kind==='link'?`<div class="journey-link-result"><p><b>${evidenceOK?'✓':'✕'} <span>画面证据</span></b><span>${esc(c.observation)}</span></p><p><b>${meaningOK?'✓':'✕'} <span>核心含义</span></b><span>${esc(c.core)}</span></p></div>${!evidenceOK&&meaningOK?'<p>含义选对了，但所选画面不支持它。下次让两个环节一起成立。</p>':''}${evidenceOK&&!meaningOK?'<p>你找到了画面，但含义还差了一步。留意动作的方向与人物的处境。</p>':''}`:`<div class="journey-pair-result">${step.pairs.map(o=>`<p><strong>${esc(deck[o.id].name)}</strong><span>${esc(o.text)}</span></p>`).join('')}</div>`}<p>${esc(step.explanation)}</p>${!success?`<p>${esc(lesson.distinction)}</p><button class="secondary wide" data-journey="retry-link">重连一次，记住这个区别</button>`:''}<button class="primary wide" data-journey="next">继续下一步 ${icon('arrow')}</button></section>`;
+      }else{
+        feedback=`<div class="journey-construct-actions"><button class="primary wide" data-journey="check-link" ${ready?'':'disabled'}>一起核对 ${icon('arrow')}</button><div class="journey-help"><button class="linkbtn" data-journey="hint">看看线索</button><button class="linkbtn" data-journey="unknown">还不确定</button></div>${s.hint?`<div class="journey-note">${esc(lesson.why)}</div>`:''}</div>`;
+      }
+      return `<div class="journey-copy journey-construction" data-construction="${step.kind}"><span class="eyebrow">${labels[s.steps[s.index]]}</span><h1>${esc(step.title)}</h1>${step.kind==='link'?`<p class="journey-prompt">${esc(step.prompt)}</p>`:''}${work}${feedback}</div>`;
+    }
+    function handleConstruction(action,el,d,s){
+      const key=s.steps[s.index];if(s.playVersion!==3||!['meaning','compare'].includes(key))return;
+      const step=makeStep(key,deck[s.cardId],lessons[s.cardId],deck,s);
+      const a=s.activity?.key===key?s.activity:(s.activity={key,pairs:{}});
+      if(action==='retry-link'){
+        if(!s.answers[key])return;
+        s.activity={key,pairs:{},repair:true};set(d);refresh();return;
+      }
+      if(s.answers[key]&&!a.repair)return;
+      const value=el.dataset.value;
+      if(action==='pick-evidence' && step.kind==='link' && step.evidence.some(o=>o.id===value))a.evidence=value;
+      else if(action==='pick-meaning' && step.kind==='link' && a.evidence && step.options.some(o=>o.id===value))a.meaning=value;
+      else if(action==='hold-meaning' && step.kind==='match' && step.pairs.some(o=>o.id===value)&&!Object.values(a.pairs).includes(value))a.holding=a.holding===value?null:value;
+      else if(action==='match-card' && step.kind==='match' && step.options.some(o=>o.id===value)){
+        if(a.holding){a.pairs[value]=a.holding;a.holding=null;}
+        else if(a.pairs[value])delete a.pairs[value];
+      }else if(action==='check-link'){
+        const ready=step.kind==='link'?a.evidence&&a.meaning:step.options.every(o=>a.pairs[o.id]);if(!ready)return;
+        const correct=step.kind==='link'?a.evidence==='yes'&&a.meaning==='yes':step.options.every(o=>a.pairs[o.id]===o.id);
+        if(a.repair){a.repair=false;a.result=correct;set(d);refresh();return;}
+        const selected=step.kind==='link'?a.meaning:correct?s.cardId:'mismatch';
+        saveAnswer(selected,correct&&!s.hint?4:2,correct);return;
+      }else return;
+      set(d);refresh();
+    }
     function render(){
       const s=current();if(!s)return '';
-      const c=deck[s.cardId],lesson=lessons[s.cardId],key=s.steps[s.index],answer=s.answers[key];
+      const c=deck[s.cardId],lesson=lessons[s.cardId],key=s.steps[s.index],answer=s.activity?.repair?null:s.answers[key];
       const head=`<header class="journey-top"><button class="iconbtn" data-action="nav" data-page="home" aria-label="暂停学习">${icon('close')}</button><div><span>${esc(c.name)}</span><div class="journey-progress" role="progressbar" aria-label="本张学习进度" aria-valuenow="${s.index}" aria-valuemin="0" aria-valuemax="${s.steps.length}"><i style="width:${s.index/s.steps.length*100}%"></i></div></div><span class="tiny">${Math.min(s.index+1,s.steps.length)} / ${s.steps.length}</span></header><div class="journey-control"><span class="tiny muted">${s.mode==='review'?'这一轮回访薄弱的地方':'这一轮认识一张新牌'}</span><button class="linkbtn" data-action="nav" data-page="library">换一张，进度会保留</button></div>`;
       if(s.complete){
         const r=record(c.id),weak=skills.filter(k=>r.skills[k]?.grade<3),dueAt=Math.min(...Object.values(r.skills).map(x=>x.due)),finished=Object.values(get().cards).filter(x=>x.rounds>0).length;
@@ -154,16 +224,22 @@
       }
       const cardImage=`<button class="journey-image ${key==='reversal'?'is-reversed':''}" data-action="zoom" data-id="${c.id}" aria-label="放大牌面">${img(c.id)}</button>`;
       let body='',wide=false;
-      if(key==='intro')body=`${cardImage}<div class="journey-copy"><span class="eyebrow">先从画面认识它</span><h1>${esc(lesson.anchor)}</h1><p>${esc(c.observation)}</p><div class="journey-note"><strong>为什么是这个含义？</strong><p>${esc(lesson.why)}</p></div><button class="primary wide" data-journey="next">记住这个画面，试一试 ${icon('arrow')}</button><p class="tiny muted">接下来会从不同角度遇见它。随时暂停，回来接着学。</p>${familyPanel(c)}<details class="journey-scaffold"><summary>元素、数字与这张牌</summary>${scaffold(c)}</details></div>`;
+      if(key==='intro'&&s.playVersion===3){
+        body=introduction(c,lesson,s,cardImage);
+      }
+      else if(key==='intro')body=`${cardImage}<div class="journey-copy"><span class="eyebrow">先从画面认识它</span><h1>${esc(lesson.anchor)}</h1><p>${esc(c.observation)}</p><div class="journey-note"><strong>为什么是这个含义？</strong><p>${esc(lesson.why)}</p></div><button class="primary wide" data-journey="next">记住这个画面，试一试 ${icon('arrow')}</button><p class="tiny muted">接下来会从不同角度遇见它。随时暂停，回来接着学。</p>${familyPanel(c)}<details class="journey-scaffold"><summary>元素、数字与这张牌</summary>${scaffold(c)}</details></div>`;
       else if(key==='recall')body=`${cardImage}<div class="journey-copy"><span class="eyebrow">先在脑中想，不用打字</span><h1>合上答案，还能想起什么？</h1><p>回忆一个关键动作，以及它怎样形成牌义。</p>${!s.revealed?'<button class="primary wide" data-journey="reveal">我想好了，核对一下</button>':`<div class="journey-note journey-revealed"><strong>${esc(lesson.anchor)}</strong><p>${esc(lesson.why)}</p></div>${answer?`<div class="journey-feedback" role="status"><strong>回忆自评已记录</strong><p>这是你的自我判断，后面的应用会再帮助核对。</p><button class="primary wide" data-journey="next">继续 ${icon('arrow')}</button></div>`:`<p>刚才的回忆接近哪一种？</p><div class="recall-ratings">${[['2','没想起来'],['3','只想到一点'],['4','基本想起'],['5','清楚想起']].map(([v,t])=>`<button class="secondary" data-journey="rate" data-value="${v}">${t}</button>`).join('')}</div>`}`}</div>`;
+      else if(s.playVersion===3 && ['meaning','compare'].includes(key)){
+        wide=true;body=construction(c,lesson,s,makeStep(key,c,lesson,deck,s),answer,cardImage);
+      }
       else {
-        const step=makeStep(key,c,lesson,deck,s),opts=ordered(step.options,s),isApplication=key==='application'&&s.playVersion===2;
+        const step=makeStep(key,c,lesson,deck,s),opts=ordered(step.options,s),isApplication=key==='application'&&(s.playVersion===2||s.playVersion===3);
         wide=step.kind==='picture'||isApplication;
         const choices=step.kind==='place'?`<div class="journey-statement">${cardImage}<blockquote>${esc(step.statement)}</blockquote></div><p class="tiny muted">点一个位置，把牌放进去；选完会明确核对。</p>${board(c,s,step,answer)}`:`${isApplication?board(c,s,step,answer):''}<div class="journey-options ${step.kind==='picture'?'picture-options':''} ${key==='compare'?'compare-options':''}">${opts.map((o,i)=>`<button class="journey-option ${answer?(o.id===step.correct?'correct':answer.selected===o.id?'incorrect':''):''}" data-journey="answer" data-value="${o.id}" ${answer?'disabled':''}>${o.card?img(o.card):`<span class="letter">${String.fromCharCode(65+i)}</span>`}<span>${esc(o.card&&key==='image'&&!answer?'选这张牌':o.text)}</span>${answer&&o.id===step.correct?'<b class="answer-marker">✓</b>':''}${answer&&answer.selected===o.id&&!answer.correct?'<b class="answer-marker">✕</b>':''}</button>`).join('')}</div>`;
-        const feedback=!answer?`<div class="journey-help"><button class="linkbtn" data-journey="hint">看看线索</button><button class="linkbtn" data-journey="unknown">还不确定</button></div>${s.hint?`<div class="journey-note">${esc(lesson.why)}</div>`:''}`:`<section class="journey-feedback ${answer.correct?'correct':'incorrect'}" role="status"><strong>${answer.selected==='unknown'?'这题还不确定':answer.correct?'✓ 答对了':'✕ 答错了'}</strong><p><b>本题正确答案：</b>${esc(step.options.find(o=>o.id===step.correct).text)}</p><p>${esc(step.explanation)}</p>${!answer.correct&&key==='meaning'?`<p>${esc(lesson.distinction)}</p>`:''}<button class="primary wide" data-journey="next">${s.index===s.steps.length-1?'收好这一张的收获':'继续下一步'} ${icon('arrow')}</button></section>`;
+        const feedback=!answer?`<div class="journey-help"><button class="linkbtn" data-journey="hint">看看线索</button><button class="linkbtn" data-journey="unknown">还不确定</button></div>${s.hint?`<div class="journey-note">${esc(lesson.why)}</div>`:''}`:`<section class="journey-feedback ${answer.correct?'correct':'incorrect'}" role="status"><strong>${answer.selected==='unknown'?'这题还不确定':answer.correct?'✓ 答对了':'✕ 答错了'}</strong><p><b>本题正确答案：</b>${esc(step.options.find(o=>o.id===step.correct).text)}</p><p>${esc(step.explanation)}</p>${s.playVersion===3&&!answer.correct&&key==='image'&&deck[answer.selected]?`<div class="journey-pair-result"><p><strong>你选中的画面</strong><span>${esc(deck[answer.selected].observation)}</span></p><p><strong>这张牌需要找的线索</strong><span>${esc(c.observation)}</span></p></div>`:''}${!answer.correct&&key==='meaning'?`<p>${esc(lesson.distinction)}</p>`:''}<button class="primary wide" data-journey="next">${s.index===s.steps.length-1?'收好这一张的收获':'继续下一步'} ${icon('arrow')}</button></section>`;
         body=`${wide?'':cardImage}<div class="journey-copy"><span class="eyebrow">${labels[key]}${step.context?' · '+step.context+(step.kind==='place'?'':' · '+step.position):''}</span><h1>${esc(step.title)}</h1><p class="journey-prompt">${esc(step.prompt)}</p>${choices}${feedback}</div>`;
       }
-      return `<main class="journey-shell">${head}<section class="journey-stage ${wide?'journey-visual':''}" data-learning-game="${key}">${body}</section></main>`;
+      return `<main class="journey-shell ${s.playVersion===3?'journey-playful':''}">${head}${s.playVersion===3?guide(key,s,answer):''}<section class="journey-stage ${wide?'journey-visual':''}" data-learning-game="${key}">${body}</section></main>`;
     }
     function scaffold(c){const rank=Number(c.id.slice(1)),m=c.id[0]==='m';const numberHints=['','起点与潜能','两端、选择与平衡','展开、合作与初步成果','结构、稳定与停驻','扰动、冲突与调整','重新协调与移动','检验、坚持与策略','推进、组织与熟练','接近完成与个人承受','完成、饱和与进入下一轮'];return `<p><strong>${esc(c.suit)} · ${esc(c.element==='—'?'人生主题':c.element)} · ${esc(c.number)}</strong></p><p>${m?'大阿尔卡纳以各自的画面与人生主题为主，不套用小牌数字公式。':rank>10?'宫廷牌可作为行动风格来理解：侍从探索、骑士追求、王后涵养、国王统筹；不限定现实人物的性别或年龄。':esc(numberHints[rank])}</p><p>${esc(lessons[c.id].why)}</p><small>这些是本课程的助记线索。回到牌面核对，不把元素与数字当作万能公式。</small>`;}
     document.addEventListener('click',event=>{
@@ -177,6 +253,8 @@
       if(action==='repeat'){start(current()?.cardId,true);return;}
       const d=get(),s=d.session;if(!s||s.complete)return;
       if(action==='next')next();
+      else if(action==='inspect'&&s.playVersion===3&&s.steps[s.index]==='intro'){s.inspected=true;set(d);refresh('[data-journey=next]');}
+      else if(['pick-evidence','pick-meaning','hold-meaning','match-card','check-link','retry-link'].includes(action)){handleConstruction(action,el,d,s);}
       else if(action==='family'&&s.steps[s.index]==='intro'){familyFocus=el.dataset.id;refresh();}
       else if(action==='position'&&s.steps[s.index]==='application'&&s.answers.application){previewPosition=el.dataset.value;refresh();}
       else if(action==='reveal'){s.revealed=true;set(d);refresh();}
@@ -184,6 +262,8 @@
       else if(action==='rate'&&s.steps[s.index]==='recall'&&s.revealed){const q=Number(el.dataset.value);if([2,3,4,5].includes(q))saveAnswer(String(q),q,q>=3);}
       else if(['answer','unknown'].includes(action)){
         const key=s.steps[s.index],step=makeStep(key,deck[s.cardId],lessons[s.cardId],deck,s);if(!step)return;
+        if(s.playVersion===3&&['meaning','compare'].includes(key)&&action==='answer')return;
+        if(action==='unknown'&&s.activity?.repair){s.activity.repair=false;s.activity.result=false;set(d);refresh();return;}
         const selected=action==='unknown'?'unknown':el.dataset.value;if(selected!=='unknown'&&!step.options.some(x=>x.id===selected))return;
         const correct=selected===step.correct;saveAnswer(selected,correct&&!s.hint?4:2,correct);
       }
