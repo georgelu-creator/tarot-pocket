@@ -1,0 +1,19 @@
+{
+  "牌位与用途": "Positions",
+  "点编号看说明": "Tap to explore",
+  "关系十字": "Relationship cross",
+  "查看全部牌位": "All positions at a glance",
+  "这个位置问什么": "What this position asks",
+  "首次使用需填服务提供者给你的连接码，用于保护解读额度。不要填写 DeepSeek 或 OpenAI 的 API 密钥。": "For first use, enter the connection code from your service provider. It protects the reading allowance. Do not enter a DeepSeek or OpenAI API key.",
+  "AI 连接码": "AI connection code",
+  "在这里粘贴连接码": "Paste your connection code here",
+  "仅本次打开有效，不保存到设备或备份。": "Kept only while this page is open; never stored on the device or in backups.",
+  "连接码从哪里来？": "Where do I get a code?",
+  "如果别人给了你这个网站，请向提供 AI 服务的人索取连接码。网站本身不会生成连接码，也不能使用你的 API 密钥代替。": "If someone shared this site with you, ask the person providing its AI service for a code. This site cannot generate one, and your API key cannot replace it.",
+  "如果服务由你自己部署，连接码就是服务端单独设置的": "If you host the service yourself, the code is the separate server setting",
+  "；在你自己的私有配置或云平台环境变量中查看。": "; find it in your private configuration or cloud environment settings.",
+  "查看自部署连接说明": "Self-hosted connection setup",
+  "连接并生成解读": "Connect & generate reading",
+  "先在上方粘贴 AI 连接码，再生成解读。": "Paste your AI connection code above before generating a reading.",
+  "连接码不正确或已更换。请向服务提供者确认后重试。": "The connection code is incorrect or has changed. Check with the service provider and try again."
+}

@@ -1,7 +1,8 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {chromium}=require('playwright');
+const legacyJourney=require('./legacy_journey_fixture.cjs');
 const root=path.resolve(__dirname,'..'),model={window:{}};
-for(const file of ['reading-deck.js','curriculum-content.js','journey.js'])vm.runInNewContext(fs.readFileSync(path.join(root,file),'utf8'),model);
+for(const file of ['reading-deck.js','curriculum-content.js','guided-major.js','guided-minor.js','guided-learning.js','journey.js'])vm.runInNewContext(fs.readFileSync(path.join(root,file),'utf8'),model);
 const api=model.window.TarotJourney,deck=Object.fromEntries(model.window.TAROT_READING_DECK.cards.map(c=>[c.id,c])),lessons=model.window.TAROT_CURRICULUM.cards;
 const DAY=86400000,epoch=1800000000000;
 let memory=api.rate(null,4,epoch);assert.equal(memory.interval,1);assert.equal(memory.passes,0);
@@ -34,13 +35,13 @@ model.structuredClone=structuredClone;
 const journey=api.create({esc:x=>x,img:()=>'',icon:()=>'',go:x=>{destination=x;},toast:()=>{},now:()=>clockAt,cardMap:deck,get:()=>journeyData,set:x=>{journeyData=x;}});
 assert.equal(journey.unlearned().length,78);
 journey.new();const firstId=journeyData.session.cardId;
-assert.equal(journeyData.session.playVersion,3);assert.equal(journeyData.session.mode,'new');assert.equal(journey.unlearned().length,77);
+assert.equal(journeyData.session.playVersion,4);assert.equal(journeyData.session.mode,'new');assert.equal(journey.unlearned().length,77);
 journeyData.session.index=1;journey.start();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.index,1);
 journey.new();assert.notEqual(journeyData.session.cardId,firstId);assert(journeyData.paused[firstId]);
-journey.start(firstId);assert.equal(journeyData.session.index,1);assert.equal(journeyData.session.playVersion,3);
+journey.start(firstId);assert.equal(journeyData.session.index,1);assert.equal(journeyData.session.playVersion,4);
 journeyData.cards[firstId].rounds=1;journeyData.cards[firstId].skills.meaning=api.rate(null,4,epoch-DAY);journeyData.session.complete=true;
 assert(journey.due().includes(firstId));assert.notEqual(journey.recommendation(),firstId);journey.new();assert.equal(journeyData.session.mode,'new');journey.review();assert.equal(journeyData.session.cardId,firstId);assert.equal(journeyData.session.mode,'review');
-const migrated=api.validate(journeyData,Object.keys(deck));assert.equal(migrated.session.playVersion,3);
+const migrated=api.validate(journeyData,Object.keys(deck));assert.equal(migrated.session.playVersion,4);
 delete journeyData.session.playVersion;delete journeyData.session.variant;assert.equal(api.validate(journeyData,Object.keys(deck)).session.playVersion,undefined,'old question semantics must remain unchanged');
 for(const id of Object.keys(deck))journeyData.cards[id]||={introducedAt:epoch,lastAt:epoch,rounds:0,skills:{}};
 assert.equal(journey.unlearned().length,0);assert.equal(journey.recommendation(),null);journey.new();assert.equal(destination,'library');
@@ -77,7 +78,7 @@ async function complete(p,lang){
 try{
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',acceptDownloads:true}),p=await context.newPage();p.setDefaultTimeout(15000);p.setDefaultNavigationTimeout(120000);
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(url);await p.locator('[data-home-choice][data-journey=continue]').click();const firstCardId=(await session(p)).cardId;assert(deck[firstCardId]);
+ await p.goto(url);await p.locator('[data-home-choice][data-journey=new]').click();await legacyJourney(p,3);const firstCardId=(await session(p)).cardId;assert(deck[firstCardId]);
  assert.equal(await p.locator('[data-journey=next]').count(),0,'first encounter has no automatic or premature next action');await p.locator('[data-journey=inspect]').click();
  assert.equal(await p.locator('.journey-family-cards img').count(),firstCardId[0]==='m'?2:4);
  const introAnswers=Object.keys((await session(p)).answers).length;
@@ -90,10 +91,10 @@ try{
  if(process.env.JOURNEY_SCREENSHOTS)await p.screenshot({path:path.join(process.env.JOURNEY_SCREENSHOTS,'journey-picture-zh.png'),fullPage:true});
  await p.locator('[data-journey=answer]:not([data-value=yes])').first().click();assert.match(await p.locator('.journey-feedback>strong').innerText(),/答错/);
  let before=await session(p);assert.equal(Object.keys(before.answers).length,1);
- await p.reload();await p.locator('[data-home-choice][data-journey=continue]').click();assert.deepEqual((await session(p)).answers,before.answers,'reload retains exact answer and does not double-score');
+ await p.reload();await p.locator('[data-journey=continue]').click();assert.deepEqual((await session(p)).answers,before.answers,'reload retains exact answer and does not double-score');
  await p.locator('[data-journey=next]').click();await complete(p,'zh');
  let data=(await state(p)).journey;assert.equal(data.cards[firstCardId].rounds,1);assert.equal(Object.keys(data.cards[firstCardId].skills).length,6);assert.equal(data.cards[firstCardId].skills.image.grade,2);assert.equal(api.level(data.cards[firstCardId]),'待巩固');
- await p.locator('[data-journey=next-card]').click();assert.notEqual((await session(p)).cardId,firstCardId);
+ await p.locator('[data-journey=next-card]').click();await legacyJourney(p,3);assert.notEqual((await session(p)).cardId,firstCardId);
  const nextId=(await session(p)).cardId;await p.locator('[data-journey=inspect]').click();await p.locator('[data-journey=next]').click();before=await session(p);
  await p.locator('[data-action=nav][data-page=home]').click();await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=filter][data-value=全部]').click();
  const chosenId=Object.keys(deck).find(id=>![nextId,firstCardId,'p14'].includes(id));
@@ -101,9 +102,9 @@ try{
  await p.locator('[data-action=nav][data-page=home]').click();await p.locator('.bottomnav [data-page=library]').click();await p.locator(`.library-card[data-id=${nextId}]`).click();await p.locator(`[data-journey=start][data-id=${nextId}]`).click();assert.equal((await session(p)).index,before.index,'switching cards retains each unfinished place');
  await complete(p,'zh');
  await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.bottomnav [data-page=library]').click();await p.locator('[data-action=filter][data-value=全部]').click();
- await p.locator('.library-card[data-id=p14]').click();await p.locator('[data-journey=start][data-id=p14]').click();await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('html').getAttribute('lang'),'en');await complete(p,'en');await english(p);
+ await p.locator('.library-card[data-id=p14]').click();await p.locator('[data-journey=start][data-id=p14]').click();await legacyJourney(p,3);await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('html').getAttribute('lang'),'en');await complete(p,'en');await english(p);
  // Actual delayed review and all nine topic/position combinations are distinct.
- await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await p.locator('.advanced-learning>summary').click();await p.locator('.advanced-learning details>summary').last().click();await p.locator('[data-action=advance]').click();await p.locator('.bottomnav [data-page=home]').click();await p.locator('[data-journey=review]').first().click();assert.equal((await session(p)).mode,'review');assert.equal((await session(p)).steps[0],'recall');await complete(p,'en');
+ await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await p.locator('.advanced-learning>summary').click();await p.locator('.advanced-learning details>summary').last().click();await p.locator('[data-action=advance]').click();await p.locator('.bottomnav [data-page=home]').click();await p.locator('[data-journey=review]').first().click();await legacyJourney(p,3);assert.equal((await session(p)).mode,'review');assert.equal((await session(p)).steps[0],'recall');await complete(p,'en');
  data=(await state(p)).journey;assert(Object.values(data.cards).some(r=>Object.values(r.skills).some(x=>x.passes>0)));
  await p.locator('[data-action=nav][data-page=home]').last().click();await p.locator('.topbar [data-page=me]').click();await english(p);
  const dl=p.waitForEvent('download');await p.locator('[data-action=export]').click();const download=await dl,backup=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.deepEqual(backup.state.journey,data);
@@ -112,8 +113,8 @@ try{
  await p.locator('#import-file').setInputFiles({name:'legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});await p.locator('[data-action=confirm-import]').click();assert.deepEqual((await state(p)).journey,data);
  const malformed=structuredClone(backup);malformed.state.journey.version=99;
  await p.locator('#import-file').setInputFiles({name:'malformed.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(malformed))});assert.deepEqual((await state(p)).journey,data,'invalid memory import leaves prior state intact');
- for(const width of [320,375,390,430,1280]){await p.setViewportSize({width,height:844});await p.locator('.bottomnav [data-page=home]').click();assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.locator('[data-home-choice][data-journey=continue]').click();assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.locator('[data-action=nav][data-page=home]').first().click();}
- await context.setOffline(true);await p.locator('[data-home-choice][data-journey=continue]').click();assert(await p.locator('.journey-stage').count());await p.locator('.journey-image img').evaluate(i=>i.decode());
+ for(const width of [320,375,390,430,1280]){await p.setViewportSize({width,height:844});await p.locator('.bottomnav [data-page=home]').click();assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.locator('[data-home-choice][data-journey=new]').click();assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.locator('[data-action=nav][data-page=home]').first().click();}
+ await context.setOffline(true);await p.locator('[data-home-choice][data-journey=new]').click();assert(await p.locator('.journey-stage').count());await p.locator('.journey-image img').evaluate(i=>i.decode());
  assert.deepEqual(errors,[]);await context.close();
  console.log(JSON.stringify({status:'PASS',checks:['78 continuous card plans','wrong feedback','7-step complete lesson and immediate next card','reload idempotence','per-card pause and resume','English learning and results','delayed review','SM-2 per skill','old backups retain new memory','invalid backups no mutation','320-1280 responsive','offline learning']}));
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1);});

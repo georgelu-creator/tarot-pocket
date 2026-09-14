@@ -1,6 +1,21 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.3.0 / 本次改动
+## Current work: 1.4.0 / 本次改动
+
+- Home learning now starts a random unstarted card; Resume and Choose a card are separate. Paused sessions stay recoverable. / 首页随机学习还没开始的牌；继续、自选分开，暂停课程仍可恢复。
+- `guided-major.js` and `guided-minor.js` contain 78 authored observation/reasoning/reversal/recall guides with matching English files. `guided-learning.js` / `.css` provide the phone UI; `journey.js` creates `playVersion: 4` sessions. / 78 张独立引导与英文已齐，新会话采用 v4。
+- New path: observe, reason, explain the framework, distinguish a near card, change the position within one question, use background for reversals, then reconstruct with cues hidden. Open understanding, comparison, position application and recall are explicitly self-assessed; objective causal/reversal choices explain each option. / 七步围绕理解；开放题明确自评，有判据的题才判对错并解释。
+- Review found and fixed untracked answer references, a cue leaking into independent recall, leading question prompts and ambiguous neighboring-card advice marked wrong. Assistance is recorded; different valid position readings are not forced into a false exclusive answer. / 复查修复提示绕过、回忆泄漏、题干暗示及错误排除合理建议的问题。
+- Compact guides retain sourced definitions and show all names for up to five positions. The AI connection form explains the separate service code and supports in-place correction; token persistence and backend settings are unchanged. / 紧凑牌阵保留定义，五张内名字直接可见；连接码有解释和更正入口，仍只存内存，后端不变。
+- Existing three storage keys and JSON backup format remain. Optional `guided` state and bounded `reflections` live inside the existing journey. Old v1–v3 sessions retain their flow and offer an explicit new-course switch. / 保留原键和备份，新增分步状态与短记忆句；旧课可继续或明确切换。
+- Tests: `check_guided_v14.cjs` covers all 78 cards, 156 authored questions, 468 position contexts, exact reload, honest assistance/self-assessment and random exploration. `check_reading_connect_v14.cjs` checks 7 guides at 320/390px and mocked AI connection/auth/save/cancel paths. Older course assertions remain under explicit legacy fixtures. / 专项检查覆盖内容、恢复、自评、随机、紧凑 UI 与模拟联网；旧断言继续验证旧存档。
+- Full local `npm test` passed on 2026-09-14 (111 offline assets), including both browser engines and the actual v1.0.0 upgrade. A final display-only label now says Consolidating through review instead of claiming application ability from self-report; focused content/flow checks cover that change. Full checked-commit CI and public deployment are recorded by the matching v1.4 PR and Actions. / 本机全量通过，含 111 项离线资源、双引擎与真实旧版升级；最终状态文字改为“持续巩固”，避免以自评宣称能运用，另做针对检查。最终提交 CI 和上线以本版 PR 与 Actions 为准。
+- Two configured secrets were compared in memory against 427 public source/build files; no matches. / 两项私有凭证仅在内存对照 427 个公开源码与构建文件，未发现泄漏。
+- Real iPhone acceptance, independent tarot/translation review and delayed retention remain unverified. The offline course is authored guidance, not a live AI tutor; no real provider call was made for this frontend change. / 实机、独立专业审校与延迟记忆仍待验证；离线课不是实时 AI 导师，本轮未调用付费模型。
+- Next useful acceptance: update without clearing records, use random new learning and explicit resume, finish a card, return the next day without hints, and check the compact spread guide on the actual phone. / 下一步：保留记录更新，实机随机新学与续学，完成后隔天无提示回忆，并查看紧凑牌阵。
+- Design and rationale: [EXPERIENCE_V1_4.md](EXPERIENCE_V1_4.md). / 设计与依据见完整体验说明。
+
+## Previous delivery: 1.3.0 / 前版交付
 
 - UI-focused release: held shuffle/cut animation, six large candidates per page, tap/confirm placement and large sequential reveals with unlimited viewing time. / 本轮聚焦 UI：洗切等待、六张大牌背、候选确认及逐张大图观看。
 - New lesson `playVersion: 3` adds image-first observation, evidence-to-meaning links and editable close-card matching. Existing v1/v2 sessions retain their original steps; first-attempt memory scores remain unchanged by a guided retry. / 新玩法兼容旧课程；引导后重练不改写首次成绩。
@@ -35,7 +50,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.3.0 tactile ritual and illustrated learning / 抽牌仪式与图文学习交互 |
+| Release target / 发布版本 | v1.4.0 guided understanding / 逐步理解与紧凑牌阵 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |

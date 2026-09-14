@@ -1,5 +1,14 @@
 # Changelog · 版本记录
 
+## 1.4.0 — Guided understanding / 逐步理解
+
+- All 78 new lessons use authored causal questions, concrete reversed contexts and open reconstruction; element/number support, close-card comparison and same-question position changes connect the steps. / 78 张新课以因果推导、具体逆位背景和开放回忆为主，串联元素数字、近牌辨析及同题换位。
+- Home prioritizes random unseen cards; resume and self-selection stay explicit. Old sessions and backups remain compatible. / 首页随机新学，继续与自选分开，旧课与备份兼容。
+- Compact spread guides display position names and purpose; online reading shows an explained connection-code form with in-place correction. / 紧凑牌阵直接显示用途与牌位；联网解读连接码有入口、来源说明和原位纠错。
+- Errors and hints remain recorded. Open understanding, comparison, position reading and recall use explicit self-assessment rather than false exclusive answers. Personal memory sentences are optional and local. / 错误及提示如实记录；理解、辨析、换位和回忆采用明确自评，不把同样合理的解读硬判错；记忆句可选且本地保存。
+- No server prompt, authorization policy, spread definitions or scheduling changes. / 未修改服务端提示、权限策略、牌阵定义或复习调度。
+
+
 ## 1.3.0 — 2026-09-14
 
 - Deliberate shuffle/cut/reveal animation, explicit viewing time, six large candidates per page and confirmed placement. All 78 remain selectable; interruption and reduced motion preserve the result. / 洗切翻动效和自主观看、六张大牌背候选与确认入位；78 张可选，中断与减少动态保留结果。
