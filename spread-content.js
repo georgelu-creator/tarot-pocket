@@ -425,3 +425,637 @@ window.TAROT_SPREAD_CONTENT = {
     {title: 'Labyrinthos · Tarot Spreads List（参考按问题领域选择不同牌阵的产品方式）', url: 'https://labyrinthos.co/pages/tarot-spreads-list'}
   ]
 };
+
+/* Original scenario spreads. Stable earlier IDs and authored lessons remain compatible. */
+(() => {
+  const c=window.TAROT_SPREAD_CONTENT;
+  c.categories=[{"id": "all", "label": "全部牌阵"}, {"id": "love", "label": "感情关系"}, {"id": "work", "label": "工作事业"}, {"id": "study", "label": "学习成长"}, {"id": "life", "label": "日常生活"}, {"id": "self", "label": "自我探索"}, {"id": "choice", "label": "选择决策"}];
+  const defaults={one:['life','career',false],three:['life','career',false],timeline:['life','career',false],choice:['choice','career',false],relationship:['love','love',true],action:['work','career',true],study:['study','study',true],celtic:['self','career',false]};
+  for(const s of c.spreads){const [category,topic,contextEnabled]=defaults[s.id];Object.assign(s,{category,topic,contextEnabled});}
+  c.spreads.push(...[
+  {
+    "id": "daily",
+    "name": "塔罗日运",
+    "category": "life",
+    "topic": "career",
+    "summary": "停一口气，为今天翻开一张牌。",
+    "bestFor": "给今天一个观察主题和可实践的小行动。",
+    "avoid": "把日签当成吉凶保证或替自己作决定。",
+    "layout": "one",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "focus",
+        "label": "今日提醒",
+        "question": "今天我可以把注意力放在哪里，并采取怎样的一小步？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "先看画面，再读提醒，带着一个小行动走进今天。",
+    "compareTip": "同一天保留同一张日签；明天再开启新的相遇。",
+    "contextEnabled": false
+  },
+  {
+    "id": "love-talk",
+    "name": "关系沟通三角",
+    "category": "love",
+    "topic": "love",
+    "summary": "想说的、没听见的与可开启的谈话。",
+    "bestFor": "想说的、没听见的与可开启的谈话。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "triangle",
+    "topics": [
+      "love"
+    ],
+    "positions": [
+      {
+        "id": "voice",
+        "label": "我的表达",
+        "question": "我正在怎样表达自己的需要？",
+        "role": "state"
+      },
+      {
+        "id": "listen",
+        "label": "倾听盲点",
+        "question": "哪些假设或防御可能影响我听清对方已经表达的内容？",
+        "role": "tension"
+      },
+      {
+        "id": "talk",
+        "label": "开启谈话",
+        "question": "我可以怎样开始一次更清楚、可回应的沟通？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "love-needs",
+    "name": "关系中的需要",
+    "category": "love",
+    "topic": "love",
+    "summary": "分清感受、需要、连接基础与行动。",
+    "bestFor": "分清感受、需要、连接基础与行动。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "grid",
+    "topics": [
+      "love"
+    ],
+    "positions": [
+      {
+        "id": "feeling",
+        "label": "此刻感受",
+        "question": "这段关系里，我此刻更关注哪种感受？",
+        "role": "state"
+      },
+      {
+        "id": "need",
+        "label": "未被照顾的需要",
+        "question": "哪种需要或边界可能没有得到足够照顾？",
+        "role": "tension"
+      },
+      {
+        "id": "support",
+        "label": "共同基础",
+        "question": "双方已知的互动中，哪些基础值得继续珍惜？",
+        "role": "resource"
+      },
+      {
+        "id": "action",
+        "label": "我的回应",
+        "question": "我可以怎样表达需要，而不替对方决定？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "love-boundary",
+    "name": "温柔的边界",
+    "category": "love",
+    "topic": "love",
+    "summary": "看清承担的部分，为关系留出空间。",
+    "bestFor": "看清承担的部分，为关系留出空间。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "grid",
+    "topics": [
+      "love"
+    ],
+    "positions": [
+      {
+        "id": "pattern",
+        "label": "相处模式",
+        "question": "我习惯怎样参与这段关系？",
+        "role": "state"
+      },
+      {
+        "id": "burden",
+        "label": "过度承担",
+        "question": "哪些责任或期待可能已经超出我能承担的范围？",
+        "role": "tension"
+      },
+      {
+        "id": "support",
+        "label": "可用支持",
+        "question": "什么资源或稳定做法可以支持我建立边界？",
+        "role": "resource"
+      },
+      {
+        "id": "boundary",
+        "label": "边界行动",
+        "question": "我可以怎样清楚、尊重地表达一条边界？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "love-repair",
+    "name": "告别与修复",
+    "category": "love",
+    "topic": "love",
+    "summary": "承认过去，照顾当下，选择下一步。",
+    "bestFor": "承认过去，照顾当下，选择下一步。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "row",
+    "topics": [
+      "love"
+    ],
+    "positions": [
+      {
+        "id": "past",
+        "label": "带来的经历",
+        "question": "哪些实际发生的经历仍在影响我？",
+        "role": "past"
+      },
+      {
+        "id": "care",
+        "label": "现在的需要",
+        "question": "我当前的感受和注意力呈现怎样的状态？",
+        "role": "state"
+      },
+      {
+        "id": "repair",
+        "label": "修复的一步",
+        "question": "我可以先做什么，支持自己恢复选择的空间？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "work-progress",
+    "name": "工作推进三角",
+    "category": "work",
+    "topic": "career",
+    "summary": "把卡住的项目重新带回可执行的一步。",
+    "bestFor": "把卡住的项目重新带回可执行的一步。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "triangle",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "项目现状",
+        "question": "目前推进方式和工作表现有什么值得关注？",
+        "role": "state"
+      },
+      {
+        "id": "block",
+        "label": "推进卡点",
+        "question": "什么约束或习惯可能限制了进展？",
+        "role": "tension"
+      },
+      {
+        "id": "action",
+        "label": "下一步行动",
+        "question": "我可以先做什么来检验一个改进方向？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "work-change",
+    "name": "留下还是转向",
+    "category": "work",
+    "topic": "career",
+    "summary": "用相同维度比较当前工作与新方向。",
+    "bestFor": "用相同维度比较当前工作与新方向。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "choice",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "a-support",
+        "label": "留下 · 支持",
+        "question": "继续当前工作有哪些已知支持条件？",
+        "role": "resource"
+      },
+      {
+        "id": "a-cost",
+        "label": "留下 · 代价",
+        "question": "继续当前工作可能需要承担哪些取舍？",
+        "role": "tension"
+      },
+      {
+        "id": "a-trend",
+        "label": "留下 · 趋势",
+        "question": "若按当前方式继续，值得观察什么倾向？",
+        "role": "trend"
+      },
+      {
+        "id": "b-support",
+        "label": "转向 · 支持",
+        "question": "探索新方向有哪些可核对的支持条件？",
+        "role": "resource"
+      },
+      {
+        "id": "b-cost",
+        "label": "转向 · 代价",
+        "question": "探索新方向需要哪些投入或取舍？",
+        "role": "tension"
+      },
+      {
+        "id": "b-trend",
+        "label": "转向 · 趋势",
+        "question": "若按已知计划探索新方向，值得观察什么倾向？",
+        "role": "trend"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "work-team",
+    "name": "合作与分工",
+    "category": "work",
+    "topic": "career",
+    "summary": "从自己的做法与已知配合中找到协作空间。",
+    "bestFor": "从自己的做法与已知配合中找到协作空间。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "grid",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "self",
+        "label": "我的参与",
+        "question": "我正在以怎样的方式参与合作？",
+        "role": "state"
+      },
+      {
+        "id": "observable",
+        "label": "已知配合",
+        "question": "对方已经表达的承诺和实际行动有哪些模式？",
+        "role": "unknown"
+      },
+      {
+        "id": "gap",
+        "label": "协作摩擦",
+        "question": "哪些目标、边界或做法可能没有对齐？",
+        "role": "tension"
+      },
+      {
+        "id": "action",
+        "label": "对齐行动",
+        "question": "我可以怎样澄清一次分工或共同期待？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "work-strength",
+    "name": "能力与机会",
+    "category": "work",
+    "topic": "career",
+    "summary": "将已有能力与现实约束放在同一张牌桌。",
+    "bestFor": "将已有能力与现实约束放在同一张牌桌。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "pyramid",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "我的起点",
+        "question": "我目前怎样使用自己的能力？",
+        "role": "state"
+      },
+      {
+        "id": "gap",
+        "label": "待补之处",
+        "question": "哪种限制或做法可能妨碍能力发挥？",
+        "role": "tension"
+      },
+      {
+        "id": "strength",
+        "label": "已有优势",
+        "question": "哪些已有条件值得继续发展？",
+        "role": "resource"
+      },
+      {
+        "id": "action",
+        "label": "发展方向",
+        "question": "我可以怎样把一个优势转成可观察的尝试？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "study-review",
+    "name": "学习复盘",
+    "category": "study",
+    "topic": "study",
+    "summary": "回看一次练习，把经验带进下一次。",
+    "bestFor": "回看一次练习，把经验带进下一次。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "row",
+    "topics": [
+      "study"
+    ],
+    "positions": [
+      {
+        "id": "past",
+        "label": "这次的经历",
+        "question": "本次学习中哪些已发生的模式值得回看？",
+        "role": "past"
+      },
+      {
+        "id": "gap",
+        "label": "真正的卡点",
+        "question": "哪个理解缺口或学习习惯需要进一步核对？",
+        "role": "tension"
+      },
+      {
+        "id": "next",
+        "label": "下次的调整",
+        "question": "下次我可以改变哪一步，并检查效果？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "study-plan",
+    "name": "学习计划四步",
+    "category": "study",
+    "topic": "study",
+    "summary": "从目标与基础出发，安排下一轮投入。",
+    "bestFor": "从目标与基础出发，安排下一轮投入。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "grid",
+    "topics": [
+      "study"
+    ],
+    "positions": [
+      {
+        "id": "aim",
+        "label": "学习目标",
+        "question": "我正追求怎样的学习状态，是否符合实际需要？",
+        "role": "state"
+      },
+      {
+        "id": "support",
+        "label": "已有基础",
+        "question": "我有哪些可以调用的基础、材料或支持？",
+        "role": "resource"
+      },
+      {
+        "id": "limit",
+        "label": "现实约束",
+        "question": "哪些时间、精力或习惯限制需要考虑？",
+        "role": "tension"
+      },
+      {
+        "id": "next",
+        "label": "下一轮安排",
+        "question": "怎样安排一次可以执行和检查的练习？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": true
+  },
+  {
+    "id": "life-week",
+    "name": "一周的节奏",
+    "category": "life",
+    "topic": "career",
+    "summary": "看清当下节奏，留意需要照顾和调整的部分。",
+    "bestFor": "看清当下节奏，留意需要照顾和调整的部分。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "row",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "当前节奏",
+        "question": "我近期的日常状态呈现怎样的模式？",
+        "role": "state"
+      },
+      {
+        "id": "resource",
+        "label": "支持我的事",
+        "question": "哪些已有的安排或支持值得保留？",
+        "role": "resource"
+      },
+      {
+        "id": "action",
+        "label": "本周的一步",
+        "question": "本周可以尝试什么小调整，并观察实际反馈？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": false
+  },
+  {
+    "id": "life-resources",
+    "name": "生活资源盘点",
+    "category": "life",
+    "topic": "career",
+    "summary": "梳理手中的条件与取舍，照顾可持续的生活。",
+    "bestFor": "梳理手中的条件与取舍，照顾可持续的生活。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "grid",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "使用现状",
+        "question": "我正在怎样安排时间、精力或身边资源？",
+        "role": "state"
+      },
+      {
+        "id": "resource",
+        "label": "现有支持",
+        "question": "哪些资源或支持已经存在，可以实际使用？",
+        "role": "resource"
+      },
+      {
+        "id": "tension",
+        "label": "消耗与限制",
+        "question": "什么习惯或安排可能造成不必要的消耗？",
+        "role": "tension"
+      },
+      {
+        "id": "action",
+        "label": "调整安排",
+        "question": "我可以先调整什么，让投入更可持续？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": false
+  },
+  {
+    "id": "self-emotion",
+    "name": "情绪天气",
+    "category": "self",
+    "topic": "career",
+    "summary": "给感受一个位置，再给自己一个回应。",
+    "bestFor": "给感受一个位置，再给自己一个回应。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "triangle",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "此刻的我",
+        "question": "此刻我的注意力与反应在哪里？",
+        "role": "state"
+      },
+      {
+        "id": "tension",
+        "label": "需要留意",
+        "question": "哪种反应可能过度、受阻或被忽视？",
+        "role": "tension"
+      },
+      {
+        "id": "action",
+        "label": "回应自己",
+        "question": "我可以用什么小动作照顾并观察自己的状态？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": false
+  },
+  {
+    "id": "self-values",
+    "name": "找回自己的方向",
+    "category": "self",
+    "topic": "career",
+    "summary": "核对想追求的方向与真正愿意投入的事情。",
+    "bestFor": "核对想追求的方向与真正愿意投入的事情。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "pyramid",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "aim",
+        "label": "想追求什么",
+        "question": "我正在追求怎样的状态或方向？",
+        "role": "state"
+      },
+      {
+        "id": "tension",
+        "label": "拉扯我的事",
+        "question": "哪些期待、习惯或矛盾可能拉扯我的选择？",
+        "role": "tension"
+      },
+      {
+        "id": "resource",
+        "label": "可以依靠",
+        "question": "已有的经验或支持怎样帮助我形成自己的判断？",
+        "role": "resource"
+      },
+      {
+        "id": "action",
+        "label": "靠近的一步",
+        "question": "我可以做哪个小尝试，检验这个方向是否适合自己？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": false
+  },
+  {
+    "id": "choice-clarify",
+    "name": "做决定之前",
+    "category": "choice",
+    "topic": "career",
+    "summary": "还没有清楚选项时，先把判断标准找出来。",
+    "bestFor": "还没有清楚选项时，先把判断标准找出来。",
+    "avoid": "把象征当成已确认的事实，或跳过现实信息直接下结论。",
+    "layout": "row",
+    "topics": [
+      "career"
+    ],
+    "positions": [
+      {
+        "id": "state",
+        "label": "真正关注",
+        "question": "这次决定里，我真正关注的是什么？",
+        "role": "state"
+      },
+      {
+        "id": "tension",
+        "label": "判断盲点",
+        "question": "哪些假设、担心或资源限制需要核对？",
+        "role": "tension"
+      },
+      {
+        "id": "action",
+        "label": "先核对的事",
+        "question": "在决定以前，我可以先核对或尝试什么？",
+        "role": "advice"
+      }
+    ],
+    "readingTip": "按图中编号逐位阅读，先回答该位置的问题，再把相邻牌的线索联系起来。",
+    "compareTip": "比较牌位承担的不同任务；最后用已知事实和一次小行动检验解读。",
+    "contextEnabled": false
+  }
+]);
+})();

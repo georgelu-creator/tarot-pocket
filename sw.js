@@ -60,13 +60,23 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const result=await inventory();if(!result.ready)throw Error('Incomplete offline release');
-    for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key);
+    // An explicit update can leave an older lesson tab open. Keep its versioned
+    // assets until a later activation with no lesson tabs; never reload that tab.
+    const oldTabs=(await self.clients.matchAll({includeUncontrolled:true,type:'window'})).filter(client=>client.url.startsWith(self.registration.scope)&&!new URL(client.url).pathname.endsWith('/update.html'));
+    if(!oldTabs.length)for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key);
     await self.clients.claim();await notify(result);
   })());
 });
 self.addEventListener('message',event=>{
-  if(!RELEASE || !['TAROT_OFFLINE_STATUS','TAROT_OFFLINE_REPAIR'].includes(event.data?.type))return;
+  if(!RELEASE || !['TAROT_OFFLINE_STATUS','TAROT_OFFLINE_REPAIR','TAROT_OFFLINE_ACTIVATE'].includes(event.data?.type))return;
   const reply=value=>event.ports[0]?.postMessage(value);
+  if(event.data.type==='TAROT_OFFLINE_ACTIVATE'){
+    event.waitUntil((async()=>{
+      const result=await inventory();
+      if(!result.ready){reply(result);return;}
+      reply({...result,activating:true});await self.skipWaiting();
+    })());return;
+  }
   event.waitUntil((event.data.type==='TAROT_OFFLINE_REPAIR'?repair():inventory()).then(reply,error=>reply({phase:'error',ready:false,error:error.message,revision:RELEASE.revision})));
 });
 self.addEventListener('fetch',event=>{
@@ -77,6 +87,16 @@ self.addEventListener('fetch',event=>{
   const asset=entries().find(item=>item.url===(navigation?absolute('index.html'):url.origin+url.pathname));
   if(!asset)return;
   event.respondWith((async()=>{
+    const requestedVersion=navigation?null:url.searchParams.get('v');
+    if(requestedVersion&&requestedVersion!==RELEASE.revision){
+      const key=PREFIX+requestedVersion;
+      // Never substitute a different script version under an already open page.
+      if((await caches.keys()).includes(key)){
+        const previous=await (await caches.open(key)).match(asset.url);
+        if(previous?.ok&&previous.headers.has('X-Tarot-Integrity'))return previous;
+      }
+      return new Response('This page version is no longer available. Finish your session and reopen Tarot Pocket.',{status:409,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+    }
     const cache=await caches.open(CACHE),cached=await cache.match(asset.url);
     if(cached?.headers.get('X-Tarot-Integrity')===asset.sha256)return cached;
     try{const response=await verifiedResponse(asset);await cache.put(asset.url,response.clone());return response;}

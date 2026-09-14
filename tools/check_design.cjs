@@ -36,13 +36,15 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  assert(await p.locator('[data-reading=pause]').isVisible());
  assert(await p.locator('.shuffle-pack').evaluate(pack=>{
    const cards=[...pack.children],skip=document.querySelector('[data-reading=skip-animation]').getBoundingClientRect();
-   return cards.length===3&&cards.every(card=>getComputedStyle(card).position==='absolute'&&card.getBoundingClientRect().bottom<skip.top);
+   return cards.length===9&&cards.every(card=>getComputedStyle(card).position==='absolute'&&card.getBoundingClientRect().bottom<skip.top);
  }),'shuffle cards stay stacked without covering the skip action');
  await p.locator('[data-reading=skip-animation]').click();
  assert.deepEqual((await state(p)).draft.pool,before.pool,'skip animation must not draw again');
+ await p.locator('[data-reading=cut-default]').click();await p.locator('[data-reading=pick]').first().waitFor();
+ const cutPool=(await state(p)).draft.pool;assert.deepEqual(cutPool,[...before.pool.slice(39),...before.pool.slice(0,39)],'cut rotates the existing pool');
  const styles=await p.locator('.reading-pick:not(:disabled) .reading-back').evaluateAll(els=>[...new Set(els.map(e=>getComputedStyle(e).backgroundImage))]);
  assert.equal(styles.length,1);assert(styles[0].includes('data:image/svg+xml;base64,'),'offline card-back must be embedded');
- await p.locator('[data-language-toggle]').click();assert.deepEqual((await state(p)).draft.pool,before.pool);
+ await p.locator('[data-language-toggle]').click();assert.deepEqual((await state(p)).draft.pool,cutPool);
  await p.locator('[data-reading=pick][data-index="0"]').click();
  await p.locator('[data-reading=pick][data-index="1"]').click();
  await p.locator('[data-reading=pick][data-index="2"]').click();
@@ -53,7 +55,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  const saved=(await state(p)).draft;
  await p.locator('[data-reading=pause]').click();await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
  assert.deepEqual((await state(p)).draft.pool,saved.pool);assert.deepEqual((await state(p)).draft.revealed,[0]);
- await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
+ await p.locator('[data-reading=resume]').click();await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
  await p.locator('[data-reading=card][data-index="1"]').click();
  assert.equal(await p.locator('.reading-slot.just-flipped img').evaluate(el=>getComputedStyle(el).animationName),'none');
  await p.locator('[data-reading=card][data-index="2"]').click();

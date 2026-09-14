@@ -1,5 +1,7 @@
 # Tarot Pocket · 完整产品方案 / Product plan
 
+**v1.1.0 experience contract / 本版体验合同:** [Choose, remember, and read](EXPERIENCE_V1_1.md). It specifies free selection, visual game variants, the separate ritual table and safe upgrades; these supersede earlier entry and reading details below. / 新版明确自主选牌、视觉变式、独立仪式与保留进度升级，优先于以下早期入口和抽牌描述。
+
 Version: 1.0.0 · 2026-09-11 · Chinese and English
 
 ## 1. 产品要兑现的承诺 / Product promise
@@ -90,9 +92,9 @@ Foundations are available as references and contextual explanations. The selecte
 
 ## 7. 独立的随身牌桌 / A separate reading table
 
-先看八种牌阵缩略图和能力范围，再看具体位置和边界。决定使用后，可以写问题，也可以默念；语境选择可选。洗牌、选牌、翻牌具备明确反馈和减少动态支持。
+先按生活场景浏览 23 种牌阵与独立日运，点布局了解全部位置，再决定是否使用。问题可写可默念；场景直接决定语境。洗牌、切牌、挑牌、翻牌都有动效与减少动态支持。
 
-Explore eight visual spreads and their scope, then inspect roles and limits. A question can be written or held in mind; context is optional. Shuffling, picking, and revealing offer clear feedback and reduced-motion support.
+Browse 23 scenario spreads and a separate daily draw. Inspect every role before using a spread. Questions may be written or held in mind; the scene supplies its context. Shuffle, cut, select and reveal preserve the same result with normal or reduced motion.
 
 解读以问题/任务、逐位参考、实际牌间关系、按牌位整合、现实核对组织。二择一逐维比较双方；关系阵区分自己与可观察互动；凯尔特十字按角色整合，不能把所有牌阵都硬套为起点—中间—终点。
 

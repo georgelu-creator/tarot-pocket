@@ -5,6 +5,12 @@ Stable IDs, storage keys and verified historical card assets remain compatible.
 
 本文记录从早期预览到完整学习闭环的体验调整。稳定 ID、三个存储键及已核验历史牌图保持兼容。
 
+## v1.1.0 · Agency and continuity / 自主性与连续性
+
+Repeated first cards, buried choices, text-only placement, lost sheet scroll, a separate wording picker, too few spreads and incomplete ritual stages were separate sources of friction. The [experience contract](EXPERIENCE_V1_1.md) maps them to selectable learning, real images and positions, retained sheet state, scenario categories, 23 spreads plus daily tarot and a full shuffle/cut/pick/reveal sequence. An independent update page also addresses stale offline homepages.
+
+反复遇见固定首牌、选牌不明显、假想牌位、弹层跳动、重复选语境、牌阵太少与仪式不完整分别修复。方案对应自主学习、可见真牌和牌位、弹层原位、场景分类、23 阵加日运及洗切抽翻；另修旧离线首页缓存无法更新的问题。
+
 ## v1.0.0 · Retention comes first / 围绕记住重新组织
 
 The earlier fixes below repaired navigation but did not make every card learnable in depth. The release now provides 78 seven-stage first lessons, adaptive review, per-card pause/resume, six skill records, and a direct next-card action. Reading a dossier is only an encounter; it never marks a lesson completed or a card mastered.

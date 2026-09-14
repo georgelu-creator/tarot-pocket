@@ -4,16 +4,18 @@
 
 A bilingual, image-first tarot learning companion. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
 
-[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
+[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.1.0/tarot-pocket-v1.1.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
 
 ![Tarot Pocket — practice, remember, and read](docs/images/hero.png)
 
-![v1.0.0](https://img.shields.io/badge/release-v1.0.0-60465C)
+![v1.1.0](https://img.shields.io/badge/release-v1.1.0-60465C)
 ![Languages](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![Code license](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![Content license](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.0.0 provides **continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. Open it on your phone; prepare offline content and add it to your home screen for travel. [Full product and design plan](docs/PRODUCT_PLAN.md).
+v1.1.0 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. Open it on your phone; prepare offline content and add it to your home screen for travel. [Experience design and full learning plan](docs/EXPERIENCE_V1_1.md).
+
+**Used an earlier version?** Open [Update while keeping records](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en), download the verified update, then choose to enter it. Do not clear site data.
 
 ## A small lesson that stays with you
 
@@ -32,16 +34,18 @@ Tap **Start learning** on Home to meet your next card, or choose any card in **L
 | Learn from real artwork | 78 historical Rider–Waite–Smith cards from one Pam-A scan set, with individual sources and checksums |
 | Practice beyond recognition | 78 seven-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
 | Build a mental framework | Elements, numbers, visual evidence, similar-card distinctions, position changes, and contextual reversals |
-| Learn how spreads work | 8 visual spreads with scope, limits, position questions, and a clear reading order |
+| Learn how spreads work | 23 visual scenario spreads and a daily draw with scope, limits, position questions, and a clear reading order |
 | Change the question | Love, career, and study contexts; the same card can play different roles |
-| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, pick without replacement, reveal cards, and optionally include reversals |
+| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, cut the deck, pick without replacement, reveal cards, and optionally include reversals |
 | Review by performance | Six skills follow SM-2 intervals; immediate retries do not count as delayed recall |
 | Keep your place | Local progress, a resumable card table, up to 40 saved readings, and JSON export/import |
 | Switch language | English and Simplified Chinese interface and learning content |
 
-The eight spreads are **Single-card Focus**, **Situation–Obstacle–Advice**, **Past–Present–Trend**, **Two Paths**, **Relationship Awareness**, **Action Path**, **Study Breakthrough**, and **Celtic Cross**. Each names the question its positions ask. Study Breakthrough is specific to study; the Celtic Cross uses the ordering shown in its own guide.
+Browse **love, work, study, life, self-reflection and choices**. Each spread displays its layout and every position before shuffling, cutting and drawing. A separate **daily tarot draw** keeps the same card when revisited that day.
 
 <img src="docs/images/reading.png" width="390" alt="Reading: review visual spread scope before entering your own question">
+<img src="docs/images/ritual-cut.png" width="280" alt="Cut the deck / 切牌"><img src="docs/images/ritual-fan.png" width="280" alt="Choose from the fan / 扇形选牌">
+
 
 ## Built for a trip with patchy internet
 
@@ -52,7 +56,7 @@ The recommended phone entry is the public website:
 3. In Safari’s Share menu, choose **Add to Home Screen**. Open the installed site and check its offline status again.
 4. Before travel, test airplane mode, closing/reopening, an unfamiliar card, and saved progress on the actual phone.
 
-Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html) remains available for browsers that support local JavaScript.
+Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.1.0/tarot-pocket-v1.1.0.html) remains available for browsers that support local JavaScript.
 
 **Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Runtime uses no accounts, external fonts, analytics, or AI service.
 
@@ -61,7 +65,7 @@ Readiness reflects real download and inventory checks. Failed updates keep the p
 - All 78 cards have authored visual mnemonics, near-card distinctions, and three plausible distractors within a complete shared learning flow.
 - Records distinguish encounters, first lessons, self-ratings, objective application, and delayed reviews. Marking a card read never means mastery.
 - Six skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
-- Eight reading spreads organize actual cards, positions, and optional domains. Written questions are preserved, not semantically analyzed or uploaded. Quizzes do not interrupt readings.
+- Scenario spreads supply their context and organize actual cards and positions. Written questions are preserved, not semantically analyzed or uploaded. Quizzes do not interrupt readings.
 - Content and translations still need independent tarot-teacher review. Automated checks do not replace expert review, physical iPhone tests, phone-restart tests, or extended offline travel. See [Handoff](docs/HANDOFF.md) for exact evidence.
 - This release is an installable mobile website, not a native App Store application.
 

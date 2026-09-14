@@ -34,13 +34,13 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | --- | --- |
 | `index.html` | Source page and script order / 源页面与脚本加载顺序 |
 | `curriculum-content.js`, `journey.js`, `journey.css` | 78 card plans, per-skill SM-2, saved lessons and mobile learning / 78 牌课程、分能力复习、续学与学习 UI |
-| `offline.js`, `sw.js`, `manifest.webmanifest` | Explicit offline preparation, atomic cache and installation / 离线下载、完整缓存与安装 |
+| `offline.js`, `sw.js`, `update.html`, `manifest.webmanifest` | Explicit offline preparation, atomic cache and installation / 离线下载、完整缓存与安装 |
 | `app.js` | Navigation, quick practice, card library, backup integration / 导航、快练、牌库与备份整合 |
 | `learning.js` | Lesson interactions, scoring, recall, progress / 单元交互、评分、回忆与进度 |
 | `reading.js` | Spread selection, shuffle, draw, position guidance, history / 选阵、洗牌、抽牌、牌位引导与历史 |
 | `content.js` | Original teaching-card metadata and 24 quick questions / 原有教学牌资料与 24 道快练 |
 | `learning-content.js` | Four original units: 32 steps / 四个原有单元，共 32 步 |
-| `spread-content.js` | Eight spread guides and four contextual units: 24 steps / 八阵指南与四个情境单元，共 24 步 |
+| `spread-content.js` | 24 reading definitions including daily, and four contextual units: 24 steps / 含日签共 24 个抽牌定义，以及四个情境单元 24 步 |
 | `reading-deck.js` | Basic reference content for 78 cards and three topics / 78 张牌与三个主题的基础参考 |
 | `i18n.js` | Display-text and accessibility translation; keeps business IDs and stored values / 显示文字与无障碍翻译，保留业务 ID 和存档值 |
 | `locales/en-deck.json`, `locales/en-lessons.json`, `locales/en-ui.json` | Editable English translations / 可编辑的英文翻译源 |
@@ -72,9 +72,9 @@ npm test
 
 `npm test` 会自行在可用本机端口启动服务，并顺序执行检查，不依赖 8765 端口的预览服务。
 
-The asset check verifies 78 stable IDs, decoded files, dimensions, checksums, source evidence, and visual-review records. Browser checks cover quick practice, lesson feedback, recall, interrupted sessions, all eight spreads, full-deck draws, backup round trips, responsive layouts, and the offline bundle. Language changes also need language-specific validation and visual inspection.
+The asset check verifies 78 stable IDs, decoded files, dimensions, checksums, source evidence, and visual-review records. Browser checks cover quick practice, lesson feedback, recall, interrupted sessions, all 23 scenario spreads and daily tarot, full-deck draws, backup round trips, responsive layouts, and the offline bundle. Language changes also need language-specific validation and visual inspection.
 
-素材检查核验 78 个稳定 ID、图片解码、尺寸、哈希、来源与视觉核查记录。浏览器检查覆盖快练、课程反馈、回忆、断点续学、八种牌阵、完整牌组抽取、备份往返、响应式布局与离线包。语言变更还要检查对应语言的交互与实际显示。
+素材检查核验 78 个稳定 ID、图片解码、尺寸、哈希、来源与视觉核查记录。浏览器检查覆盖快练、课程反馈、回忆、断点续学、23 种场景牌阵与日运、完整牌组抽取、备份往返、响应式布局与离线包。语言变更还要检查对应语言的交互与实际显示。
 
 The full check also validates the shared card back and the design integration: semantic palette and text contrast, responsive Chinese/English views, focused draw exit, skipped animation preserving the shuffled pool, rapid reveal, language/resume stability, reduced-motion reveal and opaque contrast fallback. These checks supplement the existing learning and backup suite rather than replace it.
 
@@ -154,3 +154,7 @@ Do not commit browser backups, reading histories, credentials, private workspace
 不要提交浏览器备份、私人抽牌记录、凭据、个人工作区路径或私人助理记忆。本仓库支持恢复项目工作，不代表已经配置外部助理的长期记忆。
 
 The build discovers scripts/styles from `index.html` and translations from `locales/en-*.json`. `check_journey.cjs` checks memory semantics and continuity; `check_offline.cjs` tests versioned PWA caches in Chromium and WebKit. / 构建从 index 与语言目录发现资源，新增连续学习与双引擎 PWA 检查。
+
+The upgrade regression builds the actual `v1.0.0` tag. Fetch tags/history before running it in a shallow clone (`git fetch --unshallow --tags` when appropriate); CI uses `fetch-depth: 0`. `check_ui_v11.cjs` covers choice/reference continuity, and `check_ritual_ui.cjs` measures actual timed transforms. Both are included in `npm test`.
+
+升级回归会构建真实 v1.0.0 标签；浅克隆须先取回历史与标签。CI 使用完整历史；完整测试包含资料连续性及实际动画变换检查。

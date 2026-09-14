@@ -42,6 +42,7 @@ const url=process.env.DEMO_URL||'http://127.0.0.1:8765/tarot-demo.html';
  const openUnit=async id=>{
    if(await p.locator('[data-learn=home]').count())await click(p,'home');
    if(!(await p.locator('.library-grid').count()))await p.locator('.bottomnav [data-page=library]').click();
+   await p.locator('[data-action=library-view][data-value=spreads]').click();
    if(!(await p.locator('.advanced-learning[open]').count()))await p.locator('.advanced-learning>summary').click();
    await p.locator(`[data-learn-start=${id}]`).click();
  };
@@ -154,7 +155,7 @@ const url=process.env.DEMO_URL||'http://127.0.0.1:8765/tarot-demo.html';
  await p.setViewportSize({width:390,height:844});await p.screenshot({path:'/tmp/tarot-v2-home-mobile.png',fullPage:true});
  const off=await browser.newContext({viewport:{width:320,height:760}});await off.setOffline(true);
  const op=await off.newPage();await op.goto('file://'+path.join(root,'demo/tarot-demo.html'));
- await op.locator('.bottomnav [data-page=library]').click();await op.locator('.advanced-learning>summary').click();await op.locator('[data-learn-start=p04]').first().click();
+ await op.locator('.bottomnav [data-page=library]').click();await op.locator('[data-action=library-view][data-value=spreads]').click();await op.locator('.advanced-learning>summary').click();await op.locator('[data-learn-start=p04]').first().click();
  await op.locator('.hotspot-card img').evaluate(im=>im.decode());
  await width(op);await click(op,'select','hold');await click(op,'submit');
  assert.equal(await op.locator('.learn-feedback').count(),1,'cold file start works offline');

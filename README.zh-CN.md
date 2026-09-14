@@ -4,16 +4,18 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.1.0/tarot-pocket-v1.1.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![v1.0.0](https://img.shields.io/badge/release-v1.0.0-60465C)
+![v1.1.0](https://img.shields.io/badge/release-v1.1.0-60465C)
 ![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.0.0 提供 **78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。手机打开网页即可使用，下载离线内容后可添加主屏幕，在旅途中继续学习。[完整产品与设计方案](docs/PRODUCT_PLAN.md)。
+v1.1.0 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。手机打开网页即可使用，下载离线内容后可添加主屏幕，在旅途中继续学习。[本次体验设计与完整学习方案](docs/EXPERIENCE_V1_1.md)。
+
+**已经用过旧版？** 请打开[保留记录更新](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh)，选择“检查并下载新版”，完成后点“保留记录，进入新版”。无需清缓存或删除学习进度。
 
 ## 让一张牌，真正留在记忆里
 
@@ -32,16 +34,18 @@ v1.0.0 提供 **78 张牌的连续学习**、按能力安排的间隔复习，�
 | 看真实牌图 | 同一套 Pam-A 历史 RWS 扫描，共 78 张；逐张保留来源与哈希 |
 | 不止看图选名字 | 78 套七步连续学习，另保留 56 步进阶课程和 24 道快练题 |
 | 建立理解框架 | 元素、数字、图像证据、相似牌辨析、换牌位与逆位情境 |
-| 学会用牌阵 | 8 种视觉牌阵，先看能力范围、限制、各位置的问题与专业读牌顺序 |
+| 学会用牌阵 | 23 种场景牌阵与塔罗日运，先看能力范围、限制、各位置的问题与专业读牌顺序 |
 | 换个问题再理解 | 感情、事业、学业三个主题，同牌换情境、换角色 |
-| 没带实体牌也能抽 | 问题可写可不写，完整 78 张随机洗牌、无放回选牌、逐张翻牌，可选正逆位 |
+| 没带实体牌也能抽 | 问题可写可不写，完整 78 张随机洗牌、切牌、无放回选牌、逐张翻牌，可选正逆位 |
 | 按表现复习 | 六项能力分别使用 SM-2 间隔规则；即时重做不会冒充隔天回忆 |
 | 随时暂停和回来 | 本地进度、可续抽的牌桌、最近 40 组抽牌记录、JSON 导入导出 |
 | 中英文切换 | 应用界面与学习内容均提供简体中文和英文 |
 
-八种牌阵包括：**单牌聚焦、现状—阻碍—建议、过去—现在—趋势、二择一、关系觉察、行动路径、学习突破、凯尔特十字**。每个位置都有明确的问题。“学习突破”专用于学业；凯尔特十字采用本项目指南中标明的位置顺序。
+牌阵按**感情、工作、学业、生活、自我与选择**分类。每个牌阵先展示真实布局缩略图和全部位置，再进入洗牌、切牌与抽牌；另有每天保留同一张牌的**塔罗日运**。
 
 <img src="docs/images/reading.png" width="390" alt="抽牌：先看牌阵缩略图和能力范围，再输入自己的问题">
+<img src="docs/images/ritual-cut.png" width="280" alt="Cut the deck / 切牌"><img src="docs/images/ritual-fan.png" width="280" alt="Choose from the fan / 扇形选牌">
+
 
 ## 为网络不稳定的旅途准备
 
@@ -52,7 +56,7 @@ v1.0.0 提供 **78 张牌的连续学习**、按能力安排的间隔复习，�
 3. Safari 分享菜单选择 **添加到主屏幕**。从主屏幕打开后，再检查一次离线状态。
 4. 出发前在实际手机上开飞行模式，退出重开、查看陌生牌，并确认记录保留。
 
-页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.0.0/tarot-pocket-v1.0.0.html)，用支持本地 JavaScript 的浏览器打开。
+页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.1.0/tarot-pocket-v1.1.0.html)，用支持本地 JavaScript 的浏览器打开。
 
 **网页内容和个人记录是两回事。** 浏览器可能清理网站数据；换设备或浏览器前，在记录页导出 JSON。Git 只同步源码，不上传私人问题和学习记录。代码、课程、图片、语言包均本地运行，无账号、外部字体、统计或联网 AI。
 
@@ -61,7 +65,7 @@ v1.0.0 提供 **78 张牌的连续学习**、按能力安排的间隔复习，�
 - 全部 78 张牌都有专属画面助记、近似牌区别和三个接近的干扰项，并进入相同完整学习流程。
 - 记录区分接触、完成初学、自评、客观应用与延迟回访；不是点一下“读过”就算掌握。
 - 六项能力采用 SM-2 间隔规则，并加上最近作答不足 24 小时不晋级、失败后即时重做不清除待巩固的限制。不是 FSRS，也未宣称长期记忆效果已验证。
-- 八种牌阵提供按真实牌、牌位及可选语境组织的离线参考；自填问题原样保存，不进行语义解析或上传。报告不混入教学题。
+- 场景牌阵提供按真实牌、牌位及预设场景组织的离线参考；自填问题原样保存，不进行语义解析或上传。报告不混入教学题。
 - 课程、翻译与解释仍待独立塔罗教师审校；自动化校验不等于专业审核。真实 iPhone、重启与长时间离线仍需实机验证，具体测试证据见 [接力记录](docs/HANDOFF.md)。
 - 当前交付是可安装的手机网页，不是 App Store 原生应用。
 
