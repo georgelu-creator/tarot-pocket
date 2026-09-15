@@ -62,6 +62,35 @@ cannot override either. No HTTP listener is opened inside a function.
 保留热实例计数。配置仅来自平台环境变量；客户端地址
 仅使用平台提供的 `context.clientIp`，不信任请求中的转发 IP。云函数内部不监听端口。
 
+## Public service domain / 对外服务域名
+
+Use a verified custom HTTPS domain for mobile users in mainland China. EdgeOne's
+Global-excluding-mainland default `edgeone.dev` domains return HTTP 401 to mainland
+networks, including CORS preflight requests before the application receives a code.
+See the [official domain restrictions](https://edgeone.cloud.tencent.com/pages/document/162936836982489088).
+A successful overseas/desktop check alone cannot establish mainland reachability.
+
+面向大陆手机使用时，应配置已验证的自定义 HTTPS 域名。默认 `edgeone.dev` 域名的
+大陆访问限制也会阻断跨域预检，此时 401 并不意味着邀请码错误。仅在境外或代理网络
+测试成功，不能证明大陆网络可访问。
+
+The configured service is `https://tarot-ai.georgelu.cn`, in project `tarot-pocket-ai`
+(`makers-wcygnlnogpo9`). Configure its CNAME and managed certificate before changing
+`ai-config.js`. Run `node tools/configure_ai.cjs https://tarot-ai.georgelu.cn/api/reading`
+to update both public routes and the CSP allowlist. The domain contains no secret.
+
+当前服务使用上述自定义域名。先完成 CNAME 和托管证书配置，再使用配置脚本同步
+两条接口与 CSP。服务端密钥、邀请码派生规则与精确前端来源限制不需要改变。
+
+Before publishing, verify HTTPS without bypassing certificate checks, OPTIONS 204
+with the exact frontend origin, a valid invitation returning a session, and an invalid
+invitation remaining locked. Check the public frontend afterward, and separately
+record mainland-network/physical-phone acceptance. Do not print session bodies or
+credentials in diagnostics.
+
+发布前验证正常证书、精确来源的 OPTIONS 204、正确邀请码签发会话以及错误邀请码
+仍被拒绝；发布后检查公网网页，并单独记录大陆网络与实机结果。诊断不得输出凭证。
+
 ## Private runtime configuration / 私有运行时配置
 
 Set these in the project's **environment variables** before deploying:

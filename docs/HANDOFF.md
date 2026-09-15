@@ -1,6 +1,15 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.5.2 / 本次改动
+## Current work: 1.5.3 / 本次修复
+
+- User reported both WeChat and Safari invitation failures and supplied a real `OPTIONS /api/session` response with HTTP 401 from the EdgeOne default domain. A desktop probe returned 204 and the configured invitation issued a session, so the previous check missed the network-specific platform restriction. / 用户提供真实预检 401；桌面预检及邀请码验证通过，之前验证遗漏默认域名的网络区域限制。
+- Added `tarot-ai.georgelu.cn` to the existing AI project, verified domain ownership and added its CNAME. Managed HTTPS certificate provisioning and live acceptance are tracked below. The pre-existing incomplete `tarot-api.georgelu.cn` entry was left unchanged. / 已为现有 AI 项目添加独立子域名、验证归属并添加解析；证书和实测结果见后续记录，未删除原有未完成域名配置。
+- Local endpoint and CSP now target the custom domain. Authentication, secrets, server prompts and saved records are unchanged. / 本地接口与 CSP 同步切换，未改动鉴权、密钥、提示词或存档。
+- Live service verification on 2026-09-15: custom-domain HTTPS health 200; session and reading OPTIONS 204 with the exact GitHub Pages origin; invalid invitation 401 without a session; the configured valid invitation 200 with a session. No credential was logged and no paid model call was made. / 新域名 HTTPS、两条接口预检、错码拒绝与正确邀请码签发均通过；未输出凭证、未调用付费模型。
+- User confirmed the new `/api/health` URL returns `ok: true` on the phone network that previously failed. This confirms that network path only; full invitation entry on the updated phone app remains to be checked after publication. / 用户确认此前失败的手机网络可以访问新域名健康接口；这仅证明该网络路径可达，更新后完整手机登录仍待发布后验证。
+- Full local `npm test` passed for `1.5.3-f9d0eba0c8624368`, including both browsers, invitation sessions, 113 offline assets and actual v1.0.0 upgrade preservation. GitHub CI, merge and Pages publication must be checked in the matching PR/Actions. / 本地全量检查通过，含双浏览器、邀请会话、113 项离线资源及真实旧版升级存档保持；GitHub CI、合并与 Pages 发布以对应 PR/Actions 为准。
+
+## Previous delivery: 1.5.2 / 前版交付
 
 - Home uses shared desktop rows for equal primary cards and aligned illustrations, headings and arrows. Self-selection, resume and review remain available below learning. / 首页桌面主卡片等高，插图、标题、箭头对齐；自选、续学、复习入口仍可用。
 - The shuffle now has a 6.8-second spread, scatter, crossing and gathering sequence, with bilingual phase labels. Visual trajectories are decorative; the saved 78-card pool, cut, skip, resume and reduced-motion contracts are unchanged. / 洗牌改为 6.8 秒摊开、打散交错、收拢，含双语阶段提示；视觉路径不更改已保存牌序，切牌、跳过、恢复与减少动态的约定保持兼容。
@@ -84,7 +93,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.5.2 home, shuffle, swipe and AI wait / 首页、洗牌、滑动选牌与解读等待 |
+| Release target / 发布版本 | v1.5.3 invitation connectivity / 邀请验证连接修复 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |
