@@ -4,20 +4,26 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.2/tarot-pocket-v1.5.2.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![v1.5.2](https://img.shields.io/badge/release-v1.5.2-60465C)
+![v1.5.4](https://img.shields.io/badge/release-v1.5.4-60465C)
 ![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.5.2 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。托管网页使用一次 8 位邀请码入口；进入后 AI 解牌自动连接服务端，并围绕用户的真实问题解读整组牌。
+v1.5.4 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。托管网页使用一次 8 位邀请码入口；进入后 AI 解牌自动连接服务端，并围绕用户的真实问题解读整组牌。
 
 **已经用过旧版？** 请打开[保留记录更新](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh)，选择“检查并下载新版”，完成后点“保留记录，进入新版”。无需清缓存或删除学习进度。
 
-v1.5.2 将首页学牌与抽牌卡片对齐；洗牌清晰呈现摊开、打散交错、重新收拢。选牌支持左右滑动，轻点抬起、确认后入位，不再依赖翻页按钮。AI 解读等待时有轻柔动效和轮换观察提示，超过 25 秒会说明仍在等待；可随时取消，答案返回即展示。[查看当前版本真实操作录屏](docs/images/ritual-v152.webm)。
+首页学牌与抽牌卡片保持对齐；洗牌清晰呈现摊开、打散交错、重新收拢。选牌支持左右滑动，轻点抬起、确认后入位，不再依赖翻页按钮。AI 解读等待时有轻柔动效和轮换观察提示，超过 25 秒会说明仍在等待；可随时取消，答案返回即展示。[查看洗牌与选牌操作录屏（1.5.2）](docs/images/ritual-v152.webm)。
+
+## 给今天留一点仪式感
+
+日签以日历手札呈现：突出日期与星期，完整牌图旁显示对应正逆位的 **宜／忌**，下方保留原有牌义与行动建议，并可展开画面依据、查看完整释义。轻柔入场动效支持「减少动态」。当天重开仍是同一张牌，历史日签显示原日期。这些是牌义启发的生活提醒，不是传统黄历的吉凶择日；没有分享步骤。
+
+<img src="docs/images/daily-v154-zh.png" width="390" alt="日历式塔罗日签：日期、完整世界牌与宜忌提醒">
 
 ## 让一张牌，真正留在记忆里
 
@@ -60,7 +66,7 @@ v1.5.2 将首页学牌与抽牌卡片对齐；洗牌清晰呈现摊开、打散�
 3. Safari 分享菜单选择 **添加到主屏幕**。从主屏幕打开后，再检查一次离线状态。
 4. 出发前在实际手机上开飞行模式，退出重开、查看陌生牌，并确认记录保留。
 
-页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.2/tarot-pocket-v1.5.2.html)，用支持本地 JavaScript 的浏览器打开。
+页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html)，用支持本地 JavaScript 的浏览器打开。
 
 **网页内容和个人记录是两回事。** 浏览器可能清理网站数据；换设备或浏览器前，在记录页导出 JSON。Git 只同步源码，不上传私人问题和学习记录。学习、课程、图片和语言包均本地运行，无账号、外部字体或统计。主动选择 AI 解读时，仅发送本次问题与实际抽牌；密钥只在服务端配置。见 [AI 服务配置](docs/AI_SERVICE.md)。
 

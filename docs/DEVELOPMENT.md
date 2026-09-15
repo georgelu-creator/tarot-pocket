@@ -40,6 +40,7 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | `reading.js` | Spread selection, shuffle, draw, position guidance, history / 选阵、洗牌、抽牌、牌位引导与历史 |
 | `content.js` | Original teaching-card metadata and 24 quick questions / 原有教学牌资料与 24 道快练 |
 | `learning-content.js` | Four original units: 32 steps / 四个原有单元，共 32 步 |
+| `daily-content.js` / `locales/en-daily.json` | 312 bilingual card-specific upright/reversed daily prompts / 78 张牌正逆位宜忌共 312 条双语提醒 |
 | `spread-content.js` | 8 active definitions including daily plus 19 legacy definitions, and four contextual units: 24 steps / 含日签共 8 个当前定义及 19 个旧版定义，以及四个情境单元 24 步 |
 | `card-notes.js`, `dossier.css` | 78 original guide paragraphs and illustrated reference UI / 78 张专属解说及图文手册样式 |
 | `reading-deck.js` | Basic reference content for 78 cards and three topics / 78 张牌与三个主题的基础参考 |
@@ -165,3 +166,5 @@ The upgrade regression builds the actual `v1.0.0` tag. Fetch tags/history before
 See [AI_SERVICE.md](AI_SERVICE.md). `server/reading-service.cjs` holds provider integration; `reading-ai.js` handles explicit requests, cancellation, safe text rendering and saved replies. Configure the public HTTPS endpoint with `node tools/configure_ai.cjs https://your-service.example/api/reading`, then rebuild; this updates the exact CSP origin. Never put credentials in `ai-config.js`. Standalone files disable new API calls and retain saved answers.
 
 服务端保存供应商密钥，客户端只持有公开接口地址；访问码仅当前打开期间使用，不导出。配置脚本同步更新 CSP，独立离线文件禁止新 API 请求，但保留已保存解读。
+
+Daily calendar regression: `node tools/check_daily_almanac.cjs` (also in `npm test`). It uses isolated synthetic saved days in Chromium/WebKit. Set `CAPTURE_DAILY=1` to refresh the two README screenshots after building; no real invitation or progress is read. / 日签专项已纳入全量测试；构建后设置 `CAPTURE_DAILY=1` 可刷新双语截图，使用隔离演示数据。
