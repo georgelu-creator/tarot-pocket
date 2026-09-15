@@ -1,6 +1,6 @@
 {
   "name": "tarot-pocket",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "description": "Offline tarot learning through images, recall, and contextual readings. English and Chinese.",
   "license": "MIT",

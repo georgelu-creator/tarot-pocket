@@ -1,10 +1,16 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.5.0 / 本次改动
+## Current work: 1.5.1 / 本次改动
 
-- The hosted app is protected by one bilingual invitation gate. A valid `TAROT_AI_ACCESS_TOKEN` is exchanged through `/api/session` for a signed 12-hour, tab-scoped credential; the raw invitation cannot call `/api/reading`. / 托管网页使用统一双语邀请码入口；`/api/session` 将有效邀请码换成签名的 12 小时标签页会话，原始邀请码不能直接调用解牌接口。
+- The shareable invitation is now an 8-character, case-insensitive code deterministically derived from the long server signing secret. Users no longer copy the long token; `tools/write_invite_code.cjs` writes the short code to a private ignored file for the maintainer. / 分享给用户的是从长服务端签名密钥确定性派生的 8 位短邀请码，不区分大小写；用户不再复制长 Token，维护者可用 `tools/write_invite_code.cjs` 写入本机私有忽略文件。
+
+- The hosted app is protected by one bilingual invitation gate. A valid 8-character invitation is exchanged through `/api/session` for a signed 12-hour, tab-scoped credential; neither the short invitation nor long signing token can call `/api/reading`. / 托管网页使用统一双语邀请码入口；`/api/session` 将有效的 8 位短邀请码换成签名的 12 小时标签页会话，短邀请码和长签名 Token 都不能直接调用解牌接口。
 - Individual readings have no connection-code or API-key UI. The current question is shown as the reading focus and is sent with A/B labels, spread ID, actual cards, positions and reversals after the user explicitly requests a complete reading. / 单次解牌不再出现连接码或 API Key；页面显示本次问题，用户点生成后自动随选项、牌阵、实际牌位、牌与正逆位发送。
-- The provider key and invitation remain server-only. The temporary session lives only in `sessionStorage`, is excluded from all three existing product stores and exports, and is cleared on authorization failure. / 供应商密钥与邀请码不进前端；临时会话只在 `sessionStorage`，不进入既有三个存储键或备份，鉴权失败立即清除。
+- The provider key and long signing token remain server-only. The short invitation exists only in the entrance request; the temporary session lives in `sessionStorage`, is excluded from all three existing product stores and exports, and is cleared on authorization failure. / 供应商密钥与长签名 Token 不进前端；短邀请码只存在于入口验证请求，临时会话只在 `sessionStorage`，不进入既有三个存储键或备份，鉴权失败立即清除。
+- Validation on 2026-09-15: full local `npm test` passed, including 113 offline assets, Chromium/WebKit, the v1.0.0 upgrade and the bilingual invitation flow. A review then received focused passing AI/server and cloud checks for missing-secret file preservation, case-insensitive invitation leak rejection and raw-short-code authentication rejection. Independent code review found no remaining release blockers. CI and production verification for 1.5.1 are pending publication; no physical iPhone test is claimed. / 2026-09-15 本机完整 `npm test` 通过，含 113 项离线资源、Chromium/WebKit、v1.0.0 升级及双语邀请码流程；审查修复后的 AI 服务与云函数专项检查通过，覆盖缺失密钥不覆盖私有文件、大小写邀请码防泄漏及短码直调被拒绝。独立复核无剩余发布阻断。1.5.1 的 CI 与线上验证待发布完成，未宣称 iPhone 实机验收。
+
+### Previous verification: 1.5.0 / 前版验证
+
 - Automated checks cover wrong and valid invitations, signed-session expiry/tampering, refusal of the raw invitation at the reading endpoint, exact question payloads, reload, cancellation, offline saved answers and bilingual mobile UI. PR #8 passed the full CI and deployed commit `568a383` on 2026-09-15. The public 390px WebKit flow exchanged the invitation, survived reload in the same tab, and a synthetic DeepSeek request returned 1,330 Chinese characters addressing both choices; raw-invitation reading returned 401. Physical-iPhone acceptance remains separate and unverified. / 自动检查覆盖错误与正确邀请码、会话过期及篡改、解牌接口拒绝原邀请码、完整问题载荷、刷新、取消、离线回看和双语手机 UI。PR #8 全量 CI 通过并于 2026-09-15 发布提交 `568a383`；公网 390px WebKit 已验证邀请码换会话、同标签刷新免重输，合成问题的 DeepSeek 解读返回 1,330 字并回应两个选项，原始邀请码直调为 401。iPhone 实机仍须另行验收。
 
 ## Previous delivery: 1.4.0 / 前版交付
@@ -57,7 +63,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.5.0 invitation sessions / 邀请码与自动解读会话 |
+| Release target / 发布版本 | v1.5.1 short invitation / 易分享短邀请码 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |

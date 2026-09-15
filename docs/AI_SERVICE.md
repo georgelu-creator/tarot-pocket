@@ -20,13 +20,13 @@ The hosted app exchanges one invitation for an expiring reading session. After t
 
 ## 密钥放在哪里 / Where credentials belong
 
-供应商 API Key 只放在云平台的服务端 Secret/环境变量里。`TAROT_AI_ACCESS_TOKEN` 现在是应用邀请码，只提交给 `/api/session`；服务返回签名的短期会话，`/api/reading` 不再接受原始邀请码。邀请码、会话和供应商 Key 都不进入学习备份。这个权限只覆盖结构化塔罗解牌，不授权任意聊天、模型列表、文件或工具。
+供应商 API Key 与长 `TAROT_AI_ACCESS_TOKEN` 只放在云平台的服务端 Secret/环境变量里。服务端从长 Token 确定性派生一个不区分大小写的 8 位邀请码；用户只把短邀请码提交给 `/api/session`。服务返回签名的短期会话，`/api/reading` 不接受短邀请码或长 Token。邀请码、会话和供应商 Key 都不进入学习备份。这个权限只覆盖结构化塔罗解牌，不授权任意聊天、模型列表、文件或工具。
 
-Keep the provider API key in server-side secrets. `TAROT_AI_ACCESS_TOKEN` is the app invitation and is accepted only by `/api/session`; `/api/reading` accepts the signed, expiring session instead. None of these credentials enter learning backups. Access remains limited to structured tarot readings, not arbitrary chat, model listing, files, or tools.
+Keep the provider API key and long `TAROT_AI_ACCESS_TOKEN` in server-side secrets. The server deterministically derives a case-insensitive 8-character invitation from the long token; only that short invitation is submitted to `/api/session`. `/api/reading` accepts the signed, expiring session and rejects both invitations and long tokens. None of these credentials enter learning backups. Access remains limited to structured tarot readings, not arbitrary chat, model listing, files, or tools.
 
-邀请码也有调用费用权限，应私下保管。不要把固定邀请码写入公开前端配置。它应当是至少 32 字符的随机串，实际建议 32 字节随机值的十六进制或 Base64URL 编码。共享邀请码不是账号系统；需要多人开放使用时，应另外设计身份、每人额度与凭据轮换。
+8 位邀请码仍然代表调用费用权限，应私下分享，不要写入公开前端或仓库。长 Token 至少 32 字符，实际建议使用 32 字节随机值的十六进制或 Base64URL 编码。共享邀请码不是账号系统；需要多人开放使用时，应另外设计身份、每人额度与凭据轮换。
 
-The invitation can incur API charges and must remain private. Never hardcode it in the public frontend. Use at least 32 characters of cryptographically random material, preferably an encoding of 32 random bytes. A shared invitation is not an account system; a public multi-user service needs separate identity, per-user quotas and credential rotation.
+The 8-character invitation can incur API charges and should be shared privately, never hardcoded in the public frontend or repository. The long token must contain at least 32 characters, preferably an encoding of 32 random bytes. A shared invitation is not an account system; a public multi-user service needs separate identity, per-user quotas and credential rotation.
 
 ## 配置 / Configuration
 
@@ -46,7 +46,7 @@ node --env-file=server/.env server/reading-service.cjs
 | `TAROT_AI_BASE_URL` | DeepSeek 默认 `https://api.deepseek.com`；OpenAI 默认 `https://api.openai.com/v1`。必须 HTTPS，无凭据、查询串或片段 / HTTPS only, with no embedded credentials, query or fragment |
 | `DEEPSEEK_API_KEY` | DeepSeek 服务端密钥 / server-side provider key |
 | `OPENAI_API_KEY` | 仅 OpenAI 模式需要 / only needed for OpenAI mode |
-| `TAROT_AI_ACCESS_TOKEN` | 必填应用邀请码，至少 32 字符；更换后旧会话失效 / required app invitation, at least 32 characters; rotation revokes old sessions |
+| `TAROT_AI_ACCESS_TOKEN` | 必填服务端签名密钥，至少 32 字符；派生 8 位邀请码，更换后短邀请码改变且旧会话失效 / required server signing secret, at least 32 characters; derives the 8-character invitation and rotation revokes old sessions |
 | `TAROT_SESSION_TTL_SECONDS` | 会话时长，默认 43200（12 小时），允许 900–604800 / session lifetime, default 43200 (12 hours), range 900–604800 |
 | `TAROT_AI_ALLOWED_ORIGINS` | 逗号分隔的精确网页来源，例如 `https://georgelu-creator.github.io`；不含 `/tarot-pocket/`、尾部 `/` 或 `*` / comma-separated exact origins, no paths, trailing slash or wildcard |
 | `TAROT_AI_HOST` | 默认 `127.0.0.1`；云容器通常设 `0.0.0.0` / localhost by default; containers normally use `0.0.0.0` |
@@ -57,6 +57,14 @@ node --env-file=server/.env server/reading-service.cjs
 | `TAROT_AI_REQUESTS_PER_MINUTE` | 所有持码用户共享，默认 / shared default `6` |
 | `TAROT_AI_REQUESTS_PER_DAY` | 过去 24 小时内所有持码用户共享，默认 / shared rolling-24-hour default `100` |
 | `TAROT_AI_CONCURRENCY` | 同时进行的上游请求，默认 / simultaneous upstream requests, default `2` |
+
+在维护者电脑上生成易分享邀请码时运行下面的命令。它只把邀请码写入被 Git 忽略且权限为 `0600` 的 `server/invite-code.txt`，不会打印长 Token 或短邀请码到日志。
+
+To prepare the shareable invitation on the maintainer's computer, run the command below. It writes only to ignored `server/invite-code.txt` with mode `0600` and prints neither the long token nor invitation to logs.
+
+```sh
+node --env-file=server/.env tools/write_invite_code.cjs
+```
 
 供应商地址由维护者在启动时固定，客户端不能覆盖。可配置 HTTPS 兼容网关，但网关也会收到密钥与问题，只有明确受信任的服务才能作为这个地址。请求不跟随重定向，避免认证头被带往不同目的地。
 

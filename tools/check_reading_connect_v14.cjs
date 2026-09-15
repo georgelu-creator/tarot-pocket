@@ -1,7 +1,7 @@
 /* Real source UI with a local mock endpoint: no production service or credentials. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),KEY='tarot-reading-v3';
-const token='fixture-invitation-not-a-provider-key',sessionToken='tp1.'+'s'.repeat(80);
+const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
 (async()=>{
  const requests=[],invites=[],held=[];let mode='success';
  const server=http.createServer(async(req,res)=>{
@@ -9,7 +9,7 @@ const token='fixture-invitation-not-a-provider-key',sessionToken='tp1.'+'s'.repe
   if(url.pathname==='/api/session'){
    let body='';for await(const chunk of req)body+=chunk;const parsed=JSON.parse(body);invites.push(parsed);
    res.setHeader('Content-Type','application/json');
-   if(parsed.inviteCode!==token){res.statusCode=401;res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
+   if(parsed.inviteCode!==inviteCode){res.statusCode=401;res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
    res.end(JSON.stringify({token:sessionToken,expiresAt:Date.now()+3600000}));return;
   }
   if(url.pathname==='/api/reading'){
@@ -38,11 +38,12 @@ const token='fixture-invitation-not-a-provider-key',sessionToken='tp1.'+'s'.repe
   await p.screenshot({path:'/tmp/tarot-v15-invite.png',fullPage:false});
   assert.equal(await p.locator('#app').getAttribute('inert'),'','the app is inert before invitation validation');
   assert.equal(await p.locator('.bottomnav').count(),1,'the app can prepare behind the gate without becoming interactive');
-  await invite.fill('incorrect');await invite.press('Enter');await p.getByText('邀请码不正确，请重新输入。').waitFor();assert.equal(invites.length,1);
+  await invite.fill('BAD23456');await invite.press('Enter');await p.getByText('邀请码不正确，请重新输入。').waitFor();assert.equal(invites.length,1);
   await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('.access-card').innerText()),'the invitation gate is bilingual');await p.locator('[data-language-toggle]').click();
-  await invite.fill(token);await invite.press('Enter');await p.locator('.access-screen').waitFor({state:'detached'});assert.equal(invites.length,2);
+  assert.equal(await invite.getAttribute('maxlength'),'8');
+  await invite.fill(inviteCode);await invite.press('Enter');await p.locator('.access-screen').waitFor({state:'detached'});assert.equal(invites.length,2);
   assert.equal(await p.locator('#app').getAttribute('aria-hidden'),'false');
-  assert(!await p.evaluate(token=>JSON.stringify(localStorage).includes(token),token),'the invitation is never stored');
+  assert(!await p.evaluate(inviteCode=>JSON.stringify(localStorage).includes(inviteCode),inviteCode),'the invitation is never stored');
   assert(await p.evaluate(sessionToken=>sessionStorage.getItem('tarot-pocket-session-v1').includes(sessionToken),sessionToken),'only the scoped app session is kept for this tab');
   await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
@@ -84,7 +85,7 @@ const token='fixture-invitation-not-a-provider-key',sessionToken='tp1.'+'s'.repe
   await p.locator('[data-reading-ai]').scrollIntoViewIfNeeded();await p.screenshot({path:'/tmp/tarot-v15-auto-ai.png',fullPage:false});
   await p.locator('[data-reading=ai-request]').click();await p.locator('.ai-answer').waitFor();assert.equal(requests.length,1);assert.equal(requests[0].auth,'Bearer '+sessionToken);assert.equal(requests[0].body.spreadId,'decision-five');assert.equal(requests[0].body.question,'How can I compare two study schedules?');assert.equal(requests[0].body.optionA,'Weekend classes');assert.equal(requests[0].body.optionB,'Weekday self-study');assert.equal(requests[0].body.cards.length,5);assert.equal(requests[0].body.cards[1].reversed,true);
   assert.equal(await p.evaluate(()=>window.injected),undefined);assert.equal(await p.locator('.ai-answer script').count(),0);
-  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(token));assert(!JSON.stringify(saved).includes(sessionToken));
+  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(inviteCode));assert(!JSON.stringify(saved).includes(sessionToken));
   await p.reload();assert.equal(await p.locator('.access-screen').count(),0,'reload in the same tab does not ask for the invitation again');await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible');assert.equal(requests.length,1);
   await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),0);assert.equal(await p.locator('[data-ai-access],.ai-connection').count(),0);
   mode='hold';await p.locator('[data-reading=ai-request]').click();await p.locator('[data-reading=ai-cancel]').click();await p.waitForTimeout(30);assert.equal(await p.locator('.ai-answer').count(),0);assert.equal((await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY)).draft.ai.length,1,'cancel preserves the other-language saved answer');for(const res of held)res.end('{}');held.length=0;

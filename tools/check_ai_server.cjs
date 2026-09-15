@@ -2,7 +2,9 @@
 
 const assert = require('node:assert/strict');
 const http = require('node:http');
-const {loadConfig, loadCatalog, validateReading, buildPrompt, finalText, createSessionToken, verifySessionToken, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
+const fs = require('node:fs'), os = require('node:os'), path = require('node:path');
+const {spawnSync} = require('node:child_process');
+const {loadConfig, deriveInviteCode, loadCatalog, validateReading, buildPrompt, finalText, createSessionToken, verifySessionToken, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
 
 async function run() {
   // Synthetic credentials and questions only. No real provider is contacted.
@@ -13,6 +15,30 @@ async function run() {
     TAROT_AI_ALLOWED_ORIGINS: origin, TAROT_AI_REQUESTS_PER_MINUTE: '120', TAROT_AI_REQUESTS_PER_DAY: '10000'};
   const catalog = loadCatalog();
   const config = loadConfig(env);
+  const inviteCode = deriveInviteCode(token);
+  assert.match(inviteCode, /^[A-HJ-NP-Z2-9]{8}$/);
+  assert.equal(config.inviteCode, inviteCode);
+  assert.notEqual(deriveInviteCode(token + 'x'), inviteCode);
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'tarot-invite-tool-'));
+  const output = path.join(fixture, 'server/invite-code.txt');
+  try {
+    for (const dir of ['tools', 'server']) fs.mkdirSync(path.join(fixture, dir));
+    for (const file of ['tools/write_invite_code.cjs', 'server/reading-service.cjs']) fs.copyFileSync(path.resolve(__dirname, '..', file), path.join(fixture, file));
+    fs.writeFileSync(output, 'preserve-existing-invitation', {mode: 0o600});
+    const invoke = signing => spawnSync(process.execPath, [path.join(fixture, 'tools/write_invite_code.cjs')], {env: {...env, TAROT_AI_ACCESS_TOKEN: signing}, encoding: 'utf8'});
+    const missing = invoke('');
+    assert.equal(missing.status, 1);
+    assert.equal(fs.readFileSync(output, 'utf8'), 'preserve-existing-invitation');
+    const valid = invoke(token);
+    assert.equal(valid.status, 0);
+    assert.equal(fs.readFileSync(output, 'utf8').trim(), inviteCode);
+    assert.equal(fs.statSync(output).mode & 0o777, 0o600);
+    for (const result of [missing, valid]) for (const secret of [key, token, inviteCode]) assert.ok(!(result.stdout + result.stderr).includes(secret), 'invitation writer never logs credentials');
+  } finally {
+    for (const file of ['server/invite-code.txt', 'tools/write_invite_code.cjs', 'server/reading-service.cjs']) if (fs.existsSync(path.join(fixture, file))) fs.unlinkSync(path.join(fixture, file));
+    for (const dir of ['tools', 'server']) fs.rmdirSync(path.join(fixture, dir));
+    fs.rmdirSync(fixture);
+  }
   assert.equal(config.baseUrl, 'https://api.deepseek.com');
   assert.equal(config.model, 'deepseek-flash');
   assert.equal(loadConfig({}).configured, false);
@@ -87,6 +113,7 @@ async function run() {
     if (mode === 'empty') { res.end(JSON.stringify(success(null))); return; }
     if (mode === 'length') { res.end(JSON.stringify({choices: [{finish_reason: 'length', message: {role: 'assistant', content: expectedText}}]})); return; }
     if (mode === 'refusal') { res.end(JSON.stringify({choices: [{finish_reason: 'content_filter', message: {role: 'assistant', content: null}}]})); return; }
+    if (mode === 'echo-invite') { res.end(JSON.stringify(success(inviteCode.toLowerCase()))); return; }
     if (mode === 'echo-key') { res.end(JSON.stringify(success(key))); return; }
     if (mode === 'openai') {
       res.end(JSON.stringify({status: 'completed', model: 'test-model', output: [
@@ -110,8 +137,8 @@ async function run() {
     servers.push(server); return listen(server);
   };
   const sessions=new Map();
-  const sessionRequest=async(base,inviteCode=token,overrides={})=>{
-    const response=await fetch(`${base}/api/session`,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,...overrides.headers},body:JSON.stringify({inviteCode})});
+  const sessionRequest=async(base,invitation=inviteCode,overrides={})=>{
+    const response=await fetch(`${base}/api/session`,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,...overrides.headers},body:JSON.stringify({inviteCode:invitation})});
     return {status:response.status,body:await response.json(),headers:response.headers};
   };
   const sessionFor=async base=>{
@@ -140,7 +167,9 @@ async function run() {
     assert.match(issued.body.token,/^tp1\./);
     assert.ok(issued.body.expiresAt>Date.now());
     assert.equal((await sessionRequest(base,'wrong invitation')).body.error,'AUTH_REQUIRED');
-    assert.equal((await sessionRequest(base,token,{headers:{Origin:'https://evil.test'}})).body.error,'ORIGIN_NOT_ALLOWED');
+    assert.equal((await sessionRequest(base,token)).body.error,'AUTH_REQUIRED');
+    assert.equal((await sessionRequest(base,inviteCode.toLowerCase())).status,200);
+    assert.equal((await sessionRequest(base,inviteCode,{headers:{Origin:'https://evil.test'}})).body.error,'ORIGIN_NOT_ALLOWED');
     sessions.set(base,issued.body.token);
     let result = await request(base, {...sample(), question: injection});
     assert.equal(result.status, 200);
@@ -161,6 +190,7 @@ async function run() {
       [{headers: {Authorization: ''}}, 'AUTH_REQUIRED'],
       [{headers: {Authorization: `Bearer ${key}`}}, 'AUTH_REQUIRED'],
       [{headers: {Authorization: `Bearer ${token}`}}, 'AUTH_REQUIRED'],
+      [{headers: {Authorization: `Bearer ${inviteCode}`}}, 'AUTH_REQUIRED'],
       [{headers: {Authorization: `Bearer ${issued.body.token}x`}}, 'AUTH_REQUIRED'],
       [{headers: {Origin: 'https://evil.test'}}, 'ORIGIN_NOT_ALLOWED'],
       [{headers: {Origin: 'null'}}, 'ORIGIN_NOT_ALLOWED'],
@@ -168,9 +198,10 @@ async function run() {
     ]) assert.equal((await request(base, sample(), overrides)).body.error, code);
     assert.equal((await request(base, '{')).body.error, 'INVALID_REQUEST');
     assert.equal((await request(base, {...sample(), question: key})).body.error, 'INVALID_REQUEST');
+    for (const field of ['question', 'optionA', 'optionB']) for (const variant of [inviteCode, inviteCode.toLowerCase(), inviteCode[0]+inviteCode.slice(1).toLowerCase()]) assert.equal((await request(base, {...sample(), [field]: 'Code: '+variant})).body.error, 'INVALID_REQUEST');
     assert.equal((await request(base, {...sample(), question: 'x'.repeat(25000)})).body.error, 'PAYLOAD_TOO_LARGE');
     assert.equal(received.length, count);
-    for (const [mode, code] of [['error','UPSTREAM_ERROR'], ['huge','UPSTREAM_ERROR'], ['invalid-json','UPSTREAM_ERROR'], ['empty','INCOMPLETE_RESPONSE'], ['length','INCOMPLETE_RESPONSE'], ['refusal','MODEL_REFUSAL'], ['echo-key','UPSTREAM_ERROR']]) {
+    for (const [mode, code] of [['error','UPSTREAM_ERROR'], ['huge','UPSTREAM_ERROR'], ['invalid-json','UPSTREAM_ERROR'], ['empty','INCOMPLETE_RESPONSE'], ['length','INCOMPLETE_RESPONSE'], ['refusal','MODEL_REFUSAL'], ['echo-key','UPSTREAM_ERROR'], ['echo-invite','UPSTREAM_ERROR']]) {
       upstreamMode = mode; result = await request(base);
       assert.deepEqual(result.body, {error: code});
       assert.equal(JSON.stringify(result.body).includes(key), false);

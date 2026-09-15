@@ -1,5 +1,12 @@
 # Changelog · 版本记录
 
+## 1.5.1 — Shareable short invitation / 易分享短邀请码
+
+- The app entrance now accepts an 8-character, case-insensitive invitation derived server-side from the private signing secret. The long `TAROT_AI_ACCESS_TOKEN` remains server-only and is no longer the value users share or type. / 应用入口改用服务端从私有签名密钥派生的 8 位邀请码，不区分大小写；长 `TAROT_AI_ACCESS_TOKEN` 只留在服务端，不再由用户分享或输入。
+- Wrong invitations retain the separate attempt limit. Changing the signing secret changes the short invitation and invalidates existing sessions. / 错误邀请码继续使用独立尝试限流；更换签名密钥会同时更换短邀请码并使旧会话失效。
+
+- The private invitation writer preserves the existing file when signing configuration is missing; invitation leak checks cover lowercase variants in both questions and provider output. / 未配置签名密钥时保留既有私有邀请码文件；问题与上游返回中的小写邀请码也会被防泄漏检查拦截。
+
 ## 1.5.0 — Invitation sessions / 邀请码与自动解读会话
 
 - The hosted app now opens at one bilingual invitation gate. A valid invitation creates a 12-hour, tab-scoped reading session; individual readings no longer ask for a connection code or provider key. / 托管网页统一从双语邀请码入口进入；验证后获得 12 小时、当前浏览器标签页有效的解读会话，单次解牌不再要求连接码或供应商密钥。

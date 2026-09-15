@@ -4,16 +4,16 @@
 
 一个以真实牌图为起点的双语塔罗学习空间。用点击完成回忆、辨析、找依据和解牌，把完整 78 张牌与当前课程装进一份离线 HTML，带在身边。
 
-[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.0/tarot-pocket-v1.5.0.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
+[**开始体验 →**](https://georgelu-creator.github.io/tarot-pocket/?lang=zh) · [**下载离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.1/tarot-pocket-v1.5.1.html) · [English](README.md) · [后续计划](docs/ROADMAP.md)
 
 ![Tarot Pocket：练习、记住，再亲自解牌](docs/images/hero.png)
 
-![v1.5.0](https://img.shields.io/badge/release-v1.5.0-60465C)
+![v1.5.1](https://img.shields.io/badge/release-v1.5.1-60465C)
 ![双语](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![代码许可](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![内容许可](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.5.0 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。托管网页使用一次邀请码入口；进入后 AI 解牌自动连接服务端，并围绕用户的真实问题解读整组牌。
+v1.5.1 提供 **自由选择 78 张牌的连续学习**、按能力安排的间隔复习，以及独立的随身牌桌。托管网页使用一次 8 位邀请码入口；进入后 AI 解牌自动连接服务端，并围绕用户的真实问题解读整组牌。
 
 **已经用过旧版？** 请打开[保留记录更新](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh)，选择“检查并下载新版”，完成后点“保留记录，进入新版”。无需清缓存或删除学习进度。
 
@@ -58,7 +58,7 @@ v1.4 把明显的识图题改成 78 张逐步理解课程：从动作推导、�
 3. Safari 分享菜单选择 **添加到主屏幕**。从主屏幕打开后，再检查一次离线状态。
 4. 出发前在实际手机上开飞行模式，退出重开、查看陌生牌，并确认记录保留。
 
-页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.0/tarot-pocket-v1.5.0.html)，用支持本地 JavaScript 的浏览器打开。
+页面会显示真实下载与校验状态。更新未完成时保留旧版，不在学习中强制刷新。也可以下载 [单文件离线 HTML](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.1/tarot-pocket-v1.5.1.html)，用支持本地 JavaScript 的浏览器打开。
 
 **网页内容和个人记录是两回事。** 浏览器可能清理网站数据；换设备或浏览器前，在记录页导出 JSON。Git 只同步源码，不上传私人问题和学习记录。学习、课程、图片和语言包均本地运行，无账号、外部字体或统计。主动选择 AI 解读时，仅发送本次问题与实际抽牌；密钥只在服务端配置。见 [AI 服务配置](docs/AI_SERVICE.md)。
 
