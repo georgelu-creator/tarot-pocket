@@ -14,7 +14,7 @@ window.createTarotReading = function (bridge) {
   const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
   const localDay=()=>{const d=new Date(now());return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
   const phaseLabel={shuffling:'洗牌',cut:'切牌',cutting:'合牌',pick:'选牌',reveal:'翻牌',read:'解读'};
-  const PICK_PAGE_SIZE=6,SHUFFLE_MS=4800,CUT_MS=1400,REVEAL_MS=900;
+  const PICK_PAGE_SIZE=6,SHUFFLE_MS=6800,CUT_MS=1400,REVEAL_MS=900;
   function stopMotion(){clearTimeout(timer);clearTimeout(revealTimer);timer=null;revealTimer=null;revealReady=true;}
   function advanceMotion(){const s=data.draft;if(!s||!['shuffling','cutting'].includes(s.phase))return;stopMotion();s.phase=s.phase==='shuffling'?'cut':'pick';s.motionReady=false;persist();if(data.ui.view==='table')redraw();}
   function markMotionReady(){const s=data.draft;if(!s)return;s.motionReady=true;persist();const stage=document.querySelector('[data-motion-stage]');if(stage)stage.classList.add('motion-ready');const button=document.querySelector('[data-reading="motion-continue"]');if(button)button.disabled=false;const status=document.querySelector('[data-motion-status]');if(status)status.textContent=s.phase==='shuffling'?'牌已经洗好了，准备好再继续。':'牌叠已合好，准备好就展开。';}
@@ -148,14 +148,18 @@ window.createTarotReading = function (bridge) {
   function ritual(s){
     const steps=['洗牌','切牌','选牌','翻牌'],active={shuffling:0,cut:1,cutting:1,pick:2,reveal:3,read:3}[s.phase];
     const progress=`<ol class="ritual-progress">${steps.map((x,i)=>`<li class="${i===active?'current':i<active?'done':''}" ${i===active?'aria-current="step"':''}><span>${i+1}</span>${x}</li>`).join('')}</ol>`;
-    if(s.phase==='shuffling')return progress+`<section class="reading-shuffle ritual-space ritual-table ${s.motionReady?'motion-ready':''}" data-motion-stage="shuffling"><div class="ritual-stars" aria-hidden="true">✦<i>✧</i><b>·</b></div><div class="ritual-glow" aria-hidden="true"></div><div class="ritual-invitation"><span class="eyebrow">把问题，放在心里。</span><h2>给自己一个安静的开始</h2></div><div class="shuffle-pack ritual-pack" aria-hidden="true">${Array.from({length:12},(_,i)=>`<div class="reading-back" style="--card-index:${i};--side:${i%2?-1:1}"></div>`).join('')}</div><div class="ritual-guidance"><p class="ritual-tip-sequence" aria-hidden="true"><span>慢慢吸气，让注意力回到此刻。</span><span>在心里默念，你真正想问的问题。</span><span>不需要急着找到答案。</span></p><p data-motion-status role="status">${s.motionReady?'牌已经洗好了，准备好再继续。':'正在洗牌，默想你的问题…'}</p></div><div class="reading-motion-actions"><button class="primary wide" data-reading="motion-continue" ${s.motionReady?'':'disabled'}>准备好了，去切牌 ${icon('arrow')}</button><button class="linkbtn" data-reading="skip-animation">跳过动效，继续切牌</button></div></section>`;
+    if(s.phase==='shuffling')return progress+`<section class="reading-shuffle ritual-space ritual-table ${s.motionReady?'motion-ready':''}" data-motion-stage="shuffling" style="--shuffle-duration:${SHUFFLE_MS}ms"><div class="ritual-stars" aria-hidden="true">✦<i>✧</i><b>·</b></div><div class="ritual-glow" aria-hidden="true"></div><div class="ritual-invitation"><span class="eyebrow">把问题，放在心里。</span><h2>给自己一个安静的开始</h2></div><div class="shuffle-pack ritual-pack" aria-hidden="true">${Array.from({length:18},(_,i)=>{
+      // Decorative trajectories only: the already shuffled 78-card pool never changes here.
+      const a=(i*7)%18,b=(i*11+5)%18;
+      return `<div class="reading-back" style="--card-index:${i};--fan-x:${(i-8.5)*10};--fan-y:${Math.abs(i-8.5)*3-15};--fan-r:${(i-8.5)*3}deg;--scatter-x:${(a%6-2.5)*32};--scatter-y:${(Math.floor(a/6)-1)*70};--scatter-r:${(i*47)%240-120}deg;--mix-x:${(b%6-2.5)*32};--mix-y:${(Math.floor(b/6)-1)*70};--mix-r:${(i*73)%260-130}deg"></div>`;
+    }).join('')}</div><div class="shuffle-stage-label" aria-hidden="true"><span>摊开牌组</span><span>打散混洗</span><span>收拢牌叠</span></div><div class="ritual-guidance"><p class="ritual-tip-sequence" aria-hidden="true"><span>慢慢吸气，让注意力回到此刻。</span><span>在心里默念，你真正想问的问题。</span><span>不需要急着找到答案。</span></p><p data-motion-status role="status">${s.motionReady?'牌已经洗好了，准备好再继续。':'正在洗牌，默想你的问题…'}</p></div><div class="reading-motion-actions"><button class="primary wide" data-reading="motion-continue" ${s.motionReady?'':'disabled'}>准备好了，去切牌 ${icon('arrow')}</button><button class="linkbtn" data-reading="skip-animation">跳过动效，继续切牌</button></div></section>`;
     if(['cut','cutting'].includes(s.phase))return progress+`<section class="ritual-space ritual-table reading-cut ${s.phase==='cutting'?'is-cutting':''} ${s.motionReady?'motion-ready':''}" data-motion-stage="cutting" data-cut-offset="${s.cutOffset??''}"><div class="ritual-stars" aria-hidden="true">✦<i>✧</i><b>·</b></div><div class="ritual-glow" aria-hidden="true"></div><div class="ritual-invitation"><span class="eyebrow">跟着自己的节奏。</span><h2>${s.phase==='cutting'?'让这一叠，成为新的开始':'轻点一叠，把它放到最上面'}</h2></div><p>停一停，选择让你想伸手的那一叠。</p><div class="cut-piles">${[26,39,52].map((n,i)=>`<button data-reading="cut" data-index="${n}" class="cut-pile ${s.cutOffset===n?'selected':''}" style="--pile-index:${i}" ${s.phase==='cutting'?'disabled':''} aria-label="${['选择左侧牌叠','选择中间牌叠','选择右侧牌叠'][i]}">${[0,1,2,3].map(j=>`<span class="reading-back" style="--layer:${j}" aria-hidden="true"></span>`).join('')}<small>${['左侧','中间','右侧'][i]}</small></button>`).join('')}</div>${s.phase==='cutting'?`<p data-motion-status role="status">${s.motionReady?'牌叠已合好，准备好就展开。':'牌叠正在合拢…'}</p><div class="reading-motion-actions"><button class="primary wide" data-reading="motion-continue" ${s.motionReady?'':'disabled'}>展开牌，开始选择 ${icon('arrow')}</button><button class="linkbtn" data-reading="skip-animation">跳过动效，展开牌</button></div>`:'<p class="ritual-quiet-tip">没有正确的一叠，按自己的感觉选择就好。</p><button class="linkbtn" data-reading="cut-default">从中间切开</button>'}</section>`;
     return progress;
   }
   function selectedTray(s){const d=spreads[s.spreadId];return `<ol class="ritual-selection-tray" aria-label="已选牌与当前牌位">${d.positions.map((pos,i)=>`<li class="${s.picked[i]!==undefined?'filled':''} ${s.phase==='pick'&&s.picked.length===i?'current':''} ${s.revealed.includes(i)?'is-visible':''}" ${s.phase==='pick'&&s.picked.length===i?'aria-current="step"':''}><span class="tray-card ${s.revealed.includes(i)&&s.pool[s.picked[i]].reversed?'is-reversed':''}" aria-hidden="true">${s.revealed.includes(i)?img(s.pool[s.picked[i]].id):s.picked[i]!==undefined?'<span class="reading-back"></span>':`<b>${i+1}</b>`}</span><span class="tray-position">${i+1} · ${esc(pos.label)}</span></li>`).join('')}</ol>`;}
   function pickTable(s){
     const d=spreads[s.spreadId],page=s.drawPage||0,start=page*PICK_PAGE_SIZE,selected=Number.isInteger(s.pendingPick)?s.pendingPick:null,pos=d.positions[s.picked.length];
-    return `<section class="ritual-table ritual-selection"><div class="ritual-selection-heading"><div><span class="eyebrow">让直觉有一点空间。</span><h2>选第 ${s.picked.length+1} 张 · ${esc(pos.label)}</h2><p>${esc(pos.question)}</p></div><span class="ritual-count">${s.picked.length} / ${d.positions.length}</span></div>${selectedTray(s)}<p class="ritual-select-tip">轻点一张让它抬起，确定后再放入牌位。</p><div class="reading-deck ritual-card-window" aria-label="洗好的完整牌组">${s.pool.slice(start,start+PICK_PAGE_SIZE).map((_,n)=>{const i=start+n,used=s.picked.includes(i);return `<button class="reading-pick ritual-choice ${selected===i?'candidate':''} ${used?'was-picked':''}" data-reading="pick" data-index="${i}" aria-pressed="${selected===i}" ${used?'disabled':''} aria-label="选择第 ${i+1} 张牌背"><span class="reading-back" aria-hidden="true"></span><span class="ritual-card-number">${used?'已选':i+1}</span>${selected===i?'<span class="ritual-candidate-mark" aria-hidden="true">✓</span>':''}</button>`;}).join('')}</div><div class="ritual-page-controls"><button class="ritual-page-button" data-reading="pick-page" data-index="${page-1}" ${page===0?'disabled':''} aria-label="上一组牌">${icon('back')}<span>上一组</span></button><span><b>${page+1}</b> / ${Math.ceil(s.pool.length/PICK_PAGE_SIZE)}<small>整副牌都在这里</small></span><button class="ritual-page-button" data-reading="pick-page" data-index="${page+1}" ${start+PICK_PAGE_SIZE>=s.pool.length?'disabled':''} aria-label="下一组牌"><span>下一组</span>${icon('arrow')}</button></div><div class="ritual-selection-action"><p role="status">${selected===null?'还没选定，可以慢慢看。':'这张牌已抬起；也可以换一张。'}</p><button class="primary wide" data-reading="pick-confirm" data-index="${selected===null?'':selected}" ${selected===null?'disabled':''}><span>确定这张，放入</span> <span>${esc(pos.label)}</span> ${icon('arrow')}</button></div></section>`;
+    return `<section class="ritual-table ritual-selection"><div class="ritual-selection-heading"><div><span class="eyebrow">让直觉有一点空间。</span><h2>选第 ${s.picked.length+1} 张 · ${esc(pos.label)}</h2><p>${esc(pos.question)}</p></div><span class="ritual-count">${s.picked.length} / ${d.positions.length}</span></div>${selectedTray(s)}<p class="ritual-select-tip">左右滑动浏览，轻点一张让它抬起。</p><div class="ritual-swipe-rail" tabindex="0" role="region" aria-label="左右滑动浏览整副牌">${Array.from({length:Math.ceil(s.pool.length/PICK_PAGE_SIZE)},(_,group)=>`<div class="ritual-swipe-page" data-draw-page="${group}" ${group===page?'':'inert'}><div class="reading-deck ritual-card-window">${s.pool.slice(group*PICK_PAGE_SIZE,(group+1)*PICK_PAGE_SIZE).map((_,n)=>{const i=group*PICK_PAGE_SIZE+n,used=s.picked.includes(i);return `<button class="reading-pick ritual-choice ${selected===i?'candidate':''} ${used?'was-picked':''}" data-deck-card ${group===page?'data-reading="pick"':''} data-index="${i}" aria-pressed="${selected===i}" ${used?'disabled':''} aria-label="选择第 ${i+1} 张牌背"><span class="reading-back" aria-hidden="true"></span><span class="ritual-card-number">${used?'已选':i+1}</span>${selected===i?'<span class="ritual-candidate-mark" aria-hidden="true">✓</span>':''}</button>`;}).join('')}</div></div>`).join('')}</div><div class="ritual-page-controls"><button class="ritual-page-button" data-reading="pick-page" data-index="${page-1}" ${page===0?'disabled':''} aria-label="上一组牌">${icon('back')}<span>上一组</span></button><span><b>${page+1}</b> / ${Math.ceil(s.pool.length/PICK_PAGE_SIZE)}<small>整副牌都在这里</small></span><button class="ritual-page-button" data-reading="pick-page" data-index="${page+1}" ${start+PICK_PAGE_SIZE>=s.pool.length?'disabled':''} aria-label="下一组牌"><span>下一组</span>${icon('arrow')}</button></div><div class="ritual-selection-action"><p role="status">${selected===null?'还没选定，可以慢慢看。':'这张牌已抬起；也可以换一张。'}</p><button class="primary wide" data-reading="pick-confirm" data-index="${selected===null?'':selected}" ${selected===null?'disabled':''}><span>确定这张，放入</span> <span>${esc(pos.label)}</span> ${icon('arrow')}</button></div></section>`;
   }
   function revealTable(s){
     const d=spreads[s.spreadId],pending=Number.isInteger(s.revealPending)?s.revealPending:null,i=pending===null?d.positions.findIndex((_,j)=>!s.revealed.includes(j)):pending;
@@ -168,7 +172,7 @@ window.createTarotReading = function (bridge) {
     const d=spreads[s.spreadId];
     const header=`<div class="spread-intro reading-sticky-head"><button class="iconbtn" data-reading="pause" aria-label="保存进度并返回牌阵">${icon('back')}</button><div><div class="eyebrow">${esc(category(d))} · ${s.reversals?'含正逆位':'仅正位'}</div><h1>${esc(d.name)}</h1></div><button class="linkbtn" data-reading="gallery">所有牌阵</button></div>${s.dailyDate?`<p class="daily-day">${esc(s.dailyDate)}</p>`:`${s.phase==='read'?`<div class="scenario"><strong>这次的问题</strong><span ${s.questionText?'data-i18n-ignore':''}>${esc(question(s))}</span></div>`:`<details class="ritual-question"><summary><strong>这次的问题</strong><span ${s.questionText?'data-i18n-ignore':''}>${esc(question(s))}</span></summary><p ${s.questionText?'data-i18n-ignore':''}>${esc(question(s))}</p></details>`}`}${!storageOK?'<p class="storage-warning">当前浏览器不能保存，请导出备份。</p>':''}`;
     if(['shuffling','cut','cutting'].includes(s.phase))return header+ritual(s);
-    if(s.phase==='pick')return `${header}${ritual(s)}<div data-ritual-pick>${pickTable(s)}</div>`;
+    if(s.phase==='pick'){window.requestAnimationFrame?.(mountPickRail);return `${header}${ritual(s)}<div data-ritual-pick>${pickTable(s)}</div>`;}
     if(s.phase==='reveal')return `${header}${ritual(s)}${revealTable(s)}`;
     return `${header}<div class="reading-stage"><h2>你的牌阵已展开</h2><span>${s.revealed.length} / ${d.positions.length}</span></div>${drawBoard(s)}<div data-reading-completion>${s.dailyDate?dailyResult(s):professionalReport(s)}</div><div data-reading-panel>${s.dailyDate?'':panel(s)}</div><button class="linkbtn" data-reading="new">保留这组记录，开始新问题</button>`;
   }
@@ -193,7 +197,57 @@ window.createTarotReading = function (bridge) {
     document.querySelectorAll('[data-reading=card]').forEach(el=>{const active=Number(el.dataset.index)===selectedCard;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));});
     const node=document.querySelector('[data-reading-panel]');if(node)node.innerHTML=panel(s);
   }
-  function updatePickTable(s,focus=null){const host=document.querySelector('[data-ritual-pick]');if(host){host.innerHTML=pickTable(s);if(focus)host.querySelector(focus)?.focus({preventScroll:true});}else redraw('reading',true);}
+  // Keep the native scroll surface alive while lifting or confirming cards.
+  function updatePickTable(s,focus=null){
+    const host=document.querySelector('[data-ritual-pick]');
+    if(!host){redraw('reading',true);return;}
+    const template=document.createElement('template');template.innerHTML=pickTable(s);
+    for(const selector of ['.ritual-selection-heading','.ritual-selection-action'])host.querySelector(selector).innerHTML=template.content.querySelector(selector).innerHTML;
+    // Only the newly placed card animates; previously placed cards never re-deal.
+    host.querySelectorAll('.ritual-selection-tray>li').forEach((el,i)=>{
+      const filled=s.picked[i]!==undefined,current=s.picked.length===i;
+      if(filled&&!el.classList.contains('filled'))el.querySelector('.tray-card').innerHTML='<span class="reading-back"></span>';
+      el.classList.toggle('filled',filled);el.classList.toggle('current',current);
+      if(current)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');
+    });
+    const controls=host.querySelector('.ritual-page-controls');
+    controls.querySelector('b').textContent=String((s.drawPage||0)+1);
+    controls.querySelectorAll('[data-reading="pick-page"]').forEach((button,n)=>{const page=(s.drawPage||0)+(n===0?-1:1);button.dataset.index=String(page);button.disabled=page<0||page>=Math.ceil(s.pool.length/PICK_PAGE_SIZE);});
+    host.querySelectorAll('[data-draw-page]').forEach(el=>{el.inert=Number(el.dataset.drawPage)!==(s.drawPage||0);});
+    host.querySelectorAll('[data-deck-card]').forEach(el=>{
+      const i=Number(el.dataset.index),used=s.picked.includes(i),candidate=s.pendingPick===i;
+      el.classList.toggle('candidate',candidate);el.classList.toggle('was-picked',used);el.disabled=used;el.setAttribute('aria-pressed',String(candidate));
+      if(Math.floor(i/PICK_PAGE_SIZE)===(s.drawPage||0))el.dataset.reading='pick';else delete el.dataset.reading;
+      el.querySelector('.ritual-card-number').textContent=used?'已选':String(i+1);
+      const mark=el.querySelector('.ritual-candidate-mark');if(!candidate)mark?.remove();else if(!mark){const span=document.createElement('span');span.className='ritual-candidate-mark';span.setAttribute('aria-hidden','true');span.textContent='✓';el.append(span);}
+    });
+    if(focus)host.querySelector(focus)?.focus({preventScroll:true});
+  }
+  function mountPickRail(){
+    const rail=document.querySelector('.ritual-swipe-rail'),s=data.draft;
+    if(!rail||s?.phase!=='pick')return;
+    rail.scrollLeft=(s.drawPage||0)*rail.clientWidth;
+  }
+  function browsePickPage(page){
+    const s=data.draft,rail=document.querySelector('.ritual-swipe-rail');
+    if(s?.phase!=='pick'||page<0||page>=Math.ceil(s.pool.length/PICK_PAGE_SIZE))return;
+    s.drawPage=page;s.pendingPick=null;persist();updatePickTable(s);
+    if(rail){rail.dataset.scrollTarget=String(page);rail.scrollTo({left:page*rail.clientWidth,behavior:reducedMotion()?'auto':'smooth'});}
+  }
+  let swipeStart=null,suppressPickUntil=0;
+  document.addEventListener('pointerdown',e=>{const rail=e.target.closest?.('.ritual-swipe-rail');swipeStart=rail?{x:e.clientX,y:e.clientY}:null;if(rail)delete rail.dataset.scrollTarget;},{passive:true});
+  document.addEventListener('pointermove',e=>{if(swipeStart&&Math.abs(e.clientX-swipeStart.x)>8&&Math.abs(e.clientX-swipeStart.x)>Math.abs(e.clientY-swipeStart.y))suppressPickUntil=Date.now()+300;},{passive:true});
+  document.addEventListener('pointerup',()=>{swipeStart=null;},{passive:true});
+  document.addEventListener('pointercancel',()=>{if(swipeStart)suppressPickUntil=Date.now()+300;swipeStart=null;},{passive:true});
+  document.addEventListener('wheel',e=>{const rail=e.target.closest?.('.ritual-swipe-rail');if(rail)delete rail.dataset.scrollTarget;},{passive:true});
+  document.addEventListener('scroll',e=>{
+    const rail=e.target,s=data.draft;if(!rail.matches?.('.ritual-swipe-rail')||s?.phase!=='pick'||!rail.clientWidth)return;
+    if(rail.dataset.scrollTarget!==undefined){if(Math.abs(rail.scrollLeft-Number(rail.dataset.scrollTarget)*rail.clientWidth)>2)return;delete rail.dataset.scrollTarget;}
+    const page=Math.max(0,Math.min(Math.ceil(s.pool.length/PICK_PAGE_SIZE)-1,Math.round(rail.scrollLeft/rail.clientWidth)));
+    if(page===(s.drawPage||0))return;s.drawPage=page;s.pendingPick=null;persist();updatePickTable(s);
+  },true);
+  document.addEventListener('keydown',e=>{if(e.target.matches?.('.ritual-swipe-rail')&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();browsePickPage((data.draft?.drawPage||0)+(e.key==='ArrowRight'?1:-1));}});
+  window.addEventListener('resize',()=>window.requestAnimationFrame?.(mountPickRail));
   function revealCard(i){
     const s=data.draft;if(!s||s.phase!=='reveal'||Number.isInteger(s.revealPending)||!Number.isInteger(i)||i!==spreads[s.spreadId].positions.findIndex((_,j)=>!s.revealed.includes(j)))return;
     s.revealed.push(i);s.revealPending=i;s.active=i;flipped=i;revealReady=reducedMotion();selectedCard=-1;persist();redraw('reading',true);
@@ -228,8 +282,8 @@ window.createTarotReading = function (bridge) {
     if(a==='cut'){cut(i);return;}
     if(a==='cut-default'){cut(39);return;}
     if(!s)return;
-    if(a==='pick-page'&&s.phase==='pick'&&Number.isInteger(i)&&i>=0&&i<Math.ceil(s.pool.length/PICK_PAGE_SIZE)){s.drawPage=i;s.pendingPick=null;persist();updatePickTable(s,'[data-reading="pick"]:not(:disabled)');return;}
-    if(a==='pick'&&s.phase==='pick'&&Number.isInteger(i)&&i>=0&&i<s.pool.length&&Math.floor(i/PICK_PAGE_SIZE)===(s.drawPage||0)&&!s.picked.includes(i)){s.pendingPick=s.pendingPick===i?null:i;persist();updatePickTable(s,`[data-reading="pick"][data-index="${i}"]`);return;}
+    if(a==='pick-page'&&s.phase==='pick'&&Number.isInteger(i)&&i>=0&&i<Math.ceil(s.pool.length/PICK_PAGE_SIZE)){browsePickPage(i);return;}
+    if(a==='pick'&&Date.now()>=suppressPickUntil&&s.phase==='pick'&&Number.isInteger(i)&&i>=0&&i<s.pool.length&&Math.floor(i/PICK_PAGE_SIZE)===(s.drawPage||0)&&!s.picked.includes(i)){s.pendingPick=s.pendingPick===i?null:i;persist();updatePickTable(s,`[data-reading="pick"][data-index="${i}"]`);return;}
     if(a==='pick-confirm'&&s.phase==='pick'&&Number.isInteger(s.pendingPick)&&s.pendingPick===i&&!s.picked.includes(i)){
       s.picked.push(i);s.pendingPick=null;s.active=s.picked.length-1;entered=s.active;
       if(s.picked.length===spreads[s.spreadId].positions.length){s.phase='reveal';s.revealPending=null;persist();redraw();}else{persist();updatePickTable(s,'[data-reading="pick"]:not(:disabled)');}

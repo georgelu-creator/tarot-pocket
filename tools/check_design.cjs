@@ -36,8 +36,8 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  assert(await p.locator('[data-reading=pause]').isVisible());
  assert(await p.locator('.shuffle-pack').evaluate(pack=>{
    const cards=[...pack.children],skip=document.querySelector('[data-reading=skip-animation]').getBoundingClientRect();
-   return cards.length===12&&cards.every(card=>getComputedStyle(card).position==='absolute'&&card.getBoundingClientRect().bottom<skip.top);
- }),'shuffle cards stay stacked without covering the skip action');
+   return cards.length===18&&cards.every(card=>getComputedStyle(card).position==='absolute'&&card.getBoundingClientRect().bottom<skip.top);
+ }),'all 18 shuffle cards stay above the skip action');
  await p.locator('[data-reading=skip-animation]').click();
  assert.deepEqual((await state(p)).draft.pool,before.pool,'skip animation must not draw again');
  await p.locator('[data-reading=cut-default]').click();await p.locator('[data-reading=skip-animation]').click();await p.locator('[data-reading=pick]').first().waitFor();

@@ -1,5 +1,16 @@
 # Changelog · 版本记录
 
+## 1.5.2 — A smoother card table / 更流畅的随身牌桌
+
+- Home learning and reading cards now share aligned artwork, text and arrow rows; learning shortcuts stay below the primary cards instead of stretching the reading card. / 首页学牌与抽牌卡片的插图、文字、箭头对齐，学习快捷入口独立放在下方，不再拉长抽牌卡片。
+- Shuffling visibly spreads the deck, scatters and crosses cards on the table, then gathers them into one stack over 6.8 seconds. Continue remains explicit; skipping or reduced motion preserves the same already-randomized cards. / 洗牌以 6.8 秒完成摊开、打散交错、收拢；观看完成后手动继续，跳过和减少动态均保留已生成的牌序。
+
+- Card selection now uses native horizontal swiping with snap alignment. All 78 card backs stay mounted; tapping lifts a candidate, confirmation places it, and returning restores the same group and cards. Previous/next buttons remain keyboard alternatives. / 选牌支持原生横向滑动与吸附，78 张牌背保留在同一滚动区域；轻点抬起、确认入位，返回恢复原组与牌序，保留前后按钮供键盘操作。
+
+- AI reading waits include gentle card motion and rotating observation tips. A longer-wait message appears after 25 seconds; cancellation and immediate answer display remain. Tips are not model progress. / AI 等待期间显示轻柔牌面动效与轮换观察提示，25 秒后明确说明仍在等候；可取消，答案返回即显示，不将提示冒充模型进度。
+
+- Placed cards no longer reanimate when another candidate is tapped; keyboard paging keeps focus, disabled controls have no press animation, and reduced motion covers legacy feedback scrolling. Current bilingual screenshots and the ritual recording replace the old README gallery. / 切换候选不再重播已入位牌的动画，前后组按钮保留键盘焦点，禁用按钮无按压动效，旧课滚动遵守减少动态；README 同步本版双语截图与抽牌录屏。
+
 ## 1.5.1 — Shareable short invitation / 易分享短邀请码
 
 - The app entrance now accepts an 8-character, case-insensitive invitation derived server-side from the private signing secret. The long `TAROT_AI_ACCESS_TOKEN` remains server-only and is no longer the value users share or type. / 应用入口改用服务端从私有签名密钥派生的 8 位邀请码，不区分大小写；长 `TAROT_AI_ACCESS_TOKEN` 只留在服务端，不再由用户分享或输入。

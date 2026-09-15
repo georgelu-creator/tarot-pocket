@@ -1,6 +1,20 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.5.1 / 本次改动
+## Current work: 1.5.2 / 本次改动
+
+- Home uses shared desktop rows for equal primary cards and aligned illustrations, headings and arrows. Self-selection, resume and review remain available below learning. / 首页桌面主卡片等高，插图、标题、箭头对齐；自选、续学、复习入口仍可用。
+- The shuffle now has a 6.8-second spread, scatter, crossing and gathering sequence, with bilingual phase labels. Visual trajectories are decorative; the saved 78-card pool, cut, skip, resume and reduced-motion contracts are unchanged. / 洗牌改为 6.8 秒摊开、打散交错、收拢，含双语阶段提示；视觉路径不更改已保存牌序，切牌、跳过、恢复与减少动态的约定保持兼容。
+- Focused Chromium/WebKit checks passed at 320/390/1280px for shuffle geometry and at 320/390/768/1280px for bilingual home alignment, including long card names and resumed lessons. The swipe checks include native touch, focus, candidate restoration and unchanged placed-card nodes; AI waiting checks use local mock responses. Full release validation and publication are tracked by this version's PR/Actions and Release. Physical iPhone remains unverified. / 专项 Chromium/WebKit 检查通过：洗牌 320/390/1280px，首页双语对齐 320/390/768/1280px，含长牌名和续学。滑动专项另覆盖真实触摸、焦点、候选恢复及已入位牌节点稳定；AI 等待使用本地模拟响应。完整发布检查与上线记录见本版本 PR/Actions 和 Release；iPhone 实机仍未验证。
+
+- Card selection now uses native horizontal swiping with snap alignment. All 78 card backs stay mounted; tapping lifts a candidate, confirmation places it, and returning restores the same group and cards. Previous/next buttons remain keyboard alternatives. / 选牌支持原生横向滑动与吸附，78 张牌背保留在同一滚动区域；轻点抬起、确认入位，返回恢复原组与牌序，保留前后按钮供键盘操作。
+
+- AI reading waits include gentle card motion and rotating observation tips. A longer-wait message appears after 25 seconds; cancellation and immediate answer display remain. Tips are not model progress. / AI 等待期间显示轻柔牌面动效与轮换观察提示，25 秒后明确说明仍在等候；可取消，答案返回即显示，不将提示冒充模型进度。
+
+- Placed cards no longer reanimate when another candidate is tapped; keyboard paging keeps focus, disabled controls have no press animation, and reduced motion covers legacy feedback scrolling. Current bilingual screenshots and the ritual recording replace the old README gallery. / 切换候选不再重播已入位牌的动画，前后组按钮保留键盘焦点，禁用按钮无按压动效，旧课滚动遵守减少动态；README 同步本版双语截图与抽牌录屏。
+
+- Full local `npm test` passed on 2026-09-15 for `1.5.2-1cf49f4c0c0d7ade`, including all 113 offline assets and the actual v1.0.0 upgrade. Independent UI review found no P1/P2 blockers. GitHub CI, merge and deployment must be confirmed in the matching PR/Actions; no physical-iPhone or VoiceOver acceptance is claimed. / 2026-09-15 本机全量检查通过，含 113 项离线资源及真实 v1.0.0 升级；独立 UI 审查未发现 P1/P2 阻断。GitHub CI、合并和部署以本版 PR/Actions 的实际结果为准；未宣称 iPhone 实机或 VoiceOver 验收。
+
+## Previous delivery: 1.5.1 / 前版交付
 
 - The shareable invitation is now an 8-character, case-insensitive code deterministically derived from the long server signing secret. Users no longer copy the long token; `tools/write_invite_code.cjs` writes the short code to a private ignored file for the maintainer. / 分享给用户的是从长服务端签名密钥确定性派生的 8 位短邀请码，不区分大小写；用户不再复制长 Token，维护者可用 `tools/write_invite_code.cjs` 写入本机私有忽略文件。
 
@@ -70,7 +84,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.5.1 short invitation / 易分享短邀请码 |
+| Release target / 发布版本 | v1.5.2 home, shuffle, swipe and AI wait / 首页、洗牌、滑动选牌与解读等待 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |
