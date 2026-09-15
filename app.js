@@ -257,7 +257,7 @@
     else if(action==='zoom'){
       const id=el.dataset.id;if(!cardMap[id])return;
       zoomReturn=modal?.type==='card'?captureSheet():null;modal={type:'zoom'};
-      showModal(`<div class="zoom-backdrop" role="dialog" aria-modal="true" aria-label="放大牌图"><button class="iconbtn" data-action="close" aria-label="关闭放大">${icon('close')}</button>${el.dataset.hide==='1'?`<div style="position:relative;max-height:85dvh">${img(id,'style="display:block;max-height:80dvh;max-width:85vw"')}<div style="position:absolute;bottom:0;left:0;right:0;height:7%;background:#eee9d5"></div></div>`:img(id)}</div>`,'zoom');
+      showModal(`<div class="zoom-backdrop" role="dialog" aria-modal="true" aria-label="放大牌图"><button class="iconbtn" data-action="close" aria-label="关闭放大">${icon('close')}</button>${el.dataset.hide==='1'?`<div style="position:relative;max-height:85dvh">${img(id,'style="display:block;max-height:80dvh;max-width:85vw"')}<div style="position:absolute;bottom:0;left:0;right:0;height:7%;background:#eee9d5"></div></div>`:img(id,el.dataset.face==='reversed'?'class="reversed-img"':'')}</div>`,'zoom');
     }
     else if(action==='face' && modal?.type==='card'){modal.face=el.dataset.value;patchCardDetail();}
     else if(action==='detail-position' && modal?.type==='card'){modal.position=el.dataset.value;patchCardDetail();}

@@ -1,5 +1,11 @@
 # Changelog · 版本记录
 
+## 1.5.4 — Daily calendar / 日签手札
+
+- Daily results use a single calendar sheet with a large saved date, weekday, full card and subtle arrival motion; no duplicate single-card board or sharing action. / 日签采用独立日历手札，突出原日期、星期与完整牌图，加入轻柔入场，去掉重复牌阵展示，不加分享。
+- Add 312 bilingual, card-specific Embrace/Avoid prompts for all 78 upright and reversed cards. Original core meanings and advice remain, with optional evidence and full card reference. These are reflective prompts, not traditional almanac rules. / 78 张牌分别编写正逆位宜忌，共 312 条双语提醒；保留原牌义、行动建议、依据与完整释义，宜忌用于生活反思。
+- Saved days, same-day cards and backups remain compatible. Enlarging a reversed daily card preserves its orientation. / 历史日签、当天牌与备份兼容，逆位牌放大时保持方向。
+
 ## 1.5.3 — Invitation connectivity / 邀请验证连接修复
 
 - Invitation verification and AI reading use the custom HTTPS domain `tarot-ai.georgelu.cn`. The previous EdgeOne default domain rejected mainland-network preflight requests before the invitation reached the application. / 邀请验证与 AI 解读改用自定义 HTTPS 域名；旧默认域名会在大陆网络的跨域预检阶段返回 401，请求尚未进入邀请码验证逻辑。

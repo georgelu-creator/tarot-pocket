@@ -1,6 +1,13 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.5.3 / 本次修复
+## Current work: 1.5.4 / 日签手札
+
+- Daily result is a compact calendar sheet with a prominent saved date, weekday, real card and Embrace/Avoid reminders. Original core and orientation-specific advice remain. No sharing, AI, new spread or storage schema was added. / 日签改为日历手札，大日期、星期、真实牌图与宜忌同屏，保留原牌义和正逆位建议；不增加分享、AI、牌阵或存储结构。
+- `daily-content.js` authors 312 short prompts for 78 upright/reversed cards; `locales/en-daily.json` translates all of them. These are life reflections derived from existing card meanings, not historical almanac rules. / 78 张牌共 312 条正逆位短提醒与对应英译，来自现有牌义，用于生活反思，不是传统黄历规则。
+- Targeted Chromium/WebKit checks cover 320/390/1280px, both languages, original advice, historical dates, same-day persistence, reversed zoom and reduced motion. The clock is fixed only in an isolated test page for deterministic same-day checks. Screenshots use synthetic saved cards. / 专项双浏览器覆盖三档宽度、双语、原建议、历史日期、同日持久化、逆位放大及减少动态；固定时间仅用于隔离测试，截图无个人记录。
+- Daily UI revision: `1.5.4-f6dec509a652cf9d`. Full release validation, CI and Pages status must be recorded after completion below. Physical iPhone visual/offline acceptance remains unverified. / 完整发布验证、CI 和上线状态完成后记录；iPhone 实机视觉与离线验收仍待用户验证。
+
+## Previous delivery: 1.5.3 / 前版交付
 
 - User reported both WeChat and Safari invitation failures and supplied a real `OPTIONS /api/session` response with HTTP 401 from the EdgeOne default domain. A desktop probe returned 204 and the configured invitation issued a session, so the previous check missed the network-specific platform restriction. / 用户提供真实预检 401；桌面预检及邀请码验证通过，之前验证遗漏默认域名的网络区域限制。
 - Added `tarot-ai.georgelu.cn` to the existing AI project, verified domain ownership and added its CNAME. Managed HTTPS certificate provisioning and live acceptance are tracked below. The pre-existing incomplete `tarot-api.georgelu.cn` entry was left unchanged. / 已为现有 AI 项目添加独立子域名、验证归属并添加解析；证书和实测结果见后续记录，未删除原有未完成域名配置。

@@ -4,20 +4,26 @@
 
 A bilingual, image-first tarot learning companion. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
 
-[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.2/tarot-pocket-v1.5.2.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
+[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
 
 ![Tarot Pocket — practice, remember, and read](docs/images/hero.png)
 
-![v1.5.2](https://img.shields.io/badge/release-v1.5.2-60465C)
+![v1.5.4](https://img.shields.io/badge/release-v1.5.4-60465C)
 ![Languages](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![Code license](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![Content license](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.5.2 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. The hosted app uses one 8-character invitation entrance; after entry, AI readings connect automatically and center the user's actual question.
+v1.5.4 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. The hosted app uses one 8-character invitation entrance; after entry, AI readings connect automatically and center the user's actual question.
 
 **Used an earlier version?** Open [Update while keeping records](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en), download the verified update, then choose to enter it. Do not clear site data.
 
-v1.5.2 aligns the Home cards and visibly spreads, mixes and gathers the deck. Swipe through the full deck, tap to lift a card, then confirm its place. While an AI reading is pending, gentle motion and rotating observation tips accompany the wait; after 25 seconds a longer-wait message appears. Cancel remains available and replies appear immediately. [Watch the current interface recording](docs/images/ritual-v152.webm).
+The reading table aligns the Home cards and visibly spreads, mixes and gathers the deck. Swipe through the full deck, tap to lift a card, then confirm its place. While an AI reading is pending, gentle motion and rotating observation tips accompany the wait; after 25 seconds a longer-wait message appears. Cancel remains available and replies appear immediately. [Watch the shuffle and selection recording (1.5.2)](docs/images/ritual-v152.webm).
+
+## A moment for today
+
+The daily card now opens as a dated calendar sheet: a prominent day and weekday, the complete card, and short **Embrace / Avoid** reminders for its upright or reversed meaning. Original card advice remains below, with optional visual evidence and a full reference. A gentle entrance respects reduced motion. Reopening the same day keeps the same card; past entries show their saved date. These are card-inspired reflections, not traditional almanac predictions. No sharing step is added.
+
+<img src="docs/images/daily-v154-en.png" width="390" alt="Daily tarot calendar with the date, full World card and Embrace / Avoid reminders">
 
 ## A small lesson that stays with you
 
@@ -60,7 +66,7 @@ The recommended phone entry is the public website:
 3. In Safari’s Share menu, choose **Add to Home Screen**. Open the installed site and check its offline status again.
 4. Before travel, test airplane mode, closing/reopening, an unfamiliar card, and saved progress on the actual phone.
 
-Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.2/tarot-pocket-v1.5.2.html) remains available for browsers that support local JavaScript.
+Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html) remains available for browsers that support local JavaScript.
 
 **Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Learning and drawing need no account, external fonts or analytics. Optional AI interpretation sends only the current question and drawn cards to the configured service after an explicit request; provider keys remain server-side. See [AI service](docs/AI_SERVICE.md).
 

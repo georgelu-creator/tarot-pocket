@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{webcrypto}=require('node:crypto');
 const root=path.resolve(__dirname,'..'),storage=new Map(),events={};
 const model={window:{addEventListener(){}},document:{addEventListener(type,fn){events[type]=fn;},querySelector(){return null;}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},matchMedia:()=>({matches:true}),crypto:webcrypto,Uint32Array,structuredClone,clearTimeout(){},setTimeout:()=>1,requestAnimationFrame:fn=>fn()};
-for(const f of ['reading-deck.js','spread-content.js','reading.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),model);
+for(const f of ['reading-deck.js','daily-content.js','spread-content.js','reading.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),model);
 const deck=model.window.TAROT_READING_DECK.cards,spreadList=model.window.TAROT_SPREAD_CONTENT.spreads;
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const api=model.window.createTarotReading({esc,img:id=>`<img data-id="${id}">`,icon:()=>'',go(){},toast(){},now:()=>123});

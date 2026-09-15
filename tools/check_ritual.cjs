@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{webcrypto}=require('node:crypto');
 const root=path.resolve(__dirname,'..'),memory=new Map(),handlers={},timers=new Map();let time=new Date(2026,8,14,12).getTime(),counter=0;
 const model={window:{addEventListener(){},scrollTo(){}},document:{addEventListener(type,fn){handlers[type]=fn;},querySelector(){return null;}},localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},matchMedia:()=>({matches:true}),crypto:webcrypto,Uint32Array,structuredClone,Date,clearTimeout:id=>timers.delete(id),setTimeout:fn=>{timers.set(++counter,fn);return counter;},requestAnimationFrame:fn=>fn()};
-for(const f of ['reading-deck.js','spread-content.js','reading.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),model);
+for(const f of ['reading-deck.js','daily-content.js','spread-content.js','reading.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),model);
 let api;const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));api=model.window.createTarotReading({esc,img:id=>`<img src="${id}">`,icon:()=>'',go:()=>api.render(),toast(){},now:()=>time});
 const snapshot=()=>JSON.parse(JSON.stringify(api.export()));const click=(action,value,index)=>handlers.click({target:{closest:()=>({dataset:{reading:action,value,index}})}});const finish=()=>click('skip-animation');
 assert.equal(model.window.TAROT_SPREAD_CONTENT.spreads.length,27);
