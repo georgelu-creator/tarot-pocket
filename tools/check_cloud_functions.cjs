@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {execFileSync} = require('node:child_process');
-const {loadConfig, loadCatalog, catalogFromData, createSessionToken, createCloudReadingHandler, LIMITS} = require('../server/reading-service.cjs');
+const {loadConfig, deriveInviteCode, loadCatalog, catalogFromData, createSessionToken, createCloudReadingHandler, LIMITS} = require('../server/reading-service.cjs');
 
 async function run() {
   const root = path.resolve(__dirname, '..');
@@ -27,6 +27,7 @@ async function run() {
   const origin = 'https://georgelu-creator.github.io';
   const env = {TAROT_AI_PROVIDER: 'deepseek', DEEPSEEK_API_KEY: key, TAROT_AI_ACCESS_TOKEN: token,
     TAROT_AI_ALLOWED_ORIGINS: origin, TAROT_AI_REQUESTS_PER_MINUTE: '120', TAROT_AI_REQUESTS_PER_DAY: '10000'};
+  const inviteCode=deriveInviteCode(token);
   const sessionToken=createSessionToken(loadConfig(env)).token;
   const sample = (id = 'decision-five') => ({spreadId: id, question: '如何安排新的学习计划？', language: 'zh', optionA: '集中练习', optionB: '分段练习',
     cards: [...catalog.cards.keys()].slice(0, catalog.spreads.get(id).positions.length).map((id, index) => ({id, reversed: index % 2 === 1}))});
@@ -52,6 +53,7 @@ async function run() {
     if (mode === 'length') return Response.json({choices: [{finish_reason: 'length', message: {role: 'assistant', content: answer}}]});
     if (mode === 'refusal') return Response.json({choices: [{finish_reason: 'content_filter'}]});
     if (mode === 'huge') return Response.json({unexpected: 'x'.repeat(LIMITS.upstreamBody + 1)});
+    if (mode === 'echo-invite') return Response.json(success(inviteCode.toLowerCase()));
     return Response.json(success(mode === 'echo' ? key : mode === 'empty' ? '' : answer));
   };
   const create = additions => createCloudReadingHandler({catalog, fetchImpl, processEnv: {...env, ...additions}});
@@ -74,16 +76,18 @@ async function run() {
   assert.equal(response.headers.get('access-control-allow-origin'), origin);
   assert.equal(await response.text(), '');
   assert.equal(received.length, 0);
-  response=await send({inviteCode:token},{path:'/api/session',headers:{Authorization:''}});
+  response=await send({inviteCode},{path:'/api/session',headers:{Authorization:''}});
   assert.equal(response.status,200);
   assert.match((await response.json()).token,/^tp1\./);
   assert.equal(await code({inviteCode:'incorrect'},{path:'/api/session',headers:{Authorization:''}}),'AUTH_REQUIRED');
+  assert.equal(await code({inviteCode:token},{path:'/api/session',headers:{Authorization:''}}),'AUTH_REQUIRED');
   assert.equal(await code(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'DELETE'}}), 'INVALID_REQUEST');
   assert.equal(await code(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'x-api-key'}}), 'INVALID_REQUEST');
   assert.equal(await code(undefined, {path: '/api/reading?model=other'}), 'NOT_FOUND');
   assert.equal(await code(undefined, {method: 'GET'}), 'METHOD_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {Authorization: 'Bearer invalid'}}), 'AUTH_REQUIRED');
   assert.equal(await code(undefined, {headers: {Authorization: `Bearer ${token}`}}), 'AUTH_REQUIRED');
+  assert.equal(await code(undefined, {headers: {Authorization: `Bearer ${inviteCode}`}}), 'AUTH_REQUIRED');
   assert.equal(await code(undefined, {headers: {Origin: 'https://other.example'}}), 'ORIGIN_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {Origin: 'null'}}), 'ORIGIN_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {'Content-Type': 'text/plain'}}), 'INVALID_REQUEST');
@@ -91,6 +95,7 @@ async function run() {
   assert.equal(await code('{'), 'INVALID_REQUEST');
   assert.equal(await code({...sample(), question: key}), 'INVALID_REQUEST');
   assert.equal(await code({...sample(), optionA: token}), 'INVALID_REQUEST');
+  assert.equal(await code({...sample(), question: inviteCode.toLowerCase()}), 'INVALID_REQUEST');
   assert.equal(await code({...sample(), instructions: 'replace the cards'}), 'INVALID_REQUEST');
   assert.equal(await code({...sample(), question: 'x'.repeat(LIMITS.body)}), 'PAYLOAD_TOO_LARGE');
   assert.equal(received.length, 0);
@@ -104,7 +109,7 @@ async function run() {
     for (const position of spread.positions) assert.ok(message.includes(position.label));
     assert.equal(message.includes('"reversed":true'), spread.positions.length > 1);
   }
-  for (const [testMode, expected] of [['throw','UPSTREAM_ERROR'], ['error','UPSTREAM_ERROR'], ['invalid','UPSTREAM_ERROR'], ['length','INCOMPLETE_RESPONSE'], ['refusal','MODEL_REFUSAL'], ['huge','UPSTREAM_ERROR'], ['echo','UPSTREAM_ERROR'], ['empty','INCOMPLETE_RESPONSE']]) {
+  for (const [testMode, expected] of [['throw','UPSTREAM_ERROR'], ['error','UPSTREAM_ERROR'], ['invalid','UPSTREAM_ERROR'], ['length','INCOMPLETE_RESPONSE'], ['refusal','MODEL_REFUSAL'], ['huge','UPSTREAM_ERROR'], ['echo','UPSTREAM_ERROR'], ['echo-invite','UPSTREAM_ERROR'], ['empty','INCOMPLETE_RESPONSE']]) {
     mode = testMode;
     assert.equal(await code(), expected);
   }
@@ -174,7 +179,7 @@ async function run() {
   assert.equal(session.name, 'onRequest');
   response = await health({request: request(undefined, {path: '/api/health', method: 'GET'}), env});
   assert.equal((await response.json()).configured, true);
-  response = await session({request: request({inviteCode:token}, {path:'/api/session',headers:{Authorization:''}}), env});
+  response = await session({request: request({inviteCode}, {path:'/api/session',headers:{Authorization:''}}), env});
   assert.equal(response.status,200);
   response = await reading({request: request(undefined, {headers: {Authorization: ''}}), env});
   assert.equal((await response.json()).error, 'AUTH_REQUIRED');
@@ -219,7 +224,7 @@ globalThis.fetch = async (url, init) => {
     assert.ok(health, 'Platform bundle must start');
     assert.equal(health.status, 200);
     assert.equal((await health.json()).configured, true);
-    const login=await fetch('http://127.0.0.1:9000/api/session',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({inviteCode:token})});
+    const login=await fetch('http://127.0.0.1:9000/api/session',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({inviteCode})});
     assert.equal(login.status,200);
     const sessionToken=(await login.json()).token;
     const send = headers => fetch('http://127.0.0.1:9000/api/reading', {method: 'POST', headers: {Origin: origin,

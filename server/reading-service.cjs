@@ -57,7 +57,7 @@ function loadConfig(env = process.env) {
   const thinking = env.TAROT_AI_THINKING || 'enabled';
   if (!['enabled', 'disabled'].includes(thinking)) fail('NOT_CONFIGURED');
   return Object.freeze({
-    provider, model, apiKey, accessToken, baseUrl, origins: new Set(origins), thinking,
+    provider, model, apiKey, accessToken, inviteCode: accessToken ? deriveInviteCode(accessToken) : '', baseUrl, origins: new Set(origins), thinking,
     host: env.TAROT_AI_HOST || '127.0.0.1',
     port: numeric(env, 'PORT', 8787, 1, 65535),
     timeoutMs: numeric(env, 'TAROT_AI_TIMEOUT_MS', 90000, 1000, 180000),
@@ -68,6 +68,22 @@ function loadConfig(env = process.env) {
     sessionTtlSeconds: numeric(env, 'TAROT_SESSION_TTL_SECONDS', 43200, 900, 604800),
     configured: Boolean(apiKey && accessToken && model && origins.length)
   });
+}
+
+function deriveInviteCode(accessToken) {
+  if (typeof accessToken !== 'string' || accessToken.length < 32) fail('NOT_CONFIGURED');
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = createHmac('sha256', accessToken).update('tarot-pocket-short-invitation-v1').digest().subarray(0, 5);
+  let value = 0n;
+  for (const byte of bytes) value = (value << 8n) | BigInt(byte);
+  let code = '';
+  for (let shift = 35n; shift >= 0n; shift -= 5n) code += alphabet[Number((value >> shift) & 31n)];
+  return code;
+}
+
+function containsCredential(value, config) {
+  return [config.apiKey, config.accessToken].some(secret => secret && value.includes(secret)) ||
+    Boolean(config.inviteCode && value.toUpperCase().includes(config.inviteCode));
 }
 
 function loadCatalog(root = ROOT) {
@@ -307,7 +323,8 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
         const body = await req.readBody(controller.signal);
         if (!exactKeys(body, ['inviteCode'])) fail('INVALID_REQUEST');
         const inviteCode = textField(body.inviteCode, LIMITS.invite, true);
-        if (!secretEquals(inviteCode, config.accessToken)) fail('AUTH_REQUIRED');
+        const normalizedInvite = inviteCode.toUpperCase();
+        if (!/^[A-HJ-NP-Z2-9]{8}$/.test(normalizedInvite) || !secretEquals(normalizedInvite, config.inviteCode)) fail('AUTH_REQUIRED');
         const session = createSessionToken(config, stamp);
         return send(200, session);
       }
@@ -322,7 +339,7 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
       if (Number(req.headers['content-length']) > LIMITS.body) fail('PAYLOAD_TOO_LARGE');
       const body = await req.readBody(controller.signal);
       const reading = validateReading(body, catalog);
-      if ([reading.question, reading.optionA, reading.optionB].some(value => [config.apiKey, config.accessToken].some(secret => secret && value.includes(secret)))) fail('INVALID_REQUEST');
+      if ([reading.question, reading.optionA, reading.optionB].some(value => containsCredential(value, config))) fail('INVALID_REQUEST');
       if (controller.signal.aborted) fail('TIMEOUT');
       admitted = admitted.filter(time => time > stamp - 86400000);
       if (admitted.length >= config.perDay || admitted.filter(time => time > stamp - 60000).length >= config.perMinute) fail('RATE_LIMITED');
@@ -336,7 +353,7 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
       if (!response.ok) { await response.body?.cancel(); fail('UPSTREAM_ERROR'); }
       const text = finalText(await limitedResponse(response), config.provider);
       // Even a provider malfunction must not echo configured credentials to clients.
-      if ([config.apiKey, config.accessToken].some(secret => secret && text.includes(secret))) fail('UPSTREAM_ERROR');
+      if (containsCredential(text, config)) fail('UPSTREAM_ERROR');
       return send(200, {text, model: config.model, provider: config.provider});
     } catch (error) {
       const code = controller.signal.aborted ? 'TIMEOUT' : error instanceof ServiceError ? error.code : acquired ? 'UPSTREAM_ERROR' : 'INTERNAL_ERROR';
@@ -443,4 +460,4 @@ if (require.main === module) {
   } catch { process.stderr.write('Tarot AI service configuration/catalog is invalid. No credentials were printed.\n'); process.exitCode = 1; }
 }
 
-module.exports = {loadConfig, loadCatalog, catalogFromData, validateReading, buildPrompt, providerRequest, finalText, createSessionToken, verifySessionToken, createReadingHandler, createReadingServer, createCloudReadingHandler, LIMITS};
+module.exports = {loadConfig, deriveInviteCode, loadCatalog, catalogFromData, validateReading, buildPrompt, providerRequest, finalText, createSessionToken, verifySessionToken, createReadingHandler, createReadingServer, createCloudReadingHandler, LIMITS};

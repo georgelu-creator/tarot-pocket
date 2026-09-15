@@ -72,7 +72,7 @@ Set these in the project's **environment variables** before deploying:
 | --- | --- |
 | `TAROT_AI_PROVIDER` | `deepseek` |
 | `DEEPSEEK_API_KEY` | Provider key; secret / DeepSeek 密钥，保密 |
-| `TAROT_AI_ACCESS_TOKEN` | App invitation, at least 32 characters; secret / 应用邀请码，至少32字符，保密 |
+| `TAROT_AI_ACCESS_TOKEN` | Server signing secret, at least 32 characters; derives the shareable 8-character invitation / 服务端签名密钥，至少32字符，用于派生8位短邀请码 |
 | `TAROT_SESSION_TTL_SECONDS` | `43200` by default (12 hours), range `900–604800` / 默认12小时 |
 | `TAROT_AI_MODEL` | `deepseek-flash` |
 | `TAROT_AI_ALLOWED_ORIGINS` | Exact frontend origins, comma-separated; e.g. `https://georgelu-creator.github.io` |
