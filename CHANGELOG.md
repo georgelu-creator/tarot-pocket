@@ -1,5 +1,10 @@
 # Changelog · 版本记录
 
+## 1.5.3 — Invitation connectivity / 邀请验证连接修复
+
+- Invitation verification and AI reading use the custom HTTPS domain `tarot-ai.georgelu.cn`. The previous EdgeOne default domain rejected mainland-network preflight requests before the invitation reached the application. / 邀请验证与 AI 解读改用自定义 HTTPS 域名；旧默认域名会在大陆网络的跨域预检阶段返回 401，请求尚未进入邀请码验证逻辑。
+- The frontend endpoint and CSP allowlist change together. Invitation codes, server-held keys, session lifetime, origin checks and learning records remain unchanged. / 前端接口与 CSP 允许来源同步更新；邀请码、服务端密钥、会话时效、来源校验与学习记录保持不变。
+
 ## 1.5.2 — A smoother card table / 更流畅的随身牌桌
 
 - Home learning and reading cards now share aligned artwork, text and arrow rows; learning shortcuts stay below the primary cards instead of stretching the reading card. / 首页学牌与抽牌卡片的插图、文字、箭头对齐，学习快捷入口独立放在下方，不再拉长抽牌卡片。
