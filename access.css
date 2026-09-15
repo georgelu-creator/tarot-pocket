@@ -1,0 +1,18 @@
+.access-locked{overflow:hidden}
+.access-locked>.language-toggle{z-index:1002}
+.access-screen{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:auto;padding:max(72px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));background:radial-gradient(circle at 50% 18%,rgba(191,157,91,.19),transparent 30%),linear-gradient(160deg,#261c30,#4b3650 68%,#241a2d);color:#fff}
+.access-stars{position:absolute;top:9%;left:50%;transform:translateX(-50%);color:#ddc586;letter-spacing:1.1rem;opacity:.8}
+.access-card{width:min(100%,420px);padding:34px 26px 28px;border:1px solid rgba(236,220,177,.38);border-radius:28px;background:rgba(30,21,37,.7);box-shadow:0 30px 80px rgba(10,6,14,.38);backdrop-filter:blur(16px);text-align:center}
+.access-mark{width:58px;height:58px;margin:0 auto 18px;border:1px solid rgba(236,220,177,.55);border-radius:50%;display:grid;place-items:center;color:#ead49c;font-size:28px}
+.access-card .eyebrow{color:#ddc586}
+.access-card h1{margin:8px 0 12px;font-family:var(--font-display);font-size:clamp(32px,9vw,44px);font-weight:500;line-height:1.08}
+.access-card>p{margin:0 auto 26px;max-width:330px;color:rgba(255,255,255,.76);line-height:1.7}
+.access-card form{text-align:left}
+.access-card label span{display:block;margin:0 0 8px;font-weight:700}
+.access-card input{width:100%;min-height:52px;padding:0 15px;border:1px solid rgba(236,220,177,.55);border-radius:14px;background:rgba(255,255,255,.09);color:#fff;font:inherit;outline:none}
+.access-card input:focus{border-color:#ead49c;box-shadow:0 0 0 3px rgba(234,212,156,.2)}
+.access-card input::placeholder{color:rgba(255,255,255,.46)}
+.access-card .primary{margin-top:14px;background:#e4c979;color:#2b2032}
+.access-card small{display:block;margin-top:18px;color:rgba(255,255,255,.55);line-height:1.55}
+.access-error{margin:14px 0 0!important;padding:10px 12px;border-radius:12px;background:rgba(181,65,64,.22);color:#ffd9d4!important;font-weight:700;text-align:left}
+@media(max-width:380px){.access-card{padding:28px 20px 24px}.access-card h1{font-size:32px}}

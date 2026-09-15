@@ -1,11 +1,17 @@
 /* Real source UI with a local mock endpoint: no production service or credentials. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),KEY='tarot-reading-v3';
-const token='fixture-connection-code-not-a-provider-key';
+const token='fixture-invitation-not-a-provider-key',sessionToken='tp1.'+'s'.repeat(80);
 (async()=>{
- const requests=[],held=[];let mode='auth';
+ const requests=[],invites=[],held=[];let mode='success';
  const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost');
+  if(url.pathname==='/api/session'){
+   let body='';for await(const chunk of req)body+=chunk;const parsed=JSON.parse(body);invites.push(parsed);
+   res.setHeader('Content-Type','application/json');
+   if(parsed.inviteCode!==token){res.statusCode=401;res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
+   res.end(JSON.stringify({token:sessionToken,expiresAt:Date.now()+3600000}));return;
+  }
   if(url.pathname==='/api/reading'){
    let body='';for await(const chunk of req)body+=chunk;
    requests.push({body:JSON.parse(body),auth:req.headers.authorization});res.setHeader('Content-Type','application/json');
@@ -14,7 +20,7 @@ const token='fixture-connection-code-not-a-provider-key';
    if(mode==='error'){res.statusCode=502;res.end(JSON.stringify({error:'UPSTREAM_ERROR'}));return;}
    res.end(JSON.stringify({text:'Synthetic whole-spread reading.\n\n<script>window.injected=true</script>',model:'fixture',provider:'deepseek'}));return;
   }
-  if(url.pathname==='/ai-config.js'){res.setHeader('Content-Type','text/javascript');res.end('window.TAROT_AI_CONFIG={endpoint:"/api/reading"};');return;}
+  if(url.pathname==='/ai-config.js'){res.setHeader('Content-Type','text/javascript');res.end('window.TAROT_AI_CONFIG={endpoint:"/api/reading",sessionEndpoint:"/api/session"};');return;}
   if(url.pathname==='/locales/en.js'){
    const dict=Object.assign({},...fs.readdirSync(path.join(root,'locales')).filter(n=>/^en-.*\.json$/.test(n)).sort().map(n=>JSON.parse(fs.readFileSync(path.join(root,'locales',n),'utf8'))));
    res.setHeader('Content-Type','text/javascript');res.end('window.TAROT_EN='+JSON.stringify(dict)+';');return;
@@ -27,7 +33,18 @@ const token='fixture-connection-code-not-a-provider-key';
  try{
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',isMobile:true,hasTouch:true,serviceWorkers:'block'}),p=await ctx.newPage(),errors=[];
   p.on('pageerror',e=>errors.push(e.message));const origin=`http://127.0.0.1:${server.address().port}`;
-  await p.goto(origin+'/?lang=zh');await p.locator('.bottomnav [data-page=reading]').click();
+  await p.goto(origin+'/?lang=zh');
+  const invite=p.getByLabel('邀请码',{exact:true});assert(await invite.isVisible(),'the app opens at one invitation gate');
+  await p.screenshot({path:'/tmp/tarot-v15-invite.png',fullPage:false});
+  assert.equal(await p.locator('#app').getAttribute('inert'),'','the app is inert before invitation validation');
+  assert.equal(await p.locator('.bottomnav').count(),1,'the app can prepare behind the gate without becoming interactive');
+  await invite.fill('incorrect');await invite.press('Enter');await p.getByText('邀请码不正确，请重新输入。').waitFor();assert.equal(invites.length,1);
+  await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('.access-card').innerText()),'the invitation gate is bilingual');await p.locator('[data-language-toggle]').click();
+  await invite.fill(token);await invite.press('Enter');await p.locator('.access-screen').waitFor({state:'detached'});assert.equal(invites.length,2);
+  assert.equal(await p.locator('#app').getAttribute('aria-hidden'),'false');
+  assert(!await p.evaluate(token=>JSON.stringify(localStorage).includes(token),token),'the invitation is never stored');
+  assert(await p.evaluate(sessionToken=>sessionStorage.getItem('tarot-pocket-session-v1').includes(sessionToken),sessionToken),'only the scoped app session is kept for this tab');
+  await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
   assert.equal(catalog.length,7,'the existing seven sourced definitions remain');
   for(const d of catalog){
@@ -62,23 +79,18 @@ const token='fixture-connection-code-not-a-provider-key';
   },KEY);
   await p.addInitScript(KEY=>{const fixture=sessionStorage.getItem('tarot-ui-fixture-reading');if(fixture){localStorage.setItem(KEY,fixture);sessionStorage.removeItem('tarot-ui-fixture-reading');}},KEY);
   await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
-  const code=p.getByLabel('AI 连接码',{exact:true});assert.equal(await code.count(),1,'connection field has an explicit accessible name');assert.equal(await code.getAttribute('type'),'password');assert(await code.isVisible(),'first connection form is visible without an error');
-  assert.equal(requests.length,0);assert((await p.locator('.ai-connection').innerText()).includes('服务提供者'));assert((await p.locator('.ai-connection').innerText()).includes('不要填写'));
-  await p.locator('[data-reading=ai-request]').click();assert.equal(requests.length,0);assert.equal(await code.evaluate(e=>e===document.activeElement),true);assert(await p.locator('.ai-error').isVisible());
-  await p.locator('.ai-connection-help>summary').click();assert((await p.locator('.ai-connection-help').innerText()).includes('TAROT_AI_ACCESS_TOKEN'));assert.equal(await p.locator('.ai-connection-help a').getAttribute('rel'),'noopener noreferrer');
-  await code.fill(token);assert.equal(requests.length,0,'typing a code must not submit a question');assert.equal(await p.locator('.ai-error').count(),0,'editing removes stale missing-code feedback without validating the code');assert(!(await p.locator('[data-reading-ai]').innerText()).includes('已连接'),'typing is not verification');
-  assert(!await p.evaluate(token=>JSON.stringify({...localStorage,...sessionStorage}).includes(token),token),'connection code is not stored');
-  await p.locator('.ai-connection-help>summary').click();await p.locator('[data-reading-ai]').scrollIntoViewIfNeeded();await p.screenshot({path:'/tmp/tarot-v14-connection.png',fullPage:false});
-  await code.press('Enter');await p.locator('.ai-error').filter({hasText:'连接码不正确'}).waitFor();assert.equal(requests.length,1,'Enter explicitly submits exactly once');assert.equal(await p.locator('.ai-answer').count(),0,'authentication failure does not masquerade as a reading');assert.equal(new URL(p.url()).searchParams.has('tarot-connection-code'),false,'the code never enters the URL');
-  mode='success';await p.locator('[data-reading=ai-request]').click();await p.locator('.ai-answer').waitFor();assert.equal(requests.length,2);assert.equal(requests[1].auth,'Bearer '+token);assert.equal(requests[1].body.spreadId,'decision-five');assert.equal(requests[1].body.question,'How can I compare two study schedules?');assert.equal(requests[1].body.cards.length,5);assert.equal(requests[1].body.cards[1].reversed,true);
+  assert.equal(await p.locator('[data-ai-access],.ai-connection').count(),0,'the reading page never asks for a code or provider key');
+  assert((await p.locator('.ai-question').innerText()).includes('How can I compare two study schedules?'),'the user question is visibly the reading focus');
+  await p.locator('[data-reading-ai]').scrollIntoViewIfNeeded();await p.screenshot({path:'/tmp/tarot-v15-auto-ai.png',fullPage:false});
+  await p.locator('[data-reading=ai-request]').click();await p.locator('.ai-answer').waitFor();assert.equal(requests.length,1);assert.equal(requests[0].auth,'Bearer '+sessionToken);assert.equal(requests[0].body.spreadId,'decision-five');assert.equal(requests[0].body.question,'How can I compare two study schedules?');assert.equal(requests[0].body.optionA,'Weekend classes');assert.equal(requests[0].body.optionB,'Weekday self-study');assert.equal(requests[0].body.cards.length,5);assert.equal(requests[0].body.cards[1].reversed,true);
   assert.equal(await p.evaluate(()=>window.injected),undefined);assert.equal(await p.locator('.ai-answer script').count(),0);
-  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(token));
-  await p.reload();await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible without reconnecting');assert.equal(requests.length,2);
-  await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),0);assert.equal(await p.locator('[data-ai-access]').inputValue(),'','a new page opening clears the connection code');
-  await p.locator('.ai-connection-help>summary').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('[data-reading-ai]').innerText()),'connection and setup help are fully translated');assert.equal(await p.locator('[data-ai-access]').getAttribute('placeholder'),'Paste your connection code here');
-  mode='hold';await p.locator('[data-ai-access]').fill(token);await p.locator('[data-reading=ai-request]').click();await p.locator('[data-reading=ai-cancel]').click();await p.waitForTimeout(30);assert.equal(await p.locator('.ai-answer').count(),0);assert.equal((await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY)).draft.ai.length,1,'cancel preserves the other-language saved answer');for(const res of held)res.end('{}');held.length=0;
+  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(token));assert(!JSON.stringify(saved).includes(sessionToken));
+  await p.reload();assert.equal(await p.locator('.access-screen').count(),0,'reload in the same tab does not ask for the invitation again');await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible');assert.equal(requests.length,1);
+  await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),0);assert.equal(await p.locator('[data-ai-access],.ai-connection').count(),0);
+  mode='hold';await p.locator('[data-reading=ai-request]').click();await p.locator('[data-reading=ai-cancel]').click();await p.waitForTimeout(30);assert.equal(await p.locator('.ai-answer').count(),0);assert.equal((await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY)).draft.ai.length,1,'cancel preserves the other-language saved answer');for(const res of held)res.end('{}');held.length=0;
   mode='error';await p.locator('[data-reading=ai-request]').click();await p.locator('.ai-error').waitFor();assert.match(await p.locator('.ai-error').innerText(),/complete reading/);assert.equal(await p.locator('.ai-answer').count(),0);
   await ctx.setOffline(true);await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),1,'offline saved answer is available');await p.locator('[data-language-toggle]').click();assert(await p.locator('[data-reading=ai-request]').isDisabled(),'new readings require connectivity');
-  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['7 sourced compact guides at 320 and 390','44px positions; live explanation and full position table','stable board and scroll','fully bilingual guide and connection help','visible first-connect password field','input does not send; Enter submits once','incorrect code clear, no fake answer','no credential storage or URL leakage','saved reading survives reload, errors, cancellation and offline use'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
+  await ctx.setOffline(false);await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await p.locator('[data-reading=ai-request]').click();await p.locator('.access-screen').waitFor();assert.equal(await p.locator('[data-invite-code]').count(),1,'expired server session returns to the single entrance gate');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);
+  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['single bilingual invitation gate','wrong invitation stays locked','valid invitation issues a tab-scoped session','reload does not ask again','reading page has no code or key field','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','saved reading survives reload, errors, cancellation and offline use','401 returns to entrance gate'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
  }finally{for(const res of held)res.end('{}');await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

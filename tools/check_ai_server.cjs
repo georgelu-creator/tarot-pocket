@@ -2,7 +2,7 @@
 
 const assert = require('node:assert/strict');
 const http = require('node:http');
-const {loadConfig, loadCatalog, validateReading, buildPrompt, finalText, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
+const {loadConfig, loadCatalog, validateReading, buildPrompt, finalText, createSessionToken, verifySessionToken, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
 
 async function run() {
   // Synthetic credentials and questions only. No real provider is contacted.
@@ -20,8 +20,13 @@ async function run() {
     {TAROT_AI_BASE_URL: 'http://api.deepseek.com'}, {TAROT_AI_BASE_URL: 'https://x.test/?key=x'},
     {TAROT_AI_BASE_URL: 'https://person:secret@x.test'}, {TAROT_AI_ALLOWED_ORIGINS: '*'},
     {TAROT_AI_ALLOWED_ORIGINS: 'null'}, {TAROT_AI_ALLOWED_ORIGINS: 'https://georgelu-creator.github.io/tarot-pocket/'},
-    {TAROT_AI_ACCESS_TOKEN: 'short'}, {TAROT_AI_ACCESS_TOKEN: key}, {TAROT_AI_CONCURRENCY: '0'}, {DEEPSEEK_API_KEY: 'with\nnewline'}
+    {TAROT_AI_ACCESS_TOKEN: 'short'}, {TAROT_AI_ACCESS_TOKEN: key}, {TAROT_AI_CONCURRENCY: '0'},
+    {TAROT_SESSION_TTL_SECONDS: '10'}, {DEEPSEEK_API_KEY: 'with\nnewline'}
   ]) assert.throws(() => loadConfig({...env, ...addition}), /NOT_CONFIGURED/);
+  const syntheticSession=createSessionToken(config,1700000000000);
+  assert.equal(verifySessionToken(syntheticSession.token,config,1700000001000),true);
+  assert.equal(verifySessionToken(syntheticSession.token+'x',config,1700000001000),false);
+  assert.equal(verifySessionToken(syntheticSession.token,config,syntheticSession.expiresAt),false);
   const sample = (id = 'three') => ({spreadId: id, question: '如何安排一个新的创作项目？', language: 'zh',
     cards: [...catalog.cards.keys()].slice(0, catalog.spreads.get(id).positions.length).map((id, i) => ({id, reversed: i % 2 === 1}))});
   for (const spread of catalog.spreads.values()) {
@@ -104,8 +109,20 @@ async function run() {
     const server = createReadingServer({config: loadConfig({...env, ...additions}), catalog, fetchImpl});
     servers.push(server); return listen(server);
   };
+  const sessions=new Map();
+  const sessionRequest=async(base,inviteCode=token,overrides={})=>{
+    const response=await fetch(`${base}/api/session`,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,...overrides.headers},body:JSON.stringify({inviteCode})});
+    return {status:response.status,body:await response.json(),headers:response.headers};
+  };
+  const sessionFor=async base=>{
+    if(sessions.has(base))return sessions.get(base);
+    const issued=await sessionRequest(base);if(issued.status!==200)return null;
+    sessions.set(base,issued.body.token);return issued.body.token;
+  };
   const request = async (base, body = sample(), overrides = {}) => {
-    const response = await fetch(`${base}/api/reading`, {method: 'POST', headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`, Origin: origin, ...overrides.headers},
+    const supplied=Object.hasOwn(overrides.headers||{},'Authorization');
+    const session=supplied?'':await sessionFor(base);
+    const response = await fetch(`${base}/api/reading`, {method: 'POST', headers: {'Content-Type': 'application/json', ...(!supplied?{Authorization:`Bearer ${session||'unavailable'}`}:{}) ,Origin: origin, ...overrides.headers},
       body: typeof body === 'string' ? body : JSON.stringify(body), signal: overrides.signal});
     return {status: response.status, body: await response.json(), headers: response.headers};
   };
@@ -118,6 +135,13 @@ async function run() {
     assert.equal(response.status, 204);
     assert.equal(response.headers.get('access-control-allow-origin'), origin);
     assert.equal(received.length, 0);
+    let issued=await sessionRequest(base);
+    assert.equal(issued.status,200);
+    assert.match(issued.body.token,/^tp1\./);
+    assert.ok(issued.body.expiresAt>Date.now());
+    assert.equal((await sessionRequest(base,'wrong invitation')).body.error,'AUTH_REQUIRED');
+    assert.equal((await sessionRequest(base,token,{headers:{Origin:'https://evil.test'}})).body.error,'ORIGIN_NOT_ALLOWED');
+    sessions.set(base,issued.body.token);
     let result = await request(base, {...sample(), question: injection});
     assert.equal(result.status, 200);
     assert.deepEqual(result.body, {text: expectedText, model: 'deepseek-flash', provider: 'deepseek'});
@@ -136,6 +160,8 @@ async function run() {
     for (const [overrides, code] of [
       [{headers: {Authorization: ''}}, 'AUTH_REQUIRED'],
       [{headers: {Authorization: `Bearer ${key}`}}, 'AUTH_REQUIRED'],
+      [{headers: {Authorization: `Bearer ${token}`}}, 'AUTH_REQUIRED'],
+      [{headers: {Authorization: `Bearer ${issued.body.token}x`}}, 'AUTH_REQUIRED'],
       [{headers: {Origin: 'https://evil.test'}}, 'ORIGIN_NOT_ALLOWED'],
       [{headers: {Origin: 'null'}}, 'ORIGIN_NOT_ALLOWED'],
       [{headers: {'Content-Type': 'text/plain'}}, 'INVALID_REQUEST']
@@ -196,7 +222,7 @@ async function run() {
     assert.equal(await aborted, 'AbortError');
     for (let i = 0; i < 50 && !cancelled; i++) await new Promise(resolve => setTimeout(resolve, 10));
     assert.equal(cancelled, true, 'upstream is aborted when client leaves');
-    console.log('AI service: DeepSeek/OpenAI mock contracts, 78-card catalog, legacy positions, authentication, CORS, limits, cancellation and safe outputs passed. No paid API call.');
+    console.log('AI service: invitation exchange, short-lived sessions, DeepSeek/OpenAI mock contracts, question-aware prompts, 78-card catalog, CORS, limits, cancellation and safe outputs passed. No paid API call.');
   } finally {
     for (const server of servers) { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
   }

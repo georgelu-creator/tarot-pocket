@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {execFileSync} = require('node:child_process');
-const {loadCatalog, catalogFromData, createCloudReadingHandler, LIMITS} = require('../server/reading-service.cjs');
+const {loadConfig, loadCatalog, catalogFromData, createSessionToken, createCloudReadingHandler, LIMITS} = require('../server/reading-service.cjs');
 
 async function run() {
   const root = path.resolve(__dirname, '..');
@@ -27,6 +27,7 @@ async function run() {
   const origin = 'https://georgelu-creator.github.io';
   const env = {TAROT_AI_PROVIDER: 'deepseek', DEEPSEEK_API_KEY: key, TAROT_AI_ACCESS_TOKEN: token,
     TAROT_AI_ALLOWED_ORIGINS: origin, TAROT_AI_REQUESTS_PER_MINUTE: '120', TAROT_AI_REQUESTS_PER_DAY: '10000'};
+  const sessionToken=createSessionToken(loadConfig(env)).token;
   const sample = (id = 'decision-five') => ({spreadId: id, question: '如何安排新的学习计划？', language: 'zh', optionA: '集中练习', optionB: '分段练习',
     cards: [...catalog.cards.keys()].slice(0, catalog.spreads.get(id).positions.length).map((id, index) => ({id, reversed: index % 2 === 1}))});
   const answer = '两条路径各有侧重，先结合当前状态，再比较发展的节奏与结果。';
@@ -57,7 +58,7 @@ async function run() {
   let handle = create();
   const request = (body = sample(), options = {}) => new Request('https://example.edgeone.site' + (options.path || '/api/reading'), {
     method: options.method || 'POST',
-    headers: {Origin: origin, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...options.headers},
+    headers: {Origin: origin, Authorization: `Bearer ${sessionToken}`, 'Content-Type': 'application/json', ...options.headers},
     ...(!['GET', 'HEAD', 'OPTIONS'].includes(options.method) ? {body: typeof body === 'string' ? body : JSON.stringify(body)} : {}),
     signal: options.signal
   });
@@ -73,11 +74,16 @@ async function run() {
   assert.equal(response.headers.get('access-control-allow-origin'), origin);
   assert.equal(await response.text(), '');
   assert.equal(received.length, 0);
+  response=await send({inviteCode:token},{path:'/api/session',headers:{Authorization:''}});
+  assert.equal(response.status,200);
+  assert.match((await response.json()).token,/^tp1\./);
+  assert.equal(await code({inviteCode:'incorrect'},{path:'/api/session',headers:{Authorization:''}}),'AUTH_REQUIRED');
   assert.equal(await code(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'DELETE'}}), 'INVALID_REQUEST');
   assert.equal(await code(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'x-api-key'}}), 'INVALID_REQUEST');
   assert.equal(await code(undefined, {path: '/api/reading?model=other'}), 'NOT_FOUND');
   assert.equal(await code(undefined, {method: 'GET'}), 'METHOD_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {Authorization: 'Bearer invalid'}}), 'AUTH_REQUIRED');
+  assert.equal(await code(undefined, {headers: {Authorization: `Bearer ${token}`}}), 'AUTH_REQUIRED');
   assert.equal(await code(undefined, {headers: {Origin: 'https://other.example'}}), 'ORIGIN_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {Origin: 'null'}}), 'ORIGIN_NOT_ALLOWED');
   assert.equal(await code(undefined, {headers: {'Content-Type': 'text/plain'}}), 'INVALID_REQUEST');
@@ -138,7 +144,7 @@ async function run() {
   const bodyAbort = new AbortController();
   let bodyCancelled = false;
   const slowBody = new ReadableStream({start() {}, cancel() { bodyCancelled = true; }});
-  const slowRequest = new Request('https://example.edgeone.site/api/reading', {method: 'POST', headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Origin: origin},
+  const slowRequest = new Request('https://example.edgeone.site/api/reading', {method: 'POST', headers: {Authorization: `Bearer ${sessionToken}`, 'Content-Type': 'application/json', Origin: origin},
     body: slowBody, duplex: 'half', signal: bodyAbort.signal});
   const bodyPending = handle({request: slowRequest, env: {}, clientIp: '192.0.2.2'});
   bodyAbort.abort();
@@ -161,15 +167,19 @@ async function run() {
   // Import the actual platform entrypoints, not just their shared factory.
   const health = (await import(pathToFileURL(path.join(root, 'cloud-functions/api/health.js')))).default;
   const reading = (await import(pathToFileURL(path.join(root, 'cloud-functions/api/reading.js')))).default;
+  const session = (await import(pathToFileURL(path.join(root, 'cloud-functions/api/session.js')))).default;
   // EdgeOne discovers onRequest during its static export scan.
   assert.equal(reading.name, 'onRequest');
   assert.equal(health.name, 'onRequest');
+  assert.equal(session.name, 'onRequest');
   response = await health({request: request(undefined, {path: '/api/health', method: 'GET'}), env});
   assert.equal((await response.json()).configured, true);
+  response = await session({request: request({inviteCode:token}, {path:'/api/session',headers:{Authorization:''}}), env});
+  assert.equal(response.status,200);
   response = await reading({request: request(undefined, {headers: {Authorization: ''}}), env});
   assert.equal((await response.json()).error, 'AUTH_REQUIRED');
   if (process.argv.includes('--bundle')) await checkBundle(root, env, token, origin, sample());
-  process.stdout.write('Cloud Functions checks passed: shared API, 78 cards/27 spreads, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
+  process.stdout.write('Cloud Functions checks passed: invitation sessions, shared API, 78 cards/27 spreads, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
 }
 
 async function checkBundle(root, env, token, origin, sample) {
@@ -177,7 +187,7 @@ async function checkBundle(root, env, token, origin, sample) {
   const {spawn} = require('node:child_process');
   const bundle = path.join(root, '.edgeone/cloud-functions/api-node/index.mjs');
   const metadata = JSON.parse(fs.readFileSync(path.join(root, '.edgeone/cloud-functions/api-node/config.json'), 'utf8'));
-  assert.deepEqual(metadata.routes.map(route => route.src).sort(), ['^/api/health$', '^/api/reading$']);
+  assert.deepEqual(metadata.routes.map(route => route.src).sort(), ['^/api/health$', '^/api/reading$', '^/api/session$']);
   // The platform bundle uses port 9000. Never terminate an unrelated listener.
   const probe = net.createServer();
   await new Promise((resolve, reject) => { probe.once('error', reject); probe.listen(9000, '127.0.0.1', resolve); });
@@ -209,8 +219,11 @@ globalThis.fetch = async (url, init) => {
     assert.ok(health, 'Platform bundle must start');
     assert.equal(health.status, 200);
     assert.equal((await health.json()).configured, true);
+    const login=await fetch('http://127.0.0.1:9000/api/session',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({inviteCode:token})});
+    assert.equal(login.status,200);
+    const sessionToken=(await login.json()).token;
     const send = headers => fetch('http://127.0.0.1:9000/api/reading', {method: 'POST', headers: {Origin: origin,
-      'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...headers}, body: JSON.stringify(sample)});
+      'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}`, ...headers}, body: JSON.stringify(sample)});
     assert.equal((await send({Authorization: ''})).status, 401);
     const preflight = await fetch('http://127.0.0.1:9000/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization, content-type'}});
     assert.equal(preflight.status, 204);
@@ -221,7 +234,7 @@ globalThis.fetch = async (url, init) => {
     const limited = await send();
     assert.equal(limited.status, 429, 'The platform wrapper must preserve warm-instance rate limits');
     assert.equal((await limited.json()).error, 'RATE_LIMITED');
-    process.stdout.write('Real EdgeOne bundle passed: two routes, health, auth, preflight, native-byte POST and warm-instance rate limit.\n');
+    process.stdout.write('Real EdgeOne bundle passed: three routes, invitation session, health, auth, preflight, native-byte POST and warm-instance rate limit.\n');
   } catch (error) {
     // Never print the generated bundle or environment. No provider calls occur.
     process.stderr.write(`Platform bundle smoke failed; ${output.includes('Uncaught Exception') ? 'an uncaught exception was reported' : 'inspect local build/runtime logs if needed'}.\n`);

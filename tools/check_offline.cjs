@@ -31,7 +31,9 @@ async function showPanel(page){await page.evaluate(()=>{document.querySelector('
 async function browserCheck(type,name,updates){
   const browser=await type.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});
   try{
-    const context=await browser.newContext({viewport:{width:390,height:844}}),page=await context.newPage(),origin=`http://127.0.0.1:${server.address().port}`,url=origin+'/tarot-pocket/?lang=zh';
+    const context=await browser.newContext({viewport:{width:390,height:844}});
+    await context.addInitScript(()=>sessionStorage.setItem('tarot-pocket-session-v1',JSON.stringify({token:'tp1.'+'o'.repeat(80),expiresAt:Date.now()+3600000})));
+    const page=await context.newPage(),origin=`http://127.0.0.1:${server.address().port}`,url=origin+'/tarot-pocket/?lang=zh';
     const external=[],errors=[];page.on('request',request=>{if(!request.url().startsWith(origin)&&/^https?:/.test(request.url()))external.push(request.url());});page.on('pageerror',error=>errors.push(error.message));
     await page.goto(url);await page.waitForFunction(()=>window.TarotOffline?.state.phase==='not-ready');
     assert.equal(await page.evaluate(()=>navigator.serviceWorker.controller),null,'first visit does not silently download the offline package');
@@ -103,7 +105,7 @@ async function browserCheck(type,name,updates){
     assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
     await context.close();
     // Clean installation interrupted mid-download: no readiness and no leftover partial cache.
-    mode='interrupt';const failed=await browser.newContext({viewport:{width:375,height:812}}),failedPage=await failed.newPage();
+    mode='interrupt';const failed=await browser.newContext({viewport:{width:375,height:812}});await failed.addInitScript(()=>sessionStorage.setItem('tarot-pocket-session-v1',JSON.stringify({token:'tp1.'+'o'.repeat(80),expiresAt:Date.now()+3600000})));const failedPage=await failed.newPage();
     await failedPage.goto(url);await failedPage.evaluate(()=>window.TarotOffline.prepare());await failedPage.waitForFunction(()=>window.TarotOffline?.state.phase==='error',{},{timeout:120000});
     assert.equal((await failedPage.evaluate(()=>window.TarotOffline.state)).ready,false);
     assert.deepEqual(await failedPage.evaluate(async p=>(await caches.keys()).filter(k=>k.startsWith(p)),prefix),[]);

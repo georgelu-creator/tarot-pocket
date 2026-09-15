@@ -18,7 +18,9 @@ const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json
  const origin=`http://127.0.0.1:${server.address().port}`,browser=await webkit.launch({headless:true}),reports=[];
  try{
   for(const width of [390,320]){
-   const ctx=await browser.newContext({viewport:{width,height:844},hasTouch:true,reducedMotion:'no-preference'}),page=await ctx.newPage(),errors=[],external=[];
+   const ctx=await browser.newContext({viewport:{width,height:844},hasTouch:true,reducedMotion:'no-preference'});
+   await ctx.addInitScript(()=>sessionStorage.setItem('tarot-pocket-session-v1',JSON.stringify({token:'tp1.'+'w'.repeat(80),expiresAt:Date.now()+3600000})));
+   const page=await ctx.newPage(),errors=[],external=[];
    page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
    await page.route('**/*',route=>{if(!route.request().url().startsWith(origin+'/')){external.push(route.request().url());return route.abort();}return route.continue();});
    const tap=selector=>page.locator(selector).first().tap();

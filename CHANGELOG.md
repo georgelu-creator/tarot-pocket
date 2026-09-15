@@ -1,5 +1,12 @@
 # Changelog · 版本记录
 
+## 1.5.0 — Invitation sessions / 邀请码与自动解读会话
+
+- The hosted app now opens at one bilingual invitation gate. A valid invitation creates a 12-hour, tab-scoped reading session; individual readings no longer ask for a connection code or provider key. / 托管网页统一从双语邀请码入口进入；验证后获得 12 小时、当前浏览器标签页有效的解读会话，单次解牌不再要求连接码或供应商密钥。
+- The server accepts the invitation only at `/api/session`. `/api/reading` rejects the original invitation and accepts only signed, expiring session credentials; rotating the invitation invalidates existing sessions. / 服务端仅在 `/api/session` 接收邀请码；解牌接口拒绝原邀请码，只接受签名且过期的会话凭证，更换邀请码会令旧会话失效。
+- The AI action visibly names the user's question and sends that question, A/B options, spread, exact positions, cards and reversals. The prompt must answer the actual question before developing the whole-spread throughline. / AI 区明确显示本次问题，并发送问题、A/B 选项、牌阵、真实牌位、牌与正逆位；模型先回应具体问题，再展开整组主线。
+- Provider keys remain server-side. Invitation attempts and readings retain separate rate limits; sessions are never included in local progress or JSON backups. / 供应商密钥仍只在服务端；邀请码尝试与解牌分别限流，会话不进入学习记录或 JSON 备份。
+
 ## 1.4.0 — Guided understanding / 逐步理解
 
 - All 78 new lessons use authored causal questions, concrete reversed contexts and open reconstruction; element/number support, close-card comparison and same-question position changes connect the steps. / 78 张新课以因果推导、具体逆位背景和开放回忆为主，串联元素数字、近牌辨析及同题换位。
