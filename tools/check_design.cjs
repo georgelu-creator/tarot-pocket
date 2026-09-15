@@ -29,7 +29,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  await p.locator('[data-reading=guide][data-value=three]').click();
  await p.locator('[data-reading=use-spread][data-value=three]').click();
  await p.locator('[data-reading-question]').fill('我想推进这个项目，当前最值得先核对和行动的是什么？');
- await p.locator('[data-reading-setting=reversals]').check();
+ assert.equal(await p.locator('[data-reading-setting=reversals]').count(),0);
  await p.locator('[data-reading=start]').click();
  const before=(await state(p)).draft;
  assert.equal(await p.locator('.bottomnav').count(),0,'focused draw retains an exit instead of persistent navigation');
@@ -42,31 +42,27 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  assert.deepEqual((await state(p)).draft.pool,before.pool,'skip animation must not draw again');
  await p.locator('[data-reading=cut-default]').click();await p.locator('[data-reading=skip-animation]').click();await p.locator('[data-reading=pick]').first().waitFor();
  const cutPool=(await state(p)).draft.pool;assert.deepEqual(cutPool,[...before.pool.slice(39),...before.pool.slice(0,39)],'cut rotates the existing pool');
- const styles=await p.locator('.reading-pick:not(:disabled) .reading-back').evaluateAll(els=>[...new Set(els.map(e=>getComputedStyle(e).backgroundImage))]);
+ const styles=await p.locator('.whole-deck-card:not(:disabled) .reading-back').evaluateAll(els=>[...new Set(els.map(e=>getComputedStyle(e).backgroundImage))]);
  assert.equal(styles.length,1);assert(styles[0].includes('data:image/svg+xml;base64,'),'offline card-back must be embedded');
  await p.locator('[data-language-toggle]').click();assert.deepEqual((await state(p)).draft.pool,cutPool);
- for(let i=0;i<3;i++){await p.locator(`[data-reading=pick][data-index="${i}"]`).click();await p.locator(`[data-reading=pick-confirm][data-index="${i}"]`).click();}
- await p.locator('[data-reading=reveal-next][data-index="0"]').first().evaluate(b=>{b.click();b.click();b.click()});
- assert.deepEqual((await state(p)).draft.revealed,[0],'rapid reveal cannot create duplicate outcomes');
- assert.equal(await p.locator('.ritual-spotlight.is-revealing .ritual-reveal-back').count(),1);
- assert.equal(await p.locator('.ritual-spotlight.is-revealing .ritual-reveal-card').evaluate(el=>getComputedStyle(el).animationName),'ritual-reveal-turn');
+ for(let i=0;i<3;i++){await p.locator(`[data-reading=pick][data-index="${i}"]`).click();}
+ await p.locator('[data-reading=reveal-all]').evaluate(b=>{b.click();b.click();b.click()});
+ assert.deepEqual((await state(p)).draft.revealed,[0,1,2],'rapid group reveal cannot create duplicate outcomes');
+ assert.equal(await p.locator('.reveal-group.is-revealing-group .group-flip-back').count(),3);
+ assert.equal(await p.locator('.is-revealing-group .reveal-group-face').first().evaluate(el=>getComputedStyle(el).animationName),'group-face-arrive');
  const saved=(await state(p)).draft;
- await p.locator('[data-reading=pause]').click();await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
- assert.deepEqual((await state(p)).draft.pool,saved.pool);assert.deepEqual((await state(p)).draft.revealed,[0]);
+ await p.locator('[data-reading=pause]').first().click();await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
+ assert.deepEqual((await state(p)).draft.pool,saved.pool);assert.deepEqual((await state(p)).draft.revealed,[0,1,2]);
  await p.locator('[data-reading=resume]').click();await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
- await p.locator('[data-reading=reveal-place][data-index="0"]').click();
- await p.locator('[data-reading=reveal-next][data-index="1"]').first().click();
- assert.equal(await p.locator('.ritual-spotlight .ritual-reveal-card').evaluate(el=>getComputedStyle(el).animationName),'none');
- await p.locator('[data-reading=reveal-place][data-index="1"]').click();
- await p.locator('[data-reading=reveal-next][data-index="2"]').first().click();
- await p.locator('[data-reading=reveal-place][data-index="2"]').click();
- assert.equal((await state(p)).draft.phase,'read');assert(await p.locator('.bottomnav').isVisible());
+ assert.equal((await state(p)).draft.phase,'read');assert.equal(await p.locator('.bottomnav').count(),0);
+ assert.equal(await p.locator('.reading-slot img').count(),3,'all faces survive an interrupted group animation');
  for(const w of [320,390,1280]){await p.setViewportSize({width:w,height:900});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}
  // Large text and solid-material fallbacks use real browser CSS/media, not a screenshot stub.
  await p.setViewportSize({width:390,height:844});
  await p.addStyleTag({content:'body{font-size:200%}button,p{font-size:1em!important}'});
  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await p.emulateMedia({contrast:'more'});
+ await p.locator('[data-reading=pause]').first().click();
  assert.equal(await p.locator('.bottomnav').evaluate(e=>getComputedStyle(e).backdropFilter),'none');
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({status:'PASS',design:'Moonlit',checks:['palette and text contrast','Chinese and English responsive home','embedded shared card back','focused draw with exit','skip retains shuffled pool','rapid reveal is unique','language and reload preserve draw','reduced motion and offline reveal','200 percent reading text','opaque contrast fallback']}));

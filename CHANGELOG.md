@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.6.0 — Focused lessons and intuitive drawing / 集中学牌与直觉抽牌
+
+- All 78 lessons use plain authored wording and a fixed six-stage single-card layout. No forced unfamiliar-card comparison, reflection input or mid-lesson card switching; old records remain. / 78 张牌重写直白文案并采用固定六阶段单牌布局，移除强制陌生牌比较、感悟输入和课中换牌，保留旧记录。
+- Category-specific purposes and questions persist into AI requests. Catalog sorted by count; open three-card reading adds no invented fixed roles or traditional provenance. / 分类用途和问题贯穿至 AI 请求；按张数排序，增加无预设牌位的自由三张，不冒充传统结构。
+- All 78 backs form one continuous overview: tap once to pick, see selection order, then reveal the whole group. Reversals default on; interrupting the animation preserves the result. / 78 张连续铺开，单击入位并标记顺序，一次翻开整组；默认正逆位，中断动画仍保留结果。
+- Navigation no longer obscures the reading; explicit returns, compact guides and safe bottom spacing improve small screens. / 抽牌移除遮挡导航，提供明确返回、紧凑说明和底部安全留白。
+- AI responds to the selected context and specific outcome first, with supported yes/no leanings and conditions instead of generic feelings. / AI 优先回应所选语境和具体结果，有依据时给明确倾向与条件，不以泛泛感受代替回答。
+
 ## 1.5.4 — Daily calendar / 日签手札
 
 - Daily results use a single calendar sheet with a large saved date, weekday, full card and subtle arrival motion; no duplicate single-card board or sharing action. / 日签采用独立日历手札，突出原日期、星期与完整牌图，加入轻柔入场，去掉重复牌阵展示，不加分享。

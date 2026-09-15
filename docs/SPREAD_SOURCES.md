@@ -27,3 +27,7 @@ Nineteen earlier authored templates remain in data solely for existing drafts/hi
 十九个旧版自编模板仅用于兼容草稿、历史与备份，不再出现在新抽牌目录。尤其 `choice` 保留原来的六张位置，绝不悄悄套用 `decision-five` 重解历史牌。教学案例明确标为示例。
 
 Sources checked 2026-09-14. Source matching verifies the adopted layout, not predictive validity or independent expert review. / 来源核对日期：2026-09-14。匹配来源证明采用了该布局，不证明预测有效性或已接受独立专家审校。
+
+## Open three cards / 无牌阵三张
+
+`open-three` is an application open-draw mode requested by users, not a named traditional spread. All three cards address one question. Numbers 1–3 record draw order only; neither the offline guide nor the AI may impose past/present/future or another fixed role. It appears separately alongside the seven sourced structures and daily tarot. / `open-three` 是用户要求的自由抽牌方式，不宣称传统牌阵来源。三张共同回应同一个问题，编号仅表示抽取顺序，不能擅自赋予过去、现在、未来或其他固定角色；七种已有出处结构和日签保持不变。

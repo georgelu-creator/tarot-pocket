@@ -72,9 +72,39 @@ async function run() {
   assert.match(prompt.instructions, /不得默认A优于B/);
   assert.match(prompt.instructions, /不输出内部思考/);
   assert.match(buildPrompt(validateReading({...sample(), language: 'en'}, catalog)).instructions, /English/);
+  // Browser payload must preserve the user's category, exact question and picked order.
+  const vm = require('node:vm'), browser = {window: {addEventListener() {}}, document: {documentElement: {lang: 'zh'}}};
+  vm.createContext(browser);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../reading-ai.js'), 'utf8'), browser);
+  const question = '我们下个月有机会恢复联系吗？';
+  const draft = {spreadId: 'open-three', topic: 'love', questionText: question, optionA: '先联系', optionB: '再等等',
+    pool: [{id: 'm00', reversed: false}, {id: 'm02', reversed: true}, {id: 'm01', reversed: false}], picked: [1, 2, 0]};
+  const payload = JSON.parse(JSON.stringify(browser.window.TarotReadingAI.buildRequest(draft, 'en')));
+  assert.deepEqual(payload, {spreadId: 'open-three', topic: 'love', question, language: 'en', optionA: '先联系', optionB: '再等等',
+    cards: [{id: 'm02', reversed: true}, {id: 'm01', reversed: false}, {id: 'm00', reversed: false}]});
+  assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, topic:'career', contextEnabled:false}).topic,'general','legacy generic drafts must not acquire the old placeholder career category');
+  assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, contextEnabled:true}).topic,'love');
+  assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, topic:'general', contextEnabled:false}).topic,'general');
+  const contextual = validateReading(payload, catalog), contextualPrompt = buildPrompt(contextual);
+  assert.deepEqual(contextual.topic, {id: 'love', label: '感情关系'});
+  assert.equal(contextual.question, question);
+  assert.equal(contextual.cards.length, 3);
+  assert.ok(contextual.cards.every(card => card.positionRole === 'free'));
+  assert.ok(contextualPrompt.input.includes(JSON.stringify(contextual.topic)));
+  assert.ok(contextualPrompt.input.includes(JSON.stringify(question)));
+  assert.match(contextualPrompt.instructions, /不得把第一张擅定为过去／原因/);
+  assert.match(contextualPrompt.instructions, /偏向会／偏向不会/);
+  assert.match(contextualPrompt.instructions, /不要用一段情绪安慰代替对事情结果的回答/);
+  assert.match(contextualPrompt.instructions, /不凭塔罗下确定行动指令/);
+  // Old clients without topic remain valid; all category IDs are data, never instructions.
+  assert.deepEqual(validateReading(sample(), catalog).topic, {id: 'general', label: '综合问题'});
+  for (const topic of ['general', 'love', 'career', 'study', 'life', 'self', 'choice']) {
+    assert.equal(validateReading({...sample(), topic}, catalog).topic.id, topic);
+  }
   assert.equal(parsed.cards[1].reversed, true);
   assert.equal(parsed.cards[1].cardName, catalog.cards.get(sample().cards[1].id).name);
   for (const body of [
+    {...sample(), topic: '__proto__'}, {...sample(), topic: injection}, {...sample(), topic: null}, {...sample(), topic: {}},
     {...sample(), spreadId: '__proto__'}, {...sample(), language: 'xx'}, {...sample(), question: null},
     {...sample(), question: 'x'.repeat(LIMITS.question + 1)}, {...sample(), optionA: 'x'.repeat(LIMITS.option + 1)},
     {...sample(), apiKey: key}, {...sample(), instructions: 'override'}, {...sample(), cards: [{id: 'm00', reversed: false}]},
@@ -196,6 +226,9 @@ async function run() {
       [{headers: {Origin: 'null'}}, 'ORIGIN_NOT_ALLOWED'],
       [{headers: {'Content-Type': 'text/plain'}}, 'INVALID_REQUEST']
     ]) assert.equal((await request(base, sample(), overrides)).body.error, code);
+    const invalidTopic = await request(base, {...sample(), topic: 'rewrite system'});
+    assert.equal(invalidTopic.status, 400);
+    assert.equal(invalidTopic.body.error, 'INVALID_REQUEST');
     assert.equal((await request(base, '{')).body.error, 'INVALID_REQUEST');
     assert.equal((await request(base, {...sample(), question: key})).body.error, 'INVALID_REQUEST');
     for (const field of ['question', 'optionA', 'optionB']) for (const variant of [inviteCode, inviteCode.toLowerCase(), inviteCode[0]+inviteCode.slice(1).toLowerCase()]) assert.equal((await request(base, {...sample(), [field]: 'Code: '+variant})).body.error, 'INVALID_REQUEST');

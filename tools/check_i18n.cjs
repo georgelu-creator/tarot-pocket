@@ -23,18 +23,8 @@ const openShuffledDeck=async(p,label)=>{
  await english(p,label+' gathering');await p.locator('[data-reading=motion-continue]').click();
  await p.locator('[data-reading=pick]').first().waitFor();
 };
-const pick=async(p,index,label)=>{
- const targetPage=Math.floor(index/6);
- let page=Math.floor(Number(await p.locator('[data-reading=pick]').first().getAttribute('data-index'))/6);
- while(page!==targetPage){page+=Math.sign(targetPage-page);await p.locator(`[data-reading=pick-page][data-index="${page}"]`).click();}
- await p.locator(`[data-reading=pick][data-index="${index}"]`).click();await english(p,label+' candidate '+index);
- await p.locator(`[data-reading=pick-confirm][data-index="${index}"]`).click();
-};
-const reveal=async(p,index,label)=>{
- await english(p,label+' ready to reveal '+index);await p.locator(`[data-reading=reveal-next][data-index="${index}"]`).first().click();
- await english(p,label+' face and pause '+index);await p.locator(`[data-reading=reveal-place][data-index="${index}"]`).click();
- await english(p,label+' reading '+index);
-};
+const pick=async(p,index,label)=>{await p.locator(`[data-reading=pick][data-index="${index}"]`).click();await english(p,label+' selected '+index);};
+const reveal=async(p,label)=>{await english(p,label+' ready to reveal group');await p.locator('[data-reading=reveal-all]').click();await p.waitForFunction(()=>JSON.parse(localStorage.getItem('tarot-reading-v3')).draft.phase==='read');await english(p,label+' whole reading');};
 (async()=>{
  const browser=await chromium.launch(require('./browser_options.cjs'));
  try{
@@ -91,13 +81,13 @@ const reveal=async(p,index,label)=>{
    if(d.id==='daily')await p.locator('[data-reading=daily]').click();else await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();await english(p,'guide '+d.id);
    await p.locator(`[data-reading=use-spread][data-value="${d.id}"]`).click();
    await p.locator('[data-reading-question]').fill('What should I understand and verify before choosing my next step?');
-   await p.locator('[data-reading-setting=reversals]').setChecked(true);
+   assert.equal(await p.locator('[data-reading-setting=reversals]').count(),0);
    await p.locator('[data-reading=start]').click();await openShuffledDeck(p,d.id);await english(p,'pick '+d.id);
    for(let i=0;i<d.positions.length;i++)await pick(p,i,d.id);
-   for(let i=0;i<d.positions.length;i++)await reveal(p,i,d.id);
+   await reveal(p,d.id);
    await p.locator('[data-reading=finish]').click();
  }
- await p.locator('[data-reading=daily]').click();await openShuffledDeck(p,'daily');await english(p,'daily cut and pick');await pick(p,0,'daily');await reveal(p,0,'daily');await english(p,'daily reading');await p.locator('.topbar [data-page=me]').click();await english(p,'records');
+ await p.locator('[data-reading=daily]').click();await openShuffledDeck(p,'daily');await english(p,'daily cut and pick');await pick(p,0,'daily');await reveal(p,'daily');await english(p,'daily reading');await p.locator('[data-reading=finish]').click();await p.locator('.topbar [data-page=me]').click();await english(p,'records');
  await p.locator('[data-action=status]').first().click();await p.getByText('78 / 78',{exact:true}).waitFor();await english(p,'content status');
  await p.locator('[data-action=sources]').click();await english(p,'sources');await p.locator('#overlay [data-action=close]').click();
  for(const width of [320,430,1280]){await p.setViewportSize({width,height:900});await english(p,'responsive '+width);}

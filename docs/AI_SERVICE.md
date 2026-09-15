@@ -118,6 +118,7 @@ The POST accepts only these fields. Card order must match the selected spread's 
 ```json
 {
   "spreadId": "three",
+  "topic": "career",
   "question": "如何安排一个新的创作项目？",
   "language": "zh",
   "cards": [
@@ -131,6 +132,10 @@ The POST accepts only these fields. Card order must match the selected spread's 
 `optionA`、`optionB` 可选，各最多 300 字符；问题最多 3000 字符，语言只能 `zh`/`en`。总请求体最多 20000 字节。不存在的牌/牌阵、重复牌、位置数量不符、额外对象字段或非布尔正逆位都会被拒绝。旧存档的牌阵 ID 按旧位置定义读取，不会静默改成新五牌二择一。
 
 Optional `optionA` and `optionB` allow up to 300 characters each. Questions allow 3000 characters and language must be `zh` or `en`. The body limit is 20000 bytes. Unknown cards/spreads, duplicates, mismatched counts, extra object fields and non-boolean orientations are rejected. Legacy spread IDs preserve their original position definitions instead of silently becoming a new five-card choice spread.
+
+`topic` 传递选牌阵时的分类，允许 `general`、`love`、`career`、`study`、`life`、`self`、`choice`；旧客户端不传时按 `general` 处理。服务端把分类 ID 转成受控名称，拒绝未知值，不接受客户端自定义提示词。`open-three` 的三张牌仅有抽取顺序，均为 `free` 角色，不会自动分配过去、现在、未来。
+
+`topic` preserves the category selected in the spread gallery. The allowlist is `general`, `love`, `career`, `study`, `life`, `self`, `choice`; older clients default to `general`. The server resolves trusted labels and rejects unknown categories or custom instruction fields. `open-three` preserves draw order with three `free` roles, without assigning past/present/future positions.
 
 成功响应固定为 `{text, model, provider}`，其中 `text` 是最终正文字符串。客户端须按文本渲染，不能当 HTML 执行。服务不回传 DeepSeek 的 `reasoning_content`、OpenAI 的 reasoning items、原始错误、供应商认证头或响应中的额外字段。空答复、截断、被拒绝的答复不会被标为成功，也不会自动重试并重复计费。
 
@@ -161,6 +166,10 @@ The Node HTTP transport propagates cancellation upstream. The current EdgeOne bu
 ## 内容与隐私 / Content and privacy
 
 服务只将用户明确提交的这次问题与牌面交给配置的供应商。提示词要求先回应整体问题，再连接真实牌位中的发展、结果、张力与条件；二择一比较两条真实路径，不默认 A 更好；不补出没有抽到的“牌灵”。逆位必须影响具体论述，不能在正位解释后机械追加一句。它生成的是象征解读，不是事实核验或未来保证。
+
+用户所选分类会随问题一起进入解读。具体问题优先，先回应事情的主要方向；是否题在牌面有侧重时可以明确说偏向会或不会，并给依据、条件与可能改变结论的因素，不能用情绪安慰代替回答，也不伪造概率或保证。医疗、法律、投资等高风险决定不由塔罗下确定行动指令。
+
+The selected category accompanies the question. Specific questions take priority and the response leads with the likely direction within the symbolic reading. Yes/no questions may receive a clear leaning when supported, followed by evidence, conditions and factors that could change it. The prompt prohibits invented probabilities, guarantees and deterministic medical, legal or investment decisions.
 
 Only the explicitly submitted question and cards go to the configured provider. The prompt asks for an overall response followed by coherent developments, outcomes, tensions and conditions grounded in the actual positions. Choice readings compare both actual paths without defaulting to A, and never invent an undrawn “deck spirit.” Reversals must affect the interpretation. This is symbolic interpretation, not factual verification or guaranteed prediction.
 
