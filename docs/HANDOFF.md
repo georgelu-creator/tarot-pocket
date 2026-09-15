@@ -1,6 +1,13 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.4.0 / 本次改动
+## Current work: 1.5.0 / 本次改动
+
+- The hosted app is protected by one bilingual invitation gate. A valid `TAROT_AI_ACCESS_TOKEN` is exchanged through `/api/session` for a signed 12-hour, tab-scoped credential; the raw invitation cannot call `/api/reading`. / 托管网页使用统一双语邀请码入口；`/api/session` 将有效邀请码换成签名的 12 小时标签页会话，原始邀请码不能直接调用解牌接口。
+- Individual readings have no connection-code or API-key UI. The current question is shown as the reading focus and is sent with A/B labels, spread ID, actual cards, positions and reversals after the user explicitly requests a complete reading. / 单次解牌不再出现连接码或 API Key；页面显示本次问题，用户点生成后自动随选项、牌阵、实际牌位、牌与正逆位发送。
+- The provider key and invitation remain server-only. The temporary session lives only in `sessionStorage`, is excluded from all three existing product stores and exports, and is cleared on authorization failure. / 供应商密钥与邀请码不进前端；临时会话只在 `sessionStorage`，不进入既有三个存储键或备份，鉴权失败立即清除。
+- Automated checks cover wrong and valid invitations, signed-session expiry/tampering, refusal of the raw invitation at the reading endpoint, exact question payloads, reload, cancellation, offline saved answers and bilingual mobile UI. Production deployment and physical-phone acceptance must still be recorded separately. / 自动检查覆盖错误与正确邀请码、会话过期及篡改、解牌接口拒绝原邀请码、完整问题载荷、刷新、取消、离线回看和双语手机 UI；生产部署与实机仍需分别记录。
+
+## Previous delivery: 1.4.0 / 前版交付
 
 - Home learning now starts a random unstarted card; Resume and Choose a card are separate. Paused sessions stay recoverable. / 首页随机学习还没开始的牌；继续、自选分开，暂停课程仍可恢复。
 - `guided-major.js` and `guided-minor.js` contain 78 authored observation/reasoning/reversal/recall guides with matching English files. `guided-learning.js` / `.css` provide the phone UI; `journey.js` creates `playVersion: 4` sessions. / 78 张独立引导与英文已齐，新会话采用 v4。
@@ -50,7 +57,7 @@
 | --- | --- |
 | Project / 项目 | Tarot Pocket · 塔罗随身学 |
 | Canonical repository / 正式仓库 | [georgelu-creator/tarot-pocket](https://github.com/georgelu-creator/tarot-pocket) |
-| Release target / 发布版本 | v1.4.0 guided understanding / 逐步理解与紧凑牌阵 |
+| Release target / 发布版本 | v1.5.0 invitation sessions / 邀请码与自动解读会话 |
 | Goal / 目标 | Help learners remember cards and understand spreads through image-based, low-typing practice / 用牌图与少输入交互，帮助记牌并理解牌阵 |
 | Product stage / 阶段 | Installable mobile website; native app not included / 可安装手机网页，未包含原生 App |
 | Source baseline / 源码能力 | 78 variable seven-stage courses, 56 further steps, 7 sourced spreads + daily tarot; optional server-side AI / 78 套七步变式课、56 步进阶、7 种有出处牌阵与日签；可选服务端 AI |

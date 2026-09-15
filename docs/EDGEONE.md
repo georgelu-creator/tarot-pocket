@@ -44,6 +44,7 @@ repository root or its `server` directory.
 | File / 文件 | Route / 路由 |
 | --- | --- |
 | `cloud-functions/api/reading.js` | `POST /api/reading` |
+| `cloud-functions/api/session.js` | `POST /api/session` |
 | `cloud-functions/api/health.js` | `GET /api/health` |
 
 Handlers receive a platform-compatible `Request` and return a Web `Response`.
@@ -71,7 +72,8 @@ Set these in the project's **environment variables** before deploying:
 | --- | --- |
 | `TAROT_AI_PROVIDER` | `deepseek` |
 | `DEEPSEEK_API_KEY` | Provider key; secret / DeepSeek 密钥，保密 |
-| `TAROT_AI_ACCESS_TOKEN` | Separate access code, at least 32 characters; secret / 独立访问码，至少32字符，保密 |
+| `TAROT_AI_ACCESS_TOKEN` | App invitation, at least 32 characters; secret / 应用邀请码，至少32字符，保密 |
+| `TAROT_SESSION_TTL_SECONDS` | `43200` by default (12 hours), range `900–604800` / 默认12小时 |
 | `TAROT_AI_MODEL` | `deepseek-flash` |
 | `TAROT_AI_ALLOWED_ORIGINS` | Exact frontend origins, comma-separated; e.g. `https://georgelu-creator.github.io` |
 | `TAROT_AI_TIMEOUT_MS` | `90000` (cloud adapter allows at most `110000`) |
@@ -89,17 +91,18 @@ secrets and do not install or run dependency scripts.
 仅允许经过核验的正式提交使用。不要使用前端公开变量前缀或打印环境变量。此处
 构建命令不会读取密钥，也不安装或运行依赖脚本。
 
-The independent access code is the user's reading-service password, not the
-DeepSeek key. Re-deploy after configuration changes as required by the
-platform. See [AI_SERVICE.md](AI_SERVICE.md) for the full shared API and options.
+The independent invitation is exchanged for an expiring reading session; it is
+never the DeepSeek key and cannot call `/api/reading` directly. Re-deploy after
+configuration changes as required by the platform. See [AI_SERVICE.md](AI_SERVICE.md).
 
-独立访问码用于页面调用解读服务，不能填写为 DeepSeek 密钥。平台要求时，更新
-运行时变量后重新部署。完整接口、配置和错误码见 [AI_SERVICE.md](AI_SERVICE.md)。
+独立邀请码先换取有时效的解牌会话，不能填写为 DeepSeek 密钥，也不能直接调用
+`/api/reading`。平台要求时，更新运行时变量后重新部署。完整接口、配置和错误码见
+[AI_SERVICE.md](AI_SERVICE.md)。
 
 **Limit scope:** counters are local to each warm function instance. Cold starts,
 deployment and horizontal scaling reset or multiply those counters. They are
 not a project-wide daily quota or a hard API spending limit. Protect the separate
-access code and use provider-side balance/budget controls for a strict cost
+invitation and use provider-side balance/budget controls for a strict cost
 boundary. Before broad public multi-user access, add a shared atomic quota store.
 
 **限流范围：**计数仅对单个热实例有效，冷启动、部署和扩容会重置或扩大可用次数，
@@ -149,8 +152,9 @@ body size, cancellation, safe errors and warm-instance counters. They do not
 prove that a cloud deployment or a paid provider call has succeeded.
 
 以上检查只用测试凭据和模拟上游，不产生模型费用。发布后仍需实际验证 HTTPS
-`/api/health`、无访问码被拒绝、前端域名的 OPTIONS 请求，以及一次明确授权的
-真实解读。只有实际可访问后，才用 `tools/configure_ai.cjs` 配置前端地址并重新构建。
+`/api/health`、错误邀请码被拒绝、`/api/session` 换发会话、原始邀请码不能调用
+`/api/reading`、前端域名的 OPTIONS 请求，以及一次明确授权的真实解读。只有实际
+可访问后，才用 `tools/configure_ai.cjs` 配置前端地址并重新构建。
 
 ## Official references / 官方依据
 

@@ -1,0 +1,16 @@
+{
+  "进入你的随身牌桌": "Enter your pocket reading table",
+  "输入邀请码后即可学习、抽牌，并在需要时使用完整 AI 解读。": "Enter an invitation code to learn, draw cards, and request a complete AI reading when you need one.",
+  "邀请码": "Invitation code",
+  "请输入邀请码": "Enter invitation code",
+  "正在验证…": "Verifying…",
+  "进入 Tarot Pocket": "Enter Tarot Pocket",
+  "首次进入需要联网验证邀请码。": "Your first entry needs a connection to verify the invitation.",
+  "验证后，本次打开期间会自动连接解读服务；页面不会保存或显示 DeepSeek 密钥。": "After verification, readings connect automatically for this browser session. The page never stores or displays the DeepSeek key.",
+  "请输入邀请码。": "Enter an invitation code.",
+  "邀请验证服务暂时不可用。": "Invitation verification is temporarily unavailable.",
+  "邀请码不正确，请重新输入。": "That invitation code is not correct. Try again.",
+  "尝试次数较多，请稍后再试。": "There have been several attempts. Please try again later.",
+  "暂时无法验证邀请码，请检查网络后重试。": "The invitation cannot be verified right now. Check your connection and try again.",
+  "登录已过期，请重新输入邀请码。": "Your session has expired. Enter the invitation code again."
+}
