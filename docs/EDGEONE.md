@@ -31,7 +31,7 @@ root `edgeone.json` configuration is for that AI project:
 
 The build uses built-in Node modules only. It generates a static public landing
 page and a separate server-only catalog from the repository's 78 cards and all
-27 spread definitions, including the 19 preserved legacy definitions. The
+28 spread definitions, including the 19 preserved legacy definitions. The
 catalog is imported into the function bundle; it is outside the static output.
 The build never reads `.env` or writes credentials into artifacts. Ignore the
 generated `.edgeone-ai/` directory in Git. Do not set the output directory to the

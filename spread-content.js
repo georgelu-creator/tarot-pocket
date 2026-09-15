@@ -1232,3 +1232,36 @@ window.TAROT_SPREAD_CONTENT = {
   }
 ]);
 })();
+
+// Context is chosen before drawing; ordinal free cards never imply a fixed spread.
+(()=>{
+ const c=window.TAROT_SPREAD_CONTENT;
+ const extra=[['general','综合问题'],['life','日常生活'],['self','自我探索'],['choice','选择决策']];
+ for(const [id,label]of extra)c.topics.push({id,label,questions:[{id:'own',text:'这件事接下来会怎样发展？'}]});
+ for(const d of c.spreads.filter(d=>!d.legacy&&!d.id.startsWith('relationship-')))d.topics=c.topics.map(t=>t.id);
+ c.spreads.push({id:'open-three',name:'无牌阵 · 直接问三张',layout:'row',category:'life',categories:['love','work','study','life','self','choice'],topic:'general',topics:c.topics.map(t=>t.id),contextEnabled:true,
+ summary:'不预设牌位，围绕同一个问题，把三张牌连起来解读。',bestFor:'想直接问一件具体的事，又不想事先分配牌位。',avoid:'把三张自动当成过去、现在、未来，或脱离问题各说一句。',
+ positions:[1,2,3].map(n=>({id:'card-'+n,label:'第 '+n+' 张',question:'三张共同回答同一个问题；编号只表示抽取顺序。',role:'free'})),
+ readingTip:'三张牌共同回答你的问题，没有预设时间或角色。',compareTip:'先看三张共同指向的结论，再看它们的支持、冲突和条件。',
+ description:'适合问一件范围明确的事，例如一次合作能否推进、近期关系会怎样发展。三张不分配固定位置：先找共同主题，再用其他牌补充条件或转折。它与过去—现在—未来不同，不能把抽取顺序当成时间顺序。',
+ source:{title:'本应用的自由三牌读法',url:'https://github.com/georgelu-creator/tarot-pocket/blob/main/docs/SPREAD_SOURCES.md',note:'按用户需求提供的不设牌位抽牌方式，不声称为某个传统命名牌阵。仅保留三张的抽取顺序，具体问题优先。'}});
+ c.sceneGuides={
+  all:{label:'全部牌阵',intro:'按张数从少到多排列。先选场景，也可以直接找一个合适的牌阵。',example:'这件事接下来会怎样发展？',uses:{}},
+  love:{label:'感情关系',intro:'这里的牌阵都围绕感情：关系走向、互动障碍与感情选择。',example:'我们未来一个月还有继续发展的机会吗？',uses:{one:'感情里的一个明确问题，先看核心倾向。','open-three':'直接问关系走向、复合机会或一次联系的结果。',three:'看目前关系、阻碍关系的因素，以及下一步怎么做。',timeline:'理解关系从过去到现在，再看接下来的发展。','decision-five':'比较两种感情选择的发展与结果。',celtic:'关系背景复杂时，完整看双方处境、阻力与发展。'}},
+  work:{label:'工作事业',intro:'围绕工作结果：项目推进、求职机会、合作和职业选择。',example:'这次面试，我得到录用的可能性如何？',uses:{one:'针对工作中的一个具体决定，看最重要的提示。','open-three':'直接问面试、合作、项目或近期工作结果。',three:'看工作现状、推进卡点和下一步行动。',timeline:'回看工作问题的由来，判断接下来的走势。','decision-five':'比较留任与跳槽、两个机会或两种工作方案。',celtic:'职业背景较复杂时，完整分析机会、限制与走向。'}},
+  study:{label:'学习成长',intro:'围绕学习目标：考试准备、申请、学习阻碍与方向选择。',example:'照现在的准备情况，我这次考试能达到目标吗？',uses:{one:'学习中最需要关注的一件事。','open-three':'直接问考试准备、申请或某个学习目标。',three:'看目前准备、主要卡点和可改进的一步。',timeline:'看过去的学习方式怎样影响目前和下一阶段。','decision-five':'比较两个学习方向、学校或准备方案。',celtic:'申请或长期目标较复杂时，完整梳理条件与走向。'}},
+  life:{label:'日常生活',intro:'围绕具体生活安排：出行、计划、人际协作与日常选择。',example:'这次旅行计划，近期能顺利落实吗？',uses:{one:'从当前生活问题中抓住最关键的一点。','open-three':'直接问一个生活计划能否推进。',three:'看生活现状、现实阻碍和下一步安排。',timeline:'看一件生活问题的过去、现在与后续趋势。','decision-five':'比较两个生活安排的过程和结果。',celtic:'搬家、旅行或长期安排，梳理复杂条件。'}},
+  self:{label:'自我探索',intro:'围绕自己的习惯与目标，理解卡点并找到可实行的改变。',example:'我总是拖延这个目标，真正卡在哪里？',uses:{one:'给当前的困惑找一个切入点。','open-three':'围绕一个习惯或目标，直接看三张牌的提醒。',three:'看自己的现状、卡点和可以改变的一步。',timeline:'看过去的经历如何影响现在的选择。',celtic:'深入梳理目标、内外条件与行动方向。'}},
+  choice:{label:'选择决策',intro:'先明确正在比较的选项，再看各自条件、代价与结果倾向。',example:'选择 A 近期行动，还是 B 再等一段时间，哪条路更合适？',uses:{one:'做决定前，先看最不能忽略的一件事。','open-three':'针对一个明确选择，直接看整体倾向与条件。',three:'看决策现状、阻碍和下一步怎么比较。',timeline:'看这个决定从过去到现在的发展。','decision-five':'标准五牌二择一：共同现状，A/B 各自的发展与结果。',celtic:'选择涉及多方条件时，完整梳理影响因素。'}}
+ };
+ const descriptions={
+ one:'只抽一张，适合范围很小、背景已经清楚的问题。先读这张牌的核心含义，再结合你问的事情判断它强调什么。它给出的信息有限，不适合一次追问许多互不相关的问题。',
+ three:'三张分别看现状、阻碍与建议。适合事情推进不顺时，找出当前处境、卡在哪里，以及下一步怎样行动。它侧重解决问题，不能把建议位直接读成已经发生的结果。',
+ timeline:'三张分别回顾过去影响、描述现在、观察后续趋势。适合已经有一段经历的问题，例如一段关系或一个项目。未来趋势以目前条件持续为前提，重点是看事情如何一步步发展。',
+ 'decision-five':'五张牌形成两条可比较的路径：第一张是共同现状；第二、四张对应 A 的发展与结果，第三、五张对应 B 的发展与结果。先把 A/B 写具体并约定时间范围，再比较两条路径。不要把 A 的过程与 B 的结果混在一起比较。',
+ 'relationship-three':'三张分别描述自己在关系中的角色、对方呈现的角色和两人之间的互动。适合先看懂当下的关系。牌面可以提示一种可能的互动方式，但对方的实际想法仍要结合已发生的交流判断。',
+ 'relationship-five':'五张分别看自己、对方、过去基础、关系现状和后续方向。适合已经持续一段时间、想了解如何走到现在的关系。解读先将过去与现状联系起来，再看关系继续发展的条件。',
+ celtic:'十张牌从现状、障碍、基础、过去、目标、近期发展、自身、环境、期望与担忧、结果趋势展开。适合背景复杂且有具体问题时使用。先看核心问题，再结合内外条件解读整体走向；不必为了张数多而选它。'
+ };
+ for(const d of c.spreads.filter(d=>!d.legacy))d.description ||= descriptions[d.id]||d.summary;
+})();

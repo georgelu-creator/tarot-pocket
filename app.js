@@ -87,7 +87,7 @@
   function toast(text){clearTimeout(toastTimer);document.getElementById('toast').innerHTML=`<div class="toast">${esc(text)}</div>`;toastTimer=setTimeout(()=>document.getElementById('toast').replaceChildren(),3400);}
   function topbar(){return `<header class="topbar"><button class="brand" data-action="nav" data-page="home"><span class="brandmark" aria-hidden="true">✧</span>塔罗随身学</button><div class="toplinks"><button class="toplinkbtn" data-action="nav" data-page="me">记录</button><button class="iconbtn" data-action="status" aria-label="查看本机内容状态">${icon('cloud')}</button></div></header>`;}
   function nav(){return `<nav class="bottomnav" aria-label="主要导航"><div class="navinner">${[['home','首页','home'],['library','学牌','practice'],['reading','抽牌','cards']].map(([id,label,ico])=>`<button class="navitem ${page===id?'active':''}" data-action="nav" data-page="${id}" ${page===id?'aria-current="page"':''}><span class="iconwrap">${icon(ico)}</span>${label}</button>`).join('')}</div></nav>`;}
-  function shell(body){const focused=page==='reading'&&reading.isFocused();return `<div class="shell ${focused?'reading-focus':''}">${topbar()}${!storageOK?'<div class="storage-warning">当前打开方式无法持久保存记录。你仍可体验，并在「记录」导出学习记录。</div>':''}${body}</div>${focused?'':nav()}`;}
+  function shell(body){const focused=['reading','spread-guide'].includes(page)&&reading.isFocused();return `<div class="shell ${focused?'reading-focus':''}">${topbar()}${!storageOK?'<div class="storage-warning">当前打开方式无法持久保存记录。你仍可体验，并在「记录」导出学习记录。</div>':''}${body}</div>${focused?'':nav()}`;}
   function render(){
     if(page==='journey')root.innerHTML=journey.render();
     else if(page==='learning')root.innerHTML=learning.render();
@@ -100,7 +100,8 @@
     else root.innerHTML=shell(renderHome());
     root.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.alt='图片未能载入，请使用完整离线文件';image.style.background='var(--soft)';},{once:true}));
   }
-  function go(destination){page=destination==='practice'?'home':destination;closeModal();render();window.scrollTo(0,0);}
+  let navLastY=0;window.addEventListener('scroll',()=>{const y=Math.max(0,window.scrollY),delta=y-navLastY;if(Math.abs(delta)>8){document.body.classList.toggle('nav-away',delta>0&&y>100&&y+innerHeight<document.documentElement.scrollHeight-90);navLastY=y;}},{passive:true});
+  function go(destination){document.body.classList.remove('nav-away');page=destination==='practice'?'home':destination;closeModal();render();window.scrollTo(0,0);}
   function renderHome(){
     const id=journey.recommendation(), c=id?cardMap[id]:null;
     const due=journey.due().length, finished=learnedIDs().length;
@@ -178,7 +179,7 @@
     const open=document.getElementById('overlay').children.length;
     document.getElementById('overlay').replaceChildren();document.body.style.overflow='';document.body.style.position='';document.body.style.top='';document.body.style.width='';
     modal=null;restoreCandidate=null;restoreLearningCandidate=null;restoreReadingCandidate=null;zoomReturn=null;cardTrail=[];
-    if(open)window.scrollTo(0,modalPageY);if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});lastFocus=null;
+    if(open){navLastY=modalPageY;document.body.classList.remove('nav-away');window.scrollTo(0,modalPageY);}if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});lastFocus=null;
   }
   function captureSheet(){return {modal:{...modal},nodes:[...document.getElementById('overlay').childNodes],scroll:document.querySelector('#overlay .sheet')?.scrollTop||0,focus:document.activeElement};}
   function restoreSheet(snapshot){document.getElementById('overlay').replaceChildren(...snapshot.nodes);modal=snapshot.modal;if(modal?.type==='card')patchCardDetail();const sheet=document.querySelector('#overlay .sheet');if(sheet)sheet.scrollTop=snapshot.scroll;if(snapshot.focus?.isConnected)snapshot.focus.focus({preventScroll:true});}

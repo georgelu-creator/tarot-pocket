@@ -47,7 +47,7 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   assert(await p.evaluate(sessionToken=>sessionStorage.getItem('tarot-pocket-session-v1').includes(sessionToken),sessionToken),'only the scoped app session is kept for this tab');
   await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
-  assert.equal(catalog.length,7,'the existing seven sourced definitions remain');
+  assert.equal(catalog.length,8,'seven sourced definitions plus the explicitly open three-card draw');assert.equal(catalog.filter(d=>d.id==='open-three').length,1);
   for(const d of catalog){
    await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();
    for(const width of [390,320]){

@@ -48,3 +48,38 @@
 @media(prefers-reduced-motion:reduce){.journey-playful *{animation:none!important;transition:none!important}.journey-discovery .journey-image{transform:none}.journey-piece:active:not(:disabled),.journey-match-target.is-ready:active{transform:none}}
 .journey-discovery{width:100%}.journey-discovery .journey-image{flex:none;aspect-ratio:.59}.journey-discovery .journey-image img{height:100%;object-fit:contain}.journey-discovery-caption{flex:none;position:relative}
 .journey-discovery .journey-image{top:auto}
+
+/* Focused six-stage lesson: one card anchor, one task, one next action. */
+.journey-shell.guided-focused{max-width:740px;padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+.guided-focused .journey-top{margin:8px 0 20px;padding-right:48px;gap:10px}
+.guided-focused .guided-stage{display:block;width:100%;max-width:600px;margin:0 auto}
+.guided-focused .guided-card-anchor{display:flex;align-items:center;gap:18px;margin:0 0 20px;min-height:163px}
+.guided-focused .guided-card-anchor .guided-face{position:static;flex:none;width:96px;height:163px;margin:0;align-self:auto;animation:none}
+.guided-focused .guided-face img{width:100%;height:100%;object-fit:contain;animation:none}
+.guided-focused .guided-card-anchor figcaption{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:20px}
+.guided-focused .guided-card-anchor figcaption>span{font-size:12px;color:var(--muted);line-height:1.5}
+.guided-focused .guided-memory-blank{min-height:0;padding:0;display:grid;place-items:center;border:1px solid var(--control-line);border-radius:6px;background:var(--soft);color:var(--accent)}
+.guided-focused .guided-memory-blank>span{font-size:38px;line-height:1}
+.guided-focused .guided-copy{width:100%;max-width:none;min-width:0}
+.guided-focused .guided-step-heading h1{font-size:24px;line-height:1.3;margin:0 0 8px}
+.guided-focused .guided-step-heading>p{font-size:14px;color:var(--muted);margin:0 0 20px;line-height:1.65}
+.guided-focused .guided-question{font-size:17px;line-height:1.7;font-weight:600;margin:16px 0}
+.guided-focused .guided-framework{margin:16px 0;padding:8px 0;border-block:1px solid var(--line)}
+.guided-focused .guided-framework p{display:grid;grid-template-columns:100px minmax(0,1fr);gap:10px;margin:8px 0;font-size:14px}
+.guided-focused .guided-case{padding:12px 14px;background:var(--soft);border-radius:12px;margin:16px 0}
+.guided-focused .guided-board{padding:10px 0 0;margin:0;gap:8px;background:none}
+.guided-focused .guided-slot{min-height:72px;padding:8px 4px;border:1px solid var(--control-line);border-radius:8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--paper)}
+.guided-focused .guided-slot>span{width:auto;height:auto;border:0;font-size:12px;line-height:1.4}
+.guided-focused .guided-slot>strong{font-size:13px;margin:0}.guided-focused .guided-slot>small{font-size:10px;line-height:1.4}
+.guided-focused .guided-slot.occupied{border:2px solid var(--accent);background:var(--soft)}
+.guided-focused .guided-self-ratings{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0}
+.guided-focused .guided-self-ratings button{min-height:46px;font-size:14px;padding:11px 14px}
+.guided-focused .guided-memory-check{display:grid;grid-template-columns:1fr;gap:8px}
+.guided-focused .guided-memory-check button{text-align:left;min-height:46px}
+.guided-focused .guided-options{margin:16px 0;gap:10px}
+.guided-focused .journey-option{min-height:52px;font-size:15px;line-height:1.7;padding:13px 14px;overflow-wrap:anywhere}
+.guided-focused .journey-feedback .primary{position:static;box-shadow:none}
+.guided-focused .guided-coach{margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--soft)}
+.guided-focused .guided-coach>p{font-size:15px;line-height:1.8}.guided-focused .guided-coach>small{font-size:12px;line-height:1.6}
+.guided-focused .guided-alternatives p>span{display:block;margin-top:4px}
+@media(min-width:700px){.guided-focused .guided-card-anchor{min-height:185px}.guided-focused .guided-card-anchor .guided-face{width:109px;height:185px}.guided-focused .guided-self-ratings{grid-template-columns:repeat(3,1fr)}}

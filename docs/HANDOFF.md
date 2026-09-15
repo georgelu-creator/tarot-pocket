@@ -1,11 +1,21 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.5.4 / 日签手札
+## Current work: 1.6.0 / 集中学牌与直觉抽牌
+
+- Full bilingual design and acceptance contract: [EXPERIENCE_V1_6.md](EXPERIENCE_V1_6.md). / 完整问题复盘、方案与验收约定见该文档。
+- All 78 cards use a six-stage lesson with a fixed card position and name, plain Chinese and matching English. First lessons remove unfamiliar-card comparison and mid-course switching; old progress and backups remain compatible. / 78 张牌采用统一六环节、固定牌图和牌名，重写中文并同步英文，初学移除陌生牌比较与途中换牌，保留旧进度和备份。
+- Seven sourced structures plus an explicitly unpositioned three-card mode are sorted by size. Categories change the examples and carry their topic through setup, saved draws and AI. All 78 backs remain in one continuous overview; one tap commits, one action reveals the group. New draws include reversals; old card directions remain unchanged. / 有出处牌阵加自由三牌按数量排列；分类贯穿问题、存档和 AI；78 张牌连续铺开，一点即选，一次翻开，默认逆位且不改旧牌方向。
+- Result return controls and focused navigation prevent obscuring content. Interrupted group reveals and older final-card acknowledgement saves recover into the result. Returning from card details restores browsing navigation. / 结果页可直接返回，专注流程移走悬浮主导航；翻牌中断、旧版末张确认存档均可恢复，从详情返回时恢复浏览导航。
+- Server prompts answer the supplied question and category with a supported outcome leaning before explaining the cards. Old generic draws stay generic; API keys and invitation/session behavior are unchanged. / 服务端先回应问题与场景，再解释整组依据；旧通用存档仍按通用解读，密钥与邀请码会话机制不变。
+- Updated bilingual screenshots use isolated synthetic data. Full release checks are recorded below; CI, merge, Pages and cloud deployment are separately evidenced by the matching PR/Actions and Release. / 双语截图来自隔离合成数据；本地检查见下，CI、合并、页面和云端部署分别以对应 PR/Actions 与 Release 实际记录为准。
+- Release verification: full local `npm test` passed on 2026-09-15 for `1.6.0-94eb7224761ae70d`, including Chromium/WebKit, 114 offline assets, actual v1.0.0 upgrade and all 78 authored lessons. A scan of 477 source/build files found no configured credential values. Physical-iPhone visual/offline acceptance, teacher review and long-term learning effectiveness remain unverified. / 发布检查：2026-09-15 全量 `npm test` 通过，覆盖双浏览器、114 项离线资源、真实 v1.0.0 升级和 78 张牌课程；477 个源码及构建文件未发现配置中的凭证值；未宣称 iPhone 实机离线验收、教师审校或长期学习效果。
+
+## Previous delivery: 1.5.4 / 日签手札
 
 - Daily result is a compact calendar sheet with a prominent saved date, weekday, real card and Embrace/Avoid reminders. Original core and orientation-specific advice remain. No sharing, AI, new spread or storage schema was added. / 日签改为日历手札，大日期、星期、真实牌图与宜忌同屏，保留原牌义和正逆位建议；不增加分享、AI、牌阵或存储结构。
 - `daily-content.js` authors 312 short prompts for 78 upright/reversed cards; `locales/en-daily.json` translates all of them. These are life reflections derived from existing card meanings, not historical almanac rules. / 78 张牌共 312 条正逆位短提醒与对应英译，来自现有牌义，用于生活反思，不是传统黄历规则。
 - Targeted Chromium/WebKit checks cover 320/390/1280px, both languages, original advice, historical dates, same-day persistence, reversed zoom and reduced motion. The clock is fixed only in an isolated test page for deterministic same-day checks. Screenshots use synthetic saved cards. / 专项双浏览器覆盖三档宽度、双语、原建议、历史日期、同日持久化、逆位放大及减少动态；固定时间仅用于隔离测试，截图无个人记录。
-- Daily UI revision: `1.5.4-f6dec509a652cf9d`. Full release validation, CI and Pages status must be recorded after completion below. Physical iPhone visual/offline acceptance remains unverified. / 完整发布验证、CI 和上线状态完成后记录；iPhone 实机视觉与离线验收仍待用户验证。
+- Daily UI revision: `1.5.4-f6dec509a652cf9d`. Full local validation, PR #14 merge and Pages publication passed for this revision. Physical iPhone visual/offline acceptance remains unverified. / 本版全量本地检查、PR #14 合并与 Pages 发布已通过；iPhone 实机视觉与离线验收仍待用户验证。
 
 ## Previous delivery: 1.5.3 / 前版交付
 

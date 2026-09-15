@@ -168,3 +168,5 @@ See [AI_SERVICE.md](AI_SERVICE.md). `server/reading-service.cjs` holds provider 
 服务端保存供应商密钥，客户端只持有公开接口地址；访问码仅当前打开期间使用，不导出。配置脚本同步更新 CSP，独立离线文件禁止新 API 请求，但保留已保存解读。
 
 Daily calendar regression: `node tools/check_daily_almanac.cjs` (also in `npm test`). It uses isolated synthetic saved days in Chromium/WebKit. Set `CAPTURE_DAILY=1` to refresh the two README screenshots after building; no real invitation or progress is read. / 日签专项已纳入全量测试；构建后设置 `CAPTURE_DAILY=1` 可刷新双语截图，使用隔离演示数据。
+
+Focused v1.6 checks: `node tools/check_experience_v16.cjs` and `node tools/check_guided_v14.cjs`, both included in `npm test`. After building, `CAPTURE_V16=1 node tools/check_experience_v16.cjs` refreshes the bilingual lesson, category, guide, selection and reveal screenshots using isolated data. / v1.6 专项已纳入全量测试；设置截图开关可更新双语学习与牌桌图片，均使用隔离数据。

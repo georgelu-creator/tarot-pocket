@@ -4,6 +4,7 @@
   'use strict';
   const DAY = 86400000;
   const skills = ['image','meaning','recall','compare','application','reversal'];
+  const activeSkills=skills.filter(k=>k!=='compare');
   const labels = {image:'画面线索',meaning:'核心含义',recall:'独立回忆',compare:'相似辨析',application:'情境运用',reversal:'逆位理解'};
   const blank = () => ({version:1,cards:{},session:null,paused:{}});
   const clamp = (n,min,max,fallback=min) => Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback;
@@ -22,11 +23,11 @@
     if(s && valid.has(s.cardId) && Array.isArray(s.steps) && s.steps.length>0 && s.steps.length<=8 && new Set(s.steps).size===s.steps.length && s.steps.every(k=>k==='intro'||skills.includes(k)) && Number.isInteger(s.index) && s.index>=0 && s.index<=s.steps.length){
       if(!out.cards[s.cardId])throw Error('学习记录格式不正确');
       out.session={cardId:s.cardId,seed:Math.floor(clamp(s.seed,1,1e9,1)),mode:s.mode==='review'?'review':'new',topic:['love','career','study'].includes(s.topic)?s.topic:'career',position:['state','tension','advice'].includes(s.position)?s.position:'advice',steps:[...s.steps],index:s.index,startedAt:clamp(s.startedAt,0,1e14),revealed:!!s.revealed,answers:{},complete:!!s.complete && s.index===s.steps.length};
-      for(const k of s.steps){const a=s.answers?.[k];if(a && typeof a.selected==='string' && a.selected.length<30 && Number.isInteger(a.grade) && a.grade>=0 && a.grade<=5)out.session.answers[k]={selected:a.selected,grade:a.grade,correct:!!a.correct,hint:!!a.hint};}
+      for(const k of ['intro',...skills]){const a=s.answers?.[k];if(a && typeof a.selected==='string' && a.selected.length<30 && Number.isInteger(a.grade) && a.grade>=0 && a.grade<=5)out.session.answers[k]={selected:a.selected,grade:a.grade,correct:!!a.correct,hint:!!a.hint};}
       out.session.hint=!!s.hint;
       // Versioned presentation keeps already answered v1 sessions stable.
-      if([2,3,4].includes(s.playVersion)){out.session.playVersion=s.playVersion;out.session.variant=Math.floor(clamp(s.variant,0,2));}
-      if(s.playVersion===4)out.session.inspected=!!s.inspected;
+      if([2,3,4,5].includes(s.playVersion)){out.session.playVersion=s.playVersion;out.session.variant=Math.floor(clamp(s.variant,0,2));}
+      if(s.playVersion>=4)out.session.inspected=!!s.inspected;
       if(s.playVersion===3){
         out.session.inspected=!!s.inspected;
         const a=s.activity;
@@ -38,10 +39,19 @@
           if(a.pairs && typeof a.pairs==='object')for(const [id,value] of Object.entries(a.pairs))if(valid.has(id)&&valid.has(value))out.session.activity.pairs[id]=value;
         }
       }
+      // Retire the comparison task without inventing an answer. Scores and notes
+      // stay in the backup; the cursor follows the next remaining stage.
+      if(s.playVersion===4){
+        if(s.guided?.key==='compare'&&typeof s.guided.note==='string'&&s.guided.note){out.cards[s.cardId].reflections||={};out.cards[s.cardId].reflections.compare=s.guided.note.slice(0,600);}
+        if(s.steps[s.index]==='compare'){out.session.hint=false;out.session.revealed=false;}
+        out.session.index=out.session.steps.slice(0,out.session.index).filter(k=>k!=='compare').length;
+        out.session.steps=out.session.steps.filter(k=>k!=='compare');
+        out.session.playVersion=5;
+      }
       const missing=out.session.steps.findIndex((key,i)=>i<out.session.index && key!=='intro' && !out.session.answers[key]);
       if(missing>=0)out.session.index=missing;
       out.session.complete=out.session.index===out.session.steps.length;
-      if(s.playVersion===4){
+      if(s.playVersion>=4){
         const key=out.session.steps[out.session.index],a=out.session.answers[key];
         const g=out.session.guided=window.TarotGuided.validate(s.guided,key);
         // Imported progress can omit presentation state. Restore the committed
@@ -70,14 +80,14 @@
   function level(r) {
     if(!r)return '未开始';
     if(!r.rounds)return '学习中';
-    const values=Object.values(r.skills);
+    const values=activeSkills.map(k=>r.skills[k]).filter(Boolean);
     if(values.some(s=>s.grade<3))return '待巩固';
     if((r.skills.application?.passes||0)>=2 && (r.skills.recall?.passes||0)>=2 && r.skills.application.reps>=2 && r.skills.recall.reps>=2)return '持续巩固';
     if((r.skills.recall?.passes||0)>=1 && (r.skills.meaning?.passes||0)>=1)return '已回访';
     return '初步理解';
   }
   function makeStep(key,c,lesson,deck,s) {
-    if(s.playVersion===4)return window.TarotGuided.makeStep(key,c,lesson,deck,s);
+    if(s.playVersion>=4)return window.TarotGuided.makeStep(key,c,lesson,deck,s);
     const topic={love:'感情',career:'事业',study:'学业'}[s.topic];
     const context=c.contexts[s.topic];
     const visual=s.playVersion===2||s.playVersion===3,variant=s.variant||0;
@@ -109,7 +119,7 @@
     const record=id=>get().cards[id];
     const current=()=>get().session;
     const active=()=>current()&&!current().complete;
-    function due(){return order.filter(id=>record(id)?.rounds>0&&Object.values(record(id).skills).some(x=>x.due<=now())).sort((a,b)=>Math.min(...Object.values(record(a).skills).map(x=>x.due))-Math.min(...Object.values(record(b).skills).map(x=>x.due)));}
+    function due(){return order.filter(id=>record(id)?.rounds>0&&activeSkills.some(k=>record(id).skills[k]?.due<=now())).sort((a,b)=>Math.min(...activeSkills.map(k=>record(a).skills[k]?.due??Infinity))-Math.min(...activeSkills.map(k=>record(b).skills[k]?.due??Infinity)));}
     function unlearned(){return exploreOrder.filter(id=>!record(id));}
     function recommendation(exclude){return unlearned().find(id=>id!==exclude)||null;}
     function newCard(){const id=recommendation();if(id)start(id);else{toast('所有牌都已经开始学习，可以自选继续或回访。');go('library');}}
@@ -126,10 +136,10 @@
       if(data.paused[id]&&!force){data.session=data.paused[id];delete data.paused[id];set(data);go('journey');return;}
       delete data.paused[id];
       const r=record(id),review=!!r?.rounds;
-      const weak=skills.filter(k=>k!=='recall').sort((a,b)=>Number((r?.skills[b]?.grade??4)<3)-Number((r?.skills[a]?.grade??4)<3)||(r?.skills[a]?.due||0)-(r?.skills[b]?.due||0));
-      const steps=review?['recall',...weak.slice(0,3)]:['intro','image','meaning','compare','application','reversal','recall'];
+      const weak=activeSkills.filter(k=>k!=='recall').sort((a,b)=>Number((r?.skills[b]?.grade??4)<3)-Number((r?.skills[a]?.grade??4)<3)||(r?.skills[a]?.due||0)-(r?.skills[b]?.due||0));
+      const steps=review?['recall',...weak.slice(0,3)]:['intro','image','meaning','application','reversal','recall'];
       data.cards[id] ||= {introducedAt:now(),lastAt:now(),rounds:0,skills:{}};
-      data.session={cardId:id,seed:Math.floor(Math.random()*999999999)+1,playVersion:4,inspected:false,variant:(r?.rounds||0)%3,mode:review?'review':'new',topic:['career','love','study'][Math.floor(Math.random()*3)],position:['advice','tension','state'][Math.floor((r?.rounds||0)/3)%3],steps,index:0,startedAt:now(),answers:{},revealed:false,hint:false,complete:false,guided:window.TarotGuided.blank(steps[0])};
+      data.session={cardId:id,seed:Math.floor(Math.random()*999999999)+1,playVersion:5,inspected:false,variant:(r?.rounds||0)%3,mode:review?'review':'new',topic:['career','love','study'][Math.floor(Math.random()*3)],position:['advice','tension','state'][Math.floor((r?.rounds||0)/3)%3],steps,index:0,startedAt:now(),answers:{},revealed:false,hint:false,complete:false,guided:window.TarotGuided.blank(steps[0])};
       set(data);go('journey');
     }
     function ordered(options,s){return options.map((o,i)=>({o,n:Math.sin(s.seed*(i+1)+s.index*101)*10000})).sort((a,b)=>a.n-b.n).map(x=>x.o);}
@@ -152,13 +162,13 @@
       const d=get(),s=d.session;if(!s||s.complete)return;
       if(s.steps[s.index]==='intro'&&s.playVersion>=3&&!s.inspected)return;
       if(s.steps[s.index]!=='intro'&&!s.answers[s.steps[s.index]])return;
-      if(s.playVersion===4&&s.guided?.note){const r=d.cards[s.cardId];r.reflections||={};r.reflections[s.steps[s.index]]=s.guided.note;}
+      if(s.playVersion>=4&&s.guided?.note){const r=d.cards[s.cardId];r.reflections||={};r.reflections[s.steps[s.index]]=s.guided.note;}
       s.index++;s.revealed=false;s.hint=false;delete s.activity;previewPosition=null;familyFocus=null;
-      if(s.playVersion===4)s.guided=window.TarotGuided.blank(s.steps[s.index]);
+      if(s.playVersion>=4)s.guided=window.TarotGuided.blank(s.steps[s.index]);
       if(s.index===s.steps.length){s.complete=true;d.cards[s.cardId].rounds++;d.cards[s.cardId].lastAt=now();}
       set(d);go('journey');
     }
-    function progress(id){const r=record(id);return `<div class="memory-state"><span class="memory-level">${esc(level(r))}</span>${r?`<span>${skills.filter(k=>(r.skills[k]?.grade||0)>=3).length} / 6 <span>本轮有支持</span></span>`:''}</div>`;}
+    function progress(id){const r=record(id);return `<div class="memory-state"><span class="memory-level">${esc(level(r))}</span>${r?`<span>${activeSkills.filter(k=>(r.skills[k]?.grade||0)>=3).length} / 5 <span>本轮有支持</span></span>`:''}</div>`;}
     function dashboard(){const rs=Object.values(get().cards),started=rs.length,finished=rs.filter(r=>r.rounds).length,revisited=rs.filter(r=>Object.values(r.skills).some(x=>x.passes>0)).length;return `<section class="journey-dashboard"><div class="sectionhead"><h2>我的记忆足迹</h2><span class="tiny muted">${finished} / 78 <span>完成初学</span></span></div><div class="memory-counts"><div><strong>${started}</strong><span>接触过</span></div><div><strong>${revisited}</strong><span>隔天回访过</span></div><div><strong>${due().length}</strong><span>可以复习</span></div></div><p class="tiny muted">看过、自评和单次答对分别记录；隔天回访才检验是否还能想起。</p>${started?`<div class="memory-log">${order.filter(id=>record(id)).map(id=>`<button data-journey="start" data-id="${id}">${img(id)}<span><strong>${esc(deck[id].name)}</strong>${progress(id)}</span>${icon('arrow')}</button>`).join('')}</div>`:'<p class="empty">从一张牌开始，进步会留在这里。</p>'}</section>`;}
     function hero(){const id=active()?current().cardId:recommendation(),c=deck[id];if(!c)return `<section class="journey-recommend"><div><span class="eyebrow">每张都有自己的进度</span><h2>78 张牌，继续探索</h2><p>所有牌都已经开始学习，可以自选继续或回访。</p>${due().length?'<button class="primary" data-journey="review">回访到期的牌</button>':''}</div></section>`;return `<section class="journey-recommend"><div><span class="eyebrow">${active()?'接着上次':'发现一张未学过的牌'}</span><h2>${esc(c.name)}</h2><p>${active()?'你的作答已经保存，从停下的地方继续。':'这是一张你尚未开始的牌；也可以直接从下面自选。'}</p><button class="primary" data-journey="continue">${active()?'继续学习':'开始学这张'} ${icon('arrow')}</button>${active()?'<button class="linkbtn" data-journey="new">今天想学一张新的</button>':''}</div><button class="journey-hero-image" data-action="card" data-id="${id}" aria-label="查看牌的介绍">${img(id)}</button></section>`;}
     let familyFocus=null,previewPosition=null;
@@ -234,12 +244,12 @@
     function render(){
       const s=current();if(!s)return '';
       const c=deck[s.cardId],lesson=lessons[s.cardId],key=s.steps[s.index],answer=s.activity?.repair?null:s.answers[key];
-      const head=`<header class="journey-top"><button class="iconbtn" data-action="nav" data-page="home" aria-label="暂停学习">${icon('close')}</button><div><span>${esc(c.name)}</span><div class="journey-progress" role="progressbar" aria-label="本张学习进度" aria-valuenow="${s.index}" aria-valuemin="0" aria-valuemax="${s.steps.length}"><i style="width:${s.index/s.steps.length*100}%"></i></div></div><span class="tiny">${Math.min(s.index+1,s.steps.length)} / ${s.steps.length}</span></header><div class="journey-control"><button class="linkbtn" data-journey="new">换张随机牌</button><span class="tiny muted">进度会保留</span><button class="linkbtn" data-action="nav" data-page="library">自己选牌</button></div>${s.playVersion!==4&&!s.complete?'<div class="journey-upgrade"><span>这张牌有了逐步理解的新课程，原有学习记录会保留。</span><button class="secondary" data-journey="upgrade">切换新课</button></div>':''}`;
+      const head=`<header class="journey-top"><button class="iconbtn" data-action="nav" data-page="home" aria-label="暂停学习">${icon('close')}</button><div><span>${esc(c.name)}</span><div class="journey-progress" role="progressbar" aria-label="本张学习进度" aria-valuenow="${s.index}" aria-valuemin="0" aria-valuemax="${s.steps.length}"><i style="width:${s.index/s.steps.length*100}%"></i></div></div><span class="tiny">${Math.min(s.index+1,s.steps.length)} / ${s.steps.length}</span></header>${!(s.playVersion>=4)&&!s.complete?'<div class="journey-upgrade"><span>这张牌有了逐步理解的新课程，原有学习记录会保留。</span><button class="secondary" data-journey="upgrade">切换新课</button></div>':''}`;
       if(s.complete){
-        const r=record(c.id),weak=skills.filter(k=>r.skills[k]?.grade<3),dueAt=Math.min(...Object.values(r.skills).map(x=>x.due)),finished=Object.values(get().cards).filter(x=>x.rounds>0).length;
-        return `<main class="journey-shell">${head}<section class="journey-complete"><div class="journey-complete-image">${img(c.id)}</div><span class="eyebrow">${weak.length?'把差别带走，下次再遇见':'又建立了一点自己的理解'}</span><h1>${esc(c.name)}</h1><p class="memory-anchor">${esc(lesson.anchor)}</p>${progress(c.id)}${r.reflections?.recall?`<div class="guided-coach"><strong>我的记忆句</strong><p data-i18n-ignore>${esc(r.reflections.recall)}</p></div>`:''}<div class="journey-collected"><span aria-hidden="true">✦</span><strong>${finished} / 78</strong><span>已经留下学习足迹</span></div><div class="journey-skill-stamps">${s.steps.filter(k=>k!=='intro').map(k=>`<span class="${s.answers[k]?.grade>=3?'supported':'pending'}">${s.answers[k]?.grade>=3?'✓':'↺'} ${labels[k]}</span>`).join('')}</div><p>${weak.length?'下次会重点回访这些地方：':'这次表现已记录。隔一段时间，换个问法再检验。'}</p>${weak.length?`<div class="tags">${weak.map(k=>`<span class="tag">${labels[k]}</span>`).join('')}</div>`:''}<p class="tiny muted"><span>下次复习</span> · ${new Date(dueAt).toLocaleDateString(window.TAROT_I18N?.locale==='en'?'en':'zh-CN',{month:'short',day:'numeric'})}</p><div class="journey-actions"><button class="primary wide" data-journey="next-card">继续发现一张新牌 ${icon('arrow')}</button><button class="secondary wide" data-action="nav" data-page="library">自己选一张牌</button>${due().length?'<button class="secondary wide" data-journey="review">回访到期的牌</button>':''}<button class="linkbtn" data-journey="repeat">再巩固这张牌</button><button class="linkbtn" data-action="nav" data-page="home">今天先到这里</button></div></section></main>`;
+        const r=record(c.id),weak=activeSkills.filter(k=>r.skills[k]?.grade<3),dueAt=Math.min(...activeSkills.map(k=>r.skills[k]?.due??Infinity)),finished=Object.values(get().cards).filter(x=>x.rounds>0).length;
+        return `<main class="journey-shell">${head}<section class="journey-complete"><div class="journey-complete-image">${img(c.id)}</div><span class="eyebrow">${weak.length?'把差别带走，下次再遇见':'又建立了一点自己的理解'}</span><h1>${esc(c.name)}</h1><p class="memory-anchor">${esc(window.TarotGuided.cards()[c.id]?.plain?.anchor||lesson.anchor)}</p>${progress(c.id)}${r.reflections?.recall?`<div class="guided-coach"><strong>我的记忆句</strong><p data-i18n-ignore>${esc(r.reflections.recall)}</p></div>`:''}<div class="journey-collected"><span aria-hidden="true">✦</span><strong>${finished} / 78</strong><span>已经留下学习足迹</span></div><div class="journey-skill-stamps">${s.steps.filter(k=>k!=='intro').map(k=>`<span class="${s.answers[k]?.grade>=3?'supported':'pending'}">${s.answers[k]?.grade>=3?'✓':'↺'} ${labels[k]}</span>`).join('')}</div><p>${weak.length?'下次会重点回访这些地方：':'这次表现已记录。隔一段时间，换个问法再检验。'}</p>${weak.length?`<div class="tags">${weak.map(k=>`<span class="tag">${labels[k]}</span>`).join('')}</div>`:''}<p class="tiny muted"><span>下次复习</span> · ${new Date(dueAt).toLocaleDateString(window.TAROT_I18N?.locale==='en'?'en':'zh-CN',{month:'short',day:'numeric'})}</p><div class="journey-actions"><button class="primary wide" data-journey="next-card">继续发现一张新牌 ${icon('arrow')}</button><button class="secondary wide" data-action="nav" data-page="library">自己选一张牌</button>${due().length?'<button class="secondary wide" data-journey="review">回访到期的牌</button>':''}<button class="linkbtn" data-journey="repeat">再巩固这张牌</button><button class="linkbtn" data-action="nav" data-page="home">今天先到这里</button></div></section></main>`;
       }
-      if(s.playVersion===4)return window.TarotGuided.render(c,lesson,deck,s,{esc,img,icon,ordered,head,scaffold});
+      if(s.playVersion>=4)return window.TarotGuided.render(c,lesson,deck,s,{esc,img,icon,ordered,head,scaffold});
       const cardImage=`<button class="journey-image ${key==='reversal'?'is-reversed':''}" data-action="zoom" data-id="${c.id}" aria-label="放大牌面">${img(c.id)}</button>`;
       let body='',wide=false;
       if(key==='intro'&&s.playVersion===3){
@@ -271,7 +281,7 @@
       if(action==='repeat'){start(current()?.cardId,true);return;}
       if(action==='upgrade'){start(current()?.cardId,true);return;}
       const d=get(),s=d.session;if(!s||s.complete)return;
-      if(s.playVersion===4&&window.TarotGuided.handle(action,el,s,{card:deck[s.cardId],lesson:lessons[s.cardId],deck,persist:()=>set(d),refresh,save:saveAnswer}))return;
+      if(s.playVersion>=4&&window.TarotGuided.handle(action,el,s,{card:deck[s.cardId],lesson:lessons[s.cardId],deck,persist:()=>set(d),refresh,save:saveAnswer}))return;
       if(action==='next')next();
       else if(action==='inspect'&&s.playVersion===3&&s.steps[s.index]==='intro'){s.inspected=true;set(d);refresh('[data-journey=next]');}
       else if(['pick-evidence','pick-meaning','hold-meaning','match-card','check-link','retry-link'].includes(action)){handleConstruction(action,el,d,s);}
@@ -288,7 +298,7 @@
         const correct=selected===step.correct;saveAnswer(selected,correct&&!s.hint?4:2,correct);
       }
     });
-    document.addEventListener('input',event=>{if(!event.target.matches('[data-guided-note]'))return;const d=get(),s=d.session;if(s?.playVersion===4&&!s.complete){s.guided||=window.TarotGuided.blank(s.steps[s.index]);s.guided.note=event.target.value.slice(0,600);set(d);}});
+    document.addEventListener('input',event=>{if(!event.target.matches('[data-guided-note]'))return;const d=get(),s=d.session;if(s?.playVersion>=4&&!s.complete){s.guided||=window.TarotGuided.blank(s.steps[s.index]);s.guided.note=event.target.value.slice(0,600);set(d);}});
     return {start,new:newCard,review,unlearned,render,hero,dashboard,progress,scaffold,record,due,active,recommendation,level:id=>level(record(id)),lesson:id=>lessons[id]};
   }
   window.TarotJourney={blank,validate,rate,level,makeStep,skills,labels,create};

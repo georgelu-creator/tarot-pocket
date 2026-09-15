@@ -472,3 +472,6 @@ html[lang="zh-CN"] .eyebrow{letter-spacing:0}
  .bottomnav,.language-toggle,.primary,.secondary,.option{border:1px solid ButtonText}
  .navitem.active{outline:2px solid Highlight}
 }
+
+/* Leave real scrolling room above mobile browser chrome. */
+.shell{padding-bottom:max(130px,calc(env(safe-area-inset-bottom) + 100px))}.bottomnav{transition:transform 220ms ease-out,opacity 220ms ease-out;background:var(--paper)}body.nav-away .bottomnav:not(:focus-within){transform:translateY(calc(100% + 32px));opacity:0;pointer-events:none}@media(prefers-reduced-motion:reduce){.bottomnav{transition:none}}

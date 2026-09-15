@@ -2,7 +2,11 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.4.0 · 本版实现
+## Implemented in v1.6.0 · 当前版本
+
+Fixed six-stage lessons, rewritten 78-card learning copy, category-aware readings, open three-card draw, one-tap full-deck overview and whole-group reveal. [Current experience contract](EXPERIENCE_V1_6.md) supersedes older forced comparison, candidate-confirmation and seven-stage descriptions. / 固定六阶段、重写 78 张学习文案、语境贯穿、自由三张、整副单击选牌和整组翻牌；新体验约定取代旧版强制比较、候选确认和七阶段描述。
+
+## Previous v1.4.0 checkpoint · 前版记录
 
 Random new learning is separate from resume. All 78 cards now have authored causal and contextual-reversal questions, open teach-back, same-question position changes and hidden-cue recall. The compact spread guide and visible AI connection form reduce navigation. See [v1.4 experience](EXPERIENCE_V1_4.md).
 

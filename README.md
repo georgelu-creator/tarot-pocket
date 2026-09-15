@@ -4,20 +4,20 @@
 
 A bilingual, image-first tarot learning companion. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
 
-[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
+[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.6.0/tarot-pocket-v1.6.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
 
 ![Tarot Pocket — practice, remember, and read](docs/images/hero.png)
 
-![v1.5.4](https://img.shields.io/badge/release-v1.5.4-60465C)
+![v1.6.0](https://img.shields.io/badge/release-v1.6.0-60465C)
 ![Languages](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
 [![Code license](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
 [![Content license](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
 
-v1.5.4 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. The hosted app uses one 8-character invitation entrance; after entry, AI readings connect automatically and center the user's actual question.
+v1.6.0 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. The hosted app uses one 8-character invitation entrance; after entry, AI readings connect automatically and center the user's actual question.
 
 **Used an earlier version?** Open [Update while keeping records](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en), download the verified update, then choose to enter it. Do not clear site data.
 
-The reading table aligns the Home cards and visibly spreads, mixes and gathers the deck. Swipe through the full deck, tap to lift a card, then confirm its place. While an AI reading is pending, gentle motion and rotating observation tips accompany the wait; after 25 seconds a longer-wait message appears. Cancel remains available and replies appear immediately. [Watch the shuffle and selection recording (1.5.2)](docs/images/ritual-v152.webm).
+This release focuses both core flows: fixed six-stage lessons with rewritten card-specific wording; all 78 backs in one continuous overview, immediate one-tap picks, and one action to reveal the group. Reversals are included by default. The selected category reaches AI, which answers the specific outcome with evidence first. Shuffle rituals and guided AI waits remain. [Experience and acceptance contract](docs/EXPERIENCE_V1_6.md).
 
 ## A moment for today
 
@@ -31,28 +31,28 @@ A keyword flashcard might say “Four of Pentacles = holding on.” Tarot Pocket
 
 Questions with explicit criteria explain why the selected answer is wrong. For open position readings, form your own sentence before checking the reference and self-assessing. Final recall hides the picture and card-specific cues; requesting a cue records assisted recall.
 
-Tap **Random new card** on Home to prioritize cards not yet started; **Resume** remains separate, or choose any card in **Learn**. Each card has seven stages: observation, reasoning, understanding, distinction, position changes, contextual reversals, and reconstruction. Continue directly to the next card, or pause and return. Switching cards preserves each unfinished place.
+Tap **Random new card** on Home to prioritize cards not yet started; **Resume** remains separate, or choose any card in **Learn**. Each card has six stages: observe, interpret, remember, apply, understand reversals, and recall. The card keeps a consistent position and size. First lessons require no unfamiliar-card comparison or written reflection. Choose what to learn next at completion; exiting preserves progress.
 
-<img src="docs/images/practice-v152-en.png" width="390" alt="Practice: look closely, make a judgment, and find evidence">
+<img src="docs/images/practice-v16-en.png" width="390" alt="Practice: look closely, make a judgment, and find evidence">
 
 ## What you can do now
 
 | Experience | Current version |
 | --- | --- |
 | Learn from real artwork | 78 historical Rider–Waite–Smith cards from one Pam-A scan set, with individual sources and checksums |
-| Practice beyond recognition | 78 seven-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
-| Build a mental framework | Elements, numbers, visual evidence, similar-card distinctions, position changes, and contextual reversals |
-| Learn how spreads work | 7 sourced spread structures and a daily draw, with compact guides and exact position definitions |
+| Practice beyond recognition | 78 six-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
+| Build a mental framework | Elements, numbers, visual evidence, same-card position changes, and contextual reversals |
+| Learn how spreads work | 7 sourced spread structures, an open three-card mode and a daily draw, with compact guides and exact position definitions |
 | Change the question | Love, career, and study contexts; the same card can play different roles |
-| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, cut the deck, swipe to browse and pick without replacement, reveal cards, and optionally include reversals |
-| Review by performance | Six skills follow SM-2 intervals; immediate retries do not count as delayed recall |
+| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, cut the deck, browse a continuous overview, tap once to pick without replacement, and reveal the group; reversals are included by default |
+| Review by performance | Five current skills follow SM-2 intervals; historical distinction records remain; immediate retries do not count as delayed recall |
 | Keep your place | Local progress, a resumable card table, up to 40 saved readings, and JSON export/import |
 | Switch language | English and Simplified Chinese interface and learning content |
 
 Browse **love, work, study, life, self-reflection and choices**. Each spread displays its layout and every position before shuffling, cutting and drawing. A separate **daily tarot draw** keeps the same card when revisited that day.
 
-<img src="docs/images/reading-guide-v152-en.png" width="390" alt="Reading: review visual spread scope before entering your own question">
-<img src="docs/images/ritual-select-v152-en.png" width="280" alt="Lift a candidate and confirm / 大牌背候选与确认"><img src="docs/images/dossier-v152-en.png" width="280" alt="Illustrated card handbook / 图文单牌手册">
+<img src="docs/images/reading-guide-v16-en.png" width="390" alt="Reading: review visual spread scope before entering your own question">
+<img src="docs/images/ritual-select-v16-en.png" width="280" alt="Tap once to select from all 78 backs / 78 张连续牌背，单击入位"><img src="docs/images/dossier-v152-en.png" width="280" alt="Illustrated card handbook / 图文单牌手册">
 <img src="docs/images/ai-wait-v152-en.png" width="280" alt="Guided waiting while an AI reply is pending">
 
 
@@ -66,15 +66,15 @@ The recommended phone entry is the public website:
 3. In Safari’s Share menu, choose **Add to Home Screen**. Open the installed site and check its offline status again.
 4. Before travel, test airplane mode, closing/reopening, an unfamiliar card, and saved progress on the actual phone.
 
-Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.5.4/tarot-pocket-v1.5.4.html) remains available for browsers that support local JavaScript.
+Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.6.0/tarot-pocket-v1.6.0.html) remains available for browsers that support local JavaScript.
 
 **Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Learning and drawing need no account, external fonts or analytics. Optional AI interpretation sends only the current question and drawn cards to the configured service after an explicit request; provider keys remain server-side. See [AI service](docs/AI_SERVICE.md).
 
 ## Capabilities and limits
 
-- All 78 cards have authored visual mnemonics, near-card distinctions, and three plausible distractors within a complete shared learning flow.
+- All 78 cards have authored visual mnemonics, plain explanations, and three distinguishable choices within a complete shared learning flow.
 - Records distinguish encounters, first lessons, self-ratings, objective application, and delayed reviews. Marking a card read never means mastery.
-- Six skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
+- Five current skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
 - Offline references are labeled as basic references. The optional DeepSeek/OpenAI service analyzes the written question and the whole spread; saved answers remain available offline. Quizzes do not interrupt readings. See [spread sources](docs/SPREAD_SOURCES.md).
 - Content and translations still need independent tarot-teacher review. Automated checks do not replace expert review, physical iPhone tests, phone-restart tests, or extended offline travel. See [Handoff](docs/HANDOFF.md) for exact evidence.
 - This release is an installable mobile website, not a native App Store application.
