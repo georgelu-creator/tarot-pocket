@@ -15,10 +15,26 @@ window.TarotReadingAI = (() => {
   function action(s){
     return `<div class="ai-action"><div class="ai-question"><small>本次重点回应</small><p>${esc(s.questionText||'这组牌呈现的主要方向')}</p></div><button type="button" class="primary wide" data-reading="ai-request" ${navigator.onLine?'':'disabled'}>生成完整解读</button><p class="ai-disclosure">点击后，仅将这次的问题、牌阵、牌位与正逆位发送给解读服务。学习记录不会发送。</p></div>`;
   }
+  const waitingTips=[
+    '先看整组牌：哪张牌最先吸引了你的目光？',
+    '把问题放回心里：你最希望这次解读澄清什么？',
+    '留意人物的朝向：他们像在靠近、停留，还是离开？',
+    '先保留你的第一感受，等解读回来再一起对照。'
+  ];
+  function waiting(s){
+    const elapsed=Date.now()-pending.startedAt,index=Math.floor(elapsed/6000)%waitingTips.length;
+    return `<div class="ai-waiting" aria-busy="true"><div class="ai-waiting-orbit" aria-hidden="true"><span class="reading-back"></span><span class="reading-back"></span><span class="reading-back"></span><i>✦</i></div><p class="ai-status" role="status">正在结合你的问题、牌位与整组牌解读…</p><div class="ai-waiting-tip"><small>等待时，看看你的牌</small><p data-ai-wait-tip>${esc(waitingTips[index])}</p></div><p class="ai-waiting-long" data-ai-wait-long ${elapsed<25000?'hidden':''}>这次解读还在等待回复。你可以继续看牌，也可以取消等待；牌阵会保留。</p><button class="secondary" data-reading="ai-cancel">取消等待</button></div>`;
+  }
+  function updateWaiting(job){
+    if(pending!==job)return;
+    const elapsed=Date.now()-job.startedAt,tip=document.querySelector('[data-ai-wait-tip]'),long=document.querySelector('[data-ai-wait-long]');
+    if(tip){const index=Math.floor(elapsed/6000)%waitingTips.length;if(tip.dataset.tipIndex!==String(index)){tip.dataset.tipIndex=String(index);tip.textContent=waitingTips[index];}}
+    if(long)long.hidden=elapsed<25000;
+  }
   function render(s){
     if(lastReading!==s.id){lastReading=s.id;error='';}
     const saved=s.ai?.find(x=>x.language===locale()),working=pending?.id===s.id;
-    return `<section class="reading-ai" data-reading-ai><div class="eyebrow">WHOLE-SPREAD READING</div><h2>${saved?'你的整组解读':'看懂这组牌的主线'}</h2>${saved?`<div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p>`:working?'<p class="ai-status" role="status">正在结合你的问题、牌位与整组牌解读…</p><button class="secondary" data-reading="ai-cancel">取消等待</button>':endpoint()?`<p>从你的具体问题出发，连接每个牌位与正逆位，形成一条完整主线。</p>${action(s)}`:`<p class="ai-status">${window.TAROT_STANDALONE?'这是独立离线文件。联网 AI 解读请打开网页版；已保存的解读可在这里阅读。':'AI 服务尚未连接；连接后可在这里生成整组解读。'}</p>`}${!navigator.onLine?'<p class="ai-status">当前离线。已保存的解读仍可阅读；新解读需要联网。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p>`:''}</section>`;
+    return `<section class="reading-ai" data-reading-ai><div class="eyebrow">WHOLE-SPREAD READING</div><h2>${saved?'你的整组解读':'看懂这组牌的主线'}</h2>${saved?`<div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p>`:working?waiting(s):endpoint()?`<p>从你的具体问题出发，连接每个牌位与正逆位，形成一条完整主线。</p>${action(s)}`:`<p class="ai-status">${window.TAROT_STANDALONE?'这是独立离线文件。联网 AI 解读请打开网页版；已保存的解读可在这里阅读。':'AI 服务尚未连接；连接后可在这里生成整组解读。'}</p>`}${!navigator.onLine?'<p class="ai-status">当前离线。已保存的解读仍可阅读；新解读需要联网。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p>`:''}</section>`;
   }
   function patch(s){const el=document.querySelector('[data-reading-ai]');if(el){const h=document.createElement('div');h.innerHTML=render(s);el.replaceWith(h.firstElementChild);}}
   async function request(s,save,current){
@@ -26,7 +42,7 @@ window.TarotReadingAI = (() => {
     const language=locale();if(s.ai?.some(x=>x.language===language))return;
     const session=window.TarotAccess?.token?.();if(!session){window.TarotAccess?.clear();return;}
     let url;try{url=new URL(endpoint(),location.href);if(url.protocol!=='https:'&&!(url.origin===location.origin&&['localhost','127.0.0.1'].includes(url.hostname)))throw Error();if(url.username||url.password||url.hash||url.search)throw Error();}catch(_){error='NOT_CONFIGURED';patch(s);return;}
-    const controller=new AbortController(),job={id:s.id,controller};pending=job;error='';patch(s);
+    const controller=new AbortController(),job={id:s.id,controller,startedAt:Date.now()};pending=job;error='';patch(s);job.tipTimer=setInterval(()=>updateWaiting(job),1000);
     const timeout=setTimeout(()=>{job.timeout=true;controller.abort();},125000);
     try{
       const body={spreadId:s.spreadId,question:s.questionText||'',language,cards:s.picked.map(i=>({id:s.pool[i].id,reversed:s.pool[i].reversed})),...(s.optionA?{optionA:s.optionA}:{}),...(s.optionB?{optionB:s.optionB}:{})};
@@ -38,8 +54,8 @@ window.TarotReadingAI = (() => {
       let answer;try{answer=clean([{language,text:result.text,model:result.model,provider:result.provider,at:Date.now()}])[0];}catch(_){throw Error('UPSTREAM_ERROR');}
       if(!job.cancelled)save(s.id,answer);
     }catch(e){if(!job.cancelled){error=job.timeout?'TIMEOUT':Object.hasOwn(messages,e.message)?e.message:'UNAVAILABLE';if(error==='AUTH_REQUIRED')window.TarotAccess?.clear();}}
-    finally{clearTimeout(timeout);if(pending===job)pending=null;const visible=current();if(visible?.id===s.id)patch(visible);}
+    finally{clearTimeout(timeout);clearInterval(job.tipTimer);if(pending===job)pending=null;const visible=current();if(visible?.id===s.id)patch(visible);}
   }
-  window.addEventListener('pagehide',()=>{if(pending){pending.cancelled=true;pending.controller.abort();}});
-  return {render,clean,request,cancel(s){if(pending){pending.cancelled=true;pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
+  window.addEventListener('pagehide',()=>{if(pending){pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();}});
+  return {render,clean,request,cancel(s){if(pending){pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
 })();

@@ -120,3 +120,13 @@ Home has Learn/Draw only; Learn starts the saved or recommended card directly. R
 The explicitly requested daily tarot and reading ritual follow [EXPERIENCE_V1_1.md](../EXPERIENCE_V1_1.md). Scenario-first thumbnails are authored layouts, not copied reference screenshots. Shuffle/cut/fan/flip transforms express real state changes; fast distinct taps are accepted and duplicate outcomes prevented by state, not hidden timing gates. Card references retain their sheet, scroll, open sections and current saved-state labels.
 
 用户明确要求的日运与抽牌仪式按新版体验合同执行。缩略图原创，场景前置；动画表达真实状态变化，快速点击不同牌仍响应，用状态防重复，不用隐藏时间锁吞操作。单牌资料保留原位与展开状态，返回时同步最新收藏状态。
+
+## v1.5.2 interaction alignment / 交互一致性
+
+- Home primary cards share artwork, copy and arrow rows; optional learning shortcuts stay outside those cards. / 首页主卡片共用插图、文案与箭头行，学习辅助入口独立放置。
+- Keep frequent actions immediate: native horizontal scrolling browses all 78 backs, a tap lifts a candidate, and explicit confirmation places it. Preserve the scroll surface, keyboard controls and already-placed cards; only the newly placed card animates. / 高频操作立即响应：横滑浏览整副牌、轻点抬起、确认入位；滚动区域、键盘焦点与已入位牌保持稳定，只有新入位牌播放动效。
+- Give observation time to the shuffle: 6.8 seconds of spreading, scattering, crossing and gathering, then explicit continue. Skip and reduced motion preserve the same shuffled pool. / 洗牌保留 6.8 秒摊开、打散交错与收拢的观看时间，再由用户继续；跳过与减少动态不改变牌序。
+- Waiting for AI uses quiet card motion and six-second observation tips, with a longer-wait explanation after 25 seconds. These are invitations to observe, never a model progress indicator or fabricated reasoning. A response appears immediately, with cancellation available while pending. / AI 等待以轻柔动效和每 6 秒轮换的观察提示引导，25 秒后说明仍在等候；提示不代表模型进度或思考过程，答案返回即显示，可取消等待。
+- The existing lesson feedback, card-reference return position and reading/learning separation remain. Disabled controls do not give press animation; reduced motion also applies to legacy lesson scrolling. / 保留学习反馈、单牌资料返回位置和学牌／解牌分离；禁用控件不播放按压动效，旧课滚动也遵守减少动态设置。
+
+Current, isolated interface captures: [Home](../images/home-desktop-v152-zh.png), [swipe selection](../images/ritual-select-v152-zh.png), [waiting UI](../images/ai-wait-v152-zh.png), [recording](../images/ritual-v152.webm). Waiting captures use a held local mock response and show no synthetic answer. These assets demonstrate the UI, not live AI quality or physical-iPhone acceptance. / 展示素材均来自隔离状态的实际页面；等待截图使用本地延迟模拟响应且不展示模拟答案，不作为线上解读质量或 iPhone 实机验收证据。
