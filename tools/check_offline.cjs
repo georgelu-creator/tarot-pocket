@@ -10,13 +10,14 @@ assert.equal(release.assets.filter(a=>a.path.startsWith('assets/cards/')).length
 for(const asset of release.assets)assert.equal(hash(fs.readFileSync(path.join(web,asset.path))),asset.sha256,'release hashes match published bytes: '+asset.path);
 const manifest=JSON.parse(fs.readFileSync(path.join(web,'manifest.webmanifest')));
 assert.equal(manifest.scope,'./');assert.equal(manifest.display,'standalone');assert(manifest.start_url.startsWith('./'));
-let mode='healthy',update=null,requests=[];
+let mode='healthy',update=null,requests=[],lifecycleRequests=[];
 const types={'.js':'text/javascript','.html':'text/html','.css':'text/css','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'};
 const server=http.createServer((req,res)=>{
   const url=new URL(req.url,'http://localhost');requests.push(url.pathname);
   if(mode==='offline'){req.socket.destroy();return;}
   if(!url.pathname.startsWith('/tarot-pocket/')){res.writeHead(404);res.end();return;}
   const name=url.pathname.slice('/tarot-pocket/'.length)||'index.html';
+  if(['sw.js','index.html','assets/cards/m03.webp'].includes(name))lifecycleRequests.push({at:Date.now(),name,mode,update:!!update,destination:req.headers['sec-fetch-dest']||''});
   if(name.includes('..')||!fs.existsSync(path.join(web,name))){res.writeHead(404);res.end();return;}
   res.setHeader('Content-Type',types[path.extname(name)]||'application/octet-stream');res.setHeader('Cache-Control','no-store');
   if(mode==='interrupt'&&name==='assets/cards/m03.webp'){res.writeHead(503);res.end('interrupted');return;}
@@ -32,6 +33,15 @@ async function browserCheck(type,name,updates){
   const browser=await type.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});
   try{
     const context=await browser.newContext({viewport:{width:390,height:844}});
+    await context.addInitScript(()=>{
+      window.__offlineLifecycle=[];
+      if(!('serviceWorker' in navigator))return;
+      const record=event=>window.__offlineLifecycle.push({at:Date.now(),...event});
+      const seen=new WeakSet(),watch=worker=>{if(!worker||seen.has(worker))return;seen.add(worker);record({event:'worker',state:worker.state,url:worker.scriptURL});worker.addEventListener('statechange',()=>record({event:'statechange',state:worker.state,url:worker.scriptURL}));};
+      navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type==='TAROT_OFFLINE'&&e.data.phase!=='downloading')record({event:'message',revision:e.data.revision,phase:e.data.phase,error:e.data.error,sourceState:e.source?.state});});
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{record({event:'controllerchange'});watch(navigator.serviceWorker.controller);});
+      navigator.serviceWorker.getRegistration().then(reg=>{if(!reg)return;watch(reg.active);watch(reg.installing);watch(reg.waiting);reg.addEventListener('updatefound',()=>{record({event:'updatefound'});watch(reg.installing);});});
+    });
     await context.addInitScript(()=>sessionStorage.setItem('tarot-pocket-session-v1',JSON.stringify({token:'tp1.'+'o'.repeat(80),expiresAt:Date.now()+3600000})));
     const page=await context.newPage(),origin=`http://127.0.0.1:${server.address().port}`,url=origin+'/tarot-pocket/?lang=zh';
     const external=[],errors=[];page.on('request',request=>{if(!request.url().startsWith(origin)&&/^https?:/.test(request.url()))external.push(request.url());});page.on('pageerror',error=>errors.push(error.message));
@@ -79,7 +89,13 @@ async function browserCheck(type,name,updates){
       assert.equal(failedUpdate,'redundant','mismatched release is rejected during installation');
       assert.equal((await reopened.evaluate(()=>window.TarotOffline.check())).ready,true,'failed update leaves the complete previous release usable');
       assert.equal(await reopened.evaluate(()=>navigator.serviceWorker.controller.scriptURL),originalController);
-      assert.deepEqual(await reopened.evaluate(async p=>(await caches.keys()).filter(k=>k.startsWith(p)),prefix),[prefix+release.revision],'failed revision does not leave a partial cache');
+      const remainingKeys=await reopened.evaluate(async p=>(await caches.keys()).filter(k=>k.startsWith(p)),prefix);
+      if(remainingKeys.length!==1||remainingKeys[0]!==prefix+release.revision){
+        const session=await context.newCDPSession(reopened),inventory=[];
+        try{for(const cache of (await session.send('CacheStorage.requestCacheNames',{securityOrigin:origin})).caches){const entries=await session.send('CacheStorage.requestEntries',{cacheId:cache.cacheId,pageSize:150});inventory.push({name:cache.cacheName,count:entries.returnCount,paths:entries.cacheDataEntries.map(e=>new URL(e.requestURL).pathname)});}}catch(error){inventory.push({diagnosticError:error.message});}finally{await session.detach();}
+        console.error('Offline failed-update lifecycle diagnostic',JSON.stringify({remainingKeys,inventory,requests:lifecycleRequests.slice(-40),page:await reopened.evaluate(async()=>({events:window.__offlineLifecycle,state:window.TarotOffline.state,registration:await navigator.serviceWorker.getRegistration().then(r=>({active:r?.active?.state,installing:r?.installing?.state,waiting:r?.waiting?.state}))}))}));
+      }
+      assert.deepEqual(remainingKeys,[prefix+release.revision],'failed revision does not leave a partial cache');
       mode='healthy';update.worker+='\n// Retry after interrupted publication.\n';
       await reopened.evaluate(async()=>{const reg=await navigator.serviceWorker.getRegistration();await reg.update();});
       await poll(()=>reopened.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration()).waiting));
