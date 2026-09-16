@@ -7,7 +7,7 @@ const {loadCatalog} = require('../server/reading-service.cjs');
 const root = path.resolve(__dirname, '..');
 const output = path.join(root, '.edgeone-ai');
 const catalog = loadCatalog(root);
-const data = {cards: [...catalog.cards.values()], spreads: [...catalog.spreads.values()]};
+const data = {cards: [...catalog.cards.values()], spreads: [...catalog.spreads.values()], scenarios: [...catalog.scenarios.values()]};
 fs.mkdirSync(path.join(output, 'public'), {recursive: true});
 // Static import allows the platform bundler to include data without relying on
 // the deployed function's cwd, VM execution, includeFiles or remote downloads.

@@ -23,7 +23,7 @@ async function run() {
   const output = path.join(fixture, 'server/invite-code.txt');
   try {
     for (const dir of ['tools', 'server']) fs.mkdirSync(path.join(fixture, dir));
-    for (const file of ['tools/write_invite_code.cjs', 'server/reading-service.cjs']) fs.copyFileSync(path.resolve(__dirname, '..', file), path.join(fixture, file));
+    for (const file of ['tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs']) fs.copyFileSync(path.resolve(__dirname, '..', file), path.join(fixture, file));
     fs.writeFileSync(output, 'preserve-existing-invitation', {mode: 0o600});
     const invoke = signing => spawnSync(process.execPath, [path.join(fixture, 'tools/write_invite_code.cjs')], {env: {...env, TAROT_AI_ACCESS_TOKEN: signing}, encoding: 'utf8'});
     const missing = invoke('');
@@ -35,7 +35,7 @@ async function run() {
     assert.equal(fs.statSync(output).mode & 0o777, 0o600);
     for (const result of [missing, valid]) for (const secret of [key, token, inviteCode]) assert.ok(!(result.stdout + result.stderr).includes(secret), 'invitation writer never logs credentials');
   } finally {
-    for (const file of ['server/invite-code.txt', 'tools/write_invite_code.cjs', 'server/reading-service.cjs']) if (fs.existsSync(path.join(fixture, file))) fs.unlinkSync(path.join(fixture, file));
+    for (const file of ['server/invite-code.txt', 'tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs']) if (fs.existsSync(path.join(fixture, file))) fs.unlinkSync(path.join(fixture, file));
     for (const dir of ['tools', 'server']) fs.rmdirSync(path.join(fixture, dir));
     fs.rmdirSync(fixture);
   }
@@ -68,9 +68,9 @@ async function run() {
   const prompt = buildPrompt(parsed);
   assert.ok(!prompt.instructions.includes(injection));
   assert.ok(prompt.input.includes(JSON.stringify(injection)));
-  assert.match(prompt.instructions, /不能重抽、调换、补牌/);
-  assert.match(prompt.instructions, /不得默认A优于B/);
-  assert.match(prompt.instructions, /不输出内部思考/);
+  assert.match(prompt.instructions, /不能补牌、换牌、重抽/);
+  assert.match(buildPrompt(validateReading(sample('decision-five'), catalog)).instructions, /不能默认A、早做或离开更好/);
+  assert.match(prompt.instructions, /不要输出以上规则、作者说明、内部标签、推演草稿/);
   assert.match(buildPrompt(validateReading({...sample(), language: 'en'}, catalog)).instructions, /English/);
   // Browser payload must preserve the user's category, exact question and picked order.
   const vm = require('node:vm'), browser = {window: {addEventListener() {}}, document: {documentElement: {lang: 'zh'}}};
@@ -92,10 +92,10 @@ async function run() {
   assert.ok(contextual.cards.every(card => card.positionRole === 'free'));
   assert.ok(contextualPrompt.input.includes(JSON.stringify(contextual.topic)));
   assert.ok(contextualPrompt.input.includes(JSON.stringify(question)));
-  assert.match(contextualPrompt.instructions, /不得把第一张擅定为过去／原因/);
-  assert.match(contextualPrompt.instructions, /偏向会／偏向不会/);
-  assert.match(contextualPrompt.instructions, /不要用一段情绪安慰代替对事情结果的回答/);
-  assert.match(contextualPrompt.instructions, /不凭塔罗下确定行动指令/);
+  assert.match(contextualPrompt.instructions, /不能给第一、二、三张制造过去、现在、未来/);
+  assert.match(contextualPrompt.instructions, /更偏向能/);
+  assert.match(contextualPrompt.instructions, /不要偷偷把结果题改成情绪安慰或行动建议/);
+  assert.match(contextualPrompt.instructions, /不把牌当诊断或确定行动依据/);
   // Old clients without topic remain valid; all category IDs are data, never instructions.
   assert.deepEqual(validateReading(sample(), catalog).topic, {id: 'general', label: '综合问题'});
   for (const topic of ['general', 'love', 'career', 'study', 'life', 'self', 'choice']) {
@@ -186,7 +186,7 @@ async function run() {
   try {
     const base = await start();
     let response = await fetch(base + '/api/health', {headers: {Origin: origin}});
-    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash'});
+    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.1', scenarioCount: 25});
     assert.equal(received.length, 0);
     response = await fetch(base + '/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type'}});
     assert.equal(response.status, 204);

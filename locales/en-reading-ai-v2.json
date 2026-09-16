@@ -1,0 +1,10 @@
+{
+  "AI 无法解读这次问题。牌阵已保留，可以修改问题后重试。": "AI could not read this question. Your cards are kept; you can edit the question and retry.",
+  "请求已发送，正在等待回复…": "Request sent. Waiting for a reply…",
+  "这次解读": "This reading",
+  "这次的问题和牌面已发送，正在等待解读回复。": "Your question and cards have been sent. Waiting for the reading to return.",
+  "你的牌阵已经保留，取消等待也不会重新抽牌。": "Your cards are kept. Cancelling the wait will not draw new cards.",
+  "回复会结合这次的问题、牌位和正逆位。": "The reply will use your question, positions and card orientations.",
+  "解读完成后会随这组牌保存，稍后也能回来查看。": "The completed reading will be saved with these cards so you can revisit it.",
+  "十张牌从现状、交叉影响、目标、基础、过去、近期发展、自身、环境、期望与担忧、结果趋势展开。适合背景复杂且有具体问题时使用。先看核心问题，再结合内外条件解读整体走向；不必为了张数多而选它。": "Ten cards cover the situation, crossing influence, aim, foundation, past, near future, self, environment, hopes and fears, and outcome. Use it for a specific complex question, connecting the central situation to internal and external influences rather than choosing it for its size."
+}

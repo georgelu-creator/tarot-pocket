@@ -1,126 +1,34 @@
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const vm = require('node:vm');
-const {chromium} = require('playwright');
-const path = require('node:path');
-const root = path.resolve(__dirname, '..');
-const model = {window:{}};
-vm.runInNewContext(fs.readFileSync(path.join(root,'content.js'),'utf8'),model);
-const data = model.window.TAROT_CONTENT;
-assert.equal(data.cards.length,12);
-assert.equal(data.questions.length,24);
-assert.equal(new Set(data.cards.map(c=>c.id)).size,12);
-assert.equal(new Set(data.questions.map(q=>q.id)).size,24);
-for(const q of data.questions){
-  assert(data.cards.some(c=>c.id===q.cardId));
-  assert.equal(q.options.length,4);
-  assert.equal(new Set(q.options.map(o=>o.id)).size,4);
-  assert(q.options.some(o=>o.id===q.correct));
-  assert(q.options.every(o=>o.reason && o.text));
-}
-const url=process.env.DEMO_URL || 'http://127.0.0.1:8765/tarot-demo.html';
-const key='tarot-pocket-demo-v1';
-const state=page=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
-const widthCheck=async page=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'page overflows viewport');
-(async()=>{
- const browser=await chromium.launch(require('./browser_options.cjs'));
- const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,acceptDownloads:true});
- const page=await context.newPage();
- page.setDefaultTimeout(90000);page.setDefaultNavigationTimeout(120000);
- const errors=[];const external=[];
- page.on('pageerror',e=>errors.push(e.message));
- page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
- page.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(new URL(url).origin))external.push(r.url());});
- await page.goto(url);
- await page.evaluate(async()=>Promise.all([...document.images].map(x=>x.decode())));
- await widthCheck(page);
- assert.deepEqual(await page.locator('.navitem').allTextContents(),['首页','学牌','抽牌']);
- assert.equal(await page.locator('[data-home-choice]').count(),2,'home exposes only learn and draw decisions');
- await page.screenshot({path:'/tmp/tarot-demo-home-mobile.png',fullPage:true});
- await page.locator('[data-action=status]').first().click();
- await page.getByText('78 / 78',{exact:true}).waitFor();
- await page.locator('#overlay [data-action=close]').click();
- await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();
- await page.locator('[data-action=filter][data-value=全部]').click();
- assert.equal(await page.locator('.library-card').count(),78);
- assert.equal(await page.locator('[data-action=knowledge]').count(),4);
- if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();
- await page.locator('.learning-progress [data-action=start]').click();
- await page.locator('button.primary[data-action=draw]').click();
- if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
- await page.screenshot({path:'/tmp/tarot-demo-quiz-mobile.png',fullPage:true});
- let s=await state(page);const q=data.questions.find(q=>q.id===s.session.ids[0]);
- await page.locator(`[data-action=answer][data-value="${q.correct}"]`).click();
- assert.match(await page.locator('.feedbacktitle').innerText(),/答对了/);
- assert.equal((await state(page)).history.length,1);
- await page.locator('[data-action=confidence][data-value=sure]').click();
- s=await state(page);assert.equal(s.history[0].confidence,'sure');
- assert.equal(s.schedules[q.id]-s.history[0].at,3*86400000);
- const order=JSON.stringify(s.session.order);
- await page.reload();
- await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.learning-progress [data-action=resume]').click();
- assert.equal(JSON.stringify((await state(page)).session.order),order);
- assert.equal(await page.locator('[data-action=answer]:disabled').count(),4);
- assert.equal((await state(page)).history.length,1);
- await page.screenshot({path:'/tmp/tarot-demo-feedback-mobile.png',fullPage:true});
- for(let i=1;i<6;i++){
-   await page.locator('[data-action=next]').click();
-   if(i===1){await page.locator('[data-action=hint]').click();assert(await page.locator('.hint').count());}
-   await page.locator('[data-action=unknown]').click();
- }
- await page.locator('[data-action=next]').click();
- await page.getByRole('heading',{name:'又多懂了一点。'}).waitFor();
- assert.equal((await state(page)).history.length,6);
- await page.locator('.complete [data-action=nav][data-page=library]').click();
- await page.locator('[data-action=library-view][data-value=cards]').click();await page.locator('[data-action=filter][data-value=全部]').click();
- assert.equal(await page.locator('.library-card').count(),78);
- // Load off-screen lazy images before checking the entire 78-card asset set.
- await page.locator('.library-card img').evaluateAll(async images=>{
-   for(const image of images)image.loading='eager';
-   await Promise.all(images.map(image=>image.decode()));
- });
- assert(await page.locator('.library-card img').evaluateAll(xs=>xs.every(x=>x.naturalWidth>100)));
- await page.locator('.library-card[data-id=p04]').click();
- await page.locator('[data-action=face][data-value=reversed]').click();
- assert.equal(await page.locator('#overlay .reversed-img').count(),1);
- await page.locator('[data-action=detail-position][data-value=advice]').click();
- await page.locator('#overlay details').filter({has:page.locator('[data-action=learn-card]')}).locator('summary').click();await page.locator('[data-action=learn-card]').click();
- assert((await state(page)).viewed.includes('p04'));
- await page.locator('[data-action=save]').click();
- assert((await state(page)).saved.includes('p04'));
- await page.locator('#overlay [data-action=zoom]').click();
- await page.locator('#overlay [data-action=close]').click();
- assert.equal(await page.locator('#overlay [data-action=save]').count(),1,'zoom should return to details');
- if(!(await page.locator('#overlay details[open]').filter({has:page.locator('[data-action=card-practice]')}).count()))await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('#overlay [data-action=card-practice]').click();
- const practiced='p04';await page.locator('button.primary[data-action=draw]').click();if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();
- while((await state(page)).session.phase!=='complete'){const current=await state(page);const live=data.questions.find(x=>x.id===current.session.ids[current.session.index]);await page.locator(`[data-action=answer][data-value="${live.correct}"]`).click();await page.locator('[data-action=next]').click();}
- assert.equal(await page.locator('[data-action=next-card]').count(),1,'card lesson completion offers the next card immediately');
- await page.locator('[data-action=next-card]').click();const nextSession=await state(page);assert.notEqual(data.questions.find(x=>x.id===nextSession.session.ids[0]).cardId,practiced);
- await page.locator('.study-top [data-action=nav]').click();await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();
- await page.locator('[data-action=filter][data-value=收藏]').click();
- assert.equal(await page.locator('.library-card').count(),1);
- await page.locator('.topbar [data-page=me]').click();
- if(await page.locator('[data-action=library-view]').count())await page.locator('[data-action=library-view][data-value=spreads]').click();await page.locator('.advanced-learning>summary').click();await page.locator('.advanced-learning details>summary').last().click();await page.locator('[data-action=advance]').click();assert.equal((await state(page)).offsetDays,3);
- const download=page.waitForEvent('download');await page.locator('[data-action=export]').click();
- const saved=await download;const file=await saved.path();const exported=JSON.parse(fs.readFileSync(file,'utf8'));const exportedHistory=exported.state.history.length;assert(exportedHistory>6);
- await page.locator('[data-action=reset]').click();await page.locator('[data-action=confirm-reset]').click();assert.equal((await state(page)).history.length,0);
- await page.locator('.topbar [data-page=me]').click();
- await page.locator('#import-file').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
- await page.locator('[data-action=confirm-import]').click();assert.equal((await state(page)).history.length,exportedHistory);assert.equal((await state(page)).session,null);
- await page.locator('#import-file').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"app":"wrong"}')});
- await page.locator('.toast').filter({hasText:'无法导入'}).waitFor();assert.equal((await state(page)).history.length,exportedHistory);
- await page.locator('[data-action=feedback]').click();await page.locator('[data-action=feedback-save]').first().click();assert.equal((await state(page)).feedback.length,1);
- await page.locator('[data-action=status]').first().click();await page.getByText('78 / 78',{exact:true}).waitFor();await page.locator('[data-action=sources]').click();assert.equal(await page.locator('#overlay a[href*="commons.wikimedia.org/wiki/File:"]').count(),78);await page.locator('#overlay [data-action=close]').click();
- await context.setOffline(true);
- await page.locator('.bottomnav [data-page=library]').click();await page.locator('[data-action=library-view][data-value=cards]').click();await page.locator('[data-action=filter][data-value=全部]').click();
- await page.locator('[data-action=card][data-id=c14]').click();await page.locator('#overlay details').filter({has:page.locator('[data-action=card-practice]')}).locator('summary').click();await page.locator('[data-action=card-practice]').click();await page.locator('button.primary[data-action=draw]').click();
- if(await page.locator('[data-action=intro-next]').count())await page.locator('[data-action=intro-next]').click();await page.locator('[data-action=unknown]').click();
- assert(await page.locator('.answer-feedback').count());
- await context.setOffline(false);
- const local=await browser.newContext({viewport:{width:390,height:844}});await local.setOffline(true);const lp=await local.newPage();await lp.goto('file://'+path.join(root,'demo/tarot-demo.html'));await lp.locator('[data-home-choice]').first().waitFor();await lp.locator('[data-action=status]').first().click();await lp.getByText('78 / 78',{exact:true}).waitFor();await local.close();
- const desktop=await context.newPage();await desktop.setViewportSize({width:1280,height:900});await desktop.goto(url);await widthCheck(desktop);await desktop.screenshot({path:'/tmp/tarot-demo-home-desktop.png',fullPage:true});
- for(const w of [320,375,430]){await desktop.setViewportSize({width:w,height:844});await widthCheck(desktop);}
- assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
- console.log(JSON.stringify({status:'PASS',cards:78,teachingSampleCards:12,questions:24,checks:['two-choice mobile home','three-item navigation','78 images decode','library progress and knowledge entry','6-question session','answer scoring','confidence scheduling','reload resume and no duplicate answer','rich card detail/reversal/learned/favorite','zoom return','demo date','export/import/reset','invalid import preserves records','feedback local-only','embedded asset provenance','offline navigation','offline file cold start in desktop Chromium','320/375/390/430/1280 widths','no runtime errors','no external runtime requests'],screenshots:'/tmp/tarot-demo-*.png',limitations:['real iPhone Safari not tested','earlier quick-practice scheduling stays compatible; new SM-2 journey tested separately']},null,2));
- await browser.close();
-})().catch(e=>{console.error(e);process.exit(1);});
+/* Current app integration plus legacy-record preservation. Isolated public fixtures only. */
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{chromium}=require('playwright');
+const root=path.resolve(__dirname,'..'),url=process.env.DEMO_URL||require('node:url').pathToFileURL(path.join(root,'demo/tarot-demo.html')).href,KEY='tarot-pocket-demo-v1';
+const model={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'content.js'),'utf8'),model);const legacy=model.window.TAROT_CONTENT;
+assert.equal(legacy.cards.length,12);assert.equal(legacy.questions.length,24);for(const q of legacy.questions){assert.equal(q.options.length,4);assert(q.options.every(o=>o.text&&o.reason));assert(q.options.some(o=>o.id===q.correct));}
+const state=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);
+const fits=async p=>assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'viewport overflow');
+async function step(p){return p.evaluate(k=>{const s=JSON.parse(localStorage.getItem(k)).journey.academy.session;const step=TarotAcademy.stepFor(s);return {s,kind:step?.kind,correct:step?.question?.correct};},KEY);}
+async function complete(p){for(let i=0;i<45;i++){const x=await step(p);if(x.s.complete)return;if(x.kind==='question'&&await p.locator('[data-academy=answer]:enabled').count())await p.locator(`[data-academy=answer][data-value="${x.correct}"]`).click();await p.locator('[data-academy=next]').click();}throw Error('lesson did not finish');}
+(async()=>{const b=await chromium.launch(require('./browser_options.cjs'));try{
+const c=await b.newContext({viewport:{width:390,height:844},acceptDownloads:true,reducedMotion:'reduce'}),p=await c.newPage(),errors=[],external=[];p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(new URL(url).origin))external.push(r.url());});await p.goto(url);await fits(p);
+assert.deepEqual(await p.locator('.navitem').allTextContents(),['首页','学牌','抽牌']);assert.equal(await p.locator('[data-home-choice]').count(),2);
+await p.locator('[data-action=status]').first().click();await p.getByText('78 / 78',{exact:true}).waitFor();await p.locator('#overlay [data-action=close]').click();
+await p.locator('[data-action=choose-cards]').click();assert.equal(await p.locator('.library-card').count(),78);await p.locator('.library-card img').evaluateAll(async xs=>{for(const x of xs)x.loading='eager';await Promise.all(xs.map(x=>x.decode()));});assert(await p.locator('.library-card img').evaluateAll(xs=>xs.every(x=>x.naturalWidth>100)));
+await p.locator('.library-card[data-id=p04]').click();await p.locator('[data-action=face][data-value=reversed]').click();assert.equal(await p.locator('#overlay .reversed-img').count(),1);await p.locator('[data-action=save]').click();assert((await state(p)).saved.includes('p04'));
+await p.locator('[data-action=zoom]').click();await p.locator('#overlay [data-action=close]').click();assert.equal(await p.locator('#overlay [data-action=save]').count(),1,'zoom returns to the same card reference');
+await p.locator('[data-academy=start][data-id=p04]').click();assert.equal(await p.locator('[data-action=confidence],[data-learn=rate],textarea').count(),0,'no self-rating or writing task');
+await p.locator('[data-academy=next]').click();let x=await step(p);assert.equal(x.kind,'question');await p.locator(`[data-academy=answer][data-value="${x.correct}"]`).click();const saved=(await state(p)).journey.academy.session;await p.reload();await p.locator('[data-academy=continue]').first().click();assert.deepEqual((await state(p)).journey.academy.session.answers,saved.answers,'reload keeps the actual answer without scoring it twice');assert(await p.locator('[data-academy=answer]:disabled').count()>0);await complete(p);assert((await state(p)).journey.academy.progress.p04.uprightAt>0);
+await p.locator('[data-academy=home]').first().click();await p.locator('.topbar [data-page=me]').click();
+// A genuine old-format shape remains valid, including confidence as historical data only.
+const oldState=await state(p),oldQuestion=legacy.questions[0];oldState.history.push({id:'synthetic-legacy',qid:oldQuestion.id,cardId:oldQuestion.cardId,at:1000,correct:true,confidence:'sure',hint:false,selected:oldQuestion.correct});oldState.schedules[oldQuestion.id]=2000;
+// Use the real import route. Direct localStorage writes would be overwritten
+// by app.js pagehide persistence, so they do not simulate a user migration.
+await p.locator('#import-file').setInputFiles({name:'legacy-fixture.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({app:'tarot-pocket-demo',version:1,state:oldState}))});await p.locator('[data-action=confirm-import]').click();assert.equal((await state(p)).history.at(-1).id,'synthetic-legacy');
+await p.reload();await p.locator('.topbar [data-page=me]').click();assert.equal((await state(p)).history.at(-1).id,'synthetic-legacy','imported historical answer survives automatic pagehide save');
+const download=p.waitForEvent('download');await p.locator('[data-action=export]').click();const f=await(await download).path(),backup=JSON.parse(fs.readFileSync(f));assert(backup.state.journey.academy.progress.p04.uprightAt);assert.equal(backup.state.history.at(-1).confidence,'sure');assert(backup.learning&&backup.reading);
+await p.locator('[data-action=reset]').click();await p.locator('[data-action=confirm-reset]').click();assert.deepEqual((await state(p)).journey.academy.progress,{});await p.locator('.topbar [data-page=me]').click();await p.locator('#import-file').setInputFiles({name:'synthetic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await p.locator('[data-action=confirm-import]').click();assert.equal((await state(p)).history.at(-1).id,'synthetic-legacy');assert((await state(p)).journey.academy.progress.p04.uprightAt);assert((await state(p)).saved.includes('p04'));
+const before=await state(p);await p.locator('#import-file').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"app":"wrong"}')});await p.locator('.toast').filter({hasText:'无法导入'}).waitFor();assert.deepEqual(await state(p),before);
+const older=structuredClone(backup);delete older.state.journey;delete older.learning;delete older.reading;await p.locator('#import-file').setInputFiles({name:'older.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(older))});await p.locator('[data-action=confirm-import]').click();assert.deepEqual((await state(p)).journey.academy.progress,before.journey.academy.progress,'older backups do not erase new course progress');
+await p.locator('[data-action=status]').first().click();await p.locator('[data-action=sources]').click();assert.equal(await p.locator('#overlay a[href*="commons.wikimedia.org/wiki/File:"]').count(),78);await p.locator('#overlay [data-action=close]').click();
+await c.setOffline(true);await p.locator('.bottomnav [data-page=courses]').click();await p.locator('[data-academy=start][data-id=c14]').click();await complete(p);assert((await state(p)).journey.academy.progress.c14.completedAt);await c.setOffline(false);
+const cold=await b.newContext();await cold.setOffline(true);const cp=await cold.newPage();await cp.goto(require('node:url').pathToFileURL(path.join(root,'demo/tarot-demo.html')).href);await cp.locator('[data-home-choice]').first().waitFor();await cold.close();
+await p.locator('[data-academy=home]').first().click();await p.locator('.bottomnav [data-page=home]').click();for(const w of [320,375,390,430,1280]){await p.setViewportSize({width:w,height:844});await fits(p);}assert.deepEqual(errors,[]);assert.deepEqual(external,[]);console.log('PASS: current learning integration, all 78 images, answer/reload/complete, no self-rating, favorites/zoom, all-three-key backup/reset/import/old-record preservation, provenance, offline lesson and cold start, five viewports.');
+}finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

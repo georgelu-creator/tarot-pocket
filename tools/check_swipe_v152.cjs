@@ -1,57 +1,14 @@
-/* Full-deck touch overview: native scrolling, immediate picks and durable state. */
+/* Continuous fan: real touch pan, pinch, one tap, keyboard and stable remaining order. */
 'use strict';
-const assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
-const {chromium,webkit}=require('playwright');
-const url=process.env.DEMO_URL||pathToFileURL(path.resolve(__dirname,'../demo/tarot-demo.html')).href;
-const KEY='tarot-reading-v3',draft=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)).draft,KEY);
-async function touchScroll(p,context){
- const card=p.locator('[data-reading=pick][data-index="30"]');await card.scrollIntoViewIfNeeded();const b=await card.boundingBox();
- const x=b.x+b.width/2,y=b.y+b.height/2,cdp=await context.newCDPSession(p);
- await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
- for(let i=1;i<=9;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y-i*15}]});await p.waitForTimeout(25);}
- await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(300);
- assert.deepEqual((await draft(p)).picked,[],'real finger scrolling never picks a card');await cdp.detach();
-}
-(async()=>{
- for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
-  const browser=await engine.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});
-  try{for(const width of [320,390])for(const reducedMotion of ['no-preference','reduce']){
-   const context=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion});
-   const p=await context.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));p.setDefaultTimeout(15000);
-   console.log(`Checking ${name} ${width} ${reducedMotion}`);
-   await p.goto(url,{timeout:120000});await p.locator('.bottomnav [data-page=reading]').click();
-   await p.locator('[data-reading=guide][data-value=three]').click();await p.locator('[data-reading=use-spread]').click();
-   await p.locator('[data-reading=start]').click();await p.locator('[data-reading=skip-animation]').click();
-   await p.locator('[data-reading=cut-default]').click();await p.locator('[data-reading=skip-animation]').click();
-   await p.locator('.whole-deck-grid').waitFor();const pool=(await draft(p)).pool;
-   assert.equal(await p.locator('[data-deck-card]').count(),78);assert.equal(await p.locator('[data-reading=pick]:enabled').count(),78);
-   assert.equal(await p.locator('[data-reading=pick-page], [data-reading=pick-confirm], .ritual-swipe-page').count(),0,'no pages or second confirmation');
-   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-   const boxes=await p.locator('[data-deck-card]').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height};}));
-   assert(boxes.every(b=>b.w>=44&&b.h>=44),'compact overview retains reachable touch rectangles');
-   for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i],b=boxes[j];assert(a.x+a.w<=b.x+.5||b.x+b.w<=a.x+.5||a.y+a.h<=b.y+.5||b.y+b.h<=a.y+.5,'all 78 target rectangles do not overlap');}
-   if(name==='chromium'&&width===390&&reducedMotion==='no-preference')await touchScroll(p,context);
-   // A moved/cancelled pointer cannot be interpreted as a click, even if a browser dispatches one.
-   await p.locator('[data-reading=pick][data-index="20"]').evaluate(el=>{el.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,clientX:10,clientY:10}));el.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,clientX:10,clientY:50}));el.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true}));el.click();});
-   assert.deepEqual((await draft(p)).picked,[]);await p.waitForTimeout(300);
-   await p.locator('[data-reading=pick][data-index="77"]').scrollIntoViewIfNeeded();
-   await p.locator('.whole-deck-grid').evaluate(el=>{window.__grid=el;window.__y=scrollY;window.__cards=[...el.children];});
-   await p.locator('[data-reading=pick][data-index="77"]').tap();
-   assert.deepEqual((await draft(p)).picked,[77],'last card commits in one tap');assert.equal((await draft(p)).pendingPick,null);
-   assert(await p.locator('.whole-deck-grid').evaluate(el=>el===window.__grid&&[...el.children].every((c,i)=>c===window.__cards[i])),'selection preserves all card nodes');
-   assert(await p.evaluate(()=>Math.abs(scrollY-window.__y)<2),'selection preserves scroll position');
-   assert(await p.locator('[data-reading=pick][data-index="77"]').isDisabled());
-   await p.locator('[data-reading=pick][data-index="77"]').evaluate(el=>{el.click();el.click();});assert.deepEqual((await draft(p)).picked,[77],'repeated taps cannot select the same card twice');
-   await p.locator('.ritual-selection-tray .filled .reading-back').evaluate(el=>window.__placed=el);
-   await p.locator('[data-reading=pick][data-index="0"]').focus();await p.keyboard.press('Enter');
-   assert.deepEqual((await draft(p)).picked,[77,0],'first card remains reachable with keyboard');
-   assert(await p.locator('.ritual-selection-tray .filled .reading-back').first().evaluate(el=>el===window.__placed),'another pick does not replay earlier placed animation');
-   await p.locator('[data-reading=pause]').click();await p.locator('[data-reading=resume]').first().click();assert.deepEqual((await draft(p)).picked,[77,0]);
-   await p.reload();await p.locator('.bottomnav [data-page=reading]').click();assert.deepEqual((await draft(p)).picked,[77,0]);assert.deepEqual((await draft(p)).pool,pool);
-   assert.equal(await p.locator('[data-reading=pick]:disabled').count(),2,'restored choices stay visibly marked');
-   await p.locator('[data-reading=pick][data-index="39"]').tap();assert.equal((await draft(p)).phase,'reveal');assert.deepEqual((await draft(p)).picked,[77,0,39]);
-   assert.deepEqual(errors,[]);await context.close();
-  }}finally{await browser.close();}
- }
- console.log('PASS: Chromium/WebKit 320/390 full 78-card overview, real touch scroll and gesture suppression, one-tap choice, node/scroll stability, keyboard, pause/reload and normal/reduced motion.');
-})().catch(error=>{console.error(error);process.exitCode=1;});
+const assert=require('node:assert/strict'),{chromium,webkit}=require('playwright'),h=require('./reading_ui_harness.cjs');
+(async()=>{const server=await h.server();try{for(const [name,engine]of [['chromium',chromium],['webkit',webkit]]){const browser=await engine.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});try{for(const width of [320,390])for(const reducedMotion of ['no-preference','reduce']){const ctx=await h.context(browser,{viewport:{width,height:844},isMobile:true,reducedMotion}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await h.enter(p,server.url);await h.start(p);await h.toPick(p);const pool=(await h.state(p)).draft.pool;assert.equal(await p.locator('[data-deck-card]').count(),78);assert.equal(await p.locator('[data-reading=pick]:enabled').count(),78);assert.equal(await p.locator('[data-fan-viewport] img,[data-reading=pick-confirm],[data-reading=pick-page]').count(),0);await h.fit(p);
+ // Every numbered card can be centered at a readable 44px+ touch size.
+ for(const index of [0,20,39,59,77]){const c=await h.center(p,index);const r=await c.boundingBox(),v=await p.locator('[data-fan-viewport]').boundingBox();assert(r.width>=44&&r.height>=44);assert(r.x>=v.x-1&&r.x+r.width<=v.x+v.width+1);assert(await c.evaluate(e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),'center card not obscured');}
+ if(name==='chromium'&&width===390&&reducedMotion==='no-preference'){await h.center(p,30);const b=await p.locator('[data-fan-viewport]').boundingBox(),cdp=await ctx.newCDPSession(p),x=b.x+b.width*.72,y=b.y+100;const before=await p.locator('[data-fan-viewport]').evaluate(e=>e.scrollLeft);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});for(let i=1;i<=9;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-i*15,y}]});await p.waitForTimeout(20);}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(400);assert((await p.locator('[data-fan-viewport]').evaluate(e=>e.scrollLeft))>before+40,'native horizontal finger pan moves fan');assert.deepEqual((await h.state(p)).draft.picked,[]);const zoomBefore=(await h.state(p)).draft.fanZoom;const mid=b.x+b.width/2;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:mid-35,y},{x:mid+35,y}]});for(let i=1;i<=4;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:mid-35-i*8,y},{x:mid+35+i*8,y}]});await p.waitForTimeout(30);}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(550);assert((await h.state(p)).draft.fanZoom>zoomBefore,'two-finger pinch enlarges fan');assert.deepEqual((await h.state(p)).draft.picked,[],'pinch never selects');await cdp.detach();}
+ await p.locator('[data-reading=pick][data-index="20"]').evaluate(el=>{el.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,clientX:10,clientY:10}));el.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,clientX:50,clientY:10}));el.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true}));el.click();});assert.deepEqual((await h.state(p)).draft.picked,[]);await p.waitForTimeout(350);
+ const z=(await h.state(p)).draft.fanZoom;await h.click(p,'fan-out');assert((await h.state(p)).draft.fanZoom<z);const smaller=(await h.state(p)).draft.fanZoom;await h.click(p,'fan-in');assert((await h.state(p)).draft.fanZoom>smaller);
+ await h.center(p,77);await p.locator('.reading-fan-track').evaluate(e=>{window.__track=e;window.__cards=[...e.children];window.__scroll=e.parentElement.scrollLeft;});await p.locator('[data-reading=pick][data-index="77"]').tap();assert.deepEqual((await h.state(p)).draft.picked,[77]);assert(await p.locator('.reading-fan-track').evaluate(e=>e===window.__track&&[...e.children].every((c,i)=>c===window.__cards[i])));assert(await p.locator('[data-fan-viewport]').evaluate(e=>Math.abs(e.scrollLeft-window.__scroll)<2));assert(await p.locator('[data-reading=pick][data-index="77"]').isDisabled());await p.locator('[data-reading=pick][data-index="77"]').evaluate(e=>e.click());assert.deepEqual((await h.state(p)).draft.picked,[77]);await p.locator('.tray-card .reading-back').evaluate(e=>window.__placed=e);
+ await h.center(p,0);await p.locator('[data-reading=pick][data-index="0"]').focus();await p.keyboard.press('Enter');assert.deepEqual((await h.state(p)).draft.picked,[77,0]);assert(await p.locator('.tray-card .reading-back').first().evaluate(e=>e===window.__placed));await h.click(p,'pause');await h.click(p,'resume');await p.reload();await p.locator('.bottomnav [data-page=reading]').click();assert.deepEqual((await h.state(p)).draft.picked,[77,0]);assert.deepEqual((await h.state(p)).draft.pool,pool);assert.equal(await p.locator('[data-reading=pick]:disabled').count(),2);
+ // A late restored/layout scroll is not part of the next deliberate tap. Trigger
+ // a real scroll event, then make exactly one real click without a settling delay.
+ const last=await h.center(p,39);await p.locator('[data-fan-viewport]').evaluate(el=>new Promise(resolve=>{el.addEventListener('scroll',()=>resolve(),{once:true});el.scrollLeft+=1;}));await last.click();assert.deepEqual((await h.state(p)).draft.picked,[77,0,39],'one fresh tap after restored scroll picks the intended card');assert.equal((await h.state(p)).draft.phase,'reveal');assert.deepEqual(errors,[]);await ctx.close();console.log(`PASS fan ${name} ${width} ${reducedMotion}`);}}finally{await browser.close();}}}finally{await server.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

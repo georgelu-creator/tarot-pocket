@@ -9,7 +9,9 @@ Node HTTP 服务共用验证、鉴权、牌阵目录、提示和错误处理。
 
 ## Build and routes / 构建与路由
 
-Use a separate EdgeOne Makers project with the repository root as its root
+The existing `tarot-pocket-ai` project is Git-connected to production `main`, with
+automatic deployment enabled. Reuse it rather than create an upload project.
+For a new installation, use a separate EdgeOne Makers project with the repository root as its root
 directory, and the region **Global (excluding Chinese mainland)**. The following
 root `edgeone.json` configuration is for that AI project:
 
@@ -31,7 +33,7 @@ root `edgeone.json` configuration is for that AI project:
 
 The build uses built-in Node modules only. It generates a static public landing
 page and a separate server-only catalog from the repository's 78 cards and all
-28 spread definitions, including the 19 preserved legacy definitions. The
+32 spread definitions, including the 19 preserved legacy definitions. The
 catalog is imported into the function bundle; it is outside the static output.
 The build never reads `.env` or writes credentials into artifacts. Ignore the
 generated `.edgeone-ai/` directory in Git. Do not set the output directory to the

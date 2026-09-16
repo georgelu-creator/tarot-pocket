@@ -1,9 +1,50 @@
 # Tarot Pocket contributor and agent guide / 项目协作入口
 
+## Current scope / 当前授权（2026-09-16）
+
+The user explicitly authorized implementing the complete learning and reading
+plans, publishing to Git and providing a mobile test entry. The subsequent user
+decision permits replacing the older interaction framework with a more usable
+design. Earlier documentation-only scope statements below are historical and
+superseded. Preserve records and security boundaries, not obsolete UI controls.
+Read docs/RELEASE_1_7.md and both master documents' implementation records first.
+
+用户最新已授权完整开发学牌与抽牌、Git 发布和移动端体验，并允许升级旧交互框架。
+此前仅文档的限制已被替代。保留数据与安全边界，不必保留被否定的旧交互。
+开发、自动检查、生产部署、真人试用和教学效果仍是不同状态。
+
 This public repository is the project source. Start with README.md, then
 docs/HANDOFF.md and docs/DEVELOPMENT.md. Personal assistant configuration, private
 conversations, personal readings, credentials and browser backups do not belong here.
 
+- Learning-design work starts with [docs/LEARNING_MASTER.md](docs/LEARNING_MASTER.md):
+  read its current status and latest changes before the relevant lesson/card scripts.
+  Update effective requirements, affected bilingual scripts, superseded decisions,
+  coverage and open questions before closing any related change; then update HANDOFF.
+  Distinguish proposed, confirmed, authored, verified and implemented. The existing
+  app is historical implementation, not acceptance of the new teaching design.
+  Implementation is authorized by the latest user decision; retain teaching review
+  and real-user acceptance as separate evidence. / 教学主文档是新课程的接力入口；相关需求变化须同步
+  有效正文、受影响脚本、被替代决定、覆盖与待确认事项，再更新交接。旧应用不等于
+  新教学方案已确认或完成；本轮已获开发授权，仍须分别记录教学与实机验收。
+- Reading-design work starts with [docs/READING_MASTER.md](docs/READING_MASTER.md):
+  read current status, open decisions and latest changes before flow, scenario or AI
+  scripts. Keep effective requirements, bilingual copy, superseded decisions,
+  evidence, coverage and handoff synchronized. Proposed, confirmed, authored,
+  verified and implemented are distinct. The old app is not acceptance of this new
+  design. Implementation is authorized; preserve the reasons behind superseded
+  proposals and verify the new experience. / 抽牌主文档独立于教学维护；恢复时
+  先读状态、待确认与最新变更，相关变动同步有效正文、双语脚本、覆盖和交接。
+  “78张可选到”不等于必须平铺，“有仪式感”不等于反复点继续。页面和解读只对
+  抽牌者说自然中文，不混入作者指令。本轮已获开发授权，旧实现不代表新方案已通过。
+- Learners are the only audience of learning screens. Keep author instructions,
+  scoring logic, routing, IDs and acceptance criteria out of teaching copy, questions,
+  choices, feedback, hints and completion messages. Write natural Chinese directly;
+  do not introduce an unnecessary abstract term and then explain it. Retain necessary
+  tarot terms with a brief first-use explanation. No self-ratings, confidence scores,
+  mandatory reflections or renamed equivalents. / 学牌只面向学习者：内部编写、评分、
+  路由和验收说明不能进入展示文案；直接说自然中文，不先抛抽象词再解释。
+  只解释确实需要学的塔罗术语；不增加自评、信心打分、必填感悟或换名同类步骤。
 - Keep the working demo usable. Product changes should follow user feedback; do not
   treat the roadmap as permission to build the entire app or publish to app stores.
 - Chinese is the authored source language. Update matching English translations in

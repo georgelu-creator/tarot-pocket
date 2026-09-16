@@ -2,15 +2,16 @@
 'use strict';
 const assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
 const {chromium,webkit}=require('playwright');
-const url=process.env.DEMO_URL||pathToFileURL(path.resolve(__dirname,'../demo/tarot-demo.html')).href;
+const h=require('./reading_ui_harness.cjs');
 const key='tarot-reading-v3';
 (async()=>{
- for(const engine of [chromium,webkit]){
+ const server=await h.server(),url=server.url;try{for(const engine of [chromium,webkit]){
  const browser=await engine.launch();
  try{for(const width of [320,390,1280]){
- const ctx=await browser.newContext({viewport:{width,height:900},hasTouch:true}),p=await ctx.newPage(),errors=[];
- p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await p.locator('[data-reading=guide][data-value=three]').click();await p.locator('[data-reading=use-spread]').click();await p.locator('[data-reading=start]').click();
+ const ctx=await h.context(browser,{viewport:{width,height:900},hasTouch:true}),p=await ctx.newPage(),errors=[];
+ p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();
  const pool=await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key);
+ await h.click(p,'motion-pause');
  const stage=p.locator('[data-motion-stage=shuffling]'),cards=p.locator('.ritual-pack>.reading-back');assert.equal(await cards.count(),18);
  const sample=async fraction=>{
  await cards.evaluateAll((els,f)=>els.forEach(el=>el.getAnimations().forEach(a=>{a.pause();a.currentTime=a.effect.getTiming().duration*f;})),fraction);
@@ -29,11 +30,11 @@ const key='tarot-reading-v3';
  const crossed=await sample(.59);assert(mix.rects.filter((r,i)=>Math.hypot(r.cx-crossed.rects[i].cx,r.cy-crossed.rects[i].cy)>40).length>=12,'most cards visibly cross to new positions');
  const gathered=await sample(.97);assert(gathered.width<105&&gathered.height<mix.height*.86,'cards gather back into one compact deck');
  assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'animation never rerolls cards');
- await p.locator('[data-reading=skip-animation]').click();assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'skip preserves the randomized pool');assert(await p.locator('[data-reading=cut-default]').isVisible());assert.deepEqual(errors,[]);await ctx.close();
+ await p.locator('[data-reading=skip-animation]').click();assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'skip preserves the randomized pool');assert(await p.locator('[data-reading=cut][data-index="0"]').isVisible());assert.deepEqual(errors,[]);await ctx.close();
  }
- const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage();await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await p.locator('[data-reading=guide][data-value=three]').click();await p.locator('[data-reading=use-spread]').click();await p.locator('[data-reading=start]').click();await p.waitForFunction(()=>!document.querySelector('[data-reading=motion-continue]').disabled);
- assert(await p.locator('.ritual-pack>.reading-back').evaluateAll(es=>es.every(e=>getComputedStyle(e).animationName==='none')),'reduced motion leaves every card still');await ctx.close();
+ const ctx=await h.context(browser,{viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage();await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();await p.locator('[data-reading=cut][data-index="0"]').waitFor();assert.equal(await p.locator('[data-reading=motion-continue]').count(),0);assert.equal((await h.state(p)).draft.phase,'cut','reduced motion naturally reaches the next interaction');await ctx.close();
  }finally{await browser.close();}
  }
+ }finally{await server.close();}
  console.log('PASS: Chromium/WebKit shuffle spreads, scatters, crosses and gathers at 320/390/1280px; table bounds, unchanged pool, skip and reduced motion.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

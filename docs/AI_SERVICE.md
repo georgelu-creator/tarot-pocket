@@ -1,8 +1,18 @@
 # 联网解牌服务 / Online reading service
 
-首次进入托管网页时，用户输入一次邀请码。服务端把邀请码换成有时效的解牌会话；之后用户主动点“生成完整解读”时，网页自动发送本次问题、选项、牌阵 ID、实际抽出的牌和正逆位。服务从仓库目录补全牌名和每个牌位，再请求 DeepSeek 或 OpenAI。学习与已下载内容仍可离线运行。
+首次进入托管网页时，用户输入一次邀请码。服务端把邀请码换成有时效的解牌会话；之后用户主动点“揭牌并解读”或重试解读时，网页自动发送本次问题、选项、牌阵 ID、实际抽出的牌和正逆位。服务从仓库目录补全牌名和每个牌位，再请求 DeepSeek 或 OpenAI。学习与已下载内容仍可离线运行。
 
 The hosted app exchanges one invitation for an expiring reading session. After the user explicitly requests a complete reading, the page automatically sends the current question, choices, spread ID, actual cards and orientations. The service fills in names and positions from this repository and requests DeepSeek or OpenAI. Learning and downloaded content still work offline.
+
+## 1.7请求与回答 / Current reading contract
+
+`reading-scenarios.js`定义25个场景。请求包含场景ID/版本、用户原问题、时间范围及A/B/C选项，服务端核验场景与牌阵匹配，从受信任目录补全牌位。`server/reading-prompts.cjs`维护RP-1.1，与抽牌主文档对应；15个场景模块及6类问法按问题组合，先答问题再给牌据，不设最低字数。自由三张不擅自分配时间牌位。
+
+The server validates 25 scene IDs and versions against its trusted catalog, including A/B/C labels. RP-1.1 answers the actual question first, then explains the cards and assigned roles. It uses 15 scene modules and 6 question types without minimum-length padding. Open-three positions remain unassigned.
+
+Editing a pending question cancels the request. The complete request snapshot must still match before a late answer is saved. Health exposes only non-sensitive promptVersion and scenarioCount. See [release verification](RELEASE_1_7.md).
+
+编辑等待中的问题会取消原请求；迟到回答仍须通过完整快照比对才能保存。健康接口只增补不敏感的提示词版本和场景数量。
 
 ## 当前交付边界 / Delivery status
 

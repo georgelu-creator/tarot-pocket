@@ -1,8 +1,8 @@
 # Spread sources / 牌阵来源
 
-The public catalog contains seven sourced structures and a separate daily-card ritual. Scenario filters reuse a structure; they do not create new spreads by renaming positions. These are named versions, not a claim that tarot has one universal numbering standard. Descriptions in the app are original paraphrases.
+The current catalog uses twelve ordinary structures (including open-three and the four additions below) plus a separate daily-card ritual. Twenty-five scenarios reuse these definitions; they do not create new spreads by renaming positions. These are named versions, not a universal numbering standard. App descriptions are original paraphrases.
 
-公开目录保留七种有出处的结构，日签作为独立仪式入口。生活场景筛选复用合适的结构，不靠改名生成新牌阵。以下标明采用的版本，不声称塔罗只有唯一编号标准；应用中的说明为原创转述。
+当前目录采用12种普通结构（含自由三张及下方新增4种），日签为独立入口。25个场景复用这些结构，不靠改名制造传统牌阵。以下标明采用版本，不声称塔罗只有唯一编号标准；说明为原创转述。
 
 | ID | Structure / 结构 | Source / 来源 |
 | --- | --- | --- |
@@ -27,6 +27,19 @@ Nineteen earlier authored templates remain in data solely for existing drafts/hi
 十九个旧版自编模板仅用于兼容草稿、历史与备份，不再出现在新抽牌目录。尤其 `choice` 保留原来的六张位置，绝不悄悄套用 `decision-five` 重解历史牌。教学案例明确标为示例。
 
 Sources checked 2026-09-14. Source matching verifies the adopted layout, not predictive validity or independent expert review. / 来源核对日期：2026-09-14。匹配来源证明采用了该布局，不证明预测有效性或已接受独立专家审校。
+
+## 1.7 scenario additions / 新增场景结构
+
+These additions follow the public-source review recorded in READING_MASTER RM-1.2 (2026-09-16). None reconstruct Quin's private positions from thumbnails. / 以下依据抽牌主文档RM-1.2公开资料研究，不根据Quin缩略图推测内部牌位。
+
+| ID | Adopted roles / 采用角色 | Source / 来源 |
+|---|---|---|
+| `yes-no` | One card for a supported leaning, without upright/reversed vote counting / 单牌判断倾向，不用正逆位投票 | [Labyrinthos Yes/No](https://labyrinthos.co/pages/yes-no-tarot-reading) |
+| `new-love` | Readiness, possible partner, meeting, connection, potential / 准备、可能遇到的人、相识情境、相处方式、发展可能 | [Tina Gong: Finding New Love](https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/finding-new-love-tarot-spreads) |
+| `three-options` | Three equal options, one card each / A、B、C平等选项，每项一张，不另加结果位 | [Tina Gong: Three-card layouts](https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/3-card-tarot-spreads-simple-tarot-spreads-organized-by-layout) |
+| `career-six` | Origin, motivation, responsibilities, current situation, rewards, direction / 初衷、动力、职责、目前情况、收获、发展 | [Tina Gong: Brick by Brick](https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/three-career-tarot-spreads-for-finding-your-path-and-calling) |
+
+Current source metadata lives in `spread-content.js`; scenario purposes and preset questions live in `reading-scenarios.js`. Including 19 legacy definitions, the shared catalog has 32 entries. / 结构与来源在spread-content.js，场景用途与预设问题在reading-scenarios.js；加19个旧定义总计32项。
 
 ## Open three cards / 无牌阵三张
 

@@ -38,7 +38,7 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   await p.screenshot({path:'/tmp/tarot-v15-invite.png',fullPage:false});
   assert.equal(await p.locator('#app').getAttribute('inert'),'','the app is inert before invitation validation');
   assert.equal(await p.locator('.bottomnav').count(),1,'the app can prepare behind the gate without becoming interactive');
-  await invite.fill('BAD23456');await invite.press('Enter');await p.getByText('邀请码不正确，请重新输入。').waitFor();assert.equal(invites.length,1);
+  await invite.fill('BAD23456');await invite.press('Enter');await p.getByText('邀请码不正确，请检查后重试。').waitFor();assert.equal(invites.length,1);
   await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('.access-card').innerText()),'the invitation gate is bilingual');await p.locator('[data-language-toggle]').click();
   assert.equal(await invite.getAttribute('maxlength'),'8');
   await invite.fill(inviteCode);await invite.press('Enter');await p.locator('.access-screen').waitFor({state:'detached'});assert.equal(invites.length,2);
@@ -47,31 +47,26 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   assert(await p.evaluate(sessionToken=>sessionStorage.getItem('tarot-pocket-session-v1').includes(sessionToken),sessionToken),'only the scoped app session is kept for this tab');
   await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
-  assert.equal(catalog.length,8,'seven sourced definitions plus the explicitly open three-card draw');assert.equal(catalog.filter(d=>d.id==='open-three').length,1);
-  for(const d of catalog){
-   await p.locator(`[data-reading=guide][data-value="${d.id}"]`).click();
+  const scenes=await p.evaluate(()=>window.TAROT_READING_SCENARIOS);
+  assert.equal(catalog.length,12,'twelve available structures plus the separate daily draw');assert.equal(scenes.length,25);
+  for(const sc of scenes){
+   const d=catalog.find(d=>d.id===sc.spreadId);
+   await p.locator(`[data-reading=guide][data-scenario="${sc.id}"]`).click();
    for(const width of [390,320]){
     await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal page overflow');
-    assert.equal(await p.locator('.spread-position-list button').count(),d.positions.length,'the diagram owns one selector per actual position');
-    const boxes=await p.locator('.spread-position-list button').evaluateAll(es=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})));
-    assert(boxes.every(b=>b.width>=44&&b.height>=44),'every position has a 44px tap target');
-    const diagram=await p.locator('.reading-guide-diagram').boundingBox();assert(diagram.height<260,'guide diagram stays compact');
-    const action=await p.locator('[data-reading=use-spread]').boundingBox();assert(action.y+action.height<650,'purpose, diagram, current explanation and action fit above the fold');
-    if(d.positions.length<=5){for(let i=0;i<d.positions.length;i++){const label=p.locator(`.reading-slot[data-index="${i}"] .reading-label`);assert(await label.isVisible(),'small spreads expose every position name without tapping');assert.equal(await label.innerText(),d.positions[i].label);assert((await label.boundingBox()).height<=28,'position label uses at most two lines');}}
+    assert.equal(await p.locator('.reading-position-list li').count(),d.positions.length,'all real positions are visible in one overview');
+    assert.equal(await p.locator('.reading-slot.active').count(),0,'overview never preselects one card');
+    for(const pos of d.positions)assert((await p.locator('.reading-position-list').innerText()).includes(pos.question));
+    assert.equal(await p.locator('[data-reading=guide-position]').count(),0,'understanding positions does not require tapping through them');
+    const diagram=await p.locator('.reading-guide-diagram').boundingBox();assert(diagram.height<300,'overview diagram stays compact');
+    const action=p.locator('[data-reading=start]');await action.scrollIntoViewIfNeeded();const box=await action.boundingBox();assert(box.height>=44&&box.width<=width,'start stays reachable with a mobile tap target');
    }
-   await p.locator('.reading-board').evaluate(e=>e.dataset.identity='keep-this-board');const before=await p.evaluate(()=>scrollY);
-   await p.locator(`[data-reading=guide-position][data-index="${d.positions.length-1}"]`).click();
-   assert.equal(await p.locator('.reading-board').getAttribute('data-identity'),'keep-this-board','position changes do not rerender the board');
-   assert.equal(await p.evaluate(()=>scrollY),before,'position changes do not reset scroll');
-   assert((await p.locator('[data-guide-description]').innerText()).includes(d.positions.at(-1).question));
-   assert.equal(await p.locator('.reading-slot.active').count(),1);
-   await p.locator('.guide-all-positions>summary').click();assert.equal(await p.locator('.guide-all-positions tbody tr').count(),d.positions.length);
-   for(const pos of d.positions)assert((await p.locator('.guide-all-positions').innerText()).includes(pos.question));
-   await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('.compact-spread-guide').innerText()),'all visible guide text translates');
-   if(d.positions.length<=5){for(const label of await p.locator('.reading-label').all()){assert(await label.isVisible(),'English position names remain visible');assert((await label.boundingBox()).height<=28,`${d.id}: English position name fits in two lines: ${await label.innerText()}`);}const action=await p.locator('[data-reading=use-spread]').boundingBox();if(action.y+action.height>=650)await p.screenshot({path:'/tmp/tarot-v14-guide-failure.png',fullPage:true});assert(action.y+action.height<650,`${d.id}: English primary action ends at ${action.y+action.height}, expected below650`);}
+   await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);
+   assert(!/[\u3400-\u9fff]/.test(await p.locator('.compact-spread-guide').innerText()),sc.id+': all visible guide text translates');
+   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'English guide does not overflow');
    await p.locator('[data-language-toggle]').click();await p.locator('[data-reading=guide-back]').click();
   }
-  await p.setViewportSize({width:390,height:844});await p.locator('[data-reading=guide][data-value="decision-five"]').click();await p.screenshot({path:'/tmp/tarot-v14-compact-guide.png',fullPage:true});await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);await p.screenshot({path:'/tmp/tarot-v14-compact-guide-en.png',fullPage:true});await p.locator('[data-language-toggle]').click();
+  await p.setViewportSize({width:390,height:844});await p.locator('[data-reading=guide][data-scenario="sc05"]').click();await p.screenshot({path:'/tmp/tarot-v2-compact-guide.png',fullPage:true});await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);await p.screenshot({path:'/tmp/tarot-v2-compact-guide-en.png',fullPage:true});await p.locator('[data-language-toggle]').click();
   // Synthetic completed spread, isolated from any real user records.
   await p.evaluate(KEY=>{
    const d=window.TAROT_SPREAD_CONTENT.spreads.find(d=>d.id==='decision-five');
@@ -91,7 +86,13 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   mode='hold';await p.locator('[data-reading=ai-request]').click();await p.locator('[data-reading=ai-cancel]').click();await p.waitForTimeout(30);assert.equal(await p.locator('.ai-answer').count(),0);assert.equal((await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY)).draft.ai.length,1,'cancel preserves the other-language saved answer');for(const res of held)res.end('{}');held.length=0;
   mode='error';await p.locator('[data-reading=ai-request]').click();await p.locator('.ai-error').waitFor();assert.match(await p.locator('.ai-error').innerText(),/complete reading/);assert.equal(await p.locator('.ai-answer').count(),0);
   await ctx.setOffline(true);await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),1,'offline saved answer is available');await p.locator('[data-language-toggle]').click();assert(await p.locator('[data-reading=ai-request]').isDisabled(),'new readings require connectivity');
-  await ctx.setOffline(false);await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await p.locator('[data-reading=ai-request]').click();await p.locator('.access-screen').waitFor();assert.equal(await p.locator('[data-invite-code]').count(),1,'expired server session returns to the single entrance gate');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);
+  await ctx.setOffline(false);
+  const originalDraw=await p.evaluate(KEY=>{const s=JSON.parse(localStorage.getItem(KEY)).draft;return {pool:s.pool,picked:s.picked};},KEY);
+  await p.locator('[data-reading=edit-question]').click();await p.locator('[data-reading-edit]').fill('Which schedule fits a weekday evening course?');await p.locator('[data-reading=save-question]').click();
+  const edited=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft,KEY);
+  assert.equal(edited.userQuestion,'Which schedule fits a weekday evening course?');assert.deepEqual({pool:edited.pool,picked:edited.picked},originalDraw,'editing a question never redraws cards');
+  assert.equal(edited.ai?.length||0,0,'the old answer is not reused for a changed question');assert(edited.answerHistory.some(h=>h.ai?.some(a=>a.text.includes('Synthetic whole-spread'))),'previous answer remains available');
+  await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await p.locator('[data-reading=ai-request]').click();await p.locator('.access-screen').waitFor();assert.equal(await p.locator('[data-invite-code]').count(),1,'expired server session returns to the single entrance gate');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);
   assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['single bilingual invitation gate','wrong invitation stays locked','valid invitation issues a tab-scoped session','reload does not ask again','reading page has no code or key field','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','saved reading survives reload, errors, cancellation and offline use','401 returns to entrance gate'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
  }finally{for(const res of held)res.end('{}');await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,6 +1,180 @@
 # Continue on another computer · 跨电脑接力
 
-## Current work: 1.6.0 / 集中学牌与直觉抽牌
+## Current implementation: 1.7.0 / 完整课程与场景抽牌（2026-09-16）
+
+最新用户已授权完整实现、Git发布和移动端入口，并允许升级旧交互框架；下方仅文档阶段记录均为历史，不再限制本轮开发。
+
+- 先读 [1.7交付与验证](RELEASE_1_7.md)，再读两个主文档末尾的实现记录。
+- 学习事实源：LEARNING_MASTER LM-1.0-R4；20课、78牌编译自有效脚本，学院界面和根据实际作答补讲已接入。
+- 抽牌事实源：READING_MASTER RM-1.3 / RP-1.1；25场景、连续牌桌、78张全可达、整组答案与恢复已接入。
+- 新文案只对学习者和抽牌者说话。旧数据兼容不要求保留旧交互。
+- 每轮同步有效正文、脚本、英文、测试和交接；不默默改Word教材基线，不上传私人问题、进度或凭据。
+- 本地运行、CI、生产部署、实机体验和学习效果分别记录，不以一项代替另一项。
+- 合并提交、CI、线上版本和真实模型验收见[1.7.0发布记录](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.7.0)及关联Actions；本文件下方旧版本结果不代表本版通过。
+
+## Historical reading revision: RM-1.2 / 实用场景、完整用途与手机浏览（2026-09-16）
+
+- Read [scenario packaging](READING_MASTER.md#scenario-packaging),
+  [Yes/No](READING_MASTER.md#yes-no-entry) and
+  [mobile browsing](READING_MASTER.md#spread-browsing) first. / 已逐项回应用户
+  Quin截图中的14类用途，形成25个场景候选；不再用“不能捏造传统牌阵”排除现代场景。
+- The four additional structure proposals are a one-card Yes/No reading,
+  five-card new-love spread, three equal choices, and six-card career review.
+  Public sources and exact roles are recorded; Quin's private positions are not
+  inferred from its thumbnails. / 4种新增结构已有公开资料依据，仍未进入应用配置。
+- Purposes now explain when to use each entry and what it answers, with matching
+  English. Exam, job-search and event presets focus on the outcome. Outfit ideas
+  are a creative daily use; wellbeing covers daily routines and rest. / 用途不再
+  压缩成“了解发展”等空话；保留基础入口，同时让新人直接找复合、考试或求职。
+- The proposed mobile directory uses continuous vertical scrolling with visible
+  topic shortcuts. Details show the whole layout and all positions; return restores
+  the original item. This remains a prototype proposal, not a tested UI. / 连续滑动
+  与主题定位为优先验证方案，不强制逐页轮播，也不宣称手机体验已经验证。
+- Prompt draft RP-1.1 contains 15 scenario modules. The baseline prompt includes
+  A/B/C semantics; the current API still supports only A/B. New structures, a third
+  option and persistence need compatible design before implementation. / 不把文稿
+  的新字段当成当前接口；新增模块还需固定虚构牌组与真实模型检验。
+- This revision changes only READING_MASTER and this handoff. Existing application,
+  Word, learning scripts, AGENTS and artwork remain unchanged; no model call, commit,
+  push or release. / 仅更新设计文档。验证记录见主文档RM-1.2段落。
+- Next: review the concrete entry descriptions and shortlist, then prototype finding
+  a reunion or exam reading, asking Yes/No and comparing three choices. Keep learning
+  separate; agree on the flow before UI design and development. / 下一步验证能否
+  找对入口、看懂用途和得到对应问题的回答，不能只验按钮能点或动画能播。
+
+## Previous reading revision: RM-1.1 / 场景化解读提示词 RP-1.0（2026-09-16）
+
+- Read [the complete prompt draft](READING_MASTER.md#prompt-v1),
+  [scenario requirements](READING_MASTER.md#prompt-scenes) and
+  [input-variation checks](READING_MASTER.md#prompt-regression) before changing AI.
+  / 已补完整主提示词、10个场景模块、6类问法要求、3组双语短示范与8项差异回归。
+- Keep the actual question central. Answer outcomes and choices before advice;
+  preserve spread roles and reversals, use natural concrete language, and do not
+  change a conclusion merely to agree with the user's wishes. The new draft removes
+  minimum-length targets and obligatory closing reminders. / 先回答所问，不把结果题
+  全改成安慰或建议；按实际牌位、方向解释，不凑字数、不套统一结尾。
+- Keep free-three positions unassigned across all scenario modules. A clear
+  question with a compatible spread still gets answered if its domain label is
+  wrong; do not invent positions or request redundant clarification. / 自由三张
+  不因切到感情或工作模块就变成时间轴；问题清楚时，不因领域标签错误要求重填。
+- Source reading, authored examples and model performance are separate. Existing
+  code already has several correct constraints; the documented issues are static
+  audit findings, not experimentally proven causes. / 作者方法不是预测准确性的证明，
+  新稿质量仍待真实模型对照，不能把写好提示词当成解读已改善。
+- Only READING_MASTER and this handoff were edited in this revision. No application,
+  API, reference-card content, model settings, Word or learning scripts were changed;
+  no live model request, Git commit or release. / 仅文档修订，未接入、未调用AI、未发布。
+- Next: review the actual question-and-answer samples, then run an explicitly
+  authorized model comparison using fixed fictional inputs and unchanged settings.
+  Preserve raw failures and assess RD-Q and RD-PG, not only length or keyword hits.
+
+## Previous reading draft: RM-1.0 / 抽牌主文档（2026-09-16）
+
+- Start with [READING_MASTER.md](READING_MASTER.md#start), its
+  [open decisions](READING_MASTER.md#open-decisions) and
+  [latest record](READING_MASTER.md#changes). It is independent of the learning
+  manuscript. / 先读抽牌主文档状态、待确认及最新记录，再读相关流程；教学另行维护。
+- Authored: 43 requirements, 19 current issues, 5 preserved improvements, 12
+  bilingual flow scripts, 17 proposed scenarios, 8 motion scripts, 12 recovery
+  scripts and 8 fictional AI cases. Sources and spread versions are traceable;
+  official descriptions, screenshots, prior isolated browser observations and
+  design inferences remain separate. / 已编写要求、走查、流程、场景、动效、异常与
+  AI样例；新增凯尔特简介编号不一致及单牌建议位不能冒充结果位的问题记录。
+- New interaction details are proposals, not accepted implementation. Cards must
+  all be reachable, not forced into a 78-card grid; ritual does not require repeated
+  Continue buttons. No default first-card selection on spread introductions.
+  / 全牌可达、连续扇形、单击选中、整组答案优先；旧网格和旧说明交互不代表认可。
+- Validation is documented in [the actual check record](READING_MASTER.md#changes).
+  Current-source checks and prior mocked-browser evidence do not prove real AI,
+  new-prototype usability, physical-phone access or public deployment. / 文档检查与
+  真实模型、原型、新人、手机实测分开；不能以文稿完成宣称体验已通过。
+- Scope: documentation only. App, interfaces, assets, Word baseline and learning
+  scripts were not edited; no commit, push or publication. Existing local learning
+  work remains intact. / 本轮只改抽牌主文档及两个接力入口，保留先前未提交内容。
+- Next: review the remaining proposals, validate complete interaction prototypes
+  for free three-card, relationship and two-choice journeys, then UI and development
+  only when authorized. Update effective text, tests, decisions and this handoff
+  together in each related turn. / 文档讨论确认后做完整原型，再UI和开发；每轮同步。
+
+## Historical revision: LM-1.0-R3 / 全稿中文与学习者视角修订（2026-09-16）
+
+- Read [the learner-only copy contract](LEARNING_MASTER.md#learner-first-copy) and
+  [R3 full-manuscript review](LEARNING_MASTER.md#chinese-walkthrough-20260916) first.
+  Learning screens have one audience: the learner. Author instructions, scoring,
+  routing and acceptance notes must stay internal. Do not introduce an unnecessary
+  abstract term merely to explain it afterward. / 学牌只对学习者说话；普通讲解直接说清，
+  内部编写、评分和路由说明不能展示，不先抛“静观”等词再解释。
+- All 20 lessons and 78 card scripts have been read and revised in Chinese, including
+  questions, options, feedback, support, captions and summaries. Necessary English
+  changes were synchronized. No self-ratings, confidence scoring or mandatory reflections
+  were added. / 全量中文走查并修订，必要英文同步；不新增自评、打分、必填感悟或换名步骤。
+- The 646 question answers, stable identifiers and branch structure remain intact.
+  Unit/link/asset and unchanged-Word checks were run; this is a manuscript check,
+  not a real novice study or app test. / 646题答案与稳定编号保持，文稿结构和素材核对；
+  不等于真人学会、专业审校或手机体验验收。
+- Remaining teaching issues: easily guessed distractors, support questions that test
+  another concept, heavy reliance on advice positions, and limited independent reading
+  practice. Discuss and revise these before UI design. R2 proposals are historical;
+  its “keep the abstract term, then explain it” approach was explicitly rejected.
+  / 题型与补学问题仍待讨论，不能把文案顺了算作教学已通过；R2部分旧样稿已失效。
+- No Word baseline, app, production animation, Git commit or release was changed.
+  The documents remain local workspace work. / 未改Word、应用和正式动画，未提交或发布；
+  本轮资料仍在本地工作区。
+
+## Previous walkthrough: LM-1.0-R2 / 新人文案走查（历史记录）
+
+- Read [the novice wording walkthrough](LEARNING_MASTER.md#novice-walkthrough-20260916).
+  It records 13 concrete issues, simulated novice questions and proposed bilingual
+  wording: first-use terms, abstract paraphrases, question/answer alignment, changing
+  case facts and overloaded position names. / 已记录13项具体问题与替换样稿。
+- This was a text-based cognitive walkthrough, not a real novice study or app test.
+  At the time of R2, these were proposals and had not replaced the scripts. R3 now
+  supersedes that status; see the latest entry above. Word and app remain unchanged.
+  / R2当时只提出样稿，尚未改正文；当前以顶部R3记录为准。Word与应用未改。
+- Next: discuss the wording changes and update their linked teaching, English,
+  answers and support together before UI design. No commit or publishing authorized
+  for this documentation discussion. / 先讨论并一致修订相关内容，再进入UI；未提交发布。
+
+## Previous review: LM-1.0-R1 / 教学有效性复核（历史记录）
+
+- Read [the review and proposals](LEARNING_MASTER.md#review-20260916) before treating
+  the full scripts as development-ready. Sampling found common-sense distractors,
+  remaining mismatched remediation objectives, and limited independent construction
+  and delayed transfer checks. / 先读复核；题量完整不代表已能教会，部分补学仍换考点。
+- Proposals preserve the three levels, beginner scaffolding, low input, no self-rating,
+  and max-two support cycles. Priorities are question quality, objective-aligned support,
+  progressively reduced hints, and varied delayed checks. / 保留已确认原则；优先修题目与补学，
+  再补逐步撤提示、组织解读及延迟变式。
+- No question answers, Word textbook, app or animation were changed by this review;
+  no Git commit or release. Proposed revisions need discussion and representative
+  text-based trials before UI work. / 仅记录评估与提议，未改原题答案、Word或应用，未提交发布；
+  先讨论代表教学链路再做UI。Updated the master status and its requirements table formatting.
+
+## Historical work: learning scripts LM-1.0 / 教学主文档阶段（2026-09-16）
+
+- Read [LEARNING_MASTER.md](LEARNING_MASTER.md) current status and latest change log
+  first, then the affected lesson/card. / 先读主文档当前状态与最新变更，再进入相关脚本。
+- Authored scope: 20 method lessons (8 beginner, 6 intermediate, 6 advanced), 78
+  card scripts, 646 bilingual questions including targeted support and later checks,
+  motion storyboards, 46 requirement records, sources and the preserved Word baseline.
+  / 已编写20课、78逐牌脚本、646道双语主练习/补练/回访题、分镜、46项要求追踪、
+  来源及Word基线对照。新手先教再考，移除自评、固定三词和陌生牌必做比较。
+- Text checks cover unit/question counts, anchors, local links, all 78 asset hashes
+  and the unchanged Word hash. Internal cross-review corrected mismatched support
+  branches and reversal explanations. This is not expert certification or evidence
+  of learning effectiveness. / 已做文稿数量、链接、78图哈希、Word不变核对，并修正交叉
+  审查发现的补学错配；不等于专家审校、实机验收或学习效果验证。
+- New scripts are authored proposals under confirmed principles, not implemented
+  lessons. No app, production animation, Git commit or release was changed in this
+  task. The Word remains at `output/Tarot-Pocket-初中高级教学手册.docx`; its local
+  presence does not establish cross-device or remote backup. / 本轮只改文档，具体脚本
+  待用户试学；不改应用、不做正式动画、不提交发布。Word原件保留，本地存在不等于已同步。
+- Next: review the actual teaching/answer/support sequence with the user, revise
+  affected scripts, then proceed to UI design and implementation only when authorized.
+  Keep effective text, superseded decisions, coverage and this handoff synchronized
+  in each relevant turn. / 下一步先验收教学链路，再设计UI和开发；每轮相关变更同步主文档。
+
+## Existing implementation: 1.6.0 / 既有版本（不代表新教学方案获认可）
 
 - Full bilingual design and acceptance contract: [EXPERIENCE_V1_6.md](EXPERIENCE_V1_6.md). / 完整问题复盘、方案与验收约定见该文档。
 - All 78 cards use a six-stage lesson with a fixed card position and name, plain Chinese and matching English. First lessons remove unfamiliar-card comparison and mid-course switching; old progress and backups remain compatible. / 78 张牌采用统一六环节、固定牌图和牌名，重写中文并同步英文，初学移除陌生牌比较与途中换牌，保留旧进度和备份。

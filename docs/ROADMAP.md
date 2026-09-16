@@ -2,7 +2,11 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.6.0 · 当前版本
+## Implemented in v1.7.0 · 当前版本
+
+20 lessons across three levels, 78 card units, authored feedback, bounded follow-up and teaching animations; 25 scene entries, complete descriptions, continuous fan selection, full reveal and question-first AI. See [delivery](RELEASE_1_7.md) and both master documents. / 三阶段20课、78牌、错因补讲和回访、教学动效；25场景、完整说明、扇形连续选牌、整组揭牌及针对具体问题的AI。
+
+## Previous v1.6.0 · 前版记录
 
 Fixed six-stage lessons, rewritten 78-card learning copy, category-aware readings, open three-card draw, one-tap full-deck overview and whole-group reveal. [Current experience contract](EXPERIENCE_V1_6.md) supersedes older forced comparison, candidate-confirmation and seven-stage descriptions. / 固定六阶段、重写 78 张学习文案、语境贯穿、自由三张、整副单击选牌和整组翻牌；新体验约定取代旧版强制比较、候选确认和七阶段描述。
 
@@ -24,7 +28,7 @@ Freely selectable learning, visual game variants, non-jumping reference sheets, 
 
 自由选牌、视觉玩法变式、连续资料弹层、23 场景牌阵、日运与完整洗切抽翻仪式；安全升级保留旧记录。
 
-## Retained from v1.0.0 · 保留能力
+## Historical v1.0.0 capabilities · 历史能力（教学界面已由1.7替代）
 
 - 78 seven-stage card courses with independent memory anchors, visual evidence, recall, comparisons and application. / 78 套七步课程，每张牌有独立助记、图像依据、回忆、辨析和应用。
 - Per-skill SM-2 scheduling, same-day retry protection, resumable card sessions and continuous next-card learning. / 按能力点安排 SM-2 复习，限制同日晋级，支持中断续学与连续学下一张。
@@ -52,9 +56,9 @@ Improve confusable-card questions when learners reveal real ambiguity. Broaden m
 
 根据真实混淆点修改近义题；检验已有训练能否迁移后，再丰富多牌教学与情境变式。新题应改变需要判断的内容，而不只是换措辞。
 
-Evaluate FSRS or another scheduler only with an explicit data and migration plan. Current SM-2 is implemented and tested as a scheduling rule; personal retention effectiveness is not yet established.
+Evaluate FSRS or another scheduler only with an explicit data and migration plan. Legacy SM-2 records remain compatible. The academy uses observed answers and bounded follow-up intervals; retention effectiveness is not yet established.
 
-评估 FSRS 等调度器之前，先明确数据与迁移方案。当前 SM-2 已实现并验证规则，尚不能宣称个人记忆效果已被证明。
+评估 FSRS 等调度器之前，先明确数据与迁移方案。旧SM-2记录保留兼容，新学院按实际作答和有限回访规则运行，不能宣称学习效果已经证明。
 
 Optional sync, accounts and native/App Store delivery remain separate product decisions after phone use is accepted. Git transfers source; private JSON backups transfer progress.
 
