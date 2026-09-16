@@ -6,3 +6,6 @@
 !spread-content.js
 **/.env
 **/.env.*
+
+!server/reading-prompts.cjs
+!reading-scenarios.js

@@ -1,83 +1,47 @@
 # Tarot Pocket · 塔罗随身学
 
-**Learn to read the cards. Remember why they mean something.**
+**Learn tarot from the beginning, or draw cards for a question on your mind.**
 
-A bilingual, image-first tarot learning companion. Recall, compare, find evidence, and read a spread — with taps instead of typing. Take the complete 78-card deck and the current lessons with you in a single offline HTML file.
+[**Try on your phone →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en&v=1.7.0) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.0/tarot-pocket-v1.7.0.html) · [简体中文](README.zh-CN.md)
 
-[**Start learning →**](https://georgelu-creator.github.io/tarot-pocket/?lang=en) · [**Download the offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.6.0/tarot-pocket-v1.6.0.html) · [简体中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md)
+![Tarot Pocket](docs/images/hero.png)
 
-![Tarot Pocket — practice, remember, and read](docs/images/hero.png)
+## Learn one step at a time
 
-![v1.6.0](https://img.shields.io/badge/release-v1.6.0-60465C)
-![Languages](https://img.shields.io/badge/languages-English_%2F_简体中文-60465C)
-[![Code license](https://img.shields.io/badge/code-MIT-60465C)](LICENSE)
-[![Content license](https://img.shields.io/badge/content-CC_BY--SA_4.0-60465C)](CONTENT_LICENSE.md)
+Twenty lessons cover eight beginner, six intermediate and six advanced topics, alongside individual lessons for all 78 cards. Read an explanation and a concrete example before answering a taught question. Wrong answers receive specific feedback and another example; persistent difficulty leads to a recap and a later revisit.
 
-v1.6.0 provides **freely selectable, continuous learning for all 78 cards**, per-skill spaced review, and a separate pocket reading table. The hosted app uses one 8-character invitation entrance; after entry, AI readings connect automatically and center the user's actual question.
+Start each card upright, apply it in a situation, then explore reversals. Follow the courses, choose a card, or learn a random new one. Card images keep a consistent size and position. There are no self-ratings, required reflections or voice tasks. Teaching demonstrations support pause, replay, skip and still views.
 
-**Used an earlier version?** Open [Update while keeping records](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en), download the verified update, then choose to enter it. Do not clear site data.
+<img src="docs/images/courses-v17-en.png" width="290" alt="Three course levels"><img src="docs/images/practice-v17-en.png" width="290" alt="Explanation before practice">
 
-This release focuses both core flows: fixed six-stage lessons with rewritten card-specific wording; all 78 backs in one continuous overview, immediate one-tap picks, and one action to reveal the group. Reversals are included by default. The selected category reaches AI, which answers the specific outcome with evidence first. Shuffle rituals and guided AI waits remain. [Experience and acceptance contract](docs/EXPERIENCE_V1_6.md).
+## Find the question you want answered
 
-## A moment for today
+Twenty-five entries are grouped into basics, love, work, study and life. Start with one card or an open three-card reading, or choose Yes/No, two or three choices, relationships, reunion, job search or exams. Each entry explains when to use it and what it answers. The introduction shows the whole spread and every position together.
 
-The daily card now opens as a dated calendar sheet: a prominent day and weekday, the complete card, and short **Embrace / Avoid** reminders for its upright or reversed meaning. Original card advice remains below, with optional visual evidence and a full reference. A gentle entrance respects reduced motion. Reopening the same day keeps the same card; past entries show their saved date. These are card-inspired reflections, not traditional almanac predictions. No sharing step is added.
+Use the preset question directly or add details. Shuffle, cut and select on one continuous table. Swipe through all 78 backs, zoom, and tap once to choose. Reversals are included by default and the group reveals together.
 
-<img src="docs/images/daily-v154-en.png" width="390" alt="Daily tarot calendar with the date, full World card and Embrace / Avoid reminders">
+<img src="docs/images/reading-v17-en.png" width="290" alt="Reading scenarios"><img src="docs/images/reading-guide-v17-en.png" width="290" alt="Complete spread purpose and positions"><img src="docs/images/ritual-select-v17-en.png" width="290" alt="Swipeable fan of card backs">
 
-## A small lesson that stays with you
+Reveal and read explicitly starts interpretation of the question, spread, positions and orientations. Answers begin with a conclusion and its supporting cards, then explain conditions. Waiting is cancellable; retries keep the same cards. An old reply cannot overwrite a newly edited question.
 
-A keyword flashcard might say “Four of Pentacles = holding on.” Tarot Pocket takes you through the picture: locate the hands and feet, recall the idea before seeing an answer, compare nearby meanings, connect Earth and Four, and try the card in a different position.
+Completed answers save locally. Card details and spread information return to the same reading. Offline drawing, card references and saved answers remain available; offline references are never labeled as AI answers.
 
-Questions with explicit criteria explain why the selected answer is wrong. For open position readings, form your own sentence before checking the reference and self-assessing. Final recall hides the picture and card-specific cues; requesting a cue records assisted recall.
+## A card for today
 
-Tap **Random new card** on Home to prioritize cards not yet started; **Resume** remains separate, or choose any card in **Learn**. Each card has six stages: observe, interpret, remember, apply, understand reversals, and recall. The card keeps a consistent position and size. First lessons require no unfamiliar-card comparison or written reflection. Choose what to learn next at completion; exiting preserves progress.
+The daily calendar highlights the saved date, complete artwork, card meaning and advice, with orientation-specific Embrace/Avoid reminders. The same day keeps the same card, and earlier days remain accessible. No sharing or streak task is required. These are card-inspired reminders, not traditional almanac predictions.
 
-<img src="docs/images/practice-v16-en.png" width="390" alt="Practice: look closely, make a judgment, and find evidence">
+<img src="docs/images/daily-v17-en.png" width="290" alt="Daily card calendar">
 
-## What you can do now
+## Mobile, bilingual and offline
 
-| Experience | Current version |
-| --- | --- |
-| Learn from real artwork | 78 historical Rider–Waite–Smith cards from one Pam-A scan set, with individual sources and checksums |
-| Practice beyond recognition | 78 six-stage card lessons, plus 56 further lesson steps and 24 earlier practice questions |
-| Build a mental framework | Elements, numbers, visual evidence, same-card position changes, and contextual reversals |
-| Learn how spreads work | 7 sourced spread structures, an open three-card mode and a daily draw, with compact guides and exact position definitions |
-| Change the question | Love, career, and study contexts; the same card can play different roles |
-| Draw without a physical deck | Optionally write a question, shuffle all 78 cards, cut the deck, browse a continuous overview, tap once to pick without replacement, and reveal the group; reversals are included by default |
-| Review by performance | Five current skills follow SM-2 intervals; historical distinction records remain; immediate retries do not count as delayed recall |
-| Keep your place | Local progress, a resumable card table, up to 40 saved readings, and JSON export/import |
-| Switch language | English and Simplified Chinese interface and learning content |
+- The hosted entrance accepts an eight-character invitation. Individual readings never ask for a connection code or provider key. Provider credentials remain on the server.
+- In Records, download and verify offline content, then use Safari’s Add to Home Screen. Test offline use on your own phone before travelling.
+- Lessons, practice, feedback and reading controls are available in English and Chinese, with verified historical RWS artwork.
+- Records stay in the current browser. Export JSON before changing devices. Older learning and reading backups remain supported. Use the update entry above without clearing site data.
 
-Browse **love, work, study, life, self-reflection and choices**. Each spread displays its layout and every position before shuffling, cutting and drawing. A separate **daily tarot draw** keeps the same card when revisited that day.
+[Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [Implementation and validation](docs/RELEASE_1_7.md)
 
-<img src="docs/images/reading-guide-v16-en.png" width="390" alt="Reading: review visual spread scope before entering your own question">
-<img src="docs/images/ritual-select-v16-en.png" width="280" alt="Tap once to select from all 78 backs / 78 张连续牌背，单击入位"><img src="docs/images/dossier-v152-en.png" width="280" alt="Illustrated card handbook / 图文单牌手册">
-<img src="docs/images/ai-wait-v152-en.png" width="280" alt="Guided waiting while an AI reply is pending">
-
-
-
-## Built for a trip with patchy internet
-
-The recommended phone entry is the public website:
-
-1. Open [Tarot Pocket](https://georgelu-creator.github.io/tarot-pocket/?lang=en) in Safari.
-2. Go to **Records → Check offline content and installation**, then download the complete offline content. Keep the page open until validation finishes.
-3. In Safari’s Share menu, choose **Add to Home Screen**. Open the installed site and check its offline status again.
-4. Before travel, test airplane mode, closing/reopening, an unfamiliar card, and saved progress on the actual phone.
-
-Readiness reflects real download and inventory checks. Failed updates keep the previous complete release and do not force a reload during learning. A [single-file HTML edition](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.6.0/tarot-pocket-v1.6.0.html) remains available for browsers that support local JavaScript.
-
-**Content and personal records are different.** Browsers can evict site data. Export JSON before switching devices or browsers. Git transfers source, never private questions or learning records. Learning and drawing need no account, external fonts or analytics. Optional AI interpretation sends only the current question and drawn cards to the configured service after an explicit request; provider keys remain server-side. See [AI service](docs/AI_SERVICE.md).
-
-## Capabilities and limits
-
-- All 78 cards have authored visual mnemonics, plain explanations, and three distinguishable choices within a complete shared learning flow.
-- Records distinguish encounters, first lessons, self-ratings, objective application, and delayed reviews. Marking a card read never means mastery.
-- Five current skills use SM-2 interval rules, with a 24-hour guard against repeated same-day promotion and immediate retries erasing a lapse. This is not FSRS, and product-specific long-term effectiveness is not claimed.
-- Offline references are labeled as basic references. The optional DeepSeek/OpenAI service analyzes the written question and the whole spread; saved answers remain available offline. Quizzes do not interrupt readings. See [spread sources](docs/SPREAD_SOURCES.md).
-- Content and translations still need independent tarot-teacher review. Automated checks do not replace expert review, physical iPhone tests, phone-restart tests, or extended offline travel. See [Handoff](docs/HANDOFF.md) for exact evidence.
-- This release is an installable mobile website, not a native App Store application.
+Automated checks cover content, state recovery, languages, responsive layouts and browser interaction. They do not establish long-term learning effectiveness or performance on every physical phone/network. Independent teacher review and beginner trials remain necessary.
 
 ## Run it locally
 

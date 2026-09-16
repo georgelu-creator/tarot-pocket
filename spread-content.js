@@ -1261,7 +1261,223 @@ window.TAROT_SPREAD_CONTENT = {
  'decision-five':'五张牌形成两条可比较的路径：第一张是共同现状；第二、四张对应 A 的发展与结果，第三、五张对应 B 的发展与结果。先把 A/B 写具体并约定时间范围，再比较两条路径。不要把 A 的过程与 B 的结果混在一起比较。',
  'relationship-three':'三张分别描述自己在关系中的角色、对方呈现的角色和两人之间的互动。适合先看懂当下的关系。牌面可以提示一种可能的互动方式，但对方的实际想法仍要结合已发生的交流判断。',
  'relationship-five':'五张分别看自己、对方、过去基础、关系现状和后续方向。适合已经持续一段时间、想了解如何走到现在的关系。解读先将过去与现状联系起来，再看关系继续发展的条件。',
- celtic:'十张牌从现状、障碍、基础、过去、目标、近期发展、自身、环境、期望与担忧、结果趋势展开。适合背景复杂且有具体问题时使用。先看核心问题，再结合内外条件解读整体走向；不必为了张数多而选它。'
+ celtic:'十张牌从现状、交叉影响、目标、基础、过去、近期发展、自身、环境、期望与担忧、结果趋势展开。适合背景复杂且有具体问题时使用。先看核心问题，再结合内外条件解读整体走向；不必为了张数多而选它。'
  };
  for(const d of c.spreads.filter(d=>!d.legacy))d.description ||= descriptions[d.id]||d.summary;
 })();
+
+// RM-1.2 sourced additions. Existing IDs and saved position meanings are unchanged.
+window.TAROT_SPREAD_CONTENT.spreads.push(...[
+  {
+    "id": "yes-no",
+    "name": "能不能／会不会 · Yes/No",
+    "layout": "one",
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "1",
+    "summary": "已经有一件想确认的事，想先知道更偏向“能”还是“不能”，可以选这里。抽一张牌，先看回答，再看原因；例如能不能收到录用、这周适不适合主动联系。",
+    "description": "已经有一件想确认的事，想先知道更偏向“能”还是“不能”，可以选这里。抽一张牌，先看回答，再看原因；例如能不能收到录用、这周适不适合主动联系。",
+    "bestFor": "已经有一件想确认的事，想先知道更偏向“能”还是“不能”，可以选这里。抽一张牌，先看回答，再看原因；例如能不能收到录用、这周适不适合主动联系。",
+    "avoid": "把牌面倾向当成已经确定的事实。",
+    "positions": [
+      {
+        "id": "outlook",
+        "label": "这件事的结果倾向",
+        "question": "这件事更偏向能成还是不能成，关键依据是什么？",
+        "role": "outcome"
+      }
+    ],
+    "source": {
+      "title": "Yes No Tarot Reading",
+      "url": "https://labyrinthos.co/pages/yes-no-tarot-reading",
+      "note": "采用公开的单牌 Yes/No 方式。结果倾向是本应用对牌位的说明，不按正逆位计票，也不保证结果。"
+    }
+  },
+  {
+    "id": "new-love",
+    "name": "新感情 · 五牌",
+    "layout": "row",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "1",
+    "summary": "还没有明确交往对象，想了解新的感情机会，可以从这里看。五张牌会一起看你的准备、可能遇到什么样的人、在哪里或怎样相识，以及新关系可能怎样发展。",
+    "description": "还没有明确交往对象，想了解新的感情机会，可以从这里看。五张牌会一起看你的准备、可能遇到什么样的人、在哪里或怎样相识，以及新关系可能怎样发展。",
+    "bestFor": "还没有明确交往对象，想了解新的感情机会，可以从这里看。五张牌会一起看你的准备、可能遇到什么样的人、在哪里或怎样相识，以及新关系可能怎样发展。",
+    "avoid": "把牌面倾向当成已经确定的事实。",
+    "positions": [
+      {
+        "id": "readiness",
+        "label": "我现在的准备",
+        "question": "我目前以怎样的状态迎接新的感情？",
+        "role": "state"
+      },
+      {
+        "id": "partner",
+        "label": "可能遇到的人",
+        "question": "可能出现怎样的相处风格？",
+        "role": "unknown"
+      },
+      {
+        "id": "meeting",
+        "label": "相识的情境",
+        "question": "什么样的相识情境值得留意？",
+        "role": "unknown"
+      },
+      {
+        "id": "connection",
+        "label": "相处方式",
+        "question": "这段新关系可能怎样相处？",
+        "role": "state"
+      },
+      {
+        "id": "potential",
+        "label": "发展可能",
+        "question": "这段关系可能如何发展？",
+        "role": "trend"
+      }
+    ],
+    "source": {
+      "title": "Tina Gong · Finding New Love Tarot Spreads",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/finding-new-love-tarot-spreads",
+      "note": "采用 Finding Love Relationship 的五个角色。中文说明由本项目编写；对象与相遇情境只描述可能性，不保证命定对象或日期。"
+    }
+  },
+  {
+    "id": "three-options",
+    "name": "三选一 · 三牌",
+    "layout": "row",
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "1",
+    "summary": "有三个具体选项，想放在一起比较，可以用这个牌阵。每个选项对应一张牌，围绕同一个目标看它们的差别；例如三个机会中，哪一个更符合自己的安排。",
+    "description": "有三个具体选项，想放在一起比较，可以用这个牌阵。每个选项对应一张牌，围绕同一个目标看它们的差别；例如三个机会中，哪一个更符合自己的安排。",
+    "bestFor": "有三个具体选项，想放在一起比较，可以用这个牌阵。每个选项对应一张牌，围绕同一个目标看它们的差别；例如三个机会中，哪一个更符合自己的安排。",
+    "avoid": "把牌面倾向当成已经确定的事实。",
+    "positions": [
+      {
+        "id": "option-a",
+        "label": "选项A",
+        "question": "选择A有哪些主要机会或困难？",
+        "role": "choice"
+      },
+      {
+        "id": "option-b",
+        "label": "选项B",
+        "question": "选择B有哪些主要机会或困难？",
+        "role": "choice"
+      },
+      {
+        "id": "option-c",
+        "label": "选项C",
+        "question": "选择C有哪些主要机会或困难？",
+        "role": "choice"
+      }
+    ],
+    "source": {
+      "title": "Tina Gong · 3 Card Tarot Spreads",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/3-card-tarot-spreads-simple-tarot-spreads-organized-by-layout",
+      "note": "采用三个平等选项的公开组合。A/B/C编号为应用约定，每项只有一张，不另外增加发展与结果位。"
+    }
+  },
+  {
+    "id": "career-six",
+    "name": "职业发展 · 六牌",
+    "layout": "grid",
+    "category": "work",
+    "categories": [
+      "work"
+    ],
+    "topic": "career",
+    "topics": [
+      "career"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "1",
+    "summary": "想知道目前这份工作还有哪些发展空间，继续做下去可能获得什么，可以选这里。六张牌会联系你当初的选择、现在的投入与工作情况，看看后续可能往哪里走。",
+    "description": "想知道目前这份工作还有哪些发展空间，继续做下去可能获得什么，可以选这里。六张牌会联系你当初的选择、现在的投入与工作情况，看看后续可能往哪里走。",
+    "bestFor": "想知道目前这份工作还有哪些发展空间，继续做下去可能获得什么，可以选这里。六张牌会联系你当初的选择、现在的投入与工作情况，看看后续可能往哪里走。",
+    "avoid": "把牌面倾向当成已经确定的事实。",
+    "positions": [
+      {
+        "id": "origin",
+        "label": "当初为什么选择它",
+        "question": "当初选择这份工作，最看重什么？",
+        "role": "past"
+      },
+      {
+        "id": "motivation",
+        "label": "继续做的动力",
+        "question": "是什么支持我继续投入？",
+        "role": "state"
+      },
+      {
+        "id": "responsibilities",
+        "label": "工作职责",
+        "question": "当前承担的职责意味着什么？",
+        "role": "state"
+      },
+      {
+        "id": "current",
+        "label": "目前的工作情况",
+        "question": "现在的工作呈现怎样的状态？",
+        "role": "state"
+      },
+      {
+        "id": "rewards",
+        "label": "可能的收获",
+        "question": "继续投入可能带来什么收获？",
+        "role": "resource"
+      },
+      {
+        "id": "direction",
+        "label": "接下来的发展",
+        "question": "照目前情况继续，工作可能怎样发展？",
+        "role": "trend"
+      }
+    ],
+    "source": {
+      "title": "Tina Gong · Career Status Check — Brick by Brick",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/three-career-tarot-spreads-for-finding-your-path-and-calling",
+      "note": "保留 Brick by Brick 六个角色。用于当前工作，不把初衷改成现状、不把收获改成弱点，也不凭空增加另一份工作的路径。"
+    }
+  }
+]);

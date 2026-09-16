@@ -33,15 +33,16 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | File / 文件 | Responsibility / 职责 |
 | --- | --- |
 | `index.html` | Source page and script order / 源页面与脚本加载顺序 |
-| `curriculum-content.js`, `journey.js`, `journey.css` | 78 card plans, per-skill SM-2, saved lessons and mobile learning / 78 牌课程、分能力复习、续学与学习 UI |
+| `academy.js`, `academy.css`, `academy-content.js`, `tools/build_academy.py` | Current 20 lessons and 78 card units, feedback, motion and saved attempts / 当前20课与78牌、补学、动效和作答证据 |
+| `curriculum-content.js`, `journey.js`, `journey.css` | Legacy model and compatible validation; academy nested in journey / 旧课模型与兼容校验，academy嵌于journey |
 | `offline.js`, `sw.js`, `update.html`, `manifest.webmanifest` | Explicit offline preparation, atomic cache and installation / 离线下载、完整缓存与安装 |
-| `app.js` | Navigation, quick practice, card library, backup integration / 导航、快练、牌库与备份整合 |
+| `app.js` | Navigation, academy bridge, card library, backup integration / 导航、学院整合、牌库与备份整合 |
 | `learning.js` | Lesson interactions, scoring, recall, progress / 单元交互、评分、回忆与进度 |
 | `reading.js` | Spread selection, shuffle, draw, position guidance, history / 选阵、洗牌、抽牌、牌位引导与历史 |
 | `content.js` | Original teaching-card metadata and 24 quick questions / 原有教学牌资料与 24 道快练 |
 | `learning-content.js` | Four original units: 32 steps / 四个原有单元，共 32 步 |
 | `daily-content.js` / `locales/en-daily.json` | 312 bilingual card-specific upright/reversed daily prompts / 78 张牌正逆位宜忌共 312 条双语提醒 |
-| `spread-content.js` | 8 active definitions including daily plus 19 legacy definitions, and four contextual units: 24 steps / 含日签共 8 个当前定义及 19 个旧版定义，以及四个情境单元 24 步 |
+| `spread-content.js` | 13 active definitions including daily plus 19 legacy definitions / 含日签13个当前定义及19个旧定义；场景在reading-scenarios.js |
 | `card-notes.js`, `dossier.css` | 78 original guide paragraphs and illustrated reference UI / 78 张专属解说及图文手册样式 |
 | `reading-deck.js` | Basic reference content for 78 cards and three topics / 78 张牌与三个主题的基础参考 |
 | `i18n.js` | Display-text and accessibility translation; keeps business IDs and stored values / 显示文字与无障碍翻译，保留业务 ID 和存档值 |
@@ -74,9 +75,9 @@ npm test
 
 `npm test` 会自行在可用本机端口启动服务，并顺序执行检查，不依赖 8765 端口的预览服务。
 
-The asset check verifies 78 stable IDs, decoded files, dimensions, checksums, source evidence, and visual-review records. Browser checks cover quick practice, lesson feedback, recall, interrupted sessions, all 7 sourced spreads, 19 legacy layouts, and daily tarot, full-deck draws, backup round trips, responsive layouts, and the offline bundle. Language changes also need language-specific validation and visual inspection.
+The asset check verifies 78 stable IDs, decoded files, dimensions, checksums, source evidence, and visual-review records. Browser checks cover quick practice, lesson feedback, recall, interrupted sessions, 25 scenes and 12 current ordinary spreads, 19 legacy layouts, and daily tarot, full-deck draws, backup round trips, responsive layouts, and the offline bundle. Language changes also need language-specific validation and visual inspection.
 
-素材检查核验 78 个稳定 ID、图片解码、尺寸、哈希、来源与视觉核查记录。浏览器检查覆盖快练、课程反馈、回忆、断点续学、7 种有出处牌阵、19 个旧版布局与日运、完整牌组抽取、备份往返、响应式布局与离线包。语言变更还要检查对应语言的交互与实际显示。
+素材检查核验 78 个稳定 ID、图片解码、尺寸、哈希、来源与视觉核查记录。浏览器检查覆盖快练、课程反馈、回忆、断点续学、25场景、12种当前普通牌阵、19 个旧版布局与日运、完整牌组抽取、备份往返、响应式布局与离线包。语言变更还要检查对应语言的交互与实际显示。
 
 The full check also validates the shared card back and the design integration: semantic palette and text contrast, responsive Chinese/English views, focused draw exit, skipped animation preserving the shuffled pool, rapid reveal, language/resume stability, reduced-motion reveal and opaque contrast fallback. These checks supplement the existing learning and backup suite rather than replace it.
 
@@ -105,9 +106,9 @@ npm run build
 node tools/capture_gallery.cjs
 ```
 
-By default, the capture tool opens the built local `demo/tarot-demo.html` file in an isolated browser context; it does not depend on an old localhost server or personal browser records. `DEMO_URL` can explicitly select another preview. The script writes actual interface screenshots and a composed hero image under `docs/images/`. Rebuild afterward if the modular website should include the refreshed social-preview image.
+The capture tool starts a private local source server and uses isolated synthetic state with network interpretation disabled. Unset `DEMO_URL` so the capture cannot use an old preview. It writes twelve current bilingual mobile screenshots and a composed hero under `docs/images/`. Rebuild afterward to include the refreshed social preview.
 
-截图工具默认在隔离浏览器中打开构建好的本地 `demo/tarot-demo.html`，不依赖旧 localhost 服务或个人浏览器记录；可用 `DEMO_URL` 显式选择其他预览。脚本在 `docs/images/` 输出真实界面截图与组合封面；如需网页发行目录采用新分享封面，随后再构建一次。
+截图工具启动私有本地源码服务，使用隔离的合成记录并禁用联网解读。清除`DEMO_URL`以免使用旧预览；输出12张当前双语手机截图和组合封面到`docs/images/`，随后构建以包含新封面。
 
 Inspect the resulting images in both language contexts as appropriate. Screenshot generation proves neither motion quality nor real-device acceptance; preserve separate interaction checks and note their actual results.
 

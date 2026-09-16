@@ -6,7 +6,7 @@
   const skills = ['image','meaning','recall','compare','application','reversal'];
   const activeSkills=skills.filter(k=>k!=='compare');
   const labels = {image:'画面线索',meaning:'核心含义',recall:'独立回忆',compare:'相似辨析',application:'情境运用',reversal:'逆位理解'};
-  const blank = () => ({version:1,cards:{},session:null,paused:{}});
+  const blank = () => ({version:1,cards:{},session:null,paused:{},...(window.TarotAcademy?{academy:window.TarotAcademy.blank()}:{})});
   const clamp = (n,min,max,fallback=min) => Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback;
   function validate(raw,ids) {
     const out=blank(), valid=new Set(ids);
@@ -65,6 +65,9 @@
       }
     }
     if(raw.paused && typeof raw.paused==='object')for(const [id,session] of Object.entries(raw.paused)){if(valid.has(id)&&session?.cardId===id){const clean=validate({version:1,cards:out.cards,session},ids).session;if(clean&&!clean.complete)out.paused[id]=clean;}}
+    // Preserve the old sessions verbatim in their own fields. New courses use a
+    // separate versioned branch inside the existing backup/storage envelope.
+    if(window.TarotAcademy)out.academy=window.TarotAcademy.validate(raw.academy);
     return out;
   }
   function rate(old,grade,at) {

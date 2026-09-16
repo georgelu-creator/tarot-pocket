@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.7.0 — Learn step by step, read your question / 循序学牌与场景抽牌
+
+- Twenty beginner/intermediate/advanced lessons and 78 card units teach before practice, with mistake-specific feedback, bounded remediation, saved attempts and later review. No self-ratings or required journaling. / 20课与78牌先教后练，按错误补讲，保存作答与回访，取消自评和必填感悟。
+- Teaching animations support pause, replay and static alternatives. Artwork stays in a stable frame; references use the same teaching source. / 教学动效可暂停、重播和静态查看，牌图固定，手册与课程同源。
+- 25 scenes include Yes/No, two/three choices, relationships, jobs and exams. Guides show every position; continuous shuffle/cut/fan selection reaches every card with one tap and supports zoom. / 25场景与完整介绍，连续洗切、扇形滑选、单击入位、双指与按钮缩放。
+- Whole-group reveal and question-first AI retain context and roles. Cancelled or superseded requests cannot overwrite a newer question. Inputs, cards and results survive returns and backup restore. / 整组揭牌、先答具体问题，迟到回答不污染新问题，返回与备份保留进度。
+- Bilingual screenshots, mobile checks, daily almanac and offline assets are refreshed. Production and physical-phone acceptance remain separate evidence. / 同步双语截图、移动检查、日签和离线资源；上线与实机验收分别记录。
+
 ## 1.6.0 — Focused lessons and intuitive drawing / 集中学牌与直觉抽牌
 
 - All 78 lessons use plain authored wording and a fixed six-stage single-card layout. No forced unfamiliar-card comparison, reflection input or mid-lesson card switching; old records remain. / 78 张牌重写直白文案并采用固定六阶段单牌布局，移除强制陌生牌比较、感悟输入和课中换牌，保留旧记录。

@@ -13,10 +13,12 @@ async function run() {
   const bundled = require('../.edgeone-ai/catalog.cjs');
   const catalog = catalogFromData(bundled), source = loadCatalog();
   assert.equal(catalog.cards.size, 78);
-  assert.equal(catalog.spreads.size, 28);
+  assert.equal(catalog.spreads.size, 32);
   assert.equal([...catalog.spreads.values()].filter(s => s.legacy).length, 19);
   assert.deepEqual([...catalog.cards], [...source.cards]);
   assert.deepEqual([...catalog.spreads], [...source.spreads]);
+  assert.equal(catalog.scenarios.size, 25);
+  assert.deepEqual([...catalog.scenarios], [...source.scenarios]);
   assert.deepEqual(fs.readdirSync(path.join(root, '.edgeone-ai/public')), ['index.html']);
   assert.throws(() => catalogFromData({...bundled, cards: bundled.cards.slice(1)}), /NOT_CONFIGURED/);
   assert.throws(() => catalogFromData({...bundled, spreads: [...bundled.spreads, bundled.spreads[0]]}), /NOT_CONFIGURED/);
@@ -69,7 +71,7 @@ async function run() {
 
   let response = await send(undefined, {path: '/api/health', method: 'GET'});
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash'});
+  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.1', scenarioCount: 25});
   assert.equal(received.length, 0);
   response = await send(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type, authorization'}});
   assert.equal(response.status, 204);
@@ -117,8 +119,8 @@ async function run() {
   assert.ok(contextualBody.messages[1].content.includes('"topic":{"id":"love","label":"感情关系"}'));
   assert.ok(contextualBody.messages[1].content.includes('下个月有机会恢复联系吗？'));
   assert.equal((contextualBody.messages[1].content.match(/"positionRole":"free"/g) || []).length, 3);
-  assert.match(contextualBody.messages[0].content, /偏向会／偏向不会/);
-  assert.match(contextualBody.messages[0].content, /不得把第一张擅定为过去／原因/);
+  assert.match(contextualBody.messages[0].content, /更偏向能/);
+  assert.match(contextualBody.messages[0].content, /不能给第一、二、三张制造过去、现在、未来/);
   for (const [testMode, expected] of [['throw','UPSTREAM_ERROR'], ['error','UPSTREAM_ERROR'], ['invalid','UPSTREAM_ERROR'], ['length','INCOMPLETE_RESPONSE'], ['refusal','MODEL_REFUSAL'], ['huge','UPSTREAM_ERROR'], ['echo','UPSTREAM_ERROR'], ['echo-invite','UPSTREAM_ERROR'], ['empty','INCOMPLETE_RESPONSE']]) {
     mode = testMode;
     assert.equal(await code(), expected);
@@ -194,7 +196,7 @@ async function run() {
   response = await reading({request: request(undefined, {headers: {Authorization: ''}}), env});
   assert.equal((await response.json()).error, 'AUTH_REQUIRED');
   if (process.argv.includes('--bundle')) await checkBundle(root, env, token, origin, sample());
-  process.stdout.write('Cloud Functions checks passed: invitation sessions, shared API, 78 cards/28 spreads, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
+  process.stdout.write('Cloud Functions checks passed: invitation sessions, shared API, 78 cards/32 spreads/25 scenarios, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
 }
 
 async function checkBundle(root, env, token, origin, sample) {

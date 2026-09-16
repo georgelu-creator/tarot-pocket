@@ -6,8 +6,11 @@ import html as html_module
 import json
 import re
 import shutil
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+subprocess.run([sys.executable, str(ROOT/'tools/build_academy.py')], check=True)
 version = json.loads((ROOT/'package.json').read_text())['version']
 translations = {}
 for locale in sorted((ROOT/'locales').glob('en-*.json')):

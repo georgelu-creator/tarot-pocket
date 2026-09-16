@@ -73,16 +73,41 @@ async function fixture(page){
    assert.equal(await page.locator('.ai-waiting').count(),0);
    // A reply that arrives after choosing another spread must not enter its draft or visible UI.
    await fixture(page);mode='hold';await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===before+3,'navigation scenario has one held request');
-   await page.locator('[data-reading=gallery]').click();
+   await page.locator('[data-reading=pause]').first().click();
    const next=page.locator('[data-reading=guide]:not([data-value="decision-five"])').first();const nextId=await next.getAttribute('data-value');await next.click();
-   await page.locator('[data-reading=use-spread]').click();await page.locator('[data-reading=start]').click();
+   await page.locator('[data-reading=start]').click();
    for(const res of held.splice(0))reply(res);
    await until(async()=>await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).history.some(r=>r.id==='fixture-ai-wait-v152'&&r.ai?.length),KEY),'late reply stays with the archived original spread');
    const draft=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft,KEY);
    assert.equal(draft.spreadId,nextId);assert.notEqual(draft.id,'fixture-ai-wait-v152');assert.equal(draft.ai?.length||0,0,'new spread receives no old answer');
    assert.equal(await page.locator('.ai-answer,.ai-waiting').count(),0,'late response does not replace the new spread UI');
+   // Editing while waiting must cancel the old interpretation without redrawing.
+   // Ignore abort in this synthetic transport so a genuinely late reply is tested.
+   await fixture(page);mode='hold';const editBefore=requests.length;
+   await page.evaluate(()=>{window.waitTestFetch=window.fetch;window.fetch=(url,options)=>window.waitTestFetch(url,{...options,signal:undefined});});
+   await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===editBefore+1,'old question starts once');
+   const oldReply=held.splice(0)[0];
+   const originalCards=await page.evaluate(KEY=>{const s=JSON.parse(localStorage.getItem(KEY)).draft;return {pool:s.pool,picked:s.picked};},KEY);
+   await page.locator('[data-reading=edit-question]').click();await page.locator('[data-reading-edit]').fill('Which schedule fits a new evening job?');await page.locator('[data-reading=save-question]').click();
+   assert.equal(await page.locator('.ai-waiting').count(),0,'editing releases the pending request');
+   await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===editBefore+2,'new question starts once');
+   const newReply=held.splice(0)[0];newReply.end(JSON.stringify({text:'New question answer for the evening job.',model:'fixture',provider:'deepseek'}));
+   await page.locator('.ai-answer').waitFor();reply(oldReply);
+   await page.evaluate(async()=>{await new Promise(r=>window.waitTestFetch('/ai-config.js').then(r));});
+   const edited=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft,KEY);
+   assert.equal(edited.questionText,'Which schedule fits a new evening job?');assert.deepEqual({pool:edited.pool,picked:edited.picked},originalCards,'editing/retry keeps every original card');
+   assert.equal(edited.ai.length,1);assert.equal(edited.ai[0].text,'New question answer for the evening job.','late old reply must not replace the new answer');
+   await page.evaluate(()=>{window.fetch=window.waitTestFetch;delete window.waitTestFetch;});
+   // Independently exercise the context guard without relying on UI cancellation.
+   const guard=await page.evaluate(async KEY=>{
+    const s=structuredClone(JSON.parse(localStorage.getItem(KEY)).draft);s.id='context-guard';s.ai=[];
+    const nativeFetch=window.fetch;let release,saved=0;
+    window.fetch=()=>new Promise(r=>{release=()=>r(new Response(JSON.stringify({text:'Old context',model:'fixture',provider:'deepseek'}),{status:200,headers:{'Content-Type':'application/json'}}));});
+    try{const task=TarotReadingAI.request(s,()=>saved++,()=>null);s.userQuestion='Changed without cancellation';s.questionText=s.userQuestion;release();await task;return saved;}finally{window.fetch=nativeFetch;}
+   },KEY);
+   assert.equal(guard,0,'request snapshot guard rejects a changed question even without cancellation');
    assert.deepEqual(errors,[]);await context.close();
   }
-  console.log(JSON.stringify({status:'PASS',checks:['Chinese and English at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
+  console.log(JSON.stringify({status:'PASS',checks:['Chinese and English at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and only saves its new reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
  }finally{for(const res of held.splice(0))reply(res);await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});
