@@ -26,9 +26,11 @@ async function verifiedResponse(asset) {
 }
 async function inventory() {
   if(!RELEASE)return {phase:'unavailable',ready:false,done:0,total:0,cards:0};
-  const cache=await caches.open(CACHE);let done=0,cards=0;
+  let done=0,cards=0;
   for(const asset of entries()) {
-    const response=await cache.match(asset.url);
+    // A status request must never create a cache. It may arrive after an
+    // unsuccessful installation has removed this revision's partial download.
+    const response=await caches.match(asset.url,{cacheName:CACHE});
     if(response?.ok && response.headers.get('X-Tarot-Integrity')===asset.sha256){done++;if(asset.path.startsWith('assets/cards/'))cards++;}
   }
   const ready=done===RELEASE.assets.length && cards===78;

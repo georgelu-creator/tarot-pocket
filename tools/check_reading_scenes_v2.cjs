@@ -7,6 +7,19 @@ const catalog=loadCatalog(), ids=[...catalog.cards.keys()];
 const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.slice(0,catalog.spreads.get(id).positions.length).map((id,i)=>({id,reversed:i%2===1})),...more});
 (async()=>{
  assert.equal(catalog.scenarios.size,25);assert.equal(catalog.spreads.size,32);
+ assert.equal(prompts.version,'RP-1.1.1');
+ // Authored prompt integration only: these checks do not claim that a model obeys it.
+ const master=fs.readFileSync('docs/READING_MASTER.md','utf8');
+ const pb01=master.slice(master.indexOf('#### RD-PB01 · 系统提示词正文')).match(/```text\n([\s\S]*?)\n```/);
+ assert.equal(pb01?.[1],prompts.base,'effective documented PB01 exactly matches runtime');
+ for(const language of ['zh','en']){
+  const instructions=buildPrompt(validateReading(sample('yes-no',{scenarioId:'sc18',sceneVersion:'1',language,question:language==='en'?'Will the exhibition go ahead next month?':'下个月展览能办成吗？'}),catalog)).instructions;
+  for(const rule of ['不能保证用户养成习惯','选择时确认','不声称用户已经积压教程','单牌问题回答倾向与一条具体依据后','cannot guarantee attendance','check whether','without inventing a backlog','without repeating the conclusion'])assert.ok(instructions.includes(rule),language+' includes RP-1.1.1 rule '+rule);
+  assert.ok(instructions.includes(language==='en'?'English（英语）':'简体中文'),'requested response language retained');
+ }
+ const reversedReference=catalog.cards.get('w10').reversed;
+ assert.ok(reversedReference.includes('难以放手分担'),'reversal example grounded in supplied reference');
+
  assert.equal([...catalog.spreads.values()].filter(s=>s.legacy).length,19);
  for(const [id,count]of Object.entries({'yes-no':1,'new-love':5,'three-options':3,'career-six':6}))assert.equal(catalog.spreads.get(id).positions.length,count);
  assert.equal(catalog.spreads.get('yes-no').positions[0].role,'outcome');assert.equal(catalog.spreads.get('one').positions[0].role,'advice');

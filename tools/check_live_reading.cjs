@@ -29,7 +29,7 @@ async function run({env=process.env,fetchImpl=fetch,log=value=>console.log(JSON.
  }
  for(const path of ['/api/session','/api/reading']){const {response}=await request(path,{method:'OPTIONS',preflight:true});requireThat(response.status===204,'PREFLIGHT_FAILED');emit({endpoint:BASE+path,check:'preflight',status:response.status});}
  const health=await request('/api/health');requireThat(health.response.status===200&&health.result.ok===true&&health.result.configured===true,'HEALTH_NOT_READY');
- requireThat(health.result.promptVersion==='RP-1.1'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
+ requireThat(health.result.promptVersion==='RP-1.1.1'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
  emit({endpoint:BASE+'/api/health',status:health.response.status,ok:true,configured:true,...(typeof health.result.promptVersion==='string'?{promptVersion:health.result.promptVersion}:{}),...(Number.isInteger(health.result.scenarioCount)?{scenarioCount:health.result.scenarioCount}:{})});
  const wrong=invite==='AAAA2222'?'BBBB3333':'AAAA2222';
  const rejected=await request('/api/session',{method:'POST',body:{inviteCode:wrong}});requireThat(rejected.response.status===401&&rejected.result.error==='AUTH_REQUIRED','WRONG_INVITE_NOT_REJECTED');emit({endpoint:BASE+'/api/session',check:'wrong-invite',status:401});
