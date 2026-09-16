@@ -6,13 +6,19 @@ The hosted app exchanges one invitation for an expiring reading session. After t
 
 ## 1.7请求与回答 / Current reading contract
 
-`reading-scenarios.js`定义25个场景。请求包含场景ID/版本、用户原问题、时间范围及A/B/C选项，服务端核验场景与牌阵匹配，从受信任目录补全牌位。`server/reading-prompts.cjs`维护RP-1.1，与抽牌主文档对应；15个场景模块及6类问法按问题组合，先答问题再给牌据，不设最低字数。自由三张不擅自分配时间牌位。
+`reading-scenarios.js`定义25个场景。请求包含场景ID/版本、用户原问题、时间范围及A/B/C选项，服务端核验场景与牌阵匹配，从受信任目录补全牌位。`server/reading-prompts.cjs`维护RP-1.1.1，与抽牌主文档对应；15个场景模块及6类问法按问题组合，先答问题再给牌据，不设最低字数。自由三张不擅自分配时间牌位。
 
-The server validates 25 scene IDs and versions against its trusted catalog, including A/B/C labels. RP-1.1 answers the actual question first, then explains the cards and assigned roles. It uses 15 scene modules and 6 question types without minimum-length padding. Open-three positions remain unassigned.
+The server validates 25 scene IDs and versions against its trusted catalog, including A/B/C labels. RP-1.1.1 answers the actual question first, then explains the cards and assigned roles. It uses 15 scene modules and 6 question types without minimum-length padding. Open-three positions remain unassigned.
 
 Editing a pending question cancels the request. The complete request snapshot must still match before a late answer is saved. Health exposes only non-sensitive promptVersion and scenarioCount. See [release verification](RELEASE_1_7.md).
 
 编辑等待中的问题会取消原请求；迟到回答仍须通过完整快照比对才能保存。健康接口只增补不敏感的提示词版本和场景数量。
+
+### RP-1.1.1 文案修订 / Wording revision
+
+2026-09-16，RP-1.1的两个真实合成请求通过认证与响应检查，但人工审读发现未提供的课程安排被写成事实、练习被过度保证、添加未给出的经历，以及抽象套话和重复总结。本修订增加中英同力度规则及原创好坏短示范，保留15场景、6类问法、原牌义和请求协议；不做响应后处理替换。模拟通过仅说明规则和版本正确进入请求，发布后仍须复测真实合成回答。
+
+Two synthetic live RP-1.1 requests passed the authentication and response checks on 2026-09-16, but review found unsupported course arrangements, guarantees about practice, invented prior behavior, vague phrases and repeated conclusions. RP-1.1.1 adds equally strong Chinese/English instructions and original short examples while preserving the 15 scene modules, 6 question types, card references and request contract. Responses are not rewritten by post-processing. Mock checks verify integration, not improvement in live model quality; the same synthetic cases must be rerun after deployment.
 
 ## 当前交付边界 / Delivery status
 

@@ -114,6 +114,7 @@ async function browserCheck(type,name,updates){
   }finally{mode='healthy';update=null;await browser.close();}
 }
 (async()=>{
+  await require('./check_offline_lifecycle.cjs')();
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   try{
     const results=[await browserCheck(chromium,'chromium',true)];
