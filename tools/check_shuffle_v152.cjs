@@ -11,7 +11,6 @@ const key='tarot-reading-v3';
  const ctx=await h.context(browser,{viewport:{width,height:900},hasTouch:true}),p=await ctx.newPage(),errors=[];
  p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();
  const pool=await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key);
- await h.click(p,'motion-pause');
  const stage=p.locator('[data-motion-stage=shuffling]'),cards=p.locator('.ritual-pack>.reading-back');assert.equal(await cards.count(),18);
  const sample=async fraction=>{
  await cards.evaluateAll((els,f)=>els.forEach(el=>el.getAnimations().forEach(a=>{a.pause();a.currentTime=a.effect.getTiming().duration*f;})),fraction);
@@ -28,7 +27,7 @@ const key='tarot-reading-v3';
  const mix=await sample(.42);assert(mix.height>160&&mix.width>180,'mix spreads in two dimensions, not just two piles');
  if(width===390)await stage.screenshot({path:`/tmp/tarot-v152-${engine.name()}-shuffle-mix.png`});
  const crossed=await sample(.59);assert(mix.rects.filter((r,i)=>Math.hypot(r.cx-crossed.rects[i].cx,r.cy-crossed.rects[i].cy)>40).length>=12,'most cards visibly cross to new positions');
- const gathered=await sample(.97);assert(gathered.width<105&&gathered.height<mix.height*.86,'cards gather back into one compact deck');await h.click(p,'motion-pause');
+ const gathered=await sample(.97);assert(gathered.width<105&&gathered.height<mix.height*.86,'cards gather back into one compact deck');
  assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'animation never rerolls cards');
  await p.locator('[data-reading=cut][data-index="0"]').waitFor();assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'automatic shuffle preserves the randomized pool');assert(await p.locator('[data-reading=cut][data-index="0"]').isVisible());assert.deepEqual(errors,[]);await ctx.close();
  }
