@@ -108,7 +108,7 @@
   function currentStep(s){if(s?.support?.key==='review-summary')return {kind:'summary',key:'V1',content:[units[s.unitId].summary],support:true};return rawStep(s);}
   function create(bridge){
     const {esc,img,icon,go,toast,now,get,set}=bridge;
-    let animationTimer=null,search='',level='B';
+    let search='',level='B';
     const lang=()=>window.TAROT_I18N?.locale==='en'?'en':'zh';
     const t=p=>typeof p==='string'?p:p?.[lang()]||'';
     const copy=(zh,en)=>lang()==='en'?en:zh;
@@ -120,17 +120,17 @@
     const due=()=>Object.entries(data().progress).filter(([id,p])=>p.completedAt&&(p.nextVisitAt||Infinity)<=now()).sort((a,b)=>a[1].nextVisitAt-b[1].nextVisitAt).map(([id])=>id);
     function recommendation(){const candidates=source.cards.filter(c=>!status(c.id)?.uprightAt).map(c=>c.id),seen=new Set([current()?.unitId,...Object.values(data().paused||{}).map(s=>s.unitId)]),fresh=candidates.filter(id=>!seen.has(id)),ids=fresh.length?fresh:candidates;return ids.length?ids[Math.floor(Math.random()*ids.length)]:null;}
     function save(d){d.contentVersion=version;set(d);}
-    function pauseAnimation(){if(animationTimer){clearTimeout(animationTimer);animationTimer=null;}}
+    function pauseAnimation(){}
     function start(id,mode='learn'){
       pauseAnimation();if(!units[id])return;
       const d=data(),u=units[id];
       if(mode==='reverse'&&!status('I04')?.completedAt){d.pendingReverse=id;id='I04';mode='learn';}
       else if(mode==='reverse')d.pendingReverse=null;
-      if(active()&&current().unitId===id&&current().mode===mode){go('academy');requestAnimationFrame(autoPlayDemonstration);return;}
+      if(active()&&current().unitId===id&&current().mode===mode){go('academy');return;}
       if(active())d.paused[current().unitId+':'+current().mode]=structuredClone(current());
       const key=id+':'+mode;
       d.session=d.paused[key]||{unitId:id,mode,index:0,startedAt:now(),seed:Math.floor(Math.random()*1e9)+1,contentVersion:version,answers:{},support:null,hint:false,complete:false,lang:lang(),animation:{frame:0,static:true,paused:true},scroll:0};
-      delete d.paused[key];save(d);go('academy');requestAnimationFrame(autoPlayDemonstration);
+      delete d.paused[key];save(d);go('academy');
     }
     function newCard(){const id=recommendation();if(id)start(id);else{toast(copy('78 张牌都已经学过，可以选一张回看。','You have studied all 78 cards. Choose one to revisit.'));go('courses');}}
     function review(){const id=due()[0];if(id)start(id,units[id].kind==='card'&&status(id)?.targets.Q3?.status==='pending'?'reverse-review':'review');else{toast(copy('暂时没有需要回访的内容。','Nothing is due for a revisit yet.'));go('courses');}}
@@ -149,13 +149,13 @@
       if(u.id==='I04')ids=[step?.key==='T2'?'s09':'p08'];
       if(u.id==='B03')return `<div class="academy-suit-map" aria-label="${copy('四种花色及元素','Four suits and their elements')}">${[['权杖','Wands','火','Fire'],['圣杯','Cups','水','Water'],['宝剑','Swords','风','Air'],['星币','Pentacles','土','Earth']].map(([z,en,ez,ee])=>`<div><strong>${copy(z,en)}</strong><span>${copy(ez,ee)}</span></div>`).join('')}</div>`;
       if(!ids.length)return `<div class="academy-image-space academy-question-space"><span aria-hidden="true">?</span><p>${copy('先说清楚想问什么','Begin with a clear question')}</p></div>`;
-      const shown=ids, special=['A05','A06'].includes(u.id),path=s.animation?.path||'all';
+      const shown=ids, special=['A05','A06'].includes(u.id),path='all';
       const roles=u.id==='A05'?[['现状','Situation'],['A 发展','A development'],['B 发展','B development'],['A 趋势','A tendency'],['B 趋势','B tendency']]:u.id==='A06'?[['整体影响','Overall'],['交叉阻碍','Crossing obstacle'],['目标','Goal'],['基础','Foundation'],['渐退影响','Receding'],['将来影响','Approaching'],['自己','Your approach'],['环境','Environment'],['希望或担忧','Hopes or fears'],['结果趋势','Tendency']]:null;
       const group=path==='a'?[0,1,3]:path==='b'?[0,2,4]:path==='work'?[0,1]:path==='movement'?[3,4,5,7]:path==='outcome'?[2,8,9]:ids.map((_,i)=>i);
-      return `<div class="academy-image-space ${shown.length>1?'is-spread':''} ${special?'academy-layout-'+u.id:''}" aria-label="${copy('本节牌图','Cards in this lesson')}">${shown.map((id,i)=>{const c=units[id],reversed=step?.reversed||s.mode?.startsWith('reverse')||u.id==='A04'&&id==='p08'||u.id==='I04'&&step?.key!=='T1';return `<figure data-position="${i+1}" class="${group.includes(i)?'is-emphasized':''}"><button class="academy-card-face ${reversed?'is-reversed':''}" data-action="zoom" data-id="${id}" aria-label="${esc(copy('放大','Enlarge')+' '+t(c?.title))}">${img(id)}</button><figcaption>${shown.length>1?`${i+1} · `:''}${roles?esc(copy(...roles[i])):esc(t(c?.title))}${reversed?' · '+copy('逆位','Reversed'):''}</figcaption></figure>`;}).join('')}</div>${special?`<div class="academy-path-controls">${(u.id==='A05'?[['a','看 A 路线','Path A'],['b','看 B 路线','Path B'],['all','看整组','Whole spread']]:[['work','合作与阻碍','Cooperation'],['movement','准备与执行','Preparation'],['outcome','目标、担忧与结果','Goal, fear and outcome'],['all','看全部','All positions']]).map(([v,z,en])=>button('path',z,en,`data-value="${v}" aria-pressed="${path===v}"`)).join('')}</div>`:''}`;
+      return `<div class="academy-image-space ${shown.length>1?'is-spread':''} ${special?'academy-layout-'+u.id:''}" aria-label="${copy('本节牌图','Cards in this lesson')}">${shown.map((id,i)=>{const c=units[id],reversed=step?.reversed||s.mode?.startsWith('reverse')||u.id==='A04'&&id==='p08'||u.id==='I04'&&step?.key!=='T1';return `<figure data-position="${i+1}" class="${group.includes(i)?'is-emphasized':''}"><button class="academy-card-face ${reversed?'is-reversed':''}" data-action="zoom" data-id="${id}" aria-label="${esc(copy('放大','Enlarge')+' '+t(c?.title))}">${img(id)}</button><figcaption>${shown.length>1?`${i+1} · `:''}${roles?esc(copy(...roles[i])):esc(t(c?.title))}${reversed?' · '+copy('逆位','Reversed'):''}</figcaption></figure>`;}).join('')}</div>`;
     }
-    // Each sequence is a concrete visual summary of the authored lesson above.
-    // Stills expose every label; playback only changes emphasis, never access.
+    /* Historical lesson-visual data is intentionally retained below only for
+       saved-session compatibility. The learner UI does not render or control it. */
     const lessonVisuals={
       B01:[['78 张牌','78 cards'],['22 张大牌','22 Major Arcana'],['56 张小牌','56 Minor Arcana']],
       B02:[['先定问题和牌位','Set the question and position'],['洗牌，再选一张','Shuffle, then draw a card'],['回答原来的问题','Answer the original question']],
@@ -209,9 +209,8 @@
       let body='';
       if(step.kind==='teach'||step.kind==='summary'){
         const labels=step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
-        const motion=animation(u,s,step);
         const content=u.kind==='card'&&step.key==='T1'&&!step.support?'':step.content.map(p=>`<p>${esc(t(p))}</p>`).join('');
-        body=`<section class="academy-copy"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${u.kind==='card'&&step.key==='T1'&&!step.support?`<p class="academy-context-note">${copy('先认识这张牌的正位：牌图朝正方向。接下来先看意思和例子，再做两道练习。','Start with this card upright, with its image facing the usual way. Read its meaning and example, then try two questions.')}</p>`:''}${content}${motion}${step.reversed?`<p class="academy-context-note">${copy('这里只练刚才这个情况。逆位不等于把正位的意思反过来。','Practise this stated situation. Reversal does not simply reverse the upright meaning.')}</p>`:''}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
+        body=`<section class="academy-copy"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${u.kind==='card'&&step.key==='T1'&&!step.support?`<p class="academy-context-note">${copy('先认识这张牌的正位：牌图朝正方向。接下来先看意思和例子，再做两道练习。','Start with this card upright, with its image facing the usual way. Read its meaning and example, then try two questions.')}</p>`:''}${content}${step.reversed?`<p class="academy-context-note">${copy('这里只练刚才这个情况。逆位不等于把正位的意思反过来。','Practise this stated situation. Reversal does not simply reverse the upright meaning.')}</p>`:''}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
       }else{
         const q=step.question,a=s.answers[q.id],ordered=[...q.options].sort((x,y)=>hash(x.id+s.seed)-hash(y.id+s.seed));
         const hint=step.key==='Q2'&&u.application?[u.application]:step.reversed?[u.reversal]:u.teachings;
@@ -220,7 +219,7 @@
       return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,step)}${body}</main>`;
     }
     function hash(s){let h=0;for(const c of s)h=(Math.imul(h,31)+c.charCodeAt(0))|0;return h;}
-    function refresh(scroll=false){const old=document.querySelector('.academy-shell,.academy-home');if(!old){go(current()?'academy':'courses');requestAnimationFrame(autoPlayDemonstration);return;}const y=window.scrollY;old.outerHTML=old.classList.contains('academy-home')?home():render();if(scroll)window.scrollTo(0,0);else window.scrollTo(0,y);requestAnimationFrame(autoPlayDemonstration);}
+    function refresh(scroll=false){const old=document.querySelector('.academy-shell,.academy-home');if(!old){go(current()?'academy':'courses');return;}const y=window.scrollY;old.outerHTML=old.classList.contains('academy-home')?home():render();if(scroll)window.scrollTo(0,0);else window.scrollTo(0,y);}
     function paintAnimation(){
       const s=current(),el=document.querySelector('.academy-animation');if(!s||!el)return;
       const a=s.animation,staticMode=a.static||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -263,7 +262,6 @@
       if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}go('courses');return;}
       if(action==='level'){level=el.dataset.value;refresh();return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
-      if(action==='path'){s.animation.path=el.dataset.value;save(d);paintAnimation();return;}
       if(action==='answer'){if(answer(d,el.dataset.value,now())){save(d);refresh();}return;}
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
       if(action==='next'){

@@ -14,9 +14,6 @@ window.TarotReadingAI = (() => {
   const messages={AUTH_REQUIRED:'登录已过期，请重新输入邀请码。',RATE_LIMITED:'本次解读暂时达到使用上限，请稍后再试。',NOT_CONFIGURED:'AI 服务尚未配置完成。牌阵与离线参考仍可使用。',TIMEOUT:'解读等待超时，牌阵已保留，可以重试。',UPSTREAM_ERROR:'AI 暂时没有返回完整解读，请稍后再试。',INVALID_REQUEST:'这组牌的信息不完整，请回到牌阵核对。',UNAVAILABLE:'暂时无法连接 AI 服务。你的牌阵没有改变。',INCOMPLETE_RESPONSE:'AI 暂时没有返回完整解读，请稍后再试。',MODEL_REFUSAL:'AI 无法解读这次问题。牌阵已保留，可以修改问题后重试。',BUSY:'AI 服务正在处理其他解读，请稍后再试。',ORIGIN_NOT_ALLOWED:'此网页尚未获准连接该 AI 服务。',PAYLOAD_TOO_LARGE:'问题内容过长，请缩短后再试。'};
   const effectiveQuestion=s=>s.userQuestion?.trim()||s.questionText?.trim()||s.presetQuestion?.trim()||window.TAROT_READING_SCENARIOS?.find(x=>x.id===s.scenarioId)?.question||'';
   const buildRequest=(s,language=locale())=>({spreadId:s.spreadId,topic:s.scenarioId?(window.TAROT_READING_SCENARIOS?.find(x=>x.id===s.scenarioId)?.topic||s.topic||'general'):s.contextEnabled===false?'general':s.topic||'general',question:effectiveQuestion(s),language,cards:s.picked.map(i=>({id:s.pool[i].id,reversed:s.pool[i].reversed})),...(s.optionA?{optionA:s.optionA}:{}),...(s.optionB?{optionB:s.optionB}:{}),...(s.optionC?{optionC:s.optionC}:{}),...(s.scenarioId?{scenarioId:s.scenarioId,sceneVersion:s.sceneVersion||'1'}:{}),...(s.timeframe?{timeframe:s.timeframe}:{})});
-  function action(s){
-    return `<div class="ai-action"><div class="ai-question"><small>本次重点回应</small><p>${esc(effectiveQuestion(s)||'这组牌呈现的主要方向')}</p></div><button type="button" class="primary wide" data-reading="ai-request" ${navigator.onLine?'':'disabled'}>生成完整解读</button><p class="ai-disclosure">点击后，仅将这次的问题、所选场景、牌阵、牌位与正逆位发送给解读服务。学习记录不会发送。</p></div>`;
-  }
   const waitingTips=[
     '这次的问题和牌面已发送，正在等待解读回复。',
     '你的牌阵已经保留，取消等待也不会重新抽牌。',
@@ -36,7 +33,8 @@ window.TarotReadingAI = (() => {
   function render(s){
     if(lastReading!==s.id){lastReading=s.id;error='';}
     const saved=s.ai?.find(x=>x.language===locale()),working=pending?.id===s.id;
-    return `<section class="reading-ai" data-reading-ai><div class="eyebrow">WHOLE-SPREAD READING</div><h2>${saved?'你的整组解读':'看懂这组牌的主线'}</h2>${saved?`<div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p>`:working?waiting(s):endpoint()?`<p>从你的具体问题出发，连接每个牌位与正逆位，形成一条完整主线。</p>${action(s)}`:`<p class="ai-status">${window.TAROT_STANDALONE?'这是独立离线文件。联网 AI 解读请打开网页版；已保存的解读可在这里阅读。':'AI 服务尚未连接；连接后可在这里生成整组解读。'}</p>`}${!navigator.onLine?'<p class="ai-status">当前离线。已保存的解读仍可阅读；新解读需要联网。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p>`:''}</section>`;
+    const unavailable=window.TAROT_STANDALONE?'这是离线保存文件，只能查看已抽到的牌和单张参考；完整解读需要在 Tarot Pocket 网页中进行。':'暂时无法连接解读服务。牌面和问题已保留，恢复后会继续解读。';
+    return `<section class="reading-ai" data-reading-ai><div class="eyebrow">WHOLE-SPREAD READING</div><h2>${saved?'你的整组解读':'正在整理这组牌的回答'}</h2>${saved?`<div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p>`:working?waiting(s):endpoint()?`<p class="ai-status">解读正在连接。牌面和问题会保留在这里。</p>`:`<p class="ai-status">${unavailable}</p>`}${!navigator.onLine?'<p class="ai-status">当前离线。已保存的解读仍可阅读；新解读需要联网。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p><button class="secondary" data-reading="ai-request">重新连接解读</button>`:''}</section>`;
   }
   function patch(s){if(!s)return;const el=document.querySelector('[data-reading-ai]');if(el){const h=document.createElement('div');h.innerHTML=render(s);el.replaceWith(h.firstElementChild);}}
   async function request(s,save,current){

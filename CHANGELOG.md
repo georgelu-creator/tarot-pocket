@@ -1,5 +1,11 @@
 # Changelog · 版本记录
 
+## 1.7.3 — Spread-shaped reading / 牌阵形状贯穿抽牌
+
+- Selected cards, the group reveal, and settled results now use the selected spread's actual position map, including the five-card decision pattern, relationship cross and Celtic Cross. The layout remains visible while a reader moves from choosing to reading the answer. / 已选牌、整组揭牌和结果页都采用所选牌阵的真实位置图，包括五牌二择一、关系十字与凯尔特十字；从选牌到阅读答案始终保留牌位关系。
+- Learning no longer renders automatic demonstrations or any related controls. Lessons show the authored card, explanation and practice directly. / 学牌不再渲染自动演示及其控制，直接呈现编写好的牌图、讲解和练习。
+- A normal web reading now uses one action, “Reveal and read”, and begins the authorized online interpretation after the cards finish revealing. The standalone offline file remains intentionally local-only. / 正常网页抽牌只需“揭牌并解读”一个动作，牌面揭开后即开始已获授权的在线解读；独立离线文件仍保持纯本地。
+
 ## 1.7.2 — Mobile reading flow / 移动端抽牌闭环
 
 - The spread directory now shows one real category at a time. Its compact cards explain enough to choose a spread; complete positions and the longer description appear after entry. Each category is ordered from fewer cards to more cards, with one-card and three-card basics first. / 牌阵目录一次只展示一个真实分类；外层紧凑卡片提供足够的用途说明，进入后才展开完整牌位与长说明。每类按张数由少到多排列，单牌与三张基础牌优先。
