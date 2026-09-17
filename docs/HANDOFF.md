@@ -1,5 +1,17 @@
 # Continue on another computer · 跨电脑接力
 
+## 1.7.3 spread-shaped reading / 牌阵形状贯穿抽牌（2026-09-17）
+
+- 当前工作区将已选牌、揭牌和结果统一放入所选牌阵的真实槽位；二择一五张牌不再落成通用网格，关系十字和凯尔特十字同样保留位置关系。网页中“揭牌并解读”完成翻牌后自动请求已经授权的在线解读；独立离线HTML仍不发网络请求。/ The working tree keeps each spread's actual slot map through selection, reveal and results. The web action “Reveal and read” starts the authorized online reading after reveal; the standalone HTML stays offline.
+- 学牌移除自动演示和所有相关操作项，只保留牌图、直白讲解、例子和练习。/ Learning removes automatic demonstrations and their controls, retaining only cards, plain explanations, examples and practice.
+- 本条为待验证实现记录：需运行完整 `npm test`、提交、推送、合并、Pages及真实手机重新验收后再更新最终状态。/ This is a pending implementation record: full tests, commit, push, merge, Pages and real-phone acceptance still need actual evidence.
+
+## 1.7.2 mobile reading flow / 移动端抽牌与学牌控制简化（2026-09-17）
+
+- 当前工作区把抽牌目录改成一次一个分类、紧凑用途卡与详情页完整说明；同类牌阵按张数由少到多排。扇形牌组改为密集重叠、放大后才显示顺序号，选牌入更大的可见槽；整组揭牌有短光效。补充问题会保留原牌与旧回答，并在在线会话可用时立刻重解。/ The working tree now uses one real reading category at a time, compact purpose cards with complete details after entry, count-first ordering, a denser zoom-numbered fan, larger selected slots, a short reveal cue, and save-and-reread for changed questions.
+- 学牌移除学习者无用的播放、重播、看动效和跳过动效控制；必要画面强调自动进行，减少动态直接保留完整静态讲解。/ Learning removes learner-facing effect controls; necessary emphasis plays automatically and reduced motion keeps the complete static explanation.
+- 本地完整 `npm test` 已通过；覆盖构建、资源、双语、20课/78牌、25场景、邀请码与模拟AI、移动浏览器流。版本、提交、CI、Pages和公开手机入口仍需按本次实际发布记录更新，不能提前称已上线。/ Local `npm test` passed; version, commit, CI, Pages and public-phone evidence remain to be recorded after the actual release.
+
 ## 1.7.1 invitation route recovery / 邀请验证线路故障（2026-09-17）
 
 - 用户提供1.7.0入口截图：邀请码已填写，页面提示“暂时无法验证”。本机对 `tarot-ai.georgelu.cn` 两个解析节点的HTTPS检查均在TLS握手超时，未触达邀请码校验；不能把截图判成邀请码错误。

@@ -34,19 +34,16 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  const before=(await state(p)).draft;
  assert.equal(await p.locator('.bottomnav').count(),0,'focused draw retains an exit instead of persistent navigation');
  assert(await p.locator('[data-reading=pause]').isVisible());
- assert(await p.locator('.shuffle-pack').evaluate(pack=>{
-   const cards=[...pack.children],skip=document.querySelector('[data-reading=skip-animation]').getBoundingClientRect();
-   return cards.length===18&&cards.every(card=>getComputedStyle(card).position==='absolute'&&card.getBoundingClientRect().bottom<skip.top);
- }),'all 18 shuffle cards stay above the skip action');
- await p.locator('[data-reading=skip-animation]').click();
- assert.deepEqual((await state(p)).draft.pool,before.pool,'skip animation must not draw again');
- await p.locator('[data-reading=cut][data-index="26"]').click();await p.locator('[data-reading=skip-animation]').click();await p.locator('[data-reading=pick]').first().waitFor();
+ await p.locator('[data-reading=cut][data-index="26"]').waitFor();
+ assert.equal(await p.locator('[data-reading=skip-animation],[data-reading=motion-pause],[data-reading=motion-replay]').count(),0,'the ritual does not add effect controls');
+ assert.deepEqual((await state(p)).draft.pool,before.pool,'the automatic shuffle keeps its original randomized pool');
+ await p.locator('[data-reading=cut][data-index="26"]').click();await p.locator('[data-reading=pick]').first().waitFor();
  const cutPool=(await state(p)).draft.pool;assert.deepEqual(cutPool,[...before.pool.slice(26),...before.pool.slice(0,26)],'cut rotates the existing pool');
  const styles=await p.locator('.reading-fan-card:not(:disabled) .reading-back').evaluateAll(els=>[...new Set(els.map(e=>getComputedStyle(e).backgroundImage))]);
  assert.equal(styles.length,1);const standalone=await p.evaluate(()=>!!window.TAROT_STANDALONE);if(standalone)assert(styles[0].includes('data:image/svg+xml;base64,'),'standalone card-back must be embedded');else assert(styles[0].includes('/assets/design/card-back.svg'),'web edition uses the bundled local card back');assert(await p.locator('.reading-fan-card .reading-back').first().evaluate(async e=>{const url=getComputedStyle(e).backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1];const i=new Image();i.src=url;await i.decode();return i.naturalWidth>0;}),'actual shared card-back image decodes');
  await p.locator('[data-language-toggle]').click();assert.deepEqual((await state(p)).draft.pool,cutPool);
- for(let i=0;i<3;i++)await h.pick(p,i);await p.locator("[data-reading=reveal-all]").waitFor();
- await p.locator('[data-reading=reveal-all]').evaluate(b=>{b.click();b.click();b.click()});
+ for(let i=0;i<3;i++)await h.pick(p,i);await p.locator("[data-reading=reveal]").waitFor();
+ await p.locator('[data-reading=reveal]').evaluate(b=>{b.click();b.click();b.click()});
  assert.deepEqual((await state(p)).draft.revealed,[0,1,2],'rapid group reveal cannot create duplicate outcomes');
  assert.equal(await p.locator('.reveal-group.is-revealing-group .group-flip-back').count(),3);
  assert.equal(await p.locator('.is-revealing-group .reveal-group-face').first().evaluate(el=>getComputedStyle(el).animationName),'group-face-arrive');
