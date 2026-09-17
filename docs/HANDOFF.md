@@ -1,6 +1,14 @@
 # Continue on another computer · 跨电脑接力
 
-## Published release / 已发布与公网验证（2026-09-17）
+## 1.7.1 invitation route recovery / 邀请验证线路故障（2026-09-17）
+
+- 用户提供1.7.0入口截图：邀请码已填写，页面提示“暂时无法验证”。本机对 `tarot-ai.georgelu.cn` 两个解析节点的HTTPS检查均在TLS握手超时，未触达邀请码校验；不能把截图判成邀请码错误。
+- 同项目默认域名 `tarot-pocket-ai-x1xpktdj.edgeone.dev` 当前健康检查、网页跨域预检及真实邀请码换会话成功，签名会话通过解读鉴权；从GitHub Pages来源在隔离Chromium/WebKit中发起的真实跨域会话请求也均返回200。验证没有输出凭据或调用付费模型。它之前曾在另一手机网络返回401，因此备用线路的可用性仍要以用户实机复测为准。
+- 1.7.1入口在主线路网络故障时尝试备用域名，错误邀请码及限流仍直接拒绝；成功后解读与刷新沿用成功验证的线路。已移除服务的旧会话会失效，避免令牌发往不匹配的地址。前端CSP、配置脚本和抽牌主文档同步更新。Chromium/WebKit隔离回归覆盖断线、错误码、正确码、解读及刷新；旧邀请码和存档格式不变。
+- 本机完整 `npm test` 通过，构建指纹 `1.7.1-175b80baefb10370`，118项离线资源；包括双浏览器故障切换、真实v1.0升级及存档保留。公网发布与实机体验是后续独立验收。
+- 发布提交、主分支CI、Pages和公网手机入口的最终证据，以[1.7.1发布记录](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.7.1)及关联Actions为准。真实iPhone/微信的两条线路仍需用户试用验证；不要用本机备用服务通过替代该结论。
+
+## Previous release / 上一版已发布与公网验证（2026-09-17）
 
 - 网页 **1.7.0已上线**，构建指纹 `1.7.0-c675ca1f888dfacd`。[手机更新入口](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh&v=1.7.0-c675ca1f888dfacd)：检查并下载新版，再选择保留记录进入；沿用原邀请码。
 - 发布代码提交为 `5ce2237e642213788a3230da80e964920145ad06`。PR #16、#17、[#18](https://github.com/georgelu-creator/tarot-pocket/pull/18)均经完整CI后合并；最终[主分支检查及Pages部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35176636451)全部成功。后续仅文档提交不改变此构建指纹。

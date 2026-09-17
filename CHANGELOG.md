@@ -1,5 +1,10 @@
 # Changelog · 版本记录
 
+## 1.7.1 — Recover invitation verification / 邀请验证故障切换
+
+- When the custom AI domain cannot complete a network request, the entrance also tries the verified provider domain. Wrong codes and rate limits remain errors; a successful session keeps its chosen service for later readings and reloads. / 自定义AI域名连接失败时，入口自动尝试已验证的同项目托管域名。邀请码错误与限流仍直接报错；验证成功后，解读和同标签刷新沿用实际连通的服务。
+- The backup address is explicitly allowed by CSP and contains no credential. Isolated Chromium and WebKit checks cover a broken primary connection, correct and incorrect invitations, reading requests, and reload. / 备用地址仅在网页CSP中明确放行，不包含凭据；隔离的双浏览器检查覆盖主线路断开、正确与错误邀请码、解读和刷新。
+
 ## 1.7.0 — Learn step by step, read your question / 循序学牌与场景抽牌
 
 - Twenty beginner/intermediate/advanced lessons and 78 card units teach before practice, with mistake-specific feedback, bounded remediation, saved attempts and later review. No self-ratings or required journaling. / 20课与78牌先教后练，按错误补讲，保存作答与回访，取消自评和必填感悟。

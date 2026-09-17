@@ -2,7 +2,7 @@
 
 **Learn tarot from the beginning, or draw cards for a question on your mind.**
 
-[**Try on your phone →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en&v=1.7.0) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.0/tarot-pocket-v1.7.0.html) · [简体中文](README.zh-CN.md)
+[**Try on your phone →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en&v=1.7.1) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.1/tarot-pocket-v1.7.1.html) · [简体中文](README.zh-CN.md)
 
 ![Tarot Pocket](docs/images/hero.png)
 
@@ -35,6 +35,7 @@ The daily calendar highlights the saved date, complete artwork, card meaning and
 ## Mobile, bilingual and offline
 
 - The hosted entrance accepts an eight-character invitation. Individual readings never ask for a connection code or provider key. Provider credentials remain on the server.
+- If the main verification route is unreachable, the page tries the backup route automatically; the invitation stays entered.
 - In Records, download and verify offline content, then use Safari’s Add to Home Screen. Test offline use on your own phone before travelling.
 - Lessons, practice, feedback and reading controls are available in English and Chinese, with verified historical RWS artwork.
 - Records stay in the current browser. Export JSON before changing devices. Older learning and reading backups remain supported. Use the update entry above without clearing site data.
