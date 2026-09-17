@@ -51,6 +51,7 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   assert.equal(catalog.length,12,'twelve available structures plus the separate daily draw');assert.equal(scenes.length,25);
   for(const sc of scenes){
    const d=catalog.find(d=>d.id===sc.spreadId);
+   if((await p.locator('.reading-theme').getAttribute('id'))!==`reading-theme-${sc.category}`)await p.locator(`[data-reading=category][data-value=${sc.category}]`).click();
    await p.locator(`[data-reading=guide][data-scenario="${sc.id}"]`).click();
    for(const width of [390,320]){
     await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal page overflow');
@@ -66,7 +67,7 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
    assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'English guide does not overflow');
    await p.locator('[data-language-toggle]').click();await p.locator('[data-reading=guide-back]').click();
   }
-  await p.setViewportSize({width:390,height:844});await p.locator('[data-reading=guide][data-scenario="sc05"]').click();await p.screenshot({path:'/tmp/tarot-v2-compact-guide.png',fullPage:true});await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);await p.screenshot({path:'/tmp/tarot-v2-compact-guide-en.png',fullPage:true});await p.locator('[data-language-toggle]').click();
+  await p.setViewportSize({width:390,height:844});const sc05=scenes.find(sc=>sc.id==='sc05');if((await p.locator('.reading-theme').getAttribute('id'))!==`reading-theme-${sc05.category}`)await p.locator(`[data-reading=category][data-value=${sc05.category}]`).click();await p.locator('[data-reading=guide][data-scenario="sc05"]').click();await p.screenshot({path:'/tmp/tarot-v2-compact-guide.png',fullPage:true});await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);await p.screenshot({path:'/tmp/tarot-v2-compact-guide-en.png',fullPage:true});await p.locator('[data-language-toggle]').click();
   // Synthetic completed spread, isolated from any real user records.
   await p.evaluate(KEY=>{
    const d=window.TAROT_SPREAD_CONTENT.spreads.find(d=>d.id==='decision-five');

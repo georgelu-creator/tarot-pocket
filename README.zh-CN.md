@@ -2,7 +2,7 @@
 
 **从零开始学塔罗，也可以带着问题来抽牌。**
 
-[**手机体验 →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh&v=1.7.1) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.1/tarot-pocket-v1.7.1.html) · [English](README.md)
+[**手机体验 →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh&v=1.7.2) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.2/tarot-pocket-v1.7.2.html) · [English](README.md)
 
 ![Tarot Pocket](docs/images/hero.png)
 

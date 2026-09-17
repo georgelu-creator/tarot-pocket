@@ -126,11 +126,11 @@
       const d=data(),u=units[id];
       if(mode==='reverse'&&!status('I04')?.completedAt){d.pendingReverse=id;id='I04';mode='learn';}
       else if(mode==='reverse')d.pendingReverse=null;
-      if(active()&&current().unitId===id&&current().mode===mode){go('academy');return;}
+      if(active()&&current().unitId===id&&current().mode===mode){go('academy');requestAnimationFrame(autoPlayDemonstration);return;}
       if(active())d.paused[current().unitId+':'+current().mode]=structuredClone(current());
       const key=id+':'+mode;
       d.session=d.paused[key]||{unitId:id,mode,index:0,startedAt:now(),seed:Math.floor(Math.random()*1e9)+1,contentVersion:version,answers:{},support:null,hint:false,complete:false,lang:lang(),animation:{frame:0,static:true,paused:true},scroll:0};
-      delete d.paused[key];save(d);go('academy');
+      delete d.paused[key];save(d);go('academy');requestAnimationFrame(autoPlayDemonstration);
     }
     function newCard(){const id=recommendation();if(id)start(id);else{toast(copy('78 张牌都已经学过，可以选一张回看。','You have studied all 78 cards. Choose one to revisit.'));go('courses');}}
     function review(){const id=due()[0];if(id)start(id,units[id].kind==='card'&&status(id)?.targets.Q3?.status==='pending'?'reverse-review':'review');else{toast(copy('暂时没有需要回访的内容。','Nothing is due for a revisit yet.'));go('courses');}}
@@ -184,19 +184,18 @@
       const a=s.animation||{},reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, staticMode=a.static||reduced;
       if(u.id==='B02'&&step.key==='T2'){
         const frames=[['分成两叠','Split into two piles'],['交错合拢','Interleave the piles'],['分开后重新合拢，可跳过','Cut and recombine; optional'],['选出一张，按原问题解读','Draw one and keep the question']];
-        return `<section class="academy-animation ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="shuffle" aria-label="${copy('教学示范','Worked example')}"><strong>${copy('看一遍洗牌和切牌','Watch a shuffle and cut')}</strong><div class="academy-demo-deck" data-frame="${a.frame||0}" aria-hidden="true">${Array.from({length:12},(_,i)=>`<i style="--i:${i};--side:${i%2===0?-1:1}"></i>`).join('')}</div><ol class="academy-animation-captions">${frames.map((f,i)=>`<li class="${i===(a.frame||0)?'active':''}">${copy(...f)}</li>`).join('')}</ol>${motionButtons(staticMode,a.paused)}</section>`;
+        return `<section class="academy-animation ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="shuffle" aria-label="${copy('教学示范','Worked example')}"><strong>${copy('看一遍洗牌和切牌','Watch a shuffle and cut')}</strong><div class="academy-demo-deck" data-frame="${a.frame||0}" aria-hidden="true">${Array.from({length:12},(_,i)=>`<i style="--i:${i};--side:${i%2===0?-1:1}"></i>`).join('')}</div><ol class="academy-animation-captions">${frames.map((f,i)=>`<li class="${i===(a.frame||0)?'active':''}">${copy(...f)}</li>`).join('')}</ol></section>`;
       }
       if(u.id==='B01'&&step.key==='T2')return `<section class="academy-deck-map"><strong>${copy('78 张牌怎样分','How the 78 cards fit together')}</strong><div><b>22</b><span>${copy('大阿尔卡纳','Major Arcana')}</span></div><div><b>56</b><span>${copy('小阿尔卡纳：40 张数字牌＋16 张宫廷牌','Minor Arcana: 40 numbered + 16 court cards')}</span></div><p>${copy('四种花色，每种 10 张数字牌＋4 张宫廷牌。','Four suits, each with 10 numbered and 4 court cards.')}</p></section>`;
       if(u.kind==='card'&&step.key==='T1'){
         const frames=u.teachings;
-        return `<section class="academy-animation academy-cue ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="clues"><strong>${copy('画面怎样帮助记住牌义','Connect the picture with the meaning')}</strong><ol class="academy-animation-captions">${frames.map((f,i)=>`<li class="${i===(a.frame||0)?'active':''}"><span>${copy(...[['主要意思','Main meaning'],['画面线索','Picture cue'],['记忆线索','Memory aid']][i])}</span><p>${esc(t(f))}</p></li>`).join('')}</ol>${motionButtons(staticMode,a.paused)}</section>`;
+        return `<section class="academy-animation academy-cue ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="clues"><strong>${copy('画面怎样帮助记住牌义','Connect the picture with the meaning')}</strong><ol class="academy-animation-captions">${frames.map((f,i)=>`<li class="${i===(a.frame||0)?'active':''}"><span>${copy(...[['主要意思','Main meaning'],['画面线索','Picture cue'],['记忆线索','Memory aid']][i])}</span><p>${esc(t(f))}</p></li>`).join('')}</ol></section>`;
       }
-      if(step.reversed)return `<section class="academy-animation academy-reversal-demo ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="reverse"><p>${copy('逆位是牌图倒着出现。先读本例的背景，再看含义怎样变化。','A reversed card appears upside down. Read this example’s context before interpreting the change.')}</p>${motionButtons(staticMode,a.paused)}</section>`;
+      if(step.reversed)return `<section class="academy-animation academy-reversal-demo ${a.paused?'is-paused':''} ${staticMode?'is-static':''}" data-animation="reverse"><p>${copy('逆位是牌图倒着出现。先读本例的背景，再看含义怎样变化。','A reversed card appears upside down. Read this example’s context before interpreting the change.')}</p></section>`;
       const frames=u.kind==='lesson'?framesFor(u,step):[];
-      if(frames.length)return `<section class="academy-animation academy-concept ${staticMode?'is-static':''} ${a.paused?'is-paused':''}" data-animation="lesson" aria-label="${copy('按顺序看这个例子','Follow the example in order')}"><div class="academy-concept-steps">${frames.map((f,i)=>`<button data-academy="frame" data-value="${i}" aria-pressed="${i===(a.frame||0)}"><span class="academy-concept-number">${i+1}</span><span>${esc(copy(...f))}</span></button>`).join('')}</div>${motionButtons(staticMode,a.paused)}</section>`;
+      if(frames.length)return `<section class="academy-animation academy-concept ${staticMode?'is-static':''} ${a.paused?'is-paused':''}" data-animation="lesson" aria-label="${copy('按顺序看这个例子','Follow the example in order')}"><div class="academy-concept-steps">${frames.map((f,i)=>`<div aria-current="${i===(a.frame||0)?'step':'false'}"><span class="academy-concept-number">${i+1}</span><span>${esc(copy(...f))}</span></div>`).join('')}</div></section>`;
       return '';
     }
-    function motionButtons(staticMode,paused){return `<div class="academy-motion-controls">${button('play',paused?'播放':'暂停',paused?'Play':'Pause')}${button('replay','重播','Replay')}${button('static',staticMode?'看动效':'看静态步骤',staticMode?'Show animation':'Show stills')}${button('skip-motion','跳过动效','Skip animation')}</div>`;}
     function feedback(q,a){
       const selected=q.options.find(o=>o.id===a.selected),correct=q.options.find(o=>o.id===q.correct);
       const otherWrong=q.options.filter(o=>o.id!==a.selected&&o.id!==q.correct);
@@ -221,16 +220,14 @@
       return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,step)}${body}</main>`;
     }
     function hash(s){let h=0;for(const c of s)h=(Math.imul(h,31)+c.charCodeAt(0))|0;return h;}
-    function refresh(scroll=false){const old=document.querySelector('.academy-shell,.academy-home');if(!old){go(current()?'academy':'courses');return;}const y=window.scrollY;old.outerHTML=old.classList.contains('academy-home')?home():render();if(scroll)window.scrollTo(0,0);else window.scrollTo(0,y);}
+    function refresh(scroll=false){const old=document.querySelector('.academy-shell,.academy-home');if(!old){go(current()?'academy':'courses');requestAnimationFrame(autoPlayDemonstration);return;}const y=window.scrollY;old.outerHTML=old.classList.contains('academy-home')?home():render();if(scroll)window.scrollTo(0,0);else window.scrollTo(0,y);requestAnimationFrame(autoPlayDemonstration);}
     function paintAnimation(){
       const s=current(),el=document.querySelector('.academy-animation');if(!s||!el)return;
       const a=s.animation,staticMode=a.static||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
       el.classList.toggle('is-static',!!staticMode);el.classList.toggle('is-paused',!!a.paused);
       const deck=el.querySelector('.academy-demo-deck');if(deck)deck.dataset.frame=a.frame;
       el.querySelectorAll('.academy-animation-captions>li').forEach((li,i)=>li.classList.toggle('active',i===a.frame));
-      el.querySelectorAll('[data-academy=frame]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===a.frame)));
-      const play=el.querySelector('[data-academy=play]');if(play)play.textContent=a.paused?copy('播放','Play'):copy('暂停','Pause');
-      const still=el.querySelector('[data-academy=static]');if(still)still.textContent=staticMode?copy('看动效','Show animation'):copy('看静态步骤','Show stills');
+      el.querySelectorAll('.academy-concept-steps>div').forEach((item,i)=>item.setAttribute('aria-current',i===a.frame?'step':'false'));
       // Preserve DOM nodes so the shuffle/cut moves interpolate, not jump after a
       // page rebuild. Pausing also freezes an in-flight CSS transition.
       for(const motion of el.getAnimations?.({subtree:true})||[])a.paused?motion.pause():motion.play();
@@ -249,6 +246,11 @@
       const tick=()=>{const d=data(),s=d.session;if(!s||s.complete||s.animation.paused)return;const step=currentStep(s),u=units[s.unitId],max=s.unitId==='B02'&&step?.key==='T2'?3:Math.max(0,framesFor(u,step).length-1);if(s.animation.frame>=max){s.animation.paused=true;save(d);paintAnimation();return;}s.animation.frame=Math.min(max,s.animation.frame+1);if(s.unitId==='A05')s.animation.path=['all','a','b'][s.animation.frame];if(s.unitId==='A06')s.animation.path=['work','movement','outcome'][s.animation.frame];save(d);paintAnimation();if(!s.animation.paused)animationTimer=setTimeout(tick,1600);};
       if(!s.animation.paused)animationTimer=setTimeout(tick,1600);
     }
+    function autoPlayDemonstration(){
+      const s=current(),step=currentStep(s);
+      if(!s||s.complete||step?.kind!=='teach'||step.support||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||!document.querySelector('.academy-animation'))return;
+      animate(true);
+    }
     document.addEventListener('click',e=>{
       if(e.target.closest('[data-action="nav"],.bottomnav button'))pauseAnimation();
       const el=e.target.closest('[data-academy]');if(!el||el.disabled)return;
@@ -260,9 +262,7 @@
       if(action==='continue'){pauseAnimation();const scroll=current()?.scroll||0;go(active()?'academy':'courses');requestAnimationFrame(()=>window.scrollTo(0,scroll));return;}
       if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}go('courses');return;}
       if(action==='level'){level=el.dataset.value;refresh();return;}
-      if(action==='play'||action==='replay'){animate(action==='replay');return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
-      if(action==='frame'){pauseAnimation();s.animation.frame=Math.max(0,Math.min(Number(el.dataset.value),framesFor(units[s.unitId],currentStep(s)).length-1));s.animation.paused=true;if(s.unitId==='A05')s.animation.path=['all','a','b'][s.animation.frame];if(s.unitId==='A06')s.animation.path=['work','movement','outcome'][s.animation.frame];save(d);paintAnimation();return;}
       if(action==='path'){s.animation.path=el.dataset.value;save(d);paintAnimation();return;}
       if(action==='answer'){if(answer(d,el.dataset.value,now())){save(d);refresh();}return;}
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
@@ -271,7 +271,6 @@
         if(s.support?.key==='review-summary'){if(advance(d,now())){save(d);refresh(true);}return;}
         if(advance(d,now())){save(d);refresh(true);}return;
       }
-      if(action==='static'||action==='skip-motion'){pauseAnimation();s.animation={...s.animation,static:action==='skip-motion'?true:!s.animation.static,paused:true,frame:0};save(d);paintAnimation();}
     });
     // Save scrolling without a write for every scroll event. Restoring the unit
     // keeps both its committed evidence and the learner's reading position.

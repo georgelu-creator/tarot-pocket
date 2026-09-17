@@ -1,5 +1,12 @@
 # Changelog · 版本记录
 
+## 1.7.2 — Mobile reading flow / 移动端抽牌闭环
+
+- The spread directory now shows one real category at a time. Its compact cards explain enough to choose a spread; complete positions and the longer description appear after entry. Each category is ordered from fewer cards to more cards, with one-card and three-card basics first. / 牌阵目录一次只展示一个真实分类；外层紧凑卡片提供足够的用途说明，进入后才展开完整牌位与长说明。每类按张数由少到多排列，单牌与三张基础牌优先。
+- The continuous card fan is denser, keeps all 78 backs reachable, hides sequence numbers until zoomed, and moves a selected card into a larger visible position slot. Whole-group reveal adds a brief light cue; reduced-motion users receive the same final state without motion. / 连续扇形牌组更紧凑，78 张均可到达；编号仅在放大后显示，选中的牌会进入更大且完整可见的牌位槽。整组揭牌加入短暂光效；减少动态时直接得到同一结果。
+- Saving a changed or supplemented question keeps the same cards, preserves the earlier answer as history, and immediately starts a new online interpretation when a session is available. / 补充或修改问题会保留原牌，将旧回答存入历史，并在可用在线会话下立刻重新解读。
+- Learning demonstrations no longer show learner-facing “play”, “replay”, “view effect”, or “skip effect” controls. Necessary visual emphasis runs automatically; reduced-motion shows the full static explanation. / 学牌不再向学习者展示“播放、重播、看动效、跳过动效”等控制项。必要的画面强调自动呈现；减少动态时直接展示完整静态说明。
+
 ## 1.7.1 — Recover invitation verification / 邀请验证故障切换
 
 - When the custom AI domain cannot complete a network request, the entrance also tries the verified provider domain. Wrong codes and rate limits remain errors; a successful session keeps its chosen service for later readings and reloads. / 自定义AI域名连接失败时，入口自动尝试已验证的同项目托管域名。邀请码错误与限流仍直接报错；验证成功后，解读和同标签刷新沿用实际连通的服务。

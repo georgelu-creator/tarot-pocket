@@ -89,8 +89,7 @@ async function fixture(page){
    const oldReply=held.splice(0)[0];
    const originalCards=await page.evaluate(KEY=>{const s=JSON.parse(localStorage.getItem(KEY)).draft;return {pool:s.pool,picked:s.picked};},KEY);
    await page.locator('[data-reading=edit-question]').click();await page.locator('[data-reading-edit]').fill('Which schedule fits a new evening job?');await page.locator('[data-reading=save-question]').click();
-   assert.equal(await page.locator('.ai-waiting').count(),0,'editing releases the pending request');
-   await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===editBefore+2,'new question starts once');
+   await page.locator('.ai-waiting').waitFor();await until(()=>requests.length===editBefore+2,'saving a changed question starts its new reading once');
    const newReply=held.splice(0)[0];newReply.end(JSON.stringify({text:'New question answer for the evening job.',model:'fixture',provider:'deepseek'}));
    await page.locator('.ai-answer').waitFor();reply(oldReply);
    await page.evaluate(async()=>{await new Promise(r=>window.waitTestFetch('/ai-config.js').then(r));});
