@@ -2,7 +2,11 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.7.0 · 当前版本
+## Implemented in v1.7.1 · 当前版本
+
+Invitation verification retries through the same AI service's provider address when the custom domain cannot be reached; an authenticated session keeps its matching reading route. Explicitly rejected invitations and rate limits do not switch routes. Browser and service probes have passed on this computer; physical iPhone/WeChat acceptance remains open. / 自定义验证域名无法连接时，邀请码改试同一AI服务的托管地址；会话与后续解读沿用连通线路。明确的错误邀请码和限流不切换线路。本机浏览器及服务探针通过，iPhone/微信实机复测仍待完成。
+
+## Previous v1.7.0 · 上版记录
 
 20 lessons across three levels, 78 card units, authored feedback, bounded follow-up and teaching animations; 25 scene entries, complete descriptions, continuous fan selection, full reveal and question-first AI. See [delivery](RELEASE_1_7.md) and both master documents. / 三阶段20课、78牌、错因补讲和回访、教学动效；25场景、完整说明、扇形连续选牌、整组揭牌及针对具体问题的AI。
 

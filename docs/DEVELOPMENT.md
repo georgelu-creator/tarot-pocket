@@ -164,9 +164,9 @@ The upgrade regression builds the actual `v1.0.0` tag. Fetch tags/history before
 
 ## Optional AI / 可选 AI
 
-See [AI_SERVICE.md](AI_SERVICE.md). `server/reading-service.cjs` holds provider integration; `reading-ai.js` handles explicit requests, cancellation, safe text rendering and saved replies. Configure the public HTTPS endpoint with `node tools/configure_ai.cjs https://your-service.example/api/reading`, then rebuild; this updates the exact CSP origin. Never put credentials in `ai-config.js`. Standalone files disable new API calls and retain saved answers.
+See [AI_SERVICE.md](AI_SERVICE.md). `server/reading-service.cjs` holds provider integration; `reading-ai.js` handles explicit requests, cancellation, safe text rendering and saved replies. Configure the public HTTPS endpoint with `node tools/configure_ai.cjs https://your-service.example/api/reading [https://backup.example/api/reading]`, then rebuild; this updates the exact CSP origins. Only configure a backup that serves the same project, invitation secret and session validation. Never put credentials in `ai-config.js`. Standalone files disable new API calls and retain saved answers.
 
-服务端保存供应商密钥，客户端只持有公开接口地址；访问码仅当前打开期间使用，不导出。配置脚本同步更新 CSP，独立离线文件禁止新 API 请求，但保留已保存解读。
+服务端保存供应商密钥，客户端只持有公开接口地址；访问码仅当前打开期间使用，不导出。可配置同一服务的备用公开地址，配置脚本同步更新 CSP；成功验证后会话与后续解读使用同一条线路。独立离线文件禁止新 API 请求，但保留已保存解读。
 
 Daily calendar regression: `node tools/check_daily_almanac.cjs` (also in `npm test`). It uses isolated synthetic saved days in Chromium/WebKit. Set `CAPTURE_DAILY=1` to refresh the two README screenshots after building; no real invitation or progress is read. / 日签专项已纳入全量测试；构建后设置 `CAPTURE_DAILY=1` 可刷新双语截图，使用隔离演示数据。
 

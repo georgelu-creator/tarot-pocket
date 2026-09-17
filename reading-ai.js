@@ -5,7 +5,7 @@ window.TarotReadingAI = (() => {
   const locale=()=>document.documentElement.lang==='en'?'en':'zh';
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const format=text=>text.split(/\n\s*\n/).map(block=>{const safe=esc(block).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');const heading=safe.match(/^#{1,3} +([^\n]+)$/);return heading?'<h3>'+heading[1]+'</h3>':'<p>'+safe+'</p>';}).join('');
-  const endpoint=()=>window.TAROT_STANDALONE?'':window.TAROT_AI_CONFIG?.endpoint||'';
+  const endpoint=()=>window.TAROT_STANDALONE?'':window.TarotAccess?.readingEndpoint?.()||'';
   const clean=raw=>{
     if(raw===undefined)return undefined;
     if(!Array.isArray(raw)||raw.length>2)throw Error('AI 解读记录格式不正确');
