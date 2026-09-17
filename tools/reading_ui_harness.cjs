@@ -17,7 +17,14 @@ async function context(browser,options={}){const ctx=await browser.newContext({v
 const state=p=>p.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);
 const click=(p,a)=>p.locator(`[data-reading="${a}"]`).first().click();
 async function enter(p,url){await p.goto(url,{timeout:120000});await p.locator('.bottomnav [data-page=reading]').click();}
-async function intro(p,id='three'){await p.locator(`[data-reading="guide"][data-value="${id}"]`).first().click();}
+async function intro(p,id='three'){
+ const visible=p.locator(`[data-reading="guide"][data-value="${id}"]`).first();
+ if(!await visible.count()){
+  const category=await p.evaluate(id=>(window.TAROT_READING_SCENARIOS||[]).find(s=>s.spreadId===id)?.category,id);
+  if(category)await p.locator(`[data-reading="category"][data-value="${category}"]`).click();
+ }
+ await visible.click();
+}
 async function start(p,id='three'){await intro(p,id);await click(p,'start');}
 async function advanceForTest(p){await p.evaluate(()=>{const control=document.createElement('button');control.dataset.reading='skip-animation';document.body.append(control);control.click();control.remove();});}
 async function toPick(p,offset=0){const reduce=await p.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches);if(!reduce&&(await state(p)).draft.phase==='shuffling')await advanceForTest(p);await p.locator(`[data-reading="cut"][data-index="${offset}"]`).click();if(!reduce&&(await state(p)).draft.phase==='cutting')await advanceForTest(p);await p.locator('[data-fan-viewport]').waitFor();await p.waitForTimeout(150);}
