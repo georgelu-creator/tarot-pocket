@@ -1,14 +1,15 @@
 # Continue on another computer · 跨电脑接力
 
-## Release checkpoint / 发布复验（2026-09-17）
+## Published release / 已发布与公网验证（2026-09-17）
 
-- PR #16、#17 各自完整CI通过并已合并；远端 `main` 为 `1f60033c0147da8d21360348cab1a41b582c57d3`。**网页1.7.0尚未发布**，不能把当前公共入口当作新版验收结果。
-- 两次主分支发布复验均在 `check_offline.cjs` 的失败更新缓存清理断言处失败，Pages部署因此跳过。最新失败为 [run 35096312678](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35096312678)，job `104794412324`。只读状态查询修复成立，但不足以解释云端仍留下 `-update` 缓存的原因。
-- 独立分支 `fix/offline-update-lifecycle` 的诊断已推送至[PR #18](https://github.com/georgelu-creator/tarot-pocket/pull/18)。本地复现了首次失败后浏览器原生后台再安装：旧缓存118项、新安装43项且worker仍处于installing，不能把这一时刻的新缓存当成清理残留。
-- 修正仅在测试中按实际安装实例与状态变化同步缓存快照，不按缓存内容反复重试；增加真实导航触发后台安装的回归，保留失败清理、旧缓存可用和成功重试全部断言。反向检查确保真正残留仍会失败、错误版本安装成功仍会失败。针对性Chromium/WebKit/真实v1.0升级检查通过，完整测试及云端复验结果见PR #18。
-- GitHub登录于2026-09-17恢复，继续独立分支/PR发布路径。此前浏览器主分支编辑被拒的路径已停止，未通过其他方式直接改主分支。
-- AI服务RP-1.1.1已由现有EdgeOne Git项目部署成功（`dpgstx1ome0u`）。最终2个虚构问题的真实调用通过并已审读；其证据不能代替前端发布或全部场景质量验收。
-- 发布完成还需：主分支CI和Pages成功、公开更新入口的手机尺寸检查、创建v1.7.0 Release并上传离线HTML与校验和。最终构建指纹取实际产物，不能沿用未部署版本的链接。
+- 网页 **1.7.0已上线**，构建指纹 `1.7.0-c675ca1f888dfacd`。[手机更新入口](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh&v=1.7.0-c675ca1f888dfacd)：检查并下载新版，再选择保留记录进入；沿用原邀请码。
+- 发布代码提交为 `5ce2237e642213788a3230da80e964920145ad06`。PR #16、#17、[#18](https://github.com/georgelu-creator/tarot-pocket/pull/18)均经完整CI后合并；最终[主分支检查及Pages部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35176636451)全部成功。后续仅文档提交不改变此构建指纹。
+- 公开入口在Chromium和WebKit的390px手机尺寸下通过：下载和启用新版、真实邀请码跨域会话、版本匹配、20课/78牌、25场景、完整牌阵介绍、78张可达及轻点一次选入。未注入会话，未为该检查额外调用模型。
+- WebKit首次公网验证遇到TLS握手失败；只读确认域名、证书正常，两个CDN解析节点及两个浏览器随后健康检查均成功。未修改配置的WebKit完整复测通过。保留这次失败为网络稳定性观察项，不能据此宣称已经修复确定的协议缺陷。
+- AI服务RP-1.1.1、25场景已在原EdgeOne Git项目生产部署成功：`dpvr3y4y07kh`，同一发布代码提交。最终2个虚构问题真实调用及审读通过；这不代表全部场景或每次输出质量。
+- 1.7.0附件、校验和及最终证据见[GitHub发布记录](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.7.0)。离线HTML支持独立学牌和抽牌，在线AI使用网页入口；不得把附件当作绕过在线服务认证的方法。
+- 之前两次主分支失败是历史发布阻断，已被上述最终成功记录替代。调查、只读缓存修复和原生后台安装时序复现保留在[交付记录](RELEASE_1_7.md)和PR #17/#18。原缓存清理、旧记录保留、真实v1.0升级与反向检查均保留，没有以放宽断言取得通过。
+- 下一步：用户真实iPhone/微信试用，记录不懂的题干、操作和解读。浏览器手机尺寸通过不等于真实手机或长期学习效果已验证。
 
 ## Current implementation: 1.7.0 / 完整课程与场景抽牌（2026-09-16）
 
