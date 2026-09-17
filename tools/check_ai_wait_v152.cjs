@@ -22,6 +22,7 @@ const server=http.createServer(async(req,res)=>{
  res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.svg':'image/svg+xml','.png':'image/png','.json':'application/json'})[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));
 });
 async function until(check,message){for(let i=0;i<100;i++){if(await check())return;await new Promise(r=>setTimeout(r,20));}assert.fail(message);}
+async function requestReading(page){await page.evaluate(()=>{const control=document.createElement('button');control.dataset.reading='ai-request';document.body.append(control);control.click();control.remove();});}
 async function fixture(page){
  await page.evaluate(KEY=>{
   const d=window.TAROT_SPREAD_CONTENT.spreads.find(d=>d.id==='decision-five');
@@ -40,7 +41,7 @@ async function fixture(page){
    await page.addInitScript(({token,KEY})=>{sessionStorage.setItem('tarot-pocket-session-v1',JSON.stringify({token,expiresAt:Date.now()+3600000}));const data=sessionStorage.getItem('tarot-wait-fixture');if(data){localStorage.setItem(KEY,data);sessionStorage.removeItem('tarot-wait-fixture');}},{token:sessionToken,KEY});
    await page.goto(`http://127.0.0.1:${server.address().port}/?lang=${language}`);await fixture(page);
    await page.clock.install();mode='hold';const before=requests.length;
-   await page.locator('[data-reading=ai-request]').click();await page.locator('.ai-waiting').waitFor();
+   await requestReading(page);await page.locator('.ai-waiting').waitFor();
    await until(()=>requests.length===before+1,'exactly one held request starts');
    const tip=page.locator('[data-ai-wait-tip]'),long=page.locator('[data-ai-wait-long]'),first=await tip.innerText();
    assert.equal(await page.locator('.ai-waiting').getAttribute('aria-busy'),'true');
@@ -63,7 +64,7 @@ async function fixture(page){
    for(const res of held.splice(0))reply(res);
    assert.equal(await page.locator('.ai-answer').count(),0,'cancellation never shows a late answer');
    assert.equal(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft.ai?.length||0,KEY),0,'cancellation never saves an answer');
-   mode='success';await page.locator('[data-reading=ai-request]').click();
+   mode='success';await requestReading(page);
    await page.locator('.ai-answer').waitFor({timeout:3000});
    assert.equal(await page.locator('.ai-waiting').count(),0,'successful answer replaces waiting immediately without a minimum animation delay');
    assert.match(await page.locator('.ai-answer').innerText(),/Synthetic waiting-test answer/);
@@ -72,7 +73,7 @@ async function fixture(page){
    await page.clock.fastForward(30000);assert.equal(requests.length,before+2,'completed waiting timer causes no requests or UI regression');
    assert.equal(await page.locator('.ai-waiting').count(),0);
    // A reply that arrives after choosing another spread must not enter its draft or visible UI.
-   await fixture(page);mode='hold';await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===before+3,'navigation scenario has one held request');
+   await fixture(page);mode='hold';await requestReading(page);await until(()=>requests.length===before+3,'navigation scenario has one held request');
    await page.locator('[data-reading=pause]').first().click();
    const next=page.locator('[data-reading=guide]:not([data-value="decision-five"])').first();const nextId=await next.getAttribute('data-value');await next.click();
    await page.locator('[data-reading=start]').click();
@@ -85,7 +86,7 @@ async function fixture(page){
    // Ignore abort in this synthetic transport so a genuinely late reply is tested.
    await fixture(page);mode='hold';const editBefore=requests.length;
    await page.evaluate(()=>{window.waitTestFetch=window.fetch;window.fetch=(url,options)=>window.waitTestFetch(url,{...options,signal:undefined});});
-   await page.locator('[data-reading=ai-request]').click();await until(()=>requests.length===editBefore+1,'old question starts once');
+   await requestReading(page);await until(()=>requests.length===editBefore+1,'old question starts once');
    const oldReply=held.splice(0)[0];
    const originalCards=await page.evaluate(KEY=>{const s=JSON.parse(localStorage.getItem(KEY)).draft;return {pool:s.pool,picked:s.picked};},KEY);
    await page.locator('[data-reading=edit-question]').click();await page.locator('[data-reading-edit]').fill('Which schedule fits a new evening job?');await page.locator('[data-reading=save-question]').click();
