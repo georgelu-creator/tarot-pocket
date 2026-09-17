@@ -10,7 +10,7 @@
 
 Twenty lessons cover eight beginner, six intermediate and six advanced topics, alongside individual lessons for all 78 cards. Read an explanation and a concrete example before answering a taught question. Wrong answers receive specific feedback and another example; persistent difficulty leads to a recap and a later revisit.
 
-Start each card upright, apply it in a situation, then explore reversals. Follow the courses, choose a card, or learn a random new one. Card images keep a consistent size and position. There are no self-ratings, required reflections or voice tasks. Teaching demonstrations support pause, replay, skip and still views.
+Start each card upright, apply it in a situation, then explore reversals. Follow the courses, choose a card, or learn a random new one. Card images keep a consistent size and position. There are no self-ratings, required reflections, voice tasks or playback controls. Explanations, examples and practice appear directly.
 
 <img src="docs/images/courses-v17-en.png" width="290" alt="Three course levels"><img src="docs/images/practice-v17-en.png" width="290" alt="Explanation before practice">
 

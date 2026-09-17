@@ -2,7 +2,11 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.7.1 · 当前版本
+## Implemented in v1.7.3 · 当前版本
+
+Spread positions now carry through selection, reveal and results. The web reveal action starts the authorized online reading automatically; the offline edition remains offline. Learning shows the explanation and practice directly, without playback controls. The v1.7.2 reading catalog, denser fan, larger slots and question follow-up are included. [Release evidence](HANDOFF.md) records CI, Pages and the offline pack; physical-phone acceptance is still open. / 选牌、揭牌和结果沿用所选牌阵的位置；网页揭牌后自动发起已授权的在线解读，离线版仍保持离线。学牌直接呈现讲解与练习，不再出现播放控件。同时包含1.7.2的分类目录、密集扇形、较大牌位与补问链路。[交接记录](HANDOFF.md)列有CI、Pages和离线包证据；实机验收仍待完成。
+
+## Previous v1.7.1 · 前版记录
 
 Invitation verification retries through the same AI service's provider address when the custom domain cannot be reached; an authenticated session keeps its matching reading route. Explicitly rejected invitations and rate limits do not switch routes. Browser and service probes have passed on this computer; physical iPhone/WeChat acceptance remains open. / 自定义验证域名无法连接时，邀请码改试同一AI服务的托管地址；会话与后续解读沿用连通线路。明确的错误邀请码和限流不切换线路。本机浏览器及服务探针通过，iPhone/微信实机复测仍待完成。
 
