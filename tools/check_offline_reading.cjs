@@ -8,9 +8,17 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const context = {window: {}};
 vm.createContext(context);
-for (const file of ['reading-deck.js', 'spread-content.js', 'locales/en.js', 'offline-reading.js']) {
+for (const file of ['reading-deck.js', 'spread-content.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
+// `locales/en.js` is a generated, ignored browser bundle. Build the same
+// dictionary from tracked locale sources so this check also runs in a clean
+// checkout before the website bundle is generated.
+context.window.TAROT_EN = Object.assign({}, ...fs.readdirSync(path.join(root, 'locales'))
+  .filter(file => /^en-.*\.json$/.test(file))
+  .sort()
+  .map(file => JSON.parse(fs.readFileSync(path.join(root, 'locales', file), 'utf8'))));
+vm.runInContext(fs.readFileSync(path.join(root, 'offline-reading.js'), 'utf8'), context, {filename: 'offline-reading.js'});
 
 const api = context.window.TarotOfflineReading;
 const deck = context.window.TAROT_READING_DECK.cards;
