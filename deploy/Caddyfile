@@ -1,0 +1,18 @@
+tarot.georgelu.cn {
+  encode zstd gzip
+
+  handle /api/* {
+    reverse_proxy api:8787
+  }
+
+  root * /srv
+  try_files {path} /index.html
+  file_server
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "no-referrer"
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  }
+}

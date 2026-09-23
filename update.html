@@ -26,6 +26,9 @@
 <script>
 (()=>{
 'use strict';
+if(location.hostname==='georgelu-creator.github.io'&&location.pathname.startsWith('/tarot-pocket')){
+ const target=new URL('https://tarot.georgelu.cn/');target.search=location.search;target.searchParams.delete('v');target.hash=location.hash;location.replace(target.href);return;
+}
 const revision='TAROT_BUILD_REVISION';
 const en=new URL(location.href).searchParams.get('lang')==='en';
 let english=en,registration,busy=false,prepared=false,phase='idle',error='',downloaded=0,total=0;

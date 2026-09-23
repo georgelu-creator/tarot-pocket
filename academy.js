@@ -9,7 +9,7 @@
     if(mode==='reverse-review'){const support=u.remediation[u.questions.Q3.support];return [{kind:'teach',key:'T3',content:[u.reversal],reversed:true},{kind:'question',key:'Q3',question:support.question,reversed:true,support:true}];}
     if(mode==='review')return [{kind:'question',key:'V1',question:u.revisit}];
     if(mode==='reverse')return [{kind:'teach',key:'T3',content:[u.reversal],reversed:true},{kind:'question',key:'Q3',question:u.questions.Q3,reversed:true}];
-    if(u.kind==='card')return [{kind:'teach',key:'T1',content:u.teachings},{kind:'question',key:'Q1',question:u.questions.Q1},{kind:'teach',key:'T2',content:[u.application]},{kind:'question',key:'Q2',question:u.questions.Q2}];
+    if(u.kind==='card')return [{kind:'teach',key:'T1',content:u.teachings},{kind:'question',key:'Q1',question:u.questions.Q1},{kind:'teach',key:'T2',content:[u.application]},{kind:'question',key:'Q2',question:u.questions.Q2},{kind:'question',key:'Q4',question:u.questions.Q4}];
     const teaching=u.teachings.map((t,i)=>({kind:'teach',key:'T'+(i+1),content:[t]}));
     if(u.id==='B07')return [...teaching.slice(0,2),{kind:'question',key:'Q1',question:u.questions.Q1},teaching[2],{kind:'question',key:'Q2',question:u.questions.Q2}];
     return [...teaching,...Object.entries(u.questions).map(([key,question])=>({kind:'question',key,question}))];
@@ -46,7 +46,7 @@
       if(!units[id]||!p||typeof p!=='object')continue;
       const record={completedAt:number(p.completedAt),uprightAt:number(p.uprightAt),reverseAt:number(p.reverseAt),nextVisitAt:number(p.nextVisitAt),rounds:Math.min(100000,Math.floor(number(p.rounds))),targets:{},history:[]};
       for(const r of Array.isArray(p.history)?p.history:[]){if(!r||!['learn','review','reverse','reverse-review'].includes(r.mode)||!Array.isArray(r.answers)||typeof r.contentVersion!=='string')continue;const answers=r.answers.filter(a=>a&&typeof a.questionId==='string'&&/^[A-Za-z0-9_-]{1,80}$/.test(a.questionId)&&typeof a.selected==='string'&&/^[A-Za-z0-9_-]{1,80}$/.test(a.selected)).map(a=>({questionId:a.questionId,selected:a.selected,correct:!!a.correct,hint:!!a.hint,support:!!a.support,at:number(a.at)}));record.history.push({at:number(r.at),mode:r.mode,contentVersion:r.contentVersion.slice(0,64),answers});}
-      for(const key of ['Q1','Q2','Q3','V1']){const t=p.targets?.[key];if(!t)continue;record.targets[key]={last:number(t.last),due:number(t.due),status:['independent','assisted','pending'].includes(t.status)?t.status:'pending',streak:Math.min(10000,Math.floor(number(t.streak)))};}
+      for(const key of ['Q1','Q2','Q3','Q4','V1']){const t=p.targets?.[key];if(!t)continue;record.targets[key]={last:number(t.last),due:number(t.due),status:['independent','assisted','pending'].includes(t.status)?t.status:'pending',streak:Math.min(10000,Math.floor(number(t.streak)))};}
       out.progress[id]=record;
     }
     out.session=cleanSession(raw.session);
@@ -154,6 +154,12 @@
       const group=path==='a'?[0,1,3]:path==='b'?[0,2,4]:path==='work'?[0,1]:path==='movement'?[3,4,5,7]:path==='outcome'?[2,8,9]:ids.map((_,i)=>i);
       return `<div class="academy-image-space ${shown.length>1?'is-spread':''} ${special?'academy-layout-'+u.id:''}" aria-label="${copy('本节牌图','Cards in this lesson')}">${shown.map((id,i)=>{const c=units[id],reversed=step?.reversed||s.mode?.startsWith('reverse')||u.id==='A04'&&id==='p08'||u.id==='I04'&&step?.key!=='T1';return `<figure data-position="${i+1}" class="${group.includes(i)?'is-emphasized':''}"><button class="academy-card-face ${reversed?'is-reversed':''}" data-action="zoom" data-id="${id}" aria-label="${esc(copy('放大','Enlarge')+' '+t(c?.title))}">${img(id)}</button><figcaption>${shown.length>1?`${i+1} · `:''}${roles?esc(copy(...roles[i])):esc(t(c?.title))}${reversed?' · '+copy('逆位','Reversed'):''}</figcaption></figure>`;}).join('')}</div>`;
     }
+    function cardDossier(u){
+      const d=u.kind==='card'&&u.details;if(!d)return '';
+      const section=(title,body)=>`<section><h3>${title}</h3>${body}</section>`;
+      const situations=d.contexts.map(c=>`<div><h4>${esc(t(c.label))}</h4><p><strong>${copy('常见状态：','Common state: ')}</strong>${esc(t(c.state))}</p><p><strong>${copy('容易卡住：','Possible tension: ')}</strong>${esc(t(c.tension))}</p><p><strong>${copy('可以怎样做：','Possible action: ')}</strong>${esc(t(c.advice))}</p></div>`).join('');
+      return `<details class="academy-card-dossier" data-academy-card-details><summary>${copy('展开完整牌义','Open the full card guide')}</summary><div><h2>${esc(t(u.title))}</h2>${section(copy('画面线索','Picture cues'),`<p>${esc(t(d.visual))}</p>`)}${section(copy('核心牌义','Core meaning'),`<p>${esc(t(d.core))}</p>`)}${section(copy('正位怎样用','Upright in context'),`<p>${esc(t(d.upright))}</p>`)}${section(copy('逆位怎样读','Reading a reversal'),`<p>${esc(t(d.reversed))}</p>`)}${section(copy('常见情境','Common situations'),situations)}${section(copy('解读边界','Interpretive boundaries'),`<p>${esc(t(d.boundary))}</p>`)}<p><small>${copy('依据已声明的 RWS 教学来源与本项目原创情境整理；用于学习与自我反思，不是事实预测。','Based on the cited RWS teaching sources and original fictional situations in this project; for learning and reflection, not factual prediction.')}</small></p></div></details>`;
+    }
     /* Historical lesson-visual data is intentionally retained below only for
        saved-session compatibility. The learner UI does not render or control it. */
     const lessonVisuals={
@@ -205,7 +211,7 @@
       const s=current();if(!s)return home();const u=units[s.unitId],plan=planFor(u,s.mode),step=currentStep(s);
       const head=`<header class="academy-top">${button('home','返回课程','Back to courses','','linkbtn')}<span>${esc(t(u.title))}</span><span>${Math.min(s.index+1,plan.length)} / ${plan.length}</span></header><div class="academy-progress" role="progressbar" aria-label="${copy('本节进度','Lesson progress')}" aria-valuemin="0" aria-valuemax="${plan.length}" aria-valuenow="${s.index}"><i style="width:${s.index/plan.length*100}%"></i></div>`;
       if(s.complete){const p=status(u.id),pending=Object.values(p?.targets||{}).some(x=>x.status==='pending');const nextLesson=source.lessons[source.lessons.findIndex(x=>x.id===u.id)+1];
-        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${pending?`<p class="academy-support-note">${copy('刚才比较难的地方已经记下了。之后换个例子再练，现在可以继续。','The difficult parts have been saved. Revisit them with an example later; you can continue now.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${u.kind==='lesson'&&nextLesson?button('start','继续下一课','Next lesson',`data-id="${nextLesson.id}"`,'primary wide'):button('new','再学一张新牌','Learn another new card','','primary wide')}${u.kind==='card'&&s.mode!=='reverse'?button('reverse',status('I04')?.completedAt?'看看这张牌的逆位':'先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
+        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}${cardDossier(u)}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${pending?`<p class="academy-support-note">${copy('刚才比较难的地方已经记下了。之后换个例子再练，现在可以继续。','The difficult parts have been saved. Revisit them with an example later; you can continue now.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${u.kind==='lesson'&&nextLesson?button('start','继续下一课','Next lesson',`data-id="${nextLesson.id}"`,'primary wide'):button('new','再学一张新牌','Learn another new card','','primary wide')}${u.kind==='card'&&s.mode!=='reverse'?button('reverse',status('I04')?.completedAt?'看看这张牌的逆位':'先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
       let body='';
       if(step.kind==='teach'||step.kind==='summary'){
         const labels=step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
@@ -214,9 +220,9 @@
       }else{
         const q=step.question,a=s.answers[q.id],ordered=[...q.options].sort((x,y)=>hash(x.id+s.seed)-hash(y.id+s.seed));
         const hint=step.key==='Q2'&&u.application?[u.application]:step.reversed?[u.reversal]:u.teachings;
-        body=`<section class="academy-copy"><span class="eyebrow">${step.support?copy('换个例子试试','Try another example'):copy('做一道练习','Try a question')}</span><h1>${esc(t(q.prompt))}</h1><div class="academy-options">${ordered.map(o=>`<button data-academy="answer" data-value="${o.id}" class="academy-option ${a?(o.id===q.correct?'correct':o.id===a.selected?'incorrect':''):''}" ${a?'disabled':''}><span>${esc(t(o.text))}</span>${a&&o.id===q.correct?'<b aria-label="'+copy('正确答案','Correct answer')+'">✓</b>':''}</button>`).join('')}</div>${a?feedback(q,a):`${button('hint','回看刚才的讲解','Review the explanation','','linkbtn')}${s.hint?`<aside class="academy-hint">${hint.map(p=>`<p>${esc(t(p))}</p>`).join('')}</aside>`:''}`}</section>`;
+        body=`<section class="academy-copy"><span class="eyebrow">${step.key==='Q4'?copy('把整张牌连起来理解','Connect the whole card'):step.support?copy('换个例子试试','Try another example'):copy('做一道练习','Try a question')}</span><h1>${esc(t(q.prompt))}</h1><div class="academy-options">${ordered.map(o=>`<button data-academy="answer" data-value="${o.id}" class="academy-option ${a?(o.id===q.correct?'correct':o.id===a.selected?'incorrect':''):''}" ${a?'disabled':''}><span>${esc(t(o.text))}</span>${a&&o.id===q.correct?'<b aria-label="'+copy('正确答案','Correct answer')+'">✓</b>':''}</button>`).join('')}</div>${a?feedback(q,a):`${button('hint','回看刚才的讲解','Review the explanation','','linkbtn')}${s.hint?`<aside class="academy-hint">${hint.map(p=>`<p>${esc(t(p))}</p>`).join('')}</aside>`:''}`}</section>`;
       }
-      return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,step)}${body}</main>`;
+      return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,step)}${cardDossier(u)}${body}</main>`;
     }
     function hash(s){let h=0;for(const c of s)h=(Math.imul(h,31)+c.charCodeAt(0))|0;return h;}
     function refresh(scroll=false){const old=document.querySelector('.academy-shell,.academy-home');if(!old){go(current()?'academy':'courses');return;}const y=window.scrollY;old.outerHTML=old.classList.contains('academy-home')?home():render();if(scroll)window.scrollTo(0,0);else window.scrollTo(0,y);}
@@ -266,8 +272,8 @@
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
       if(action==='next'){
         pauseAnimation();
-        if(s.support?.key==='review-summary'){if(advance(d,now())){save(d);refresh(true);}return;}
-        if(advance(d,now())){save(d);refresh(true);}return;
+        if(s.support?.key==='review-summary'){if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode});refresh(true);}return;}
+        if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode});refresh(true);}return;
       }
     });
     // Save scrolling without a write for every scroll event. Restoring the unit

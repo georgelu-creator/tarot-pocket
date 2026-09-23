@@ -1,2 +1,2 @@
 /* Public service URLs only. Never add a provider key or invitation code. */
-window.TAROT_AI_CONFIG = {"endpoint":"https://tarot-ai.georgelu.cn/api/reading","sessionEndpoint":"https://tarot-ai.georgelu.cn/api/session","fallbackEndpoint":"https://tarot-pocket-ai-x1xpktdj.edgeone.dev/api/reading","fallbackSessionEndpoint":"https://tarot-pocket-ai-x1xpktdj.edgeone.dev/api/session"};
+window.TAROT_AI_CONFIG = {"endpoint":"https://tarot.georgelu.cn/api/reading","sessionEndpoint":"https://tarot.georgelu.cn/api/session","analyticsEndpoint":"https://tarot.georgelu.cn/api/events","fallbackEndpoint":"https://tarot-ai.georgelu.cn/api/reading","fallbackSessionEndpoint":"https://tarot-ai.georgelu.cn/api/session"};

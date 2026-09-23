@@ -7,6 +7,11 @@ const reply=res=>{if(!res.destroyed)res.end(JSON.stringify({text:'Synthetic wait
 let mode='hold';
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,'http://localhost');
+ if(url.pathname==='/api/session'){
+  res.setHeader('Content-Type','application/json');
+  res.end(JSON.stringify({sessionToken,expiresAt:Date.now()+3600000}));
+  return;
+ }
  if(url.pathname==='/api/reading'){
   let body='';for await(const chunk of req)body+=chunk;
   requests.push(JSON.parse(body));res.setHeader('Content-Type','application/json');
@@ -90,7 +95,9 @@ async function fixture(page){
    const oldReply=held.splice(0)[0];
    const originalCards=await page.evaluate(KEY=>{const s=JSON.parse(localStorage.getItem(KEY)).draft;return {pool:s.pool,picked:s.picked};},KEY);
    await page.locator('[data-reading=edit-question]').click();await page.locator('[data-reading-edit]').fill('Which schedule fits a new evening job?');await page.locator('[data-reading=save-question]').click();
-   await page.locator('.ai-waiting').waitFor();await until(()=>requests.length===editBefore+2,'saving a changed question starts its new reading once');
+   await page.locator('.ai-waiting').waitFor({state:'detached'});
+   assert.equal(requests.length,editBefore+1,'saving a changed question does not call AI without explicit confirmation');
+   await requestReading(page);await page.locator('.ai-waiting').waitFor();await until(()=>requests.length===editBefore+2,'explicit confirmation starts the changed question reading once');
    const newReply=held.splice(0)[0];newReply.end(JSON.stringify({text:'New question answer for the evening job.',model:'fixture',provider:'deepseek'}));
    await page.locator('.ai-answer').waitFor();reply(oldReply);
    await page.evaluate(async()=>{await new Promise(r=>window.waitTestFetch('/ai-config.js').then(r));});
@@ -100,14 +107,14 @@ async function fixture(page){
    await page.evaluate(()=>{window.fetch=window.waitTestFetch;delete window.waitTestFetch;});
    // Independently exercise the context guard without relying on UI cancellation.
    const guard=await page.evaluate(async KEY=>{
-    const s=structuredClone(JSON.parse(localStorage.getItem(KEY)).draft);s.id='context-guard';s.ai=[];
-    const nativeFetch=window.fetch;let release,saved=0;
-    window.fetch=()=>new Promise(r=>{release=()=>r(new Response(JSON.stringify({text:'Old context',model:'fixture',provider:'deepseek'}),{status:200,headers:{'Content-Type':'application/json'}}));});
-    try{const task=TarotReadingAI.request(s,()=>saved++,()=>null);s.userQuestion='Changed without cancellation';s.questionText=s.userQuestion;release();await task;return saved;}finally{window.fetch=nativeFetch;}
+   const s=structuredClone(JSON.parse(localStorage.getItem(KEY)).draft);s.id='context-guard';s.ai=[];
+   const nativeFetch=window.fetch;let release,saved=0;
+   window.fetch=()=>new Promise(r=>{release=()=>r(new Response(JSON.stringify({text:'Old context',model:'fixture',provider:'deepseek'}),{status:200,headers:{'Content-Type':'application/json'}}));});
+    try{const task=TarotReadingAI.request(s,()=>saved++,()=>null);while(!release)await new Promise(r=>setTimeout(r,0));s.userQuestion='Changed without cancellation';s.questionText=s.userQuestion;release();await task;return saved;}finally{window.fetch=nativeFetch;}
    },KEY);
    assert.equal(guard,0,'request snapshot guard rejects a changed question even without cancellation');
    assert.deepEqual(errors,[]);await context.close();
   }
-  console.log(JSON.stringify({status:'PASS',checks:['Chinese and English at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and only saves its new reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
+  console.log(JSON.stringify({status:'PASS',checks:['Chinese and English at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and requires explicit confirmation before saving its new AI reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
  }finally{for(const res of held.splice(0))reply(res);await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

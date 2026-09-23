@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.8.0 — Public, local-first reading / 公开进入与本地牌阵解读
+
+- Remove the invitation gate. Learning, drawing and spread-aware local readings open directly; AI is requested only after an explicit confirmation. / 移除邀请码入口；学牌、抽牌与按真实牌阵生成的本地解读直接可用，只有明确确认后才请求 AI。
+- Compact the mobile home, gallery and card fan so useful actions appear in the first screen while all 78 cards remain reachable. / 压缩移动首页、目录和牌扇，首屏展示有效入口，同时保持78张全可达。
+- Expand every card with an optional full guide and add one whole-card understanding question per card, bringing the authored course to 724 questions. / 每张牌新增可选完整资料与整牌理解题，课程题量增至724道。
+- Add privacy-limited first-party PV/UV, funnel and AI health metrics with a protected dashboard. Questions, cards and learning records are excluded. / 新增第一方匿名PV/UV、漏斗及AI健康监控与受保护后台；不采集问题、牌面或学习记录。
+- Establish `tarot.georgelu.cn` as the primary site and redirect legacy GitHub Pages links after the server is live. / 将正式入口迁至 `tarot.georgelu.cn`，服务器上线后旧GitHub Pages链接自动跳转。
+
 ## 1.7.3 — Spread-shaped reading / 牌阵形状贯穿抽牌
 
 - Selected cards, the group reveal, and settled results now use the selected spread's actual position map, including the five-card decision pattern, relationship cross and Celtic Cross. The layout remains visible while a reader moves from choosing to reading the answer. / 已选牌、整组揭牌和结果页都采用所选牌阵的真实位置图，包括五牌二择一、关系十字与凯尔特十字；从选牌到阅读答案始终保留牌位关系。

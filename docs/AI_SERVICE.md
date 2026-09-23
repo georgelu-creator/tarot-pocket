@@ -1,8 +1,8 @@
 # 联网解牌服务 / Online reading service
 
-首次进入托管网页时，用户输入一次邀请码。服务端把邀请码换成有时效的解牌会话；之后用户主动点“揭牌并解读”或重试解读时，网页自动发送本次问题、选项、牌阵 ID、实际抽出的牌和正逆位。服务从仓库目录补全牌名和每个牌位，再请求 DeepSeek 或 OpenAI。学习与已下载内容仍可离线运行。
+托管网页公开进入。揭牌后先在本机按真实牌阵、牌位、牌面和正逆位生成解读；只有用户主动点“请 AI 深度解析”时，网页才申请有时效的匿名解牌会话，并发送本次问题、选项、牌阵 ID、实际抽出的牌和正逆位。服务从仓库目录补全牌名和每个牌位，再请求 DeepSeek 或 OpenAI。学习、本地解读与已下载内容仍可离线运行。
 
-The hosted app exchanges one invitation for an expiring reading session. After the user explicitly requests a complete reading, the page automatically sends the current question, choices, spread ID, actual cards and orientations. The service fills in names and positions from this repository and requests DeepSeek or OpenAI. Learning and downloaded content still work offline.
+The hosted app is public. It produces a local spread-aware reading first. Only after the user explicitly asks for AI depth does it create an expiring anonymous session and send the current question, choices, spread ID, actual cards and orientations. Learning, local readings and downloaded content still work offline.
 
 ## 1.7请求与回答 / Current reading contract
 
@@ -22,13 +22,13 @@ Two synthetic live RP-1.1 requests passed the authentication and response checks
 
 ## 当前交付边界 / Delivery status
 
-- 已提供 Node.js 22+ 服务、容器配置、精确来源限制、邀请码换会话、请求额度/并发上限及自动化模拟测试。运行时没有第三方软件依赖。
+- 已提供 Node.js 22+ 服务、容器配置、精确来源限制、按需匿名会话、请求额度/并发上限、隐私受限统计及自动化模拟测试。运行时没有第三方软件依赖。
 - 本地模拟已核验两种供应商的请求和响应格式。模拟不能证明真实模型的解读质量、账户额度、网络可达性或生产部署成功。
 - 2026-09-14 已用无私人信息的学习案例完成一次 DeepSeek 官方真实调用，返回 1,407 字连贯正文。它证明该次调用成功，不等于持续质量或公网部署验收。腾讯云境外云函数的适配与部署要求见 [EDGEONE.md](EDGEONE.md)。
 - 同日腾讯云境外 HTTPS 服务也已真实返回五牌逆位案例解读（1,081 字）；已核对未持码请求 401 和正确来源预检 204。当前地址见 `ai-config.js`，上线版本与设备验收见 [HANDOFF.md](HANDOFF.md)。
 - 这份文档与代码不包含真实密钥、用户问题、虚构的服务地址或“已完成部署”的声明。部署时由维护者填写实际云平台环境变量，之后才能执行真实连通性与质量验收。
 
-- The Node.js 22+ service, container setup, exact-origin restrictions, invitation-to-session exchange, request/concurrency limits and mock tests are provided without third-party runtime dependencies.
+- The Node.js 22+ service, container setup, exact-origin restrictions, on-demand anonymous sessions, request/concurrency limits, privacy-limited telemetry and mock tests are provided without third-party runtime dependencies.
 - Local mocks validate both provider contracts. They do not verify live model quality, account credit, network reachability or production deployment.
 - A live official DeepSeek request with a synthetic study example returned 1,407 characters on 2026-09-14. This verifies that request, not sustained quality or public deployment. See [EDGEONE.md](EDGEONE.md) for the overseas Tencent Cloud Functions adapter and hosting requirements.
 - The overseas Tencent HTTPS service also returned a synthetic five-card reading with reversals (1,081 characters), with unauthorized requests returning 401 and valid-origin preflight returning 204. See `ai-config.js` for its current address and [HANDOFF.md](HANDOFF.md) for publication and device acceptance.
@@ -36,13 +36,11 @@ Two synthetic live RP-1.1 requests passed the authentication and response checks
 
 ## 密钥放在哪里 / Where credentials belong
 
-供应商 API Key 与长 `TAROT_AI_ACCESS_TOKEN` 只放在云平台的服务端 Secret/环境变量里。服务端从长 Token 确定性派生一个不区分大小写的 8 位邀请码；用户只把短邀请码提交给 `/api/session`。服务返回签名的短期会话，`/api/reading` 不接受短邀请码或长 Token。邀请码、会话和供应商 Key 都不进入学习备份。这个权限只覆盖结构化塔罗解牌，不授权任意聊天、模型列表、文件或工具。
+供应商 API Key 与长 `TAROT_AI_ACCESS_TOKEN` 只放在服务器 Secret/环境变量里。用户确认 AI 后，浏览器向 `/api/session` 提交空对象；服务返回签名的短期匿名会话。`/api/reading` 不接受长 Token。会话和供应商 Key 都不进入业务存储或备份。这个权限只覆盖结构化塔罗解牌，不授权任意聊天、模型列表、文件或工具。
 
-Keep the provider API key and long `TAROT_AI_ACCESS_TOKEN` in server-side secrets. The server deterministically derives a case-insensitive 8-character invitation from the long token; only that short invitation is submitted to `/api/session`. `/api/reading` accepts the signed, expiring session and rejects both invitations and long tokens. None of these credentials enter learning backups. Access remains limited to structured tarot readings, not arbitrary chat, model listing, files, or tools.
+Keep the provider API key and long `TAROT_AI_ACCESS_TOKEN` in server-side secrets. After explicit user confirmation, `/api/session` accepts an empty object and returns a signed, expiring anonymous session. `/api/reading` rejects the long token. None of these credentials enter product storage or backups.
 
-8 位邀请码仍然代表调用费用权限，应私下分享，不要写入公开前端或仓库。长 Token 至少 32 字符，实际建议使用 32 字节随机值的十六进制或 Base64URL 编码。共享邀请码不是账号系统；需要多人开放使用时，应另外设计身份、每人额度与凭据轮换。
-
-The 8-character invitation can incur API charges and should be shared privately, never hardcoded in the public frontend or repository. The long token must contain at least 32 characters, preferably an encoding of 32 random bytes. A shared invitation is not an account system; a public multi-user service needs separate identity, per-user quotas and credential rotation.
+长 Token 至少 32 字符，建议使用 32 字节随机值的十六进制或 Base64URL 编码。公开会话会产生调用费用，因此必须保留服务端每分钟/每日额度、并发限制和供应商预算。旧邀请码请求只为已部署客户端的短期兼容保留，不在新界面展示。
 
 ## 配置 / Configuration
 
@@ -62,7 +60,7 @@ node --env-file=server/.env server/reading-service.cjs
 | `TAROT_AI_BASE_URL` | DeepSeek 默认 `https://api.deepseek.com`；OpenAI 默认 `https://api.openai.com/v1`。必须 HTTPS，无凭据、查询串或片段 / HTTPS only, with no embedded credentials, query or fragment |
 | `DEEPSEEK_API_KEY` | DeepSeek 服务端密钥 / server-side provider key |
 | `OPENAI_API_KEY` | 仅 OpenAI 模式需要 / only needed for OpenAI mode |
-| `TAROT_AI_ACCESS_TOKEN` | 必填服务端签名密钥，至少 32 字符；派生 8 位邀请码，更换后短邀请码改变且旧会话失效 / required server signing secret, at least 32 characters; derives the 8-character invitation and rotation revokes old sessions |
+| `TAROT_AI_ACCESS_TOKEN` | 必填服务端签名密钥，至少 32 字符；更换后旧会话失效 / required server signing secret; rotation revokes old sessions |
 | `TAROT_SESSION_TTL_SECONDS` | 会话时长，默认 43200（12 小时），允许 900–604800 / session lifetime, default 43200 (12 hours), range 900–604800 |
 | `TAROT_AI_ALLOWED_ORIGINS` | 逗号分隔的精确网页来源，例如 `https://georgelu-creator.github.io`；不含 `/tarot-pocket/`、尾部 `/` 或 `*` / comma-separated exact origins, no paths, trailing slash or wildcard |
 | `TAROT_AI_HOST` | 默认 `127.0.0.1`；云容器通常设 `0.0.0.0` / localhost by default; containers normally use `0.0.0.0` |
@@ -70,17 +68,13 @@ node --env-file=server/.env server/reading-service.cjs
 | `TAROT_AI_THINKING` | DeepSeek `enabled`（默认，low effort）或 `disabled`；不影响只返回最终正文 / only final answer content is ever returned |
 | `TAROT_AI_TIMEOUT_MS` | 默认 / default `90000`，允许 / range `1000–180000` |
 | `TAROT_AI_MAX_TOKENS` | 默认 / default `8192`，允许 / range `1024–24000`；包含供应商计入的思考输出预算 / includes reasoning tokens where the provider counts them |
-| `TAROT_AI_REQUESTS_PER_MINUTE` | 所有持码用户共享，默认 / shared default `6` |
-| `TAROT_AI_REQUESTS_PER_DAY` | 过去 24 小时内所有持码用户共享，默认 / shared rolling-24-hour default `100` |
+| `TAROT_AI_REQUESTS_PER_MINUTE` | 所有匿名AI会话共享，默认 / shared anonymous-session default `6` |
+| `TAROT_AI_REQUESTS_PER_DAY` | 过去 24 小时内所有匿名AI会话共享，默认 / shared rolling-24-hour default `100` |
 | `TAROT_AI_CONCURRENCY` | 同时进行的上游请求，默认 / simultaneous upstream requests, default `2` |
-
-在维护者电脑上生成易分享邀请码时运行下面的命令。它只把邀请码写入被 Git 忽略且权限为 `0600` 的 `server/invite-code.txt`，不会打印长 Token 或短邀请码到日志。
-
-To prepare the shareable invitation on the maintainer's computer, run the command below. It writes only to ignored `server/invite-code.txt` with mode `0600` and prints neither the long token nor invitation to logs.
-
-```sh
-node --env-file=server/.env tools/write_invite_code.cjs
-```
+| `TAROT_TELEMETRY_ENABLED` | 设为 `1` 启用第一方匿名统计；默认关闭 / set to `1` to enable first-party anonymous metrics; disabled by default |
+| `TAROT_TELEMETRY_DB` | SQLite 文件路径；容器建议 `/app/data/telemetry.sqlite` / SQLite path; `/app/data/telemetry.sqlite` in containers |
+| `TAROT_TELEMETRY_SECRET` | 匿名月度哈希密钥，建议独立随机值；缺省回退到服务签名密钥 / secret for monthly anonymous hashes; falls back to the session-signing secret |
+| `TAROT_ADMIN_TOKEN` | 管理后台令牌，只保存在服务器和维护者本机 / dashboard token; server and maintainer device only |
 
 供应商地址由维护者在启动时固定，客户端不能覆盖。可配置 HTTPS 兼容网关，但网关也会收到密钥与问题，只有明确受信任的服务才能作为这个地址。请求不跟随重定向，避免认证头被带往不同目的地。
 
@@ -101,7 +95,7 @@ docker run --rm --env-file server/.env -p 127.0.0.1:8787:8787 tarot-pocket-ai
 
 The image copies only the service and card/spread catalogs, uses a non-root user, and excludes other files including `.env` through its Dockerfile-specific ignore file. No secret is baked into the image. Set `TAROT_AI_HOST=0.0.0.0` on a container platform; terminate public HTTPS at the host's proxy/load balancer and forward to the listening port. Do not use a public plain-HTTP endpoint on the phone.
 
-若云平台直接启动 Node，使用启动命令 `node server/reading-service.cjs` 并通过平台注入环境变量即可。对 GitHub Pages 的访问来源允许值是 `https://georgelu-creator.github.io`。本机开发可另外加入 `http://127.0.0.1:8765`；不允许 `Origin: null`，因此从本地 `file:` 打开的独立 HTML 不直接调用在线服务。
+正式部署使用 `https://tarot.georgelu.cn` 作为精确允许来源，同源提供静态页和API。GitHub Pages只作跳转与镜像。本机开发可另外加入 `http://127.0.0.1:8765`；不允许 `Origin: null`。
 
 For a Node host, use `node server/reading-service.cjs` and inject environment variables through the platform. The GitHub Pages origin is `https://georgelu-creator.github.io`. Local development may additionally allow `http://127.0.0.1:8765`. `Origin: null` is denied, so a standalone HTML opened via `file:` does not call the online service directly.
 
@@ -123,9 +117,9 @@ The service stores no questions or readings and logs no secrets or request bodie
 
 `configured:true` only means required settings are present, not that provider connectivity or reading quality has passed.
 
-`POST /api/session` 接受唯一字段 `inviteCode`。验证成功返回 `{token, expiresAt}`；`token` 是有时效的解牌会话，不是供应商密钥。错误邀请码按客户端地址限制为十分钟最多十次。
+`POST /api/session` 接受空对象 `{}`，返回 `{token, expiresAt}`；token 是有时效的匿名解牌会话，不是供应商密钥。服务暂时兼容有效旧 `inviteCode`，新客户端不发送它。
 
-`POST /api/session` accepts only `inviteCode` and returns `{token, expiresAt}`. The token is an expiring reading session, never a provider credential. Failed invitation attempts are limited to ten per client address per ten minutes.
+`POST /api/session` accepts `{}` and returns an expiring anonymous session. A valid legacy `inviteCode` remains temporarily compatible, but new clients do not send it.
 
 `POST /api/reading` 需要 `Content-Type: application/json` 与 `Authorization: Bearer <session token>`。原始邀请码不能替代会话。正文只接受以下字段，卡牌顺序必须对应所选牌阵的位置顺序。下面是合成示例，不是用户记录。
 
@@ -164,7 +158,7 @@ Errors use `{ "error": "CODE" }`:
 | Code | HTTP | 含义 / Meaning |
 | --- | --- | --- |
 | `INVALID_REQUEST` | 400 | 请求格式或牌面/牌位不合法 / invalid input or card-position mapping |
-| `AUTH_REQUIRED` | 401 | 邀请码错误，或解牌会话缺少、篡改、过期 / invalid invitation or missing, tampered, expired reading session |
+| `AUTH_REQUIRED` | 401 | 解牌会话缺少、篡改或过期；旧客户端也可能是邀请码无效 / missing, tampered or expired reading session; legacy clients may also have an invalid invitation |
 | `ORIGIN_NOT_ALLOWED` | 403 | 网页来源不在允许清单 / origin not allowed |
 | `PAYLOAD_TOO_LARGE` | 413 | 请求体过大 / body too large |
 | `MODEL_REFUSAL` | 422 | 模型拒绝生成 / provider refusal |

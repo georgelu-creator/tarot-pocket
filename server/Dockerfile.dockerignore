@@ -8,4 +8,5 @@
 **/.env.*
 
 !server/reading-prompts.cjs
+!server/telemetry.cjs
 !reading-scenarios.js

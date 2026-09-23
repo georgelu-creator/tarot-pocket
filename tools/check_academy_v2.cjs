@@ -9,8 +9,16 @@ function checkModel(){
  assert.deepEqual(['B','I','A'].map(l=>source.lessons.filter(x=>x.level===l).length),[8,6,6]);
  assert.equal(new Set(source.cards.map(u=>u.teachings[0].zh)).size,78);
  let questionCount=0;
+ const wholeCardPrompts=new Set();
  const checkPair=p=>{assert(p&&p.zh&&p.en);assert(!/[\u3400-\u9fff]/.test(p.en),'English cannot leak Chinese: '+p.en);assert(!/内容ID|触发与范围|验收方式|编写者|补学路由|已教依据/.test(p.zh),'author-only instructions');};
  for(const u of all){for(const p of [...u.teachings,u.title,u.summary,...(u.kind==='card'?[u.application,u.reversal]:[])])checkPair(p);
+  if(u.kind==='card'){
+   assert(u.details,u.id+' has an optional full card guide');
+   for(const p of [u.details.visual,u.details.core,u.details.upright,u.details.reversed,u.details.boundary])checkPair(p);
+   assert.equal(u.details.contexts.length,3,u.id+' covers work, relationships and study');
+   for(const c of u.details.contexts){for(const p of [c.label,c.state,c.tension,c.advice])checkPair(p);}
+   const q=u.questions.Q4;assert(q,u.id+' has a whole-card understanding check');assert.equal(q.options.length,3,u.id+' uses close alternatives rather than binary recognition');assert.equal(q.support,undefined,'whole-card check does not route into an unrelated keyword repair');wholeCardPrompts.add(q.prompt.zh);
+  }
   for(const q of [...Object.values(u.questions),...Object.values(u.remediation).map(r=>r.question),u.revisit]){checkPair(q.prompt);assert.equal(q.options.filter(o=>o.id===q.correct).length,1);assert.equal(new Set(q.options.map(o=>o.id)).size,q.options.length);q.options.forEach(o=>{checkPair(o.text);checkPair(o.feedback);});questionCount++;}
   // Exercise every authored normal path, every error path, each support branch,
   // and restore every intermediate state without repeating a committed answer.
@@ -29,6 +37,7 @@ function checkModel(){
    assert(d.progress[u.id].nextVisitAt>0);
   }
  }
+ assert.equal(wholeCardPrompts.size,78,'every card has its own whole-card prompt');
  const b07=api.planFor(api.units.B07);assert.equal(b07[2].key,'Q1');assert.equal(b07[3].key,'T3','Strength begins only after the Two of Cups question');
  assert.equal(api.units.A06.teachings.length,14,'ten position explanations must be taught before assessment');
  assert.deepEqual(Array.from(api.units.A05.cards),['p02','p03','w11','p08','w10']);
@@ -50,6 +59,7 @@ async function checkUI(profile='core'){
  const checkEnglish=async()=>{const found=await p.locator('.academy-shell,.academy-home').evaluate(el=>{const found=[];const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);for(let n=w.nextNode();n;n=w.nextNode())if(/[\u3400-\u9fff]/.test(n.textContent))found.push(n.textContent.trim());return found;});assert.deepEqual(found,[],'academy English renderer must not hide leaks behind data-i18n-ignore');};
  const solve=async({wrongFirst=false,checkLanguage=false}={})=>{let n=0;while(!(await read()).session.complete&&n++<60){const q=await expected();if(checkLanguage)await checkEnglish();assert.equal(await p.locator('textarea,[data-guided-note],[data-journey=rate],[data-guided=meaning-rate]').count(),0);if(q.kind==='question'&&!(await read()).session.answers[q.id]){let choice=q.correct;if(wrongFirst){choice=await p.locator(`[data-academy=answer]:not([data-value="${choice}"])`).first().getAttribute('data-value');wrongFirst=false;}await p.locator(`[data-academy=answer][data-value="${choice}"]`).click();if(checkLanguage)await checkEnglish();}await p.locator('[data-academy=next]').click();}assert((await read()).session.complete);};
  await open('p08');let anchor=await p.locator('.academy-card-face').boundingBox();assert.equal(anchor.width,108);assert.equal(anchor.height,184);
+ const dossier=p.locator('[data-academy-card-details]');assert.equal(await dossier.count(),1);assert.equal(await dossier.getAttribute('open'),null,'full guide stays optional by default');await dossier.locator('summary').click();assert.notEqual(await dossier.getAttribute('open'),null);assert.match(await dossier.innerText(),profile==='english'?/Picture cues[\s\S]*Core meaning[\s\S]*Upright in context[\s\S]*Reading a reversal[\s\S]*Common situations[\s\S]*Interpretive boundaries/:/画面线索[\s\S]*核心牌义[\s\S]*正位怎样用[\s\S]*逆位怎样读[\s\S]*常见情境[\s\S]*解读边界/);await dossier.locator('summary').click();
  await p.locator('[data-academy=next]').click();const q=await expected();await p.locator(`[data-academy=answer]:not([data-value="${q.correct}"])`).click();const before=await read();assert.match(await p.locator('.academy-feedback').innerText(),profile==='english'?/Not quite/:/这题不对/);await p.reload();await p.locator('[data-academy=continue]').first().click();assert.deepEqual((await read()).session.answers,before.session.answers);assert.equal((await p.locator('.academy-card-face').boundingBox()).width,anchor.width);
  await p.locator('[data-academy=next]').click();assert.equal((await read()).session.support.phase,'teach');await solve({checkLanguage:profile==='english'});assert.equal((await read()).progress.p08.targets.Q1.status,'assisted');assert.equal((await read()).session.mode,'learn');assert.equal(Object.hasOwn((await read()).progress.p08.targets,'Q3'),false,'no reversal required during first card learning');
  if(profile==='motion'){

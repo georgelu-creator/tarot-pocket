@@ -2,7 +2,7 @@
 
 **从零开始学塔罗，也可以带着问题来抽牌。**
 
-[**手机体验 →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=zh&v=1.7.3) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.3/tarot-pocket-v1.7.3.html) · [English](README.md)
+[**手机体验 →**](https://tarot.georgelu.cn/?lang=zh) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases) · [English](README.md)
 
 ![Tarot Pocket](docs/images/hero.png)
 
@@ -34,8 +34,8 @@
 
 ## 手机、双语与离线
 
-- 托管网页仅在入口验证8位邀请码；进入后不再填写连接码或AI密钥。供应商密钥始终留在服务端。
-- 验证服务的主线路连不上时，页面会自动尝试备用线路；不用重新输入邀请码。
+- 托管网页公开进入，学习、抽牌和本地牌阵解读不需要账号或邀请码。供应商密钥始终留在服务端。
+- 只有主动点击“请 AI 深度解析”才会建立短期匿名会话；连接失败不影响本地解读、牌面或问题。
 - 在“记录 → 检查离线内容与安装”下载并校验完整内容，再通过Safari“添加到主屏幕”。断网前应在自己的手机测试一次。
 - 中文与英文覆盖课程、练习、反馈和抽牌界面；历史RWS牌图保持原样。
 - 进度保存在当前浏览器。换设备前导出JSON；新版保留以前的学习与抽牌记录。更新时使用上面的手机入口，不必清空网站数据。

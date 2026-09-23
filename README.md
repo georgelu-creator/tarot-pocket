@@ -2,7 +2,7 @@
 
 **Learn tarot from the beginning, or draw cards for a question on your mind.**
 
-[**Try on your phone →**](https://georgelu-creator.github.io/tarot-pocket/update.html?lang=en&v=1.7.3) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases/download/v1.7.3/tarot-pocket-v1.7.3.html) · [简体中文](README.zh-CN.md)
+[**Try on your phone →**](https://tarot.georgelu.cn/?lang=en) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases) · [简体中文](README.zh-CN.md)
 
 ![Tarot Pocket](docs/images/hero.png)
 

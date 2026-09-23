@@ -7,7 +7,7 @@ plans, publishing to Git and providing a mobile test entry. The subsequent user
 decision permits replacing the older interaction framework with a more usable
 design. Earlier documentation-only scope statements below are historical and
 superseded. Preserve records and security boundaries, not obsolete UI controls.
-Read docs/RELEASE_1_7.md and both master documents' implementation records first.
+Read docs/RELEASE_1_8.md and both master documents' implementation records first.
 
 用户最新已授权完整开发学牌与抽牌、Git 发布和移动端体验，并允许升级旧交互框架。
 此前仅文档的限制已被替代。保留数据与安全边界，不必保留被否定的旧交互。
@@ -55,8 +55,10 @@ conversations, personal readings, credentials and browser backups do not belong 
 - Use only verified historical artwork from assets/manifest.json. Do not replace
   missing images with another edition, generated artwork, or commercial redraws.
 - Verify a change with the relevant checks. Before a release, run npm test in full.
-  Test failures must be investigated, not bypassed. Offline learning and drawing
-  have no third-party requests, account requirement, or analytics. Optional online
+  Test failures must be investigated, not bypassed. Offline learning, drawing and
+  standalone files have no third-party requests or account requirement. The hosted
+  site may send only documented first-party anonymous product events; never send
+  questions, cards or learning records. Optional online
   interpretation requires an explicit user action; provider keys stay server-side.
   Never replace a failed AI response with an offline reference labelled as AI.
 - Use focused branches and pull requests. Do not force-push, rewrite history, or

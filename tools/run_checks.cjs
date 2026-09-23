@@ -8,6 +8,8 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
 (async()=>{
   await run(process.env.PYTHON||'python3',['tools/build_academy.py']);
   await run(process.execPath,['tools/check_ai_server.cjs']);
+  await run(process.execPath,['tools/check_telemetry.cjs']);
+  await run(process.execPath,['tools/check_entry_redirect.cjs']);
   await run(process.execPath,['tools/check_reading_scenes_v2.cjs']);
   await run(process.execPath,['tools/check_cloud_functions.cjs']);
   await run(process.env.PYTHON||'python3',['tools/verify_assets.py']);
