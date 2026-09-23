@@ -2,12 +2,14 @@
 
 ## 1.8.0 public local-first reading / 公开进入与本地优先（2026-09-23）
 
+- [PR #23](https://github.com/georgelu-creator/tarot-pocket/pull/23) 已合并为 `82441b7f8fb08f0c095c8f142305b2c535aba9af`；PR检查与[主分支完整检查及Pages部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35858627557)成功。正式入口为 <https://tarot.georgelu.cn/?lang=zh>，生产服务器当前链接到 `/opt/tarot-pocket/releases/82441b7`。/ PR #23 is merged, the full main workflow passed, and the production domain serves the merged release.
 - 当前分支实现公开入口：学习、抽牌和32种牌阵的本地整组解读不依赖邀请码或AI；问题可空。只有用户点“请 AI 深度解析”才申请短期匿名会话。AI失败不清空牌、题或本地解读。/ Public learning, drawing and local readings no longer require an invitation or AI. AI sessions are created only after explicit confirmation.
 - 390px首页首屏已出现学牌和抽牌主入口；抽牌目录和牌扇压缩，牌扇首屏约10–11张且78张均可达。/ The 390px home exposes both primary journeys in the first screen; the directory and 78-card fan are denser.
 - 78张牌各增加整牌理解题和默认收起的完整资料，总题量724；保持稳定牌ID、三种存储键和备份格式。/ Each card adds a whole-card question and optional full guide, bringing the course to 724 questions without changing stable IDs or backups.
 - 新增同源匿名PV/UV、阅读/学习漏斗和AI健康统计，管理页为 `/admin.html`；不发送问题、牌面、答案或学习记录，保留90天并支持GPC/DNT。/ First-party metrics exclude questions, cards, answers and learning records and use a protected dashboard.
-- 正式入口规划为 `https://tarot.georgelu.cn/`；旧GitHub Pages入口已实现保留查询参数的跳转。Caddy、Compose、DNS/部署/回滚说明和跨端边界已编写。/ The primary domain, legacy redirect, same-origin deployment and cross-platform boundaries are implemented in source.
-- 完整 `npm test` 已于2026-09-23通过，构建指纹 `1.8.0-d6aa2d0598f17ed3`，覆盖Chromium/WebKit、中英文、320/390px、真实v1.0升级、121项离线资源、公开入口/按需会话、主备AI线路和旧地址跳转。PR/CI、服务器部署、DNS与真实手机仍须分别记录；当前不能把本地通过称为线上可用。/ Full local tests pass for build `1.8.0-d6aa2d0598f17ed3`; Git, live deployment, DNS and physical-phone acceptance remain separate evidence.
+- 正式入口 `https://tarot.georgelu.cn/` 已通过HTTPS公开访问；旧GitHub Pages主页与更新页保留语言和片段后跳转。Caddy把API限制在同源路径，Node只监听服务器回环地址。/ The production domain is live over HTTPS; the legacy Pages entries preserve language and hash when redirecting, and Node listens only on loopback behind Caddy.
+- 完整 `npm test` 与主分支CI已通过，构建指纹 `1.8.0-d6aa2d0598f17ed3`。390×844公网Yes/No流程、本地解读、匿名事件、受保护后台和一组虚构问题真实DeepSeek调用通过；这仍不等于真实iPhone/微信或长期模型质量已验证。/ Full tests, public mobile automation, local reading, telemetry, protected admin and one synthetic live-AI case passed; physical phone and long-term model quality remain open.
+- [v1.8.0发布页](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.8.0)包含重新下载并通过SHA-256校验的离线HTML。旧域名与新域名不能自动共享浏览器本地进度，需要时使用JSON导出与导入。/ The release contains a checksum-verified offline package. Cross-origin local progress requires JSON export/import.
 - 本版事实源见 [RELEASE_1_8](RELEASE_1_8.md)、[READING_MASTER](READING_MASTER.md)、[LEARNING_MASTER](LEARNING_MASTER.md)、[ANALYTICS](ANALYTICS.md)、[SERVER_DEPLOY](SERVER_DEPLOY.md) 与 [CROSS_PLATFORM](CROSS_PLATFORM.md)。
 
 ## 1.7.3 spread-shaped reading / 牌阵形状贯穿抽牌（2026-09-17）
