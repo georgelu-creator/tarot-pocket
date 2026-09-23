@@ -3,8 +3,35 @@
   'use strict';
   const source=window.TAROT_ACADEMY_CONTENT, units=Object.fromEntries([...source.lessons,...source.cards].map(u=>[u.id,u]));
   const DAY=86400000, version=source.version;
+  const CARD_PATH=(()=>{
+    const byId=new Map(source.cards.map(card=>[card.id,card]));
+    const ids=[
+      ...source.cards.filter(card=>/^m\d\d$/.test(card.id)).map(card=>card.id),
+      ...Array.from({length:10},(_,index)=>index+1).flatMap(number=>['w','c','s','p'].map(suit=>suit+String(number).padStart(2,'0'))),
+      ...Array.from({length:4},(_,index)=>index+11).flatMap(number=>['w','c','s','p'].map(suit=>suit+String(number).padStart(2,'0')))
+    ];
+    const ordered=ids.filter(id=>byId.has(id));
+    return [...ordered,...source.cards.map(card=>card.id).filter(id=>!ordered.includes(id))];
+  })();
   const blank=()=>({version:1,contentVersion:version,progress:{},session:null,paused:{},pendingReverse:null});
   const number=(n,f=0)=>Number.isFinite(n)&&n>=0&&n<1e14?n:f;
+  function masteryState(record,at=Date.now()){
+    if(!record?.uprightAt)return {key:'unlearned',label:'未学',detail:'下一步：完成正位初学',reviewStreak:0};
+    const review=record.targets?.V1,reviewStreak=Math.max(0,Math.floor(number(review?.streak))),reversed=!!record.reverseAt;
+    const stable=reversed&&review?.status==='independent'&&reviewStreak>=2;
+    if(record.nextVisitAt&&record.nextVisitAt<=at)return {key:'due',label:'待复习',detail:stable?'已完成两次间隔回访，现在到期巩固':`${reversed?'已学逆位':'逆位未学'} · 间隔回访 ${Math.min(reviewStreak,2)}/2`,reviewStreak};
+    if(stable)return {key:'mastered',label:'已掌握',detail:'正位、逆位和两次间隔回访均已完成',reviewStreak};
+    if(!reversed)return {key:'initial',label:'初学',detail:'下一步：学习逆位，并完成两次间隔回访',reviewStreak};
+    return {key:'reversed',label:'已学逆位',detail:`下一步：完成两次间隔回访（${Math.min(reviewStreak,2)}/2）`,reviewStreak};
+  }
+  function q4Repair(u,s){
+    const question=u.questions.Q4,answer=s.answers[question.id],selected=question.options.find(option=>option.id===answer?.selected),correct=question.options.find(option=>option.id===question.correct);
+    return [
+      selected?.feedback||{zh:'刚才的选项没有同时照顾这张牌的画面与核心意思。'},
+      {zh:`把这张牌连起来时，要保留「${correct?.text?.zh||''}」这个重点。${correct?.feedback?.zh||''}`},
+      {zh:'下面换到一个具体情境，再判断同一个核心意思。答完这题才结束本轮初学。'}
+    ];
+  }
   function planFor(u,mode='learn') {
     if(mode==='reverse-review'){const support=u.remediation[u.questions.Q3.support];return [{kind:'teach',key:'T3',content:[u.reversal],reversed:true},{kind:'question',key:'Q3',question:support.question,reversed:true,support:true}];}
     if(mode==='review')return [{kind:'question',key:'V1',question:u.revisit}];
@@ -27,6 +54,7 @@
     }
     const step=plan[index];
     if(s.support?.key==='review-summary'&&mode==='review'&&out.answers[u.revisit.id]&&!out.answers[u.revisit.id].correct)out.support={key:'review-summary',phase:'summary',round:0};
+    if(['card-summary','card-integration'].includes(s.support?.key)&&mode==='learn'&&step?.key==='Q4'&&out.answers[step.question.id]&&!out.answers[step.question.id].correct)out.support={key:'card-integration',phase:s.support.phase==='question'?'question':'teach',round:1};
     if(s.support&&step?.kind==='question'&&u.remediation[s.support.key]&&s.support.key===step.question.support){
       const r=u.remediation[s.support.key], validAnswer=out.answers[step.question.id];
       if(validAnswer&&!validAnswer.correct)out.support={key:s.support.key,phase:['teach','question','summary'].includes(s.support.phase)?s.support.phase:'teach',round:1};
@@ -57,6 +85,7 @@
     if(!s||s.complete)return null;
     const u=units[s.unitId],base=planFor(u,s.mode)[s.index];if(!base)return null;
     if(s.support?.key==='review-summary')return {kind:'summary',key:'V1',content:[u.summary],support:true};
+    if(s.support?.key==='card-integration')return s.support.phase==='question'?{kind:'question',key:'Q4',question:u.revisit,support:true}:{kind:'summary',key:'Q4',content:q4Repair(u,s),support:true};
     if(!s.support)return base;
     const support=u.remediation[s.support.key];
     return s.support.phase==='question'?{kind:'question',key:base.key,question:support.question,support:true,reversed:base.reversed}:
@@ -79,7 +108,12 @@
     const u=units[s.unitId];
     if(step.kind==='question'){
       const a=s.answers[step.question.id];if(!a)return false;
-      if(s.support){
+      if(s.support?.key==='card-integration'){
+        // The authored revisit is an equivalent new situation. Completing it is
+        // required before the initial round can end; a miss remains evidence for
+        // an earlier due review instead of being presented as mastery.
+        s.support=null;
+      }else if(s.support){
         if(!a.correct){s.support.phase='summary';s.hint=false;return true;}
         s.support=null;
       }else if(!a.correct&&step.question.support&&u.remediation[step.question.support]){
@@ -87,6 +121,8 @@
       }else if(!a.correct&&s.mode==='review'){
         // A revisit has no second authored equivalent; recap and revisit later.
         s.support={key:'review-summary',phase:'summary',round:0};return true;
+      }else if(!a.correct&&u.kind==='card'&&step.key==='Q4'){
+        s.support={key:'card-integration',phase:'teach',round:1};return true;
       }
     }else if(s.support){
       if(s.support.phase==='teach'){s.support.phase='question';s.hint=false;return true;}
@@ -108,17 +144,26 @@
   function currentStep(s){if(s?.support?.key==='review-summary')return {kind:'summary',key:'V1',content:[units[s.unitId].summary],support:true};return rawStep(s);}
   function create(bridge){
     const {esc,img,icon,go,toast,now,get,set}=bridge;
-    let search='',level='B';
-    const lang=()=>window.TAROT_I18N?.locale==='en'?'en':'zh';
-    const t=p=>typeof p==='string'?p:p?.[lang()]||'';
-    const copy=(zh,en)=>lang()==='en'?en:zh;
+    let level='B';
+    // This release has one learner-facing language. Keep bilingual authored data
+    // and saved-session fields compatible, but render the academy in Chinese.
+    const lang=()=> 'zh';
+    const t=p=>typeof p==='string'?p:p?.zh||'';
+    const copy=zh=>zh;
     const data=()=>get()||blank();
     const current=()=>data().session;
     const active=()=>!!current()&&!current().complete;
     const status=id=>data().progress[id]||null;
     const completedCards=()=>source.cards.filter(u=>status(u.id)?.uprightAt).map(u=>u.id);
+    function learningState(id){
+      const state=masteryState(status(id),now());
+      if(state.key!=='unlearned')return state;
+      const inProgress=current()?.unitId===id&&!current().complete||Object.values(data().paused||{}).some(session=>session.unitId===id&&!session.complete);
+      return inProgress?{key:'learning',label:'学习中',detail:'下一步：从上次停下的位置继续',reviewStreak:0}:state;
+    }
+    const masteredCards=()=>source.cards.filter(card=>learningState(card.id).key==='mastered').map(card=>card.id);
     const due=()=>Object.entries(data().progress).filter(([id,p])=>p.completedAt&&(p.nextVisitAt||Infinity)<=now()).sort((a,b)=>a[1].nextVisitAt-b[1].nextVisitAt).map(([id])=>id);
-    function recommendation(){const candidates=source.cards.filter(c=>!status(c.id)?.uprightAt).map(c=>c.id),seen=new Set([current()?.unitId,...Object.values(data().paused||{}).map(s=>s.unitId)]),fresh=candidates.filter(id=>!seen.has(id)),ids=fresh.length?fresh:candidates;return ids.length?ids[Math.floor(Math.random()*ids.length)]:null;}
+    function recommendation(){const candidates=CARD_PATH.filter(id=>!status(id)?.uprightAt),seen=new Set([current()?.unitId,...Object.values(data().paused||{}).map(s=>s.unitId)]),fresh=candidates.filter(id=>!seen.has(id));return fresh[0]||candidates[0]||null;}
     function save(d){d.contentVersion=version;set(d);}
     function pauseAnimation(){}
     function start(id,mode='learn'){
@@ -132,16 +177,22 @@
       d.session=d.paused[key]||{unitId:id,mode,index:0,startedAt:now(),seed:Math.floor(Math.random()*1e9)+1,contentVersion:version,answers:{},support:null,hint:false,complete:false,lang:lang(),animation:{frame:0,static:true,paused:true},scroll:0};
       delete d.paused[key];save(d);go('academy');
     }
-    function newCard(){const id=recommendation();if(id)start(id);else{toast(copy('78 张牌都已经学过，可以选一张回看。','You have studied all 78 cards. Choose one to revisit.'));go('courses');}}
-    function review(){const id=due()[0];if(id)start(id,units[id].kind==='card'&&status(id)?.targets.Q3?.status==='pending'?'reverse-review':'review');else{toast(copy('暂时没有需要回访的内容。','Nothing is due for a revisit yet.'));go('courses');}}
+    function newCard(){const id=recommendation();if(id)start(id);else{toast(copy('78 张牌都已完成正位初学，可以从牌库选择一张继续巩固。','You have studied all 78 cards. Choose one to revisit.'));go('courses');}}
+    function visit(id){if(id&&units[id])start(id,units[id].kind==='card'&&status(id)?.targets.Q3?.status==='pending'?'reverse-review':'review');}
+    function review(){const id=due()[0];if(id)visit(id);else{toast(copy('暂时没有需要回访的内容。','Nothing is due for a revisit yet.'));go('courses');}}
     const button=(action,zh,en,attrs='',cls='secondary')=>`<button class="${cls}" data-academy="${action}" ${attrs}>${copy(zh,en)}</button>`;
-    function statusLabel(id){const p=status(id);if(!p)return copy('开始学习','Start');if(!p.completedAt)return copy('继续学习','Continue');return Object.values(p.targets).some(x=>x.status==='pending')?copy('学过 · 稍后再练','Studied · revisit later'):copy('已完成本轮','Round complete');}
+    function statusLabel(id){
+      const u=units[id],p=status(id);if(u?.kind==='card'){const state=learningState(id);return `${state.label} · ${state.detail}`;}
+      if(!p)return copy('未学 · 从本课开始','Start');if(!p.completedAt)return copy('学习中 · 继续本课','Continue');
+      const state=masteryState({...p,uprightAt:p.completedAt,reverseAt:p.completedAt},now());
+      return state.key==='due'?copy('待复习 · 完成到期回访','Due'):state.reviewStreak>=2?copy('已掌握 · 仍可继续巩固','Mastered'):copy(`完成初学 · 间隔回访 ${Math.min(state.reviewStreak,2)}/2`,'Initial round complete');
+    }
     function home(){
       const titles={B:copy('初级 · 从这里开始','Beginner · start here'),I:copy('中级 · 读懂每张牌','Intermediate · understand each card'),A:copy('高级 · 连成完整解读','Advanced · read the whole spread')};
       const tabs={B:copy('初级','Beginner'),I:copy('中级','Intermediate'),A:copy('高级','Advanced')};
       const intros={B:copy('先认识牌组，走一遍抽牌，再学会用一张牌回答问题。','Meet the deck, try the reading process and learn to answer a question with one card.'),I:copy('把画面、牌义和问题联系起来，再学习有具体背景的逆位。','Connect images, meanings and questions, then learn reversals in specific situations.'),A:copy('练习问题、牌位和多张牌的配合，用完整案例解释结果。','Work with questions, positions and several cards in complete worked readings.')};
-      const candidates=source.cards.filter(c=>!search||c.title.zh.includes(search)||c.title.en.toLowerCase().includes(search.toLowerCase()));
-      return `<main class="academy-home" data-i18n-ignore><header class="academy-pagehead"><span class="eyebrow">TAROT POCKET</span><h1>${copy('一步步学会读牌','Learn to read, one step at a time')}</h1><p>${copy('先看讲解和例子，再做练习。进度会自动保存。','Read an explanation and example, then try a question. Your place is saved automatically.')}</p></header>${active()?`<button class="academy-resume" data-academy="continue"><span>${copy('接着上次','Continue where you stopped')} · ${esc(t(units[current().unitId].title))}</span>${icon('arrow')}</button>`:''}<nav class="academy-levels" aria-label="${copy('课程阶段','Course levels')}">${Object.keys(titles).map(k=>`<button data-academy="level" data-value="${k}" aria-pressed="${level===k}">${esc(tabs[k])}</button>`).join('')}</nav><section class="academy-lessons"><h2>${esc(titles[level])}</h2><p>${esc(intros[level])}</p>${source.lessons.filter(u=>u.level===level).map((u,i)=>`<button class="academy-lesson" data-academy="start" data-id="${u.id}"><span class="academy-number">${i+1}</span><span><strong>${esc(t(u.title))}</strong><small>${esc(statusLabel(u.id))}</small></span>${icon('arrow')}</button>`).join('')}</section><section class="academy-card-library"><h2>${copy('也可以从一张牌开始','Or start with a card')}</h2><p>${copy('选你想认识的牌。先学正位，之后再学逆位。','Choose a card you want to understand. Begin upright; reversals come later.')}</p><div class="academy-library-actions">${button('new','随机学一张新牌','Learn a random new card')}${due().length?button('review','回访之前学过的','Revisit earlier learning'):''}<span>${completedCards().length} / 78 ${copy('已完成正位初学','upright introductions completed')}</span></div><label class="academy-search"><span>${copy('找一张牌','Find a card')}</span><input data-academy-search type="search" value="${esc(search)}" placeholder="${copy('输入牌名','Card name')}" /></label><div class="academy-card-grid">${candidates.map(u=>`<button data-academy="start" data-id="${u.id}">${img(u.id,'loading="lazy"')}<strong>${esc(t(u.title))}</strong><small>${esc(statusLabel(u.id))}</small></button>`).join('')}</div></section></main>`;
+      const dueCount=due().length,completed=completedCards().length,mastered=masteredCards().length;
+      return `<main class="academy-home" data-i18n-ignore><header class="academy-pagehead"><span class="eyebrow">塔罗随身学</span><h1>一步步学会读牌</h1><p>先看讲解和例子，再做练习。进度会自动保存。</p></header>${active()?`<button class="academy-resume" data-academy="continue"><span>接着上次 · ${esc(t(units[current().unitId].title))}</span>${icon('arrow')}</button>`:''}<nav class="academy-levels" aria-label="课程阶段">${Object.keys(titles).map(k=>`<button data-academy="level" data-value="${k}" aria-pressed="${level===k}">${esc(tabs[k])}</button>`).join('')}</nav><section class="academy-lessons"><h2>${esc(titles[level])}</h2><p>${esc(intros[level])}</p>${source.lessons.filter(u=>u.level===level).map((u,i)=>`<button class="academy-lesson" data-academy="start" data-id="${u.id}"><span class="academy-number">${i+1}</span><span><strong>${esc(t(u.title))}</strong><small>${esc(statusLabel(u.id))}</small></span>${icon('arrow')}</button>`).join('')}</section><section class="academy-card-library"><h2>逐张学懂 78 张牌</h2><p>推荐路径按大阿尔卡纳、四花色数字规律、宫廷角色往下学；也可以随时进牌库搜索或自选。</p><p class="academy-library-progress"><strong>${completed}</strong><span>/ 78 张完成正位初学</span><i aria-hidden="true">·</i><strong>${dueCount}</strong><span>项待复习</span><i aria-hidden="true">·</i><strong>${mastered}</strong><span>张已掌握</span></p><div class="academy-library-actions"><button class="primary academy-library-link" data-action="nav" data-page="library"><span>打开完整牌库</span>${icon('arrow')}</button>${button('new','按顺序学下一张','Learn the next card')}${button('review',`到期复习 · ${dueCount}`,`Due review · ${dueCount}`)}</div></section></main>`;
     }
     function cardArea(u,s,step){
       let ids=u.kind==='card'?[u.id]:u.cards;
@@ -210,13 +261,15 @@
     function render(){
       const s=current();if(!s)return home();const u=units[s.unitId],plan=planFor(u,s.mode),step=currentStep(s);
       const head=`<header class="academy-top">${button('home','返回课程','Back to courses','','linkbtn')}<span>${esc(t(u.title))}</span><span>${Math.min(s.index+1,plan.length)} / ${plan.length}</span></header><div class="academy-progress" role="progressbar" aria-label="${copy('本节进度','Lesson progress')}" aria-valuemin="0" aria-valuemax="${plan.length}" aria-valuenow="${s.index}"><i style="width:${s.index/plan.length*100}%"></i></div>`;
-      if(s.complete){const p=status(u.id),pending=Object.values(p?.targets||{}).some(x=>x.status==='pending');const nextLesson=source.lessons[source.lessons.findIndex(x=>x.id===u.id)+1];
-        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}${cardDossier(u)}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${pending?`<p class="academy-support-note">${copy('刚才比较难的地方已经记下了。之后换个例子再练，现在可以继续。','The difficult parts have been saved. Revisit them with an example later; you can continue now.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${u.kind==='lesson'&&nextLesson?button('start','继续下一课','Next lesson',`data-id="${nextLesson.id}"`,'primary wide'):button('new','再学一张新牌','Learn another new card','','primary wide')}${u.kind==='card'&&s.mode!=='reverse'?button('reverse',status('I04')?.completedAt?'看看这张牌的逆位':'先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
+      if(s.complete){const p=status(u.id),pending=Object.values(p?.targets||{}).some(x=>x.status==='pending'),state=u.kind==='card'?learningState(u.id):null;const nextLesson=source.lessons[source.lessons.findIndex(x=>x.id===u.id)+1];
+        const stage=state?`<div class="academy-stage academy-stage-${state.key}"><strong>当前：${esc(state.label)}</strong><span>${esc(state.detail)}</span></div>`:'';
+        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}${cardDossier(u)}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${stage}${pending?`<p class="academy-support-note">${copy('本轮仍有需要再练的地方，已经安排到期回访；完成初学不会显示为“已掌握”。','The difficult parts have been saved. Revisit them with an example later; you can continue now.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${u.kind==='lesson'&&nextLesson?button('start','继续下一课','Next lesson',`data-id="${nextLesson.id}"`,'primary wide'):button('new','按顺序学下一张','Learn another new card','','primary wide')}${u.kind==='card'&&!p?.reverseAt?button('reverse',status('I04')?.completedAt?'下一步：学习这张牌的逆位':'下一步：先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${u.kind==='card'&&state?.key==='due'?button('start-review','完成这张牌的到期回访','Complete due review',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
       let body='';
       if(step.kind==='teach'||step.kind==='summary'){
-        const labels=step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
-        const content=u.kind==='card'&&step.key==='T1'&&!step.support?'':step.content.map(p=>`<p>${esc(t(p))}</p>`).join('');
-        body=`<section class="academy-copy"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${u.kind==='card'&&step.key==='T1'&&!step.support?`<p class="academy-context-note">${copy('先认识这张牌的正位：牌图朝正方向。接下来先看意思和例子，再做两道练习。','Start with this card upright, with its image facing the usual way. Read its meaning and example, then try two questions.')}</p>`:''}${content}${step.reversed?`<p class="academy-context-note">${copy('这里只练刚才这个情况。逆位不等于把正位的意思反过来。','Practise this stated situation. Reversal does not simply reverse the upright meaning.')}</p>`:''}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
+        const labels=step.kind==='summary'?copy('把刚才的要点连起来','Reconnect the key point'):step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
+        const firstCard=u.kind==='card'&&step.key==='T1'&&!step.support;
+        const content=firstCard?`<div class="academy-teaching-points">${step.content.map((p,i)=>`<section><h2>${['核心意思','画面线索','记忆线索'][i]||'先理解这点'}</h2><p>${esc(t(p))}</p></section>`).join('')}</div>`:step.content.map(p=>`<p>${esc(t(p))}</p>`).join('');
+        body=`<section class="academy-copy"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${firstCard?'<p class="academy-context-note">先认识这张牌的正位。看懂完整意思和画面线索后，再开始练习。</p>':''}${content}${step.reversed?`<p class="academy-context-note">${copy('这里只练刚才这个情况。逆位不等于把正位的意思反过来。','Practise this stated situation. Reversal does not simply reverse the upright meaning.')}</p>`:''}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
       }else{
         const q=step.question,a=s.answers[q.id],ordered=[...q.options].sort((x,y)=>hash(x.id+s.seed)-hash(y.id+s.seed));
         const hint=step.key==='Q2'&&u.application?[u.application]:step.reversed?[u.reversal]:u.teachings;
@@ -261,6 +314,7 @@
       const el=e.target.closest('[data-academy]');if(!el||el.disabled)return;
       const action=el.dataset.academy;
       if(action==='start'){start(el.dataset.id);return;}
+      if(action==='start-review'){visit(el.dataset.id);return;}
       if(action==='reverse'){start(el.dataset.id,'reverse');return;}
       if(action==='new'){newCard();return;}
       if(action==='review'){review();return;}
@@ -281,10 +335,9 @@
     let scrollSaveTimer=null;
     window.addEventListener?.('scroll',()=>{if(!document.querySelector('.academy-shell'))return;clearTimeout(scrollSaveTimer);scrollSaveTimer=setTimeout(()=>{const d=data();if(d.session){d.session.scroll=window.scrollY;save(d);}},180);},{passive:true});
     window.addEventListener?.('pagehide',()=>{if(!document.querySelector('.academy-shell'))return;const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}});
-    document.addEventListener('input',e=>{if(!e.target.matches('[data-academy-search]'))return;search=e.target.value;const pos=e.target.selectionStart;refresh();const input=document.querySelector('[data-academy-search]');input?.focus({preventScroll:true});if(input?.type!=='search')input?.setSelectionRange(pos,pos);});
     document.addEventListener('tarot-language-change',()=>{pauseAnimation();const d=data();if(d.session){d.session.lang=lang();d.session.animation.paused=true;save(d);}if(document.querySelector('.academy-shell,.academy-home'))refresh();});
-    function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 ${copy('课完成本轮','lesson rounds completed')} · ${completedCards().length} / 78 ${copy('张牌完成正位初学','upright card introductions completed')}</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
-    return {home,render,start,newCard,review,current,active,status,completedCards,due,recommendation,dashboard,pause:pauseAnimation};
+    function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 课完成初学 · ${completedCards().length} / 78 张牌完成初学 · ${masteredCards().length} 张已掌握</p><p class="tiny muted">“已掌握”需要学过正位与逆位，并在至少两次间隔回访中独立答对。</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
+    return {home,render,start,newCard,review,current,active,status,completedCards,masteredCards,learningState,due,recommendation,dashboard,pause:pauseAnimation};
   }
-  window.TarotAcademy={blank,validate,planFor,stepFor:currentStep,answer,advance,units,create,version};
+  window.TarotAcademy={blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
 })();

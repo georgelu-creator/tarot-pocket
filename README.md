@@ -2,13 +2,15 @@
 
 **Learn tarot from the beginning, or draw cards for a question on your mind.**
 
-[**Try on your phone →**](https://tarot.georgelu.cn/?lang=en) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases) · [简体中文](README.zh-CN.md)
+The v1.9 public product is intentionally Chinese-only while its beginner curriculum and reading quality are being consolidated. English source notes and legacy translations remain in the repository, but there is no English entry in this release.
+
+[**Try the Chinese release →**](https://tarot.georgelu.cn/) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases) · [简体中文](README.zh-CN.md)
 
 ![Tarot Pocket](docs/images/hero.png)
 
 ## Learn one step at a time
 
-Twenty lessons cover eight beginner, six intermediate and six advanced topics, alongside individual lessons for all 78 cards. Read an explanation and a concrete example before answering a taught question. Wrong answers receive specific feedback and another example; persistent difficulty leads to a recap and a later revisit.
+Twenty lessons cover eight beginner, six intermediate and six advanced topics. A separate 78-card library opens the individual lessons without turning the course page into one long catalog. Every card shows its core meaning, picture clue and memory link before the first question. Wrong answers receive specific feedback and another example; persistent difficulty leads to a recap and a later revisit.
 
 Start each card upright, apply it in a situation, then explore reversals. Follow the courses, choose a card, or learn a random new one. Card images keep a consistent size and position. There are no self-ratings, required reflections, voice tasks or playback controls. Explanations, examples and practice appear directly.
 
@@ -22,7 +24,7 @@ Use the preset question directly or add details. Shuffle, cut and select on one 
 
 <img src="docs/images/reading-v17-en.png" width="290" alt="Reading scenarios"><img src="docs/images/reading-guide-v17-en.png" width="290" alt="Complete spread purpose and positions"><img src="docs/images/ritual-select-v17-en.png" width="290" alt="Swipeable fan of card backs">
 
-Reveal and read explicitly starts interpretation of the question, spread, positions and orientations. Answers begin with a conclusion and its supporting cards, then explain conditions. Waiting is cancellable; retries keep the same cards. An old reply cannot overwrite a newly edited question.
+Revealing the group first produces a local interpretation of the question, spread, positions and orientations. Yes/No does not vote by orientation, open three cards do not invent hidden roles, and choice readings compare every option on the same goal. Online AI remains a separate, explicit action. Waiting is cancellable; retries keep the same cards. An old reply cannot overwrite a newly edited question.
 
 Completed answers save locally. Card details and spread information return to the same reading. Offline drawing, card references and saved answers remain available; offline references are never labeled as AI answers.
 
@@ -32,17 +34,17 @@ The daily calendar highlights the saved date, complete artwork, card meaning and
 
 <img src="docs/images/daily-v17-en.png" width="290" alt="Daily card calendar">
 
-## Mobile, bilingual and offline
+## Mobile, Chinese-only and offline
 
-- The hosted entrance accepts an eight-character invitation. Individual readings never ask for a connection code or provider key. Provider credentials remain on the server.
-- If the main verification route is unreachable, the page tries the backup route automatically; the invitation stays entered.
+- The hosted product opens directly. Learning, drawing cards and the local spread-aware reading need no account or invitation.
+- Online AI is requested only after the reader presses the separate deep-reading button. Provider credentials remain on the server, and a connection failure does not remove the local answer, cards or question.
 - In Records, download and verify offline content, then use Safari’s Add to Home Screen. Test offline use on your own phone before travelling.
-- Lessons, practice, feedback and reading controls are available in English and Chinese, with verified historical RWS artwork.
+- The current public interface is Chinese-only. Stable IDs, older records and the verified historical RWS artwork remain compatible.
 - Records stay in the current browser. Export JSON before changing devices. Older learning and reading backups remain supported. Use the update entry above without clearing site data.
 
-[Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [Implementation and validation](docs/RELEASE_1_7.md)
+[Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [Implementation and validation](docs/RELEASE_1_9.md)
 
-Automated checks cover content, state recovery, languages, responsive layouts and browser interaction. They do not establish long-term learning effectiveness or performance on every physical phone/network. Independent teacher review and beginner trials remain necessary.
+Automated checks cover content, state recovery, the Chinese interface, responsive layouts and browser interaction. They do not establish long-term learning effectiveness or performance on every physical phone/network. Independent teacher review and beginner trials remain necessary.
 
 ## Run it locally
 

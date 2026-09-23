@@ -1,13 +1,22 @@
 # Tarot Pocket contributor and agent guide / 项目协作入口
 
-## Current scope / 当前授权（2026-09-16）
+## Current scope / 当前授权（2026-09-24）
 
 The user explicitly authorized implementing the complete learning and reading
 plans, publishing to Git and providing a mobile test entry. The subsequent user
 decision permits replacing the older interaction framework with a more usable
 design. Earlier documentation-only scope statements below are historical and
 superseded. Preserve records and security boundaries, not obsolete UI controls.
-Read docs/RELEASE_1_8.md and both master documents' implementation records first.
+Read docs/RELEASE_1_9.md and both master documents' implementation records first.
+
+The v1.9 public product is Chinese-only. Hide language switching and make an old
+`lang=en` link fall back to Chinese, while preserving stable IDs, storage and old
+records. Keep legacy English catalogs as non-public compatibility/reference data;
+new visible product work is authored and accepted in Chinese for this release.
+Learning and the separate 78-card library are the primary experience. Every card
+must show its authored explanation before assessment; the default local reading
+must use the question, card meanings, spread positions and orientations rather
+than orientation voting or hidden roles.
 
 用户最新已授权完整开发学牌与抽牌、Git 发布和移动端体验，并允许升级旧交互框架。
 此前仅文档的限制已被替代。保留数据与安全边界，不必保留被否定的旧交互。
@@ -47,9 +56,10 @@ conversations, personal readings, credentials and browser backups do not belong 
   只解释确实需要学的塔罗术语；不增加自评、信心打分、必填感悟或换名同类步骤。
 - Keep the working demo usable. Product changes should follow user feedback; do not
   treat the roadmap as permission to build the entire app or publish to app stores.
-- Chinese is the authored source language. Update matching English translations in
-  locales/en-*.json when changing displayed text. i18n.js translates presentation;
-  do not translate stable card/question IDs, data attributes, or stored identifiers.
+- Chinese is the authored and public interface language for v1.9. Do not add a
+  visible English entry. Preserve existing English catalogs and stable card/question
+  IDs, data attributes and stored identifiers; a later bilingual release requires a
+  separate copy and UI acceptance pass.
 - Keep the three existing learning/reading storage keys and JSON backup compatibility.
   Never publish actual user progress. Tests use isolated browser contexts.
 - Use only verified historical artwork from assets/manifest.json. Do not replace
@@ -70,5 +80,5 @@ conversations, personal readings, credentials and browser backups do not belong 
   provenance. Do not copy private Forge/Abi materials into this repository.
 
 中文：先读 README.zh-CN.md、docs/HANDOFF.md 与开发说明。源码通过 Git 接力，
-个人进度另行导出，不上传公开仓库。修改中文同时更新英文，保持稳定 ID 和存档兼容。
+个人进度另行导出，不上传公开仓库。本期公开界面只提供中文，保持稳定 ID 和存档兼容。
 按真实验证结果交接，不把路线图、图片齐全或 CI 通过说成完整产品已经验收。

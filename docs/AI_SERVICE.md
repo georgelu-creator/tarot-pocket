@@ -4,15 +4,23 @@
 
 The hosted app is public. It produces a local spread-aware reading first. Only after the user explicitly asks for AI depth does it create an expiring anonymous session and send the current question, choices, spread ID, actual cards and orientations. Learning, local readings and downloaded content still work offline.
 
-## 1.7请求与回答 / Current reading contract
+## 1.9请求与回答 / Current reading contract
 
-`reading-scenarios.js`定义25个场景。请求包含场景ID/版本、用户原问题、时间范围及A/B/C选项，服务端核验场景与牌阵匹配，从受信任目录补全牌位。`server/reading-prompts.cjs`维护RP-1.1.1，与抽牌主文档对应；15个场景模块及6类问法按问题组合，先答问题再给牌据，不设最低字数。自由三张不擅自分配时间牌位。
+`reading-scenarios.js`定义25个场景。请求包含场景ID/版本、用户原问题、时间范围及A/B/C选项，服务端核验场景与牌阵匹配，从受信任目录补全牌位。`server/reading-prompts.cjs`维护RP-1.2.0，与抽牌主文档对应；15个场景模块及6类问法按问题组合，先答问题再给牌据，不设最低字数。自由三张不擅自分配时间牌位；没有未来或结果牌位时，不把现状牌阵写成未来预测。
 
-The server validates 25 scene IDs and versions against its trusted catalog, including A/B/C labels. RP-1.1.1 answers the actual question first, then explains the cards and assigned roles. It uses 15 scene modules and 6 question types without minimum-length padding. Open-three positions remain unassigned.
+The server validates 25 scene IDs and versions against its trusted catalog, including A/B/C labels. RP-1.2.0 answers the actual question first, then explains the cards and assigned roles. It uses 15 scene modules and 6 question types without minimum-length padding. Open-three positions remain unassigned, and a spread without a future or outcome position cannot support a future prediction.
 
-Editing a pending question cancels the request. The complete request snapshot must still match before a late answer is saved. Health exposes only non-sensitive promptVersion and scenarioCount. See [release verification](RELEASE_1_7.md).
+Editing a pending question cancels the request. The complete request snapshot must still match before a late answer is saved. Health exposes only non-sensitive promptVersion and scenarioCount. See [release verification](RELEASE_1_9.md).
 
 编辑等待中的问题会取消原请求；迟到回答仍须通过完整快照比对才能保存。健康接口只增补不敏感的提示词版本和场景数量。
+
+### RP-1.2.0 牌阵范围与问法修订 / Spread scope and question routing
+
+RP-1.2.0先核对真实牌位能回答到哪里：现状位不冒充结果位，没有未来或结果位置的关系牌阵不预测是否复合或给日期；自由三张只按抽取顺序合读；二择一和三择一用同一目标与时间范围比较。问题中的后一层明确诉求优先，例如“不是问为什么，而是问怎么做”；场景模块不能覆盖用户真正问的事。医疗诊断、用药、法律结论和高风险投资等问题不能由塔罗给出确定的能／不能或行动指令。
+
+RP-1.2.0 first checks what the actual positions can support. Present-state roles cannot become outcome roles; a relationship spread without future or outcome roles cannot predict reconciliation or dates; open-three cards retain draw order only; and choice readings compare the same goal and timeframe. A later explicit intent in the question takes precedence over an earlier contrast. Medical diagnosis or medication, legal conclusions and high-risk financial decisions cannot receive deterministic tarot instructions.
+
+固定反例和模拟上游检查只能证明这些规则进入了正确请求并覆盖本地确定性解读，不能证明任意真实模型回答都会遵守。发布后仍需用不含私人信息的合成问题审读真实响应。
 
 ### RP-1.1.1 文案修订 / Wording revision
 
@@ -147,9 +155,9 @@ Optional `optionA` and `optionB` allow up to 300 characters each. Questions allo
 
 `topic` preserves the category selected in the spread gallery. The allowlist is `general`, `love`, `career`, `study`, `life`, `self`, `choice`; older clients default to `general`. The server resolves trusted labels and rejects unknown categories or custom instruction fields. `open-three` preserves draw order with three `free` roles, without assigning past/present/future positions.
 
-成功响应固定为 `{text, model, provider}`，其中 `text` 是最终正文字符串。客户端须按文本渲染，不能当 HTML 执行。服务不回传 DeepSeek 的 `reasoning_content`、OpenAI 的 reasoning items、原始错误、供应商认证头或响应中的额外字段。空答复、截断、被拒绝的答复不会被标为成功，也不会自动重试并重复计费。
+成功响应固定为 `{text, model, provider}`，其中 `text` 是最终正文字符串。客户端须按文本渲染，不能当 HTML 执行。医疗诊断或用药、法律结论和投入全部积蓄等高风险问题会直接返回 `provider: "safety"`、`model: "safety-boundary"`；这表示服务端没有调用模型，客户端必须显示为安全边界提示，不能标成 AI 解读或供应商回答。服务不回传 DeepSeek 的 `reasoning_content`、OpenAI 的 reasoning items、原始错误、供应商认证头或响应中的额外字段。空答复、截断、被拒绝的答复不会被标为成功，也不会自动重试并重复计费。
 
-Success returns only `{text, model, provider}`. Render `text` as text, never executable HTML. The service does not return DeepSeek `reasoning_content`, OpenAI reasoning items, raw errors, provider headers or extra response fields. Empty, truncated and refused responses are not marked successful. There are no automatic retries that could duplicate charges.
+Success returns only `{text, model, provider}`. Render `text` as text, never executable HTML. High-risk diagnosis or medication, legal-conclusion and all-savings questions return `provider: "safety"` with `model: "safety-boundary"`; this means the server did not call a model, and the client must label it as a safety boundary rather than an AI or provider answer. The service does not return DeepSeek `reasoning_content`, OpenAI reasoning items, raw errors, provider headers or extra response fields. Empty, truncated and refused responses are not marked successful. There are no automatic retries that could duplicate charges.
 
 错误固定为 `{ "error": "CODE" }`：
 

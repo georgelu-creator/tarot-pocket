@@ -1,8 +1,8 @@
 # Tarot Pocket 教学主文档与完整脚本
 
-> 当前设计事实源 / Current learning-design source of truth。正文中文；供应用展示的教学、题目、选项和反馈中英对照。设计、实际实现与学习效果分开记录；当前实现见末尾R4与R5记录。
+> 当前设计事实源 / Current learning-design source of truth。正文中文；供应用展示的教学、题目、选项和反馈中英对照。设计、实际实现与学习效果分开记录；当前实现见R5与末尾R6记录，R4保留早期实现史。
 >
-> 文档版本：LM-1.1-R5，2026-09-23。R3为教材内容基线，R4记录首次完整接入，R5补充整牌理解题和可选详细资料。用户最新已明确授权完整开发、Git发布和移动端体验，并允许升级旧交互框架。此前仅文档的范围限制已被替代；具体题目仍待真人试学。
+> 文档版本：LM-1.2-R6，2026-09-24。R3为教材内容基线，R4记录首次完整接入，R5补充整牌理解题和可选详细资料，R6修复逐牌讲解实际未显示并把78张牌库从课程长页拆出。用户最新已明确本期公共界面只做中文，并授权修复、Git发布和上线；具体学习效果仍待真人试学。
 >
 > 当前实现与证据见 [1.7交付记录](RELEASE_1_7.md)。原Word教材保留不改，自动检查不证明教学效果。
 
@@ -24,7 +24,9 @@
 - [R3全稿中文修订、98单元覆盖与剩余问题](#chinese-walkthrough-20260916)
 - [更新规则与变更记录](#change-log)
 
-**当前质量状态：**R3已按学习者视角顺读并修订20课、78张牌的中文讲解、题目、反馈与补学，处理抽象翻译腔和已发现的局部衔接错误；用户最新确认[学牌页面只对学习者说话](#learner-first-copy)，不先抛不必要术语再解释，不加自评及换名同类步骤。详见[R3全稿走查](#chinese-walkthrough-20260916)。仍有错误选项过于明显、部分补题换考点、建议位占比过高等教学问题，未靠润色解决；真人试学与教学效果待验证；最新授权已转为开发，R4实现不自动消除这些内容质量问题。R1/R2保留历史证据，其已失效样稿以R3和当前正文为准。
+**当前质量状态：**R3已按学习者视角顺读并修订20课、78张牌的中文讲解、题目、反馈与补学，处理抽象翻译腔和已发现的局部衔接错误；用户最新确认[学牌页面只对学习者说话](#learner-first-copy)，不先抛不必要术语再解释，不加自评及换名同类步骤。R6走查发现逐牌T1虽有完整内容，运行页面却没有实际渲染三段讲解，用户会从提示直接进入Q1；本版必须以78张逐项运行检查证明“先讲后练”。仍有错误选项过于明显、部分补题换考点、建议位占比过高等长期教学问题，不能靠UI或题量证明已经学会；真人试学、延迟回忆与教学效果待验证。
+
+**R6 题目内容修订状态（2026-09-24）：**已把 p13-Q1 的补学改成重新区分“实际安排照顾”与“只有愿望”，并修订审查点 A05-Q2、m16-Q1、p08-Q3 及 p02-Q4。随后逐项复核此前改写的381个错误项：每项都保留稳定题目与选项 ID，重新写成与所教内容相邻但不满足本题条件的误解。答错反馈直接回到该题的画面、情境或牌义依据，已删除批量重复的“把重点放在……缺少本题要辨认的……”和“所以本题更贴近……”包装。18道可能出现双解的题已收紧错误项；s07-Q3 去掉“说明改动就能证明先前没有隐瞒”的语气线索，m13-Q1 中英文恢复同一含义；复核时另处理 m03-V1、s10-R3 两处软绝对提示。`learning-distractor-feedback-v19.json`保存381项审定前后文案，专项检查逐项核对运行数据中的错项、反馈、正确项边界和审定记录。这里的“已验证”仅指构建与自动一致性检查，不代表独立塔罗教师审稿、真人理解或长期记忆效果已经验证。
 
 **2026-09-17 运行规则补充：**学牌不自动播放讲解效果，也不给学习者展示“播放、重播、看动效、跳过动效”等控制。直接展示牌图、讲解、例子和练习；牌图放大只用于看清细节。本文早期单元里任何要求学习者点“看画面讲解”、暂停、重播或跳过的旧控制说明，均由本条替代；不删除讲解、题目或静态内容。
 
@@ -95,6 +97,9 @@
 | R44 | 防止上下文压缩丢要求 | 本文为主材料，更新有效正文+变更+覆盖+接力，不只追加聊天摘要 | §更新规则 | 原则已确认；脚本/规则已编写，待试学 |
 | R45 | 完整脚本范围选择 | 20课＋78逐牌，不是只做三节样课；全写后仍以代表课先试学 | 覆盖表98单元 | 原则已确认；脚本/规则已编写，待试学 |
 | R46 | “科学吗”需要诚实依据 | 通用学习研究≠塔罗效果证明；三阶段与分支均为本项目设计 | 来源等级与未验证项 | 原则已确认；脚本/规则已编写，待试学 |
+| R47 | 2026-09-24本期隐藏英文入口，只做中文 | 公共界面和旧`lang=en`链接统一显示中文；保留稳定ID、旧记录及非公开英文资料，未来双语另行验收 | R6运行检查、发布入口 | 用户已确认；本版实施与验证 |
+| R48 | 课程页过长，牌库可以单独出来 | 课程页只承载三阶段课程、续学、随机新牌和复习；78张搜索、筛选、详解与逐牌学习进入独立牌库 | 课程与牌库导航、移动端首屏 | 用户已确认；本版实施与验证 |
+| R49 | 确保每张牌真正先学懂再答题 | 78张逐牌T1必须实际显示核心牌义、画面依据和记忆整理，再进入Q1；错题补讲、Q2应用、Q4整牌理解、独立逆位和后续回访保持可达 | 78张运行遍历与错题路径 | 用户已确认；本版实施与验证；效果仍待真人验证 |
 
 ### 已被替代的做法
 
@@ -313,10 +318,10 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B02-Q1「应该在什么时候决定，这张牌用来给行动建议？/ When do you define the advice position?」 | A「抽完牌、看清牌面后 / After drawing and seeing the card」→「原本问的是“接下来怎样做”，看完牌后再改，就变成了另一个问题。/ Changing it afterward alters the reading's rules.」；B「抽牌前 / Before drawing」→「这样知道牌在回答什么。/ That defines what the card will answer.」 | B；T1 |
-| B02-Q2「本课的切牌必须做三次吗？/ Must you cut three times in this lesson?」 | A「不必，切牌是可选操作 / No; cutting is optional」→「本课不规定次数。/ This lesson does not prescribe a count.」；B「必须，否则无法读牌 / Yes, or the reading cannot work」→「切牌是可选步骤，不切也可以继续解牌。/ That turns an optional ritual into a requirement.」 | A；T2 |
+| B02-Q2「本课的切牌必须做三次吗？/ Must you cut three times in this lesson?」 | A「不必，切牌是可选操作 / No; cutting is optional」→「本课不规定次数。/ This lesson does not prescribe a count.」；B「建议按固定三次切牌，让这套流程更完整。 / Cutting exactly three times is recommended to complete this reading routine.」→「切牌在本课是可选步骤，没有固定次数；洗好牌后可以直接按原问题抽牌。 / Cutting is optional here and has no required count; after shuffling, you may draw for the agreed question.」 | A；T2 |
 
 - **B02-R1 教学**「抽牌前定好这一张给建议，解牌时就要回答接下来怎样做。/ A position is a task label: once it says Advice, the interpretation should address an approach.」题「已经约定建议位，抽到牌后能为得到满意答案改成结果位吗？/ Can you change an agreed advice position into an outcome position to get a preferred answer?」A「可以 / Yes」→「原先问的是怎样做，改成结果位后，回答的就不是同一个问题了。/ Changing the task breaks consistency.」；B「不能，仍然按建议位来读 / No; keep its task」→「保留了抽牌前的约定。/ This preserves the agreement.」答案 B，针对 Q1。
-- **B02-R2 教学**「切牌在本课是可选步骤，没有必须完成的次数。是否切牌，不改变已经定好的问题和牌位。/ Cutting is optional here and has no required count. Cutting or not cutting leaves the agreed question and position unchanged.」题「小安洗好牌后忘了切牌，已按原问题抽出一张。本课怎样继续？/ An shuffled but forgot to cut, then drew one card for the agreed question. How should this lesson continue?」A「保留原问题和位置，继续读这张牌 / Keep the question and position and continue reading this card」→「没有漏掉必须条件，切牌本来就是可选操作。/ No required condition is missing; cutting was optional.」；B「必须作废，切满三次才能重来 / Discard the draw and restart only after three cuts」→「本课没有必须切三次的规定，忘了切牌也可以继续。/ This again makes an optional act and an invented count into a gate.」答案 A；T2，回应 Q2 的必做次数误解。
+- **B02-R2 教学**「切牌在本课是可选步骤，没有必须完成的次数。是否切牌，不改变已经定好的问题和牌位。/ Cutting is optional here and has no required count. Cutting or not cutting leaves the agreed question and position unchanged.」题「小安洗好牌后忘了切牌，已按原问题抽出一张。本课怎样继续？/ An shuffled but forgot to cut, then drew one card for the agreed question. How should this lesson continue?」A「保留原问题和位置，继续读这张牌 / Keep the question and position and continue reading this card」→「没有漏掉必须条件，切牌本来就是可选操作。/ No required condition is missing; cutting was optional.」；B「先补做一次切牌，再按原问题重新抽一张。 / Add a cut now, then draw again for the same question.」→「这个做法没有解决眼前的情况。没有漏掉必须条件，切牌本来就是可选操作。 / This action does not resolve the situation described. No required condition is missing; cutting was optional.」答案 A；T2，回应 Q2 的必做次数误解。
 
 **B02-V1**「问本周怎样练习，抽到星币八建议位。哪句话是在回答本周怎样练习？/ For this week's practice, Eight of Pentacles appears as advice. Which answer keeps that task?」A「你下周必得奖 / You will win next week」→「增加了没有提供的事件与时间保证。/ This adds an unsupported event and date.」；B「实际练一个技能并检查作品 / Practise a skill and review your work」→「把牌义转成做法。/ This turns meaning into an action.」答案 B，依据 T3，延后与 B06 联动。
 
@@ -337,7 +342,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B03-Q1「这次只看“预算够不够、工具够不够用”，对应刚学的哪种花色？/ Which suit relates directly to having enough money and tools?」 | A「星币：钱和工具 / Pentacles: money and tools」→「预算是可用的钱，工具是做事要用的东西，都属于星币关注的实际资源。/ Budgets and tools are practical resources.」；B「圣杯：彼此的感受 / Cups: feelings between people」→「这里在谈可用的钱和工具，没有在谈彼此的感受。/ Emotional response is not the resource perspective specified here.」 | A；T1–T2，不表示其他花色不能进入工作问题 |
-| B03-Q2「工作问题里能讨论圣杯的关系角度吗？/ Can Cups' relationship perspective matter in a work question?」 | A「不能，圣杯只能问恋爱 / No, Cups only applies to romance」→「这把关系缩成了恋爱一类。/ This reduces all relationships to romance.」；B「能，例如同事的信任 / Yes, such as trust among colleagues」→「工作里也有同事之间的信任，所以也能用圣杯来理解。/ Life domains do not restrict suits.」 | B；T2–T3 |
+| B03-Q2「工作问题里能讨论圣杯的关系角度吗？/ Can Cups' relationship perspective matter in a work question?」 | A「可以，不过工作里的圣杯主要看同事之间是否亲近。 / Yes, but in work Cups mainly concerns whether colleagues feel personally close.」→「把圣杯只缩成“同事是否亲近”，会漏掉工作中的信任、理解和配合；这里正要看同事之间的信任。 / Reducing Cups to whether coworkers feel close misses trust, understanding, and cooperation at work; this example specifically concerns trust between colleagues.」；B「能，例如同事的信任 / Yes, such as trust among colleagues」→「工作里也有同事之间的信任，所以也能用圣杯来理解。/ Life domains do not restrict suits.」 | B；T2–T3 |
 
 - **B03-R1 教学**「先看看这句话在谈什么。谈钱、时间、工具，可以想到星币；谈感受、信任、彼此怎样回应，可以想到圣杯。一件事里可能两方面都有，这题先练习分清正在谈哪方面。/ Start with the nouns: money, time and tools are resources; feelings, trust and responses concern relationships. Both can matter in the same situation. First, look at which aspect the sentence describes.」题「“对方听后感到被理解”属于哪一栏？/ Which column fits feeling understood after being heard?」A「圣杯：感受与回应 / Cups: feelings and responses」→「重点是情感体验。/ The focus is emotional experience.」；B「星币：预算 / Pentacles: budget」→「这里没有预算信息。/ No budget is described.」答案 A，依据 T1。
 - **B03-R2 教学**「同一件事里，可能既要考虑钱，也要考虑感受、沟通和行动。不能把工作只分给星币，把恋爱只分给圣杯。/ Suits are four lenses, not four rooms that admit only certain questions.」题「恋爱中的共同生活开支，可以从星币角度看吗？/ Can Pentacles address shared living expenses in a relationship?」A「不可以 / No」→「恋爱也要安排开支，不能因为是恋爱问题就排除星币。/ This again confuses a suit with a life domain.」；B「可以 / Yes」→「两个人一起生活，也需要安排钱和其他生活用品。/ Relationships also involve practical resources.」答案 B，依据 T2–T3。
@@ -361,12 +366,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B04-Q1「“八＋星币”是否已足够学懂全部牌义？/ Is Eight plus Pentacles enough to know the complete card meaning?」 | A「够，可以跳过牌义 / Yes, skip the meaning」→「这样遗漏这张牌自己的场景与传统解释。/ That omits its scene and interpretive tradition.」；B「不够，还需单牌学习 / No, the individual card still needs study」→「还要单独学这张牌在说什么。/ Structure does not replace meaning.」 | B；T2 |
-| B04-Q2「数字提示越用越困惑时，先做什么？/ If a number prompt increases confusion, what should come first?」 | A「回到已讲清的单牌含义 / Return to the taught card meaning」→「先学懂这张牌就可以，不必等到数字全背熟。/ Numbers are aids, not a gate.」；B「强行让每张同数字牌含义一样 / Force every same-number card to mean the same」→「编号相同，不代表每张牌的意思都相同。/ Broad cues cannot erase individual meanings.」 | A；T1、T3 |
+| B04-Q2「数字提示越用越困惑时，先做什么？/ If a number prompt increases confusion, what should come first?」 | A「回到已讲清的单牌含义 / Return to the taught card meaning」→「先学懂这张牌就可以，不必等到数字全背熟。/ Numbers are aids, not a gate.」；B「先选一套自己最顺手的数字口诀，用它解释同数字的牌。 / Choose the number mnemonic that feels easiest, then use it to explain cards with that number.」→「数字提示越用越乱时，先回到已经讲清的单牌含义；不用等背完数字体系再理解牌。 / If number cues create confusion, return to the card meaning already taught; memorising the whole number system is not a prerequisite.」 | A；T1、T3 |
 
 - **B04-R1 教学**「书架编号帮你找书，但不等于书的内容。数字对牌义也起类似的整理作用。/ A shelf number helps you find a book; it is not the book's content. Numbers similarly organize card meanings.」题「知道编号以后，还要不要了解这一张牌讲什么？/ After learning the number, do you still need this card's meaning?」A「不要 / No」→「只知道编号，还不知道这张牌在说什么。/ That mistakes an index for an explanation.」；B「要 / Yes」→「编号没有替代内容。/ The index does not replace the content.」答案 B，依据 T2。
-- **B04-R2 教学**「如果数字口诀和刚学的牌义对不上，先按这张牌本身来记。不必为了凑口诀，把所有同数字的牌都解释成一个意思。/ If a broad number cue does not fit an already-taught card meaning, return to that meaning. Numbers are indexes, not a requirement for identical same-number meanings. Setting a cue aside does not prevent understanding.」题「你理解星币八在讲技能练习，却被‘八’的不同口诀弄混。下一步怎样学？/ You understand Eight of Pentacles as skill practice but conflicting number-eight slogans confuse you. What next?」A「先记住认真练习、把活做好的意思，暂时不背数字口诀 / Use the taught meaning of skill practice and detail, setting the slogan aside」→「保留已有理解，没有为口诀改写牌义。/ This retains understanding without rewriting the card to fit a slogan.」；B「为了口诀整齐，把所有八号牌强改成同一意思 / Rewrite every Eight to mean the same thing for a tidy slogan」→「每张牌各有自己的意思，不能为了口诀好背就改掉牌义。/ This replaces knowledge with a memory aid, the exact error being corrected.」答案 A；T1–T3，回应 Q2 的强行统一数字。
+- **B04-R2 教学**「如果数字口诀和刚学的牌义对不上，先按这张牌本身来记。不必为了凑口诀，把所有同数字的牌都解释成一个意思。/ If a broad number cue does not fit an already-taught card meaning, return to that meaning. Numbers are indexes, not a requirement for identical same-number meanings. Setting a cue aside does not prevent understanding.」题「你理解星币八在讲技能练习，却被‘八’的不同口诀弄混。下一步怎样学？/ You understand Eight of Pentacles as skill practice but conflicting number-eight slogans confuse you. What next?」A「先记住认真练习、把活做好的意思，暂时不背数字口诀 / Use the taught meaning of skill practice and detail, setting the slogan aside」→「保留已有理解，没有为口诀改写牌义。/ This retains understanding without rewriting the card to fit a slogan.」；B「先把不同的“八”统一成一条口诀，再用同一口诀解释星币八。 / First combine the different Eights into one rule, then use that rule to explain the Eight of Pentacles.」→「数字口诀只是辅助。既然已经理解星币八在讲认真练习，就先保留这层牌义，不必强行统一口诀。 / Number cues are only aids. Since you already understand the Eight of Pentacles as careful practice, keep that meaning instead of forcing every Eight into one rule.」答案 A；T1–T3，回应 Q2 的强行统一数字。
 
-**B04-V1**「忘了数字八的提示，但仍理解星币八的技能练习，可以继续应用吗？/ If you forget the number cue but understand the Eight of Pentacles' skill practice, can you still use it?」A「必须先背全数字表 / Memorize the whole number table first」→「这把辅助变成了不必要门槛。/ That creates an unnecessary gate.」；B「可以 / Yes」→「单牌理解是主线，数字是帮助。/ Card understanding is primary; number cues help.」答案 B；T3。
+**B04-V1**「忘了数字八的提示，但仍理解星币八的技能练习，可以继续应用吗？/ If you forget the number cue but understand the Eight of Pentacles' skill practice, can you still use it?」A「先暂停应用，等把数字表背熟后再解释这张牌。 / Pause using the card until the full number system has been memorized.」→「忘了“八”的数字提示不影响使用星币八；已经理解认真练习和改进，就可以继续解读。 / Forgetting the number cue does not block using the Eight of Pentacles; understanding practice and improvement is enough to continue.」；B「可以 / Yes」→「单牌理解是主线，数字是帮助。/ Card understanding is primary; number cues help.」答案 B；T3。
 
 **完成**「你知道怎样借助数字，也知道什么时候不用它。接下来认识宫廷角色。/ You know how numbers can help and when to leave them aside. Next, meet court roles.」下一课 B05。
 
@@ -385,12 +390,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B05-Q1「本课哪种角色提示是‘开始接触新事物、学习基础’？/ Which role cue means initial discovery and learning?」 | A「侍从 / Page」→「侍从在本课代表刚接触一件事、愿意学习的状态。/ This matches the taught cue.」；B「国王 / King」→「本课用国王帮助记住安排事情、承担责任，不是刚开始学基础。/ Here the King's cue is coordination and responsibility.」 | A；T1 |
-| B05-Q2「王后是否必须解释成现实中的女性？/ Must a Queen mean a woman in real life?」 | A「必须 / Yes」→「牌名叫王后，不代表现实里一定是女性。/ That overinterprets a title as identity.」；B「不必，可指处事方式 / No, it can describe an approach」→「任何性别的人，都可能用这种方式做事。/ The role does not fix gender or identity.」 | B；T3 |
+| B05-Q2「王后是否优先把王后理解为题目里较成熟的女性。解释成现实中的女性？/ Must a Queen mean a woman in real life?」 | A「优先把王后理解为题目里较成熟的女性。 / Read a Queen primarily as the more mature woman in the situation.」→「这个结论比题目给出的信息多走了一步。任何性别的人，都可能用这种方式做事。 / This conclusion goes beyond the information provided. The role does not fix gender or identity.」；B「不必，可指处事方式 / No, it can describe an approach」→「任何性别的人，都可能用这种方式做事。/ The role does not fix gender or identity.」 | B；T3 |
 
 - **B05-R1 教学**「本课的侍从，先记开始学习；国王，先记安排事情、承担责任。看例子里的人正在做什么，不要按头衔大小猜。/ This lesson uses Page for beginning to discover and learn, and King for coordinating and taking responsibility. Identify the behaviour described rather than guessing by title.」题「新例：小安第一次学习器材操作，正在跟着示范练基础动作。更符合本课哪种角色的做事方式？/ New example: An is learning equipment operation for the first time and follows a demonstration of basic movements. Which taught role cue is direct?」A「侍从的初步学习 / The Page's initial learning」→「题目明确描述接触新技能、练基础。/ The question explicitly describes beginning a skill and practising basics.」；B「国王安排事情、承担责任 / The King's coordination and responsibility」→「例子是在跟着示范学基础，还没有说他在安排别人的工作。/ No team coordination or organizing responsibility is stated; it does not replace the learning cue.」答案 A；T1–T2，回应 Q1 的角色提示混淆。
 - **B05-R2 教学**「本课用王后帮助记住留意别人的需要、给予照顾。看的是怎样做事，不能只凭牌名判断这个人是什么性别。/ Queen is a role used here for understanding and care, not a label establishing someone's gender. Start with behaviour and the question before deciding whether a specific person is relevant.」题「一位男性成员留意到同伴的需要，并主动照顾对方，能用本课王后的角色提示描述这种方式吗？/ A male group member understands companions' needs and provides care. Can this lesson's Queen cue describe that approach?」A「不能，男性不能体现王后角色 / No; a man cannot express a Queen role」→「这仍按头衔固定性别，忽略了本课描述的是行为方式。/ This still fixes gender from a title and ignores the behavioural approach.」；B「能，这里是在说他怎样关心和照顾同伴 / Yes; attend to the understanding and care」→「这里描述的是照顾同伴的方式，不是在判断性别。/ It preserves the role's meaning without making it an identity restriction.」答案 B；T3，回应 Q2 的固定性别误解。
 
-**B05-V1**「一位经验丰富的人第一次学木工，能用侍从描述这次学习方式吗？/ Can a Page describe an experienced adult's first woodworking lessons?」A「能 / Yes」→「新领域的学习方式不由年龄决定。/ Learning a new subject is not determined by age.」；B「不能，侍从只指儿童 / No, Pages only mean children」→「这是本课已经排除的固定身份解释。/ This is the fixed identity reading the lesson excluded.」答案 A；T2–T3。
+**B05-V1**「一位经验丰富的人第一次学木工，能用侍从描述这次学习方式吗？/ Can a Page describe an experienced adult's first woodworking lessons?」A「能 / Yes」→「新领域的学习方式不由年龄决定。/ Learning a new subject is not determined by age.」；B「不太适合，经验丰富的人更接近国王角色。 / It is not a close fit because an experienced person is better represented by a King.」→「侍从描述的是进入新领域时的学习方式，不由一个人的年龄或其他领域经验决定。 / A Page can describe how someone enters a new field; age or expertise in another field does not decide that role.」答案 A；T2–T3。
 
 **完成**「先看行为，再看问题在问谁。接下来用一张牌体验完整学习。/ Start with behaviour, then consider who the question concerns. Next, learn one card in full.」下一课 B06；相关单牌 [星币侍从](#card-p11)。
 
@@ -408,7 +413,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| B06-Q1「小林总在同一小节出错。怎样练，才是在改进？ / Lin keeps making a mistake in the same passage. Which practice would help him improve?」 | A「完全不检查，只增加重复次数 / Never review; only increase repetitions」→「只多弹几遍，却不检查错在哪里，同一个错误可能还会出现。/ This adds quantity without the improvement taught here.」；B「找出问题，练习并改进操作 / Find the difficulty, practise and improve technique」→「先找到错误，再练习改正，才能把总出错的这一小节练好。/ This preserves skill and quality.」 | B；T1、T3 |
+| B06-Q1「小林总在同一小节出错。怎样练，才是在改进？ / Lin keeps making a mistake in the same passage. Which practice would help him improve?」 | A「把出错的小节多做几遍，先用熟练度弥补问题。 / Repeat the troublesome section several more times and use fluency to make up for the problem.」→「先找到反复出错的原因，再练习那一小节并检查动作是否改对，才会真正进步。 / Improvement starts by finding the repeated mistake, practising that passage, and checking whether the technique has changed.」；B「找出问题，练习并改进操作 / Find the difficulty, practise and improve technique」→「先找到错误，再练习改正，才能把总出错的这一小节练好。/ This preserves skill and quality.」 | B；T1、T3 |
 | B06-Q2「哪项是牌图中可直接看见的？/ Which is directly visible in the picture?」 | A「人物正在制作星币 / A figure working on a pentacle」→「这是可见动作。/ This is a visible action.」；B「他已获得加薪 / He has received a pay rise」→「工资结果没有画在图里。/ A pay outcome is not depicted.」 | A；T2 |
 
 - **B06-R1 教学**「练很多遍，不一定就改好了。这个例子里同一处总出错，下一步要先找出错在哪里。/ Working often and improving can coexist, but they are not identical. The example explicitly gives a repeated error, so the advice must address it.」题「练字总写歪同一笔，怎样练更能改正这一笔？/ When one stroke is repeatedly crooked, which action applies improvement?」A「不看结果地加写十页 / Add ten pages without looking at results」→「没有检查已知错误。/ This does not check the known error.」；B「单练那一笔，检查后再写 / Practise that stroke, review, then repeat」→「直接处理已知困难。/ This addresses the known difficulty.」答案 B；T3。
@@ -433,12 +438,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B07-Q1「圣杯二的本课例子，哪里能看出两个人都参与了交流？/ What makes the Two of Cups example reciprocal?」 | A「双方都表达并回应 / Both express and respond」→「双方都说出想法，也听取对方的回应，不是只有一个人在说。/ Both sides participate in the connection.」；B「一方独自想象对方答应 / One imagines the other has agreed」→「你希望对方答应，不代表对方已经答应。/ Hope supplies no response from the other person.」 | A；T1–T2 |
-| B07-Q2「受到批评后，怎样做符合刚才讲的力量牌？/ Which response to criticism fits this lesson's Strength advice?」 | A「不管能不能接受，所有要求都答应 / Agree to everything and express no boundaries」→「耐心听别人说，不代表必须答应所有要求。/ Patience does not mean abandoning boundaries.」；B「听清问题，再平静说出自己的理由和不能接受的要求 / Understand the issue, then calmly state reasons and boundaries」→「没有回避问题，也没有急着争吵，而是先听清楚再表达自己。/ This faces the issue and regulates the response.」 | B；T3 |
+| B07-Q2「受到批评后，怎样做符合刚才讲的力量牌？/ Which response to criticism fits this lesson's Strength advice?」 | A「先接受对方的要求，避免当场冲突，之后再处理自己的不满。 / Accept the request to avoid conflict now, then deal with your dissatisfaction later.」→「先全盘接受要求只是把不满推迟，没有表达自己的界限。力量牌在这里要先听清问题，再平静说明理由和不能接受的部分。 / Accepting every demand only postpones the dissatisfaction and leaves boundaries unspoken. Here Strength asks you to understand the issue, then calmly state reasons and limits.」；B「听清问题，再平静说出自己的理由和不能接受的要求 / Understand the issue, then calmly state reasons and boundaries」→「没有回避问题，也没有急着争吵，而是先听清楚再表达自己。/ This faces the issue and regulates the response.」 | B；T3 |
 
 - **B07-R1 教学**「邀请是一个人的动作；形成相互回应还需要另一人的实际参与。/ An invitation is one person's action; reciprocity needs actual participation from the other.」题「你发出了邀请但尚未收到回复，能确定双方已经达成共同意愿吗？/ You invited someone but have no reply. Is shared willingness established?」A「尚不能 / Not yet」→「缺少对方回应。/ The other response is missing.」；B「能 / Yes」→「发出邀请只是你这一方的行动，还不知道对方怎么想。/ This turns one person's action into a mutual state.」答案 A；T1–T2。
-- **B07-R2 教学**「力量提醒我们先稳住情绪，再面对问题。可以好好说话，也可以拒绝无法接受的要求；不需要为了显得温和而全答应。/ Strength's gentleness regulates a response; it does not mean accepting every request. Steady yourself while explaining reasons and what you cannot accept. Patience does not erase courage or boundaries.」题「新例：组员临时要求你承担无法完成的额外工作。怎样用本课力量的建议？/ New example: a teammate requests extra work you cannot complete. How does this lesson's Strength advice apply?」A「为了显得温和，全部答应而不说能力范围 / Agree to everything to appear gentle, without stating capacity」→「明明做不完却全答应，既没有说明困难，也没有解决安排上的问题。/ This turns gentleness into unconditional submission and loses boundaries.」；B「平静说明可承担的部分与限制，再讨论安排 / Calmly state your capacity and limits, then discuss arrangements」→「既没有生气回避，也没有勉强全接下来，而是把能做和不能做的说清楚。/ It retains patience, courage to face the issue and boundaries.」答案 B；T3，回应 Q2 的温和等于忍让错误。
+- **B07-R2 教学**「力量提醒我们先稳住情绪，再面对问题。可以好好说话，也可以拒绝无法接受的要求；不需要为了显得温和而全答应。/ Strength's gentleness regulates a response; it does not mean accepting every request. Steady yourself while explaining reasons and what you cannot accept. Patience does not erase courage or boundaries.」题「新例：组员临时要求你承担无法完成的额外工作。怎样用本课力量的建议？/ New example: a teammate requests extra work you cannot complete. How does this lesson's Strength advice apply?」A「先接下额外工作，等忙不过来时再说明限制。 / Take on the extra work first and explain your limits if the workload becomes unmanageable.」→「这样做会漏掉题目里的关键一步。既没有生气回避，也没有勉强全接下来，而是把能做和不能做的说清楚。 / This action skips a key step in the question. It retains patience, courage to face the issue and boundaries.」；B「平静说明可承担的部分与限制，再讨论安排 / Calmly state your capacity and limits, then discuss arrangements」→「既没有生气回避，也没有勉强全接下来，而是把能做和不能做的说清楚。/ It retains patience, courage to face the issue and boundaries.」答案 B；T3，回应 Q2 的温和等于忍让错误。
 
-**B07-V1**「合作建议位是圣杯二。哪项回应合作问题？/ Two of Cups is advice for a collaboration. Which response addresses that question?」A「彼此说出期待，确认共同目标 / Exchange expectations and check a shared goal」→「两个人都说出想法，再一起确认要做什么。/ This applies reciprocal communication.」；B「只按自己的目标宣布对方同意 / Announce agreement based only on your own goals」→「缺少实际确认。/ Actual confirmation is missing.」答案 A；T1–T2。
+**B07-V1**「合作建议位是圣杯二。哪项回应合作问题？/ Two of Cups is advice for a collaboration. Which response addresses that question?」A「彼此说出期待，确认共同目标 / Exchange expectations and check a shared goal」→「两个人都说出想法，再一起确认要做什么。/ This applies reciprocal communication.」；B「先表达自己的合作目标，让对方按这个方向回应。 / State your collaboration goal first and invite the other person to respond within that direction.」→「请回到画面里的具体细节：两个人都说出想法，再一起确认要做什么。 / Return to the specific details in the picture: This applies reciprocal communication.」答案 A；T1–T2。
 
 **完成**「圣杯二帮助理解相互回应；力量帮助理解怎样面对困难。两张分别记住各自的意思就好。/ Two of Cups addresses reciprocal connection; Strength addresses facing difficulty. You have learned each separately, without forcing a comparison.」下一课 B08；任何一张未完成按各自 ID 恢复。
 
@@ -456,13 +461,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| B08-Q1「朋友案例里，哪个句子回应‘第一步’？/ Which sentence answers the friend's case about a first step?」 | A「对方必定已经原谅 / They have certainly forgiven you」→「这是未被提供的结果，不是第一步。/ That is an unprovided outcome, not a first step.」；B「邀请交流，也听对方的理解 / Invite a conversation and listen to their understanding」→「把双向回应转成可做的动作。/ This turns reciprocity into an action.」 | B；T1–T2 |
+| B08-Q1「朋友案例里，哪个句子回应‘第一步’？/ Which sentence answers the friend's case about a first step?」 | A「先等对方表态，再决定是否说明自己的本意。 / Wait for the other person to respond before deciding whether to explain your intent.」→「圣杯二强调双方回应；既要说出自己的期待，也要听对方怎样理解。 / The Two of Cups is reciprocal: state your expectations and listen to how the other person understands them.」；B「邀请交流，也听对方的理解 / Invite a conversation and listen to their understanding」→「把双向回应转成可做的动作。/ This turns reciprocity into an action.」 | B；T1–T2 |
 | B08-Q2「朋友暂时不想谈，怎样做才顾及双方的意愿？/ If the friend does not want to talk yet, which response preserves reciprocity?」 | A「尊重回应，暂不强求 / Respect the response without forcing」→「对方的意愿也是双向关系的一部分。/ Their willingness is part of reciprocity.」；B「持续追问直到同意 / Keep pressing until they agree」→「只顾自己想谈，没有听取朋友暂时不想谈的回应。/ This replaces mutual participation with pressure.」 | A；T2 |
 
-- **B08-R1 教学**「建议句回答‘我可以做什么’，不是‘别人一定会怎样’。/ Advice answers what I can do, not what someone else will certainly do.」题「哪句是建议？/ Which is advice?」A「朋友明天一定回复 / The friend will definitely reply tomorrow」→「是没有依据的他人结果。/ It is an unsupported outcome involving someone else.」；B「先把自己的本意说清 / First explain your intention clearly」→「是自己的行动。/ It is your own action.」答案 B；T1–T2。
-- **B08-R2 教学**「双向不等于双方必须同意；它要求听见彼此真实回应。/ Reciprocity does not require agreement; it requires attending to each person's actual response.」题「合作伙伴说需要时间考虑，接下来怎样做比较合适？/ A partner needs time to consider. Which respects that response?」A「约定合适时间再确认 / Agree on a suitable time to check back」→「让对方有时间考虑，之后再一起决定。/ This leaves room for participation.」；B「立刻宣布合作已成 / Announce the collaboration is settled」→「对方还没答应，不能宣布双方已经同意合作。/ This skips the agreement not yet reached.」答案 A；T2。
+- **B08-R1 教学**「建议句回答‘我可以做什么’，不是‘别人一定会怎样’。/ Advice answers what I can do, not what someone else will certainly do.」题「哪句是建议？/ Which is advice?」A「分析朋友可能什么时候回复。 / Estimate when the friend is likely to reply.」→「“先把自己的本意说清”是自己现在能采取的行动；猜朋友何时回复不是行动建议。 / Explaining your intention is an action you can take now; guessing when a friend will reply is not an action recommendation.」；B「先把自己的本意说清 / First explain your intention clearly」→「是自己的行动。/ It is your own action.」答案 B；T1–T2。
+- **B08-R2 教学**「双向不等于双方必须同意；它要求听见彼此真实回应。/ Reciprocity does not require agreement; it requires attending to each person's actual response.」题「合作伙伴说需要时间考虑，接下来怎样做比较合适？/ A partner needs time to consider. Which respects that response?」A「约定合适时间再确认 / Agree on a suitable time to check back」→「让对方有时间考虑，之后再一起决定。/ This leaves room for participation.」；B「继续追问，让对方尽快给出结论。 / Keep asking so the other person reaches a decision sooner.」→「对方需要时间时，约好之后再确认，既留出考虑空间，也让沟通有下一步。 / When someone needs time, agree when to check back; this gives them room to think and keeps a clear next step.」答案 A；T2。
 
-**B08-V1**「换成备考问题，建议位是已经学过的星币八。哪项符合这张牌刚才讲的意思？/ For exam preparation, the advice card is the already-learned Eight of Pentacles. Which retains its meaning?」A「只要抽到这张便可停止准备 / Stop preparing because you drew this card」→「违背了实际投入的主题。/ This contradicts practical effort.」；B「针对薄弱题型练习，检查错误 / Practise weak areas and review mistakes」→「针对不会的题多练，再检查错误，符合认真练习、不断改进的意思。/ It preserves practice and quality.」答案 B；B06-T1、B08-T1，出题前可查看 B06 一句摘要，不强迫重学。
+**B08-V1**「换成备考问题，建议位是已经学过的星币八。哪项符合这张牌刚才讲的意思？/ For exam preparation, the advice card is the already-learned Eight of Pentacles. Which retains its meaning?」A「先再收集更多备考资料，等准备充分后开始练题。 / Collect more study materials first, then begin practice when the preparation feels sufficient.」→「针对薄弱题型练习并检查错误，才把星币八的认真练习和持续改进用进了备考。 / Practising weak question types and reviewing mistakes applies the Eight of Pentacles through careful practice and improvement.」；B「针对薄弱题型练习，检查错误 / Practise weak areas and review mistakes」→「针对不会的题多练，再检查错误，符合认真练习、不断改进的意思。/ It preserves practice and quality.」答案 B；B06-T1、B08-T1，出题前可查看 B06 一句摘要，不强迫重学。
 
 **完成**「你已完成第一次建议牌解读。接下来可以自选一张新牌，也可以继续中级，学习更完整的单牌方法。/ You have completed your first advice-card interpretation. Next, choose a new card or continue to the intermediate lessons for fuller card study.」两入口仅完成页出现；记录本课完成与具体练习证据，不宣告“全部掌握”。
 
@@ -480,8 +485,8 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| I01-Q1「‘认真练习，把手艺练好’没逐字说出教材关键词，是否仍保留星币八核心？/ Does 'careful practice and refining a skill' retain the meaning without quoting the keywords?」 | A「是 / Yes」→「虽然换了说法，仍是在说认真练习、把事做好。/ The wording differs, but effort and skilled quality remain.」；B「否，必须逐字背诵 / No, exact quotation is required」→「意思说对就可以，不必和教材一字不差。/ This lesson checks meaning, not an exact phrase.」 | A；T1–T2 |
-| I01-Q2「摄影例子中，哪项同时回应背景与牌义？/ Which responds to both the photography context and the card?」 | A「继续买设备，技能会自动提高 / Keep buying equipment; skills improve automatically」→「设备购买没有替代技能练习。/ Equipment does not replace practice.」；B「围绕构图拍摄、检查和修改 / Shoot, review and adjust composition」→「处理了缺少实践的困难。/ It addresses the lack of practice.」 | B；T3 |
+| I01-Q1「‘认真练习，把手艺练好’没逐字说出教材关键词，是否仍保留星币八核心？/ Does 'careful practice and refining a skill' retain the meaning without quoting the keywords?」 | A「是 / Yes」→「虽然换了说法，仍是在说认真练习、把事做好。/ The wording differs, but effort and skilled quality remain.」；B「核心意思要和教材关键词基本一致，才算真正掌握。 / Treat the core meaning as learned when it closely matches the textbook keywords.」→「先核对眼前例子的条件：虽然换了说法，仍是在说认真练习、把事做好。 / Check the conditions in this example first: The wording differs, but effort and skilled quality remain.」 | A；T1–T2 |
+| I01-Q2「摄影例子中，哪项同时回应背景与牌义？/ Which responds to both the photography context and the card?」 | A「先换更好的设备，再开始练习构图。 / Upgrade the equipment first, then begin practising composition.」→「摄影问题缺的是实际练习；围绕构图去拍、检查再修改，比先换设备更贴近星币八。 / The photography problem lacks hands-on practice; shooting, reviewing, and revising composition fits the Eight of Pentacles better than replacing equipment first.」；B「围绕构图拍摄、检查和修改 / Shoot, review and adjust composition」→「处理了缺少实践的困难。/ It addresses the lack of practice.」 | B；T3 |
 
 - **I01-R1 教学**「关键词是帮你记意思的，换种说法也可以。只要仍然说清认真练习、把手上的事做好，就不需要逐字照背。/ Keywords help retrieve meaning; exact wording is not required. Judge a paraphrase by whether it retains attentive effort, skill learning and quality, not by identical words.」题「新例：小周把星币八解释为‘专心做实际练习，慢慢把手艺磨好’，没有照抄词表。这种表达可以吗？/ New example: Zhou explains Eight of Pentacles as 'concentrated hands-on practice to gradually refine a craft' without quoting the list. Is that acceptable?」A「可以，保留了投入、技能与改进 / Yes; it retains effort, skill and improvement」→「换了说法，意思没有变。/ The paraphrase conveys the full theme.」；B「不可以，没有逐字说出词表 / No; it does not quote the exact list」→「不必逐字照背；只要意思没变，就不算错。/ This mistakes a memory aid for a required formula rather than checking understanding.」答案 A；T1–T2，回应 Q1 的逐字背诵误解。
 - **I01-R2 教学**「小林已经有设备，却很少拍照。问题不在工具不够，而在还没动手练。这里的星币八建议他先实际拍摄，再检查和修改，并不是说不能买工具。/ Equipment can support practice, but the question says Lin rarely takes photographs; further purchases do not fill that gap. In this example, Eight of Pentacles emphasizes doing, reviewing and improving, not banning tools.」题「新例：小周已有能正常使用的吉他，却只浏览设备评测，很少弹奏。接下来怎样做符合刚才的建议？/ New example: Zhou has a working guitar but mostly reads equipment reviews and rarely plays. How can this lesson's advice be applied?」A「先继续比较更多设备，仍不安排弹奏 / Compare more equipment first, still without scheduling playing」→「工具已能使用，继续比较仍未回应缺少实际练习。/ The instrument works; more comparison still does not address the missing practice.」；B「选一个和弦转换练习，听录音检查，再修正 / Practise one chord transition, listen to a recording and adjust」→「他缺的是实际弹奏。先练，再听录音检查，正好解决这个问题。/ This applies skill practice and quality review to the stated gap.」答案 B；T2–T3，专门回应 Q2 的购买替代练习错误。
@@ -504,11 +509,11 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| I02-Q1「圣杯十说的幸福，重点是什么？/ What is distinctive about fulfillment in this lesson's Ten of Cups?」 | A「仅表示账户金额增长 / Only an increased account balance」→「账户有多少钱，不能说明和重要的人相处得怎样。/ This replaces an emotional theme with a sum of money.」；B「和在意的人一起感到幸福、相处融洽 / Shared experience among emotionally connected people」→「重点是大家在一起感到开心、被接纳，不只是一个人拥有很多东西。/ It preserves sharing and belonging.」 | B；T1 |
+| I02-Q1「圣杯十说的幸福，重点是什么？/ What is distinctive about fulfillment in this lesson's Ten of Cups?」 | A「家庭财务稳定带来的安心感。 / The reassurance created by stable household finances.」→「请回到画面里的具体细节：重点是大家在一起感到开心、被接纳，不只是一个人拥有很多东西。 / Return to the specific details in the picture: It preserves sharing and belonging.」；B「和在意的人一起感到幸福、相处融洽 / Shared experience among emotionally connected people」→「重点是大家在一起感到开心、被接纳，不只是一个人拥有很多东西。/ It preserves sharing and belonging.」 | B；T1 |
 | I02-Q2「只凭水＋十，能确定下个月结婚吗？/ Can Water plus Ten establish a wedding next month?」 | A「不能 / No」→「知道元素和数字，不能算出婚期。/ Structure supplies neither event nor date.」；B「能 / Yes」→「水和十是帮助记忆的，不能用来计算下个月会发生什么。/ This treats cues as an event formula.」 | A；T2 |
 
-- **I02-R1 教学**「这里说的幸福，是大家在一起相处得好，不只是一个人得到了什么。/ Look for shared experience: fulfillment here concerns connection between people, not one person possessing a prize.」题「怎样安排聚会，更符合刚才讲的意思？/ Which gathering goal applies that meaning?」A「只统计主人拥有多少物品 / Count only the host's possessions」→「只数主人有多少东西，看不出朋友们相处得开不开心。/ It does not express shared feeling.」；B「让每个人都能参与，一起回忆共同经历 / Help everyone feel accepted and share experiences」→「让每个人都感到自己是大家的一员。/ It directly expresses belonging.」答案 B；T1、T3。
-- **I02-R2 教学**「水帮助记情感与关系，十帮助记阶段性状态；两者没有给出事件日期。若要知道何时聚会，要看现实安排，不能把牌号换算成天数。/ Water helps organize feelings and relationships; Ten cues a stage. Neither gives an event date. A gathering's date comes from real arrangements, not converting the rank into days.」题「新例：朋友尚未定聚会日期，抽到圣杯十。能因编号十就断定十天后聚会吗？/ New example: friends have not set a gathering date and draw Ten of Cups. Does its rank establish a gathering ten days later?」A「不能。它讲的是大家相处的感受，聚会日期还要另定 / No; retain shared fulfillment and confirm the date separately」→「区分了牌义和未提供的时间信息。/ This separates meaning from the missing timing information.」；B「能，十固定等于十天 / Yes; Ten always means ten days」→「把数字提示变成没有依据的日期公式。/ This turns a number cue into an unsupported date formula.」答案 A；T2，回应 Q2 的元素数字推事件日期错误。
+- **I02-R1 教学**「这里说的幸福，是大家在一起相处得好，不只是一个人得到了什么。/ Look for shared experience: fulfillment here concerns connection between people, not one person possessing a prize.」题「怎样安排聚会，更符合刚才讲的意思？/ Which gathering goal applies that meaning?」A「把食物和场地准备得更丰富，让主人承担好招待工作。 / Prepare richer food and a better venue so the host performs the hosting role well.」→「圣杯十强调共同的归属感；让每个人都能参与并回忆共同经历，才回应了这层牌义。 / The Ten of Cups emphasizes shared belonging; including everyone and recalling common experiences applies that meaning.」；B「让每个人都能参与，一起回忆共同经历 / Help everyone feel accepted and share experiences」→「让每个人都感到自己是大家的一员。/ It directly expresses belonging.」答案 B；T1、T3。
+- **I02-R2 教学**「水帮助记情感与关系，十帮助记阶段性状态；两者没有给出事件日期。若要知道何时聚会，要看现实安排，不能把牌号换算成天数。/ Water helps organize feelings and relationships; Ten cues a stage. Neither gives an event date. A gathering's date comes from real arrangements, not converting the rank into days.」题「新例：朋友尚未定聚会日期，抽到圣杯十。能因编号十就断定十天后聚会吗？/ New example: friends have not set a gathering date and draw Ten of Cups. Does its rank establish a gathering ten days later?」A「不能。它讲的是大家相处的感受，聚会日期还要另定 / No; retain shared fulfillment and confirm the date separately」→「区分了牌义和未提供的时间信息。/ This separates meaning from the missing timing information.」；B「能，数字十通常提示事情接近十个时间单位。 / Yes; the number Ten often suggests a period close to ten time units.」→「圣杯十能说明大家相处的感受，却不能给出聚会日期；时间仍要另行商量。 / The Ten of Cups can describe how people feel together, but it cannot supply the gathering date; the time still needs agreement.」答案 A；T2，回应 Q2 的元素数字推事件日期错误。
 
 **I02-V1**「工作团队庆祝合作完成，能用圣杯十讨论归属吗？/ Can Ten of Cups discuss belonging when a work team celebrates completion?」A「不能，圣杯不能进工作题 / No, Cups cannot appear in work questions」→「同事一起完成工作也会感到开心，不能把圣杯只用于恋爱。/ This wrongly restricts the suit to one domain.」；B「能。同事也会因为一起完成工作而开心 / Yes, work also involves emotional connections」→「这里也在说大家一起完成一件事、分享开心的感受。/ It preserves the core of shared experience.」答案 B；T1–T3。
 
@@ -532,9 +537,9 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | I03-Q2「问‘我怎样邀请朋友’，哪项回应了问句？/ For 'How should I invite my friend?', which responds to the question?」 | A「断定会出现一个特定性别的人 / Predict a person of a specified gender」→「改变了问题对象，也加入身份推断。/ It changes the subject and adds an identity claim.」；B「好好说出想把误会说开，再问朋友愿不愿意聊聊 / Gently express a wish to repair and ask their willingness」→「说的是自己怎样发出邀请，正好回答“我怎样邀请朋友”。/ It applies an approach to your own action.」 | B；T3 |
 
 - **I03-R1 教学**「‘会表达’和‘长期做到’是不同信息。邀约是起点，承诺需要持续行为支持。/ Being expressive and following through long term are different information. An invitation begins contact; commitment needs sustained behaviour.」题「一封浪漫邀请能保证今后一直合作吗？/ Does a romantic invitation guarantee lasting cooperation?」A「不能 / No」→「表达不等于长期落实。/ Expression is not sustained follow-through.」；B「能 / Yes」→「从风格跳到了保证。/ This jumps from style to guarantee.」答案 A；T2。
-- **I03-R2 教学**「先看问题在问什么。如果问活动氛围，就说这场活动给人的感受，不要突然改成猜主办人是谁。/ First check whether the question concerns a person, an action or an atmosphere. Then choose that level of expression.」题「问题是“这场活动的氛围怎样”。哪句话在回答它？/ For an event's atmosphere, which matches the taught level?」A「必须是一位男性举办 / It must be hosted by a man」→「角色并不提供主办者性别。/ The role does not supply the host's gender.」；B「大家愿意表达感受，也一起畅想想做的事 / It emphasizes emotional experience and an appealing ideal」→「在描述氛围。/ It describes atmosphere.」答案 B；T3。
+- **I03-R2 教学**「先看问题在问什么。如果问活动氛围，就说这场活动给人的感受，不要突然改成猜主办人是谁。/ First check whether the question concerns a person, an action or an atmosphere. Then choose that level of expression.」题「问题是“这场活动的氛围怎样”。哪句话在回答它？/ For an event's atmosphere, which matches the taught level?」A「从主持者的身份与风格推断活动气氛。 / Infer the atmosphere from the host’s identity and personal style.」→「这里要判断聚会的氛围：大家是否愿意表达感受，并一起谈想做的事。 / The question asks about the gathering atmosphere: whether people share feelings and imagine what they want to do together.」；B「大家愿意表达感受，也一起畅想想做的事 / It emphasizes emotional experience and an appealing ideal」→「在描述氛围。/ It describes atmosphere.」答案 B；T3。
 
-**I03-V1**「为社团发合作邀请，圣杯骑士建议怎样表达？/ How might Knight of Cups advise inviting another club to collaborate?」A「真诚说出想一起做什么，再听听对方愿不愿意 / Express the shared ideal sincerely and allow a choice」→「延续温和邀请，未保证接受。/ It retains a gentle invitation without guaranteeing acceptance.」；B「宣布对方一定愿意，不必询问 / Declare they agree without asking」→「跳过真实回应。/ It bypasses their actual response.」答案 A；T2–T3。
+**I03-V1**「为社团发合作邀请，圣杯骑士建议怎样表达？/ How might Knight of Cups advise inviting another club to collaborate?」A「真诚说出想一起做什么，再听听对方愿不愿意 / Express the shared ideal sincerely and allow a choice」→「延续温和邀请，未保证接受。/ It retains a gentle invitation without guaranteeing acceptance.」；B「把合作设想写得很动人，让对方自然明白你希望他参加。 / Describe the collaboration vividly and let the other person infer that you want them to join.」→「真诚说明合作想法，再听对方愿不愿意，既保留邀请，也没有预设对方一定接受。 / Share the collaboration idea sincerely, then listen to whether the other person wants it; this invites without assuming acceptance.」答案 A；T2–T3。
 
 **完成**「先学清这张牌的意思，再看问题是在问一个人、下一步怎样做，还是活动的气氛。下一课开始理解逆位。/ Role and suit offer an entry point; the question determines the level of expression. Next, learn reversals.」下一课 I04；不将一课完成记为16宫廷牌已学完。
 
@@ -553,13 +558,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| I04-Q1「每天练却不检查错误，哪项与背景一致？/ With daily practice but no error review, which fits the context?」 | A「从未投入任何练习 / No practice has ever happened」→「与每天练习矛盾。/ It contradicts daily practice.」；B「一直在练，但没有改掉反复出现的错误 / Effort is not effectively producing improvement」→「既承认投入，也指出缺少检查。/ It acknowledges effort and identifies missing review.」 | B；T2–T3 |
-| I04-Q2「只有一张逆位，没有问题或背景，能确定是哪种变化吗？/ With only a reversed card and no context, can you identify the exact change?」 | A「不能。还要知道发生了什么，才能判断 / No, context is needed to narrow it」→「朝向没有提供现实细节。/ Orientation supplies no real-world details.」；B「能，逆位一律过度努力 / Yes, all reversals mean excessive effort」→「把一种可能误作通用规律。/ This turns one possibility into a universal rule.」 | A；T1–T2 |
+| I04-Q1「每天练却不检查错误，哪项与背景一致？/ With daily practice but no error review, which fits the context?」 | A「练习次数在增加，原来的错误也会逐渐自行消失。 / As the number of practice attempts rises, the original mistakes will gradually fade on their own.」→「一直在练却重复同样的错误，说明投入没有转成改进；需要检查方法，而不是只看练习次数。 / Repeating the same mistake despite continued practice means effort has not become improvement; check the method, not just the number of repetitions.」；B「一直在练，但没有改掉反复出现的错误 / Effort is not effectively producing improvement」→「既承认投入，也指出缺少检查。/ It acknowledges effort and identifies missing review.」 | B；T2–T3 |
+| I04-Q2「只有一张逆位，没有问题或背景，能确定是哪种变化吗？/ With only a reversed card and no context, can you identify the exact change?」 | A「不能。还要知道发生了什么，才能判断 / No, context is needed to narrow it」→「朝向没有提供现实细节。/ Orientation supplies no real-world details.」；B「能，星币八逆位更常见的是练得太多。 / Yes; the Eight of Pentacles reversed is commonly read as practising too much.」→「正逆位只改变解读角度，不能补出没说的现实情况；要先知道具体发生了什么。 / Orientation changes the interpretive angle but cannot invent missing circumstances; first establish what actually happened.」 | A；T1–T2 |
 
 - **I04-R1 教学**「题目已经说他每天都练，就不能再说他完全没练。再看怎样练，才能改掉错误。/ Keep the stated fact: daily practice rules out no practice. Then use the card to discuss quality.」题「每天练字但不看字形，优先补什么？/ Practising handwriting daily without looking at letter forms: what is missing first?」A「假设从未动笔 / Assume no writing happened」→「否认已有练习。/ It denies the given practice.」；B「检查并修正字形 / Review and correct the forms」→「题目说不看字形，所以要先检查，再改正。/ It addresses the stated gap.」答案 B；T3。
 - **I04-R2 教学**「同一个技能主题，问题可能在开始投入，也可能在投入方法。不能在没有背景时任选一个当事实。/ Within the same skill theme, the issue may be starting practice or its method. Without context, neither is established as fact.」题「要区分两种情况，哪条信息有帮助？/ Which information helps distinguish them?」A「实际有没有练、怎样练 / Whether and how practice occurs」→「直接区分投入与方法。/ It distinguishes effort from method.」；B「把逆位再旋转一次 / Rotate the card again」→「旋转不会补充背景。/ Rotation does not add context.」答案 A；T1–T2。
 
-**I04-V1**「作品已经达标却一直改小细节不交，哪项符合题目说的情况？/ Work meets requirements but endless tiny revisions prevent submission. Which is supported?」A「从未认真处理作品 / The work was never attended to」→「与反复修改不符。/ It conflicts with repeated revision.」；B「小细节一直改，反而迟迟交不了作品 / Refinement is unbalanced and obstructs completion」→「作品已达标，却仍因小细节交不出去，和刚才的例 C 一样。/ It matches C's conditions.」答案 B；T2。
+**I04-V1**「作品已经达标却一直改小细节不交，哪项符合题目说的情况？/ Work meets requirements but endless tiny revisions prevent submission. Which is supported?」A「作品还不够成熟，需要继续打磨。 / The work is not mature enough and needs further refinement.」→「作品已经达标，却因反复修改小细节迟迟不交，正是逆位示例里的“投入没有转成完成”。 / The work already meets the standard but remains unsubmitted because of repeated small edits; effort is not becoming completion.」；B「小细节一直改，反而迟迟交不了作品 / Refinement is unbalanced and obstructs completion」→「作品已达标，却仍因小细节交不出去，和刚才的例 C 一样。/ It matches C's conditions.」答案 B；T2。
 
 **完成**「同一张逆位牌，要结合发生的事情来读。有时是做不起来或做过头，也可能是原来的困难在减轻；不能只选自己喜欢的解释。 / The same reversed card is read in context. Sometimes something is blocked or overdone; sometimes an earlier difficulty is easing. Choose an interpretation supported by the situation, not simply the one you prefer.」下一课 I05；逆位证据单独记录，不重置正位已学内容。
 
@@ -578,10 +583,10 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | I05-Q1「在作品展的建议位，哪句话是在说下一步怎样做？/ Which sentence fulfills the advice position for the exhibition?」 | A「按展示要求练习和完善细节 / Practise and refine details to meet exhibition needs」→「给出与牌义一致的做法。/ It offers an approach consistent with the card.」；B「你以前练过很多 / You practised a lot previously」→「这是过去描述，没有回答下一步做法。/ This describes the past rather than the next approach.」 | A；T1–T2 |
-| I05-Q2「星币八在障碍位，就能断定过度努力吗？/ Does Eight of Pentacles in an obstacle position establish excessive effort?」 | A「能，障碍位都会把牌反过来 / Yes, obstacle positions reverse every meaning」→「位置不是自动反义开关。/ Position is not an automatic opposite switch.」；B「不能，还要核对背景 / No, check the context」→「位置不提供缺少的现实情况。/ A position does not supply missing facts.」 | B；T3 |
+| I05-Q2「星币八在障碍位，就能断定过度努力吗？/ Does Eight of Pentacles in an obstacle position establish excessive effort?」 | A「是，障碍位会把星币八原本的勤练转成过度练习。 / Yes. An obstacle position turns the Eight of Pentacles’ diligence into overwork.」→「“障碍位”只说明这张牌负责回答阻碍，不能替你补出事情背景；还要结合已知情况。 / An obstacle position says which part the card answers; it cannot supply missing facts about the situation, which still need checking.」；B「不能，还要核对背景 / No, check the context」→「位置不提供缺少的现实情况。/ A position does not supply missing facts.」 | B；T3 |
 
 - **I05-R1 教学**「用句子的任务检查：‘现在正……’是描述，‘接下来可以……’是建议。/ Check the sentence's task: 'Currently…' describes; 'Next, you could…' advises.」题「问下一步怎样备考，哪句更直接？/ For the next step in exam preparation, which is direct?」A「针对薄弱题型练习并查错 / Practise weak question types and review errors」→「给出下一步。/ It gives a next step.」；B「你之前买了资料 / You previously bought materials」→「只描述过去，而且购买并非牌所证明。/ It only describes the past; the purchase is not proved by the card.」答案 A；T1–T3。
-- **I05-R2 教学**「如果有人一直改同一张照片，却还没准备整场展览，才可以说他被这一张照片拖住了。如果他只是刚开始练习，就不能直接这样判断。/ If someone refines one photograph but never organizes the exhibition, detail blocking the whole has support. If they just began training, that conclusion may not fit.」题「哪种情况说明，一直改细节已经耽误了整场展览？/ Which fact supports this obstacle reading?」A「仅知道牌在障碍位 / Only knowing the obstacle position」→「仍缺少实际表现。/ Actual behaviour is still missing.」；B「一直改同一张照片，还没开始整理整组展览照片 / Revising one image while never organizing the set」→「一直改一张照片，却没有准备整场展览，确实耽误了原本要做的事。/ It shows effort disconnected from the overall goal.」答案 B；T3。
+- **I05-R2 教学**「如果有人一直改同一张照片，却还没准备整场展览，才可以说他被这一张照片拖住了。如果他只是刚开始练习，就不能直接这样判断。/ If someone refines one photograph but never organizes the exhibition, detail blocking the whole has support. If they just began training, that conclusion may not fit.」题「哪种情况说明，一直改细节已经耽误了整场展览？/ Which fact supports this obstacle reading?」A「最近花在修改同一张照片上的时间比较多。 / Spending more time recently revising the same photograph.」→「这个解释没有把画面线索连起来。一直改一张照片，却没有准备整场展览，确实耽误了原本要做的事。 / This reading does not connect the picture cues. It shows effort disconnected from the overall goal.」；B「一直改同一张照片，还没开始整理整组展览照片 / Revising one image while never organizing the set」→「一直改一张照片，却没有准备整场展览，确实耽误了原本要做的事。/ It shows effort disconnected from the overall goal.」答案 B；T3。
 
 **I05-V1**「用星币八给沟通建议，哪项符合认真练习、不断改进的意思？/ Which retains Eight of Pentacles in communication advice?」A「练习明确表达，核对理解并调整 / Practise clear expression, check understanding and adjust」→「将技能练习用于沟通。/ It applies practice to communication.」；B「一看到星币就改问工资 / Change the question to salary because it is Pentacles」→「花色不能擅自替换原问题。/ A suit cannot replace the original question.」答案 A；T3。
 
@@ -601,8 +606,8 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| I06-Q1「大家想把展览办好。中间的星币八提醒他们接下来做什么？/ What needs implementation between the vision and shared fulfillment?」 | A「只保留愿望，工作自动完成 / Keep wishing; the work completes itself」→「光想办好还不够，中间的星币八提醒他们实际准备。/ This removes the action condition.」；B「动手准备展览，并检查照片和布置是否做好 / Practical production and quality checks」→「星币八在建议位，正是在提醒他们动手做，并检查做得怎样。/ This is Eight of Pentacles in advice.」 | B；T2–T3 |
-| I06-Q2「哪句话既说出可能的发展，也说清要先做什么？/ Which preserves the tendency's condition?」 | A「先把展览认真准备好，大家才更有机会一起体会办成展览的开心 / Implementing the work supports a shared achievement」→「没有把方向变成无条件保证。/ This does not turn a tendency into an unconditional guarantee.」；B「不用制作，观众一定很多 / No work is needed; attendance is guaranteed」→「既取消条件，也加入人数保证。/ This removes the condition and adds an attendance guarantee.」 | A；T3 |
+| I06-Q1「大家想把展览办好。中间的星币八提醒他们接下来做什么？/ What needs implementation between the vision and shared fulfillment?」 | A「先继续讨论大家理想中的展览，等想法足够一致后再动手。 / Keep discussing the ideal exhibition and begin the work after everyone’s ideas align.」→「继续讨论会把准备停在想法里，展览仍没有实际进展。星币八在建议位要他们动手准备，并检查照片和布置。 / More discussion leaves the exhibition at the idea stage. As advice, the Eight of Pentacles calls for practical preparation and checks of the photographs and layout.」；B「动手准备展览，并检查照片和布置是否做好 / Practical production and quality checks」→「星币八在建议位，正是在提醒他们动手做，并检查做得怎样。/ This is Eight of Pentacles in advice.」 | B；T2–T3 |
+| I06-Q2「哪句话既说出可能的发展，也说清要先做什么？/ Which preserves the tendency's condition?」 | A「先把展览认真准备好，大家才更有机会一起体会办成展览的开心 / Implementing the work supports a shared achievement」→「没有把方向变成无条件保证。/ This does not turn a tendency into an unconditional guarantee.」；B「先营造大家一起庆祝的气氛，准备工作可以边做边补。 / Create a shared celebratory mood first and fill in the preparation along the way.」→「先把展览认真准备好，才会增加大家一起庆祝成果的机会；这是一条有条件的方向，不是保证。 / Preparing the exhibition carefully increases the chance of celebrating together; it is a conditional direction, not a guarantee.」 | A；T3 |
 
 - **I06-R1 教学**「先找中间那张的任务：它是建议，所以要说明可以做什么，而非再描述热情。/ Check the middle card's task: it is advice, so it should offer an approach, not merely describe enthusiasm again.」题「哪句解释位置2？/ Which explains position 2?」A「大家很向往这次活动 / Everyone likes the idea」→「重复现状，未处理建议。/ It repeats the situation instead of advice.」；B「把选片和制作分成任务，逐项检查 / Organize selection and production tasks and check each」→「具体说明了接下来要做什么，不只是说大家有热情。/ It applies practical effort.」答案 B；T2。
 - **I06-R2 教学**「这里说的是：先把展览准备好，才更有机会一起庆祝完成。不能省掉准备，直接保证成功。 / The interpretation says: prepare the exhibition carefully first, then there is a better chance to celebrate its completion together. Do not remove the preparation and promise success.」题「哪种删减改变了原意？/ Which edit changes the meaning?」A「删掉‘先把展览认真准备好’，改成‘一定成功’ / Remove “prepare the exhibition carefully first” and replace it with “success is certain”」→「对，原来是先认真准备、才更有机会办好，删改后却成了不管做什么都一定成功。/ Correct identification: this changes a conditional direction into a guarantee.」；B「把‘大家为完成展览感到开心’换成‘大家一起庆祝展览办成’ / Replace “everyone feels happy about completing the exhibition” with “everyone celebrates the exhibition’s completion together”」→「这只是换个说法，仍是在说大家为完成展览感到开心。/ This is equivalent wording that preserves the theme.」答案 A；T3，题干检查编辑行为，不是让用户选择错误预测。
@@ -631,7 +636,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 - **A01-R1 教学**「整理问题是在减少含糊，不是在替用户换目标。已知不转职，就不能突然开始预测转职工资。/ Clarifying reduces ambiguity; it does not replace the person's goal. If no job change is planned, do not start predicting a new salary.」题「摄影新手希望半年拍完一组人像，哪项范围合适？/ A beginner wants to finish a portrait series in six months. Which scope fits?」A「围绕人像作品的学习状态、障碍和建议 / Learning situation, obstacles and advice for the portrait series」→「保留给定目标。/ It preserves the given goal.」；B「何时开摄影公司并上市 / When a photography company will go public」→「加入了不存在的目标。/ It invents a goal.」答案 A；T1–T2。
 - **A01-R2 教学**「先固定 A 与 B，才知道每条路线在回答哪个方案。看到牌后再把好看的路线给喜欢的方案，会让比较失去原来的对象；如果真实选项改变，可以重新提出问题，但不能倒改已经抽出的标签。/ Define A and B first so each path has a clear subject. Giving the preferred option the better-looking path after seeing the cards changes the comparison. If the real choices change, ask a new question; do not relabel an existing draw.」题「新例：小安比较周末参加实体摄影班与在线摄影班，时间范围都是未来两个月。抽牌前怎样准备？/ New example: An compares an in-person weekend photography class with an online class, both over the next two months. What should happen before drawing?」A「先不定 A/B，抽完把更好的路线给实体班 / Leave A/B undefined, then give the better path to the in-person class」→「抽完才决定 A、B，容易把喜欢的牌分给自己本来就偏好的选择。/ The subjects are assigned after the cards, so there is no preserved advance comparison.」；B「写定 A 为实体班、B 为在线班，并保持共同时间范围 / Fix A as in-person and B as online, with the shared timeframe」→「两条路线先有明确对象与相同范围，才可比较。/ Each path has a defined subject and the same scope before comparison.」答案 B；T3，专门回应 Q2 的抽后贴标签错误。
 
-**A01-V1**「‘这次考核能否通过’是否必须改成‘我感觉如何’？/ Must 'Will I pass this assessment?' become 'How do I feel?'」A「不必。说清是哪次考核、准备得怎样，就可以讨论更倾向于通过还是不通过 / No; clarify the assessment and conditions, then address outcome tendency」→「保留真正关心的问题，同时说明条件。/ It retains the concern and its conditions.」；B「必须，永远不能讨论结果 / Yes; outcomes can never be discussed」→「用户在问能不能通过，应该回答这个问题，不能强行改成只谈感受。/ This conflicts with retaining the question's intent.」答案 A；T3；倾向不得被呈现为事实保证。
+**A01-V1**「‘这次考核能否通过’是否必须改成‘我感觉如何’？/ Must 'Will I pass this assessment?' become 'How do I feel?'」A「不必。说清是哪次考核、准备得怎样，就可以讨论更倾向于通过还是不通过 / No; clarify the assessment and conditions, then address outcome tendency」→「保留真正关心的问题，同时说明条件。/ It retains the concern and its conditions.」；B「最好改成感受问题，因为塔罗更适合谈心理状态。 / It is better to rewrite it as a feelings question because tarot is more suited to inner states.」→「考核问题可以保留；把具体考核和准备情况说清，才有条件讨论更倾向通过还是不通过。 / The exam question can remain. Name the assessment and preparation clearly before discussing whether the outcome leans toward passing or not.」答案 A；T3；倾向不得被呈现为事实保证。
 
 **完成**「先确定要回答的事，再选择需要的位置。下一课把单牌放回位置。/ Establish the issue, then select the needed positions. Next, place meanings within them.」下一课 A02。
 
@@ -649,13 +654,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| A02-Q1「节制在建议位，哪句话是在给下一步的做法？/ Which correctly uses Temperance in this advice position?」 | A「旅行肯定已经安排成功 / The trip is certainly already settled」→「把建议误作已实现结果。/ This mistakes advice for an achieved result.」；B「各自说清哪些日期不能改，再商量可以调整的安排 / Clarify necessities and coordinate flexible parts」→「先说清差别，再找双方能配合的安排，符合节制刚才讲的意思。/ It turns coordination into an approach.」 | B；T1–T3 |
+| A02-Q1「节制在建议位，哪句话是在给下一步的做法？/ Which correctly uses Temperance in this advice position?」 | A「目前的行程安排看起来已经比较协调。 / The current travel plan appears reasonably coordinated.」→「先别按这个做法继续；先说清差别，再找双方能配合的安排，符合节制刚才讲的意思。 / Do not continue with this approach yet; It turns coordination into an approach.」；B「各自说清哪些日期不能改，再商量可以调整的安排 / Clarify necessities and coordinate flexible parts」→「先说清差别，再找双方能配合的安排，符合节制刚才讲的意思。/ It turns coordination into an approach.」 | B；T1–T3 |
 | A02-Q2「想断言某人秘密订了别的行程，缺什么？/ To assert someone secretly booked another trip, what is missing?」 | A「现实信息的支持 / Supporting real-world information」→「迟迟没决定出行日期，不等于对方已经秘密订了别的行程。/ Stalemate does not prove a secret event.」；B「更肯定的语气 / A more confident tone」→「语气不能提供证据。/ Tone supplies no evidence.」 | A；T2–T3 |
 
-- **A02-R1 教学**「建议位可以说‘怎样增加协调机会’，不能直接说‘已经成功’。前者是做法，后者是结果。/ Advice can say how to improve coordination, not that success is already achieved. One is an approach; the other an outcome.」题「哪句仍是节制建议？/ Which remains Temperance advice?」A「无需沟通，一定同日有空 / No discussion is needed; schedules certainly match」→「取消行动并编造结果。/ It removes action and invents an outcome.」；B「先各自说清能调整的日期 / First state which dates each can adjust」→「提供协调动作。/ It offers a coordinating action.」答案 B；T3。
+- **A02-R1 教学**「建议位可以说‘怎样增加协调机会’，不能直接说‘已经成功’。前者是做法，后者是结果。/ Advice can say how to improve coordination, not that success is already achieved. One is an approach; the other an outcome.」题「哪句仍是节制建议？/ Which remains Temperance advice?」A「各自先把自己的安排定死，再看谁愿意迁就。 / Have each person fix their own schedule first, then see who is willing to give way.」→「这项做法先把各自的安排定死，再让一方迁就，缺少双方说明可调整空间并一起协调的步骤。 / This fixes each person’s schedule first and asks one side to give way; it lacks a step where both sides state what can move and coordinate together.」；B「先各自说清能调整的日期 / First state which dates each can adjust」→「提供协调动作。/ It offers a coordinating action.」答案 B；T3。
 - **A02-R2 教学**「用‘可以核实是否……’标明假设，不能把它偷换为‘已经查明……’。/ Mark a hypothesis with 'check whether…'; do not replace it with 'it has been established…'.」题「根据本例宝剑二，哪句话没有把猜测说成事实？/ Which correctly expresses the level of inference for Two of Swords here?」A「可以核实双方是否没说清日期限制 / Check whether date constraints remain unstated」→「这是接下来可以问清楚的事，没有假装已经知道答案。/ It is a checkable interpretive hypothesis.」；B「已经证明对方另有安排 / It proves the partner has other plans」→「越过了现有信息。/ It exceeds the available information.」答案 A；T2–T3。
 
-**A02-V1**「同事筹办活动仍用本课三位与三牌，哪项建议也适合用在这个活动安排上？/ Colleagues plan an event with the same positions and cards. Which transfers the advice?」A「只要出现圣杯，必须改成恋爱解读 / Cups means the question must become romantic」→「没有尊重原问题。/ It disregards the original question.」；B「明确各自限制，协调可调整的安排 / Clarify constraints and coordinate flexible arrangements」→「虽然换成同事，仍是在找双方能配合的安排。/ It preserves coordination in a new domain.」答案 B；T1–T3。
+**A02-V1**「同事筹办活动仍用本课三位与三牌，哪项建议也适合用在这个活动安排上？/ Colleagues plan an event with the same positions and cards. Which transfers the advice?」A「先照顾大家的情绪，具体时间和分工可以活动前再定。 / Attend to everyone’s feelings first and settle timing and responsibilities shortly before the event.」→「把时间和分工拖到活动前再定，仍没有解决彼此安排冲突。双方应先说明限制，再协调可以调整的部分。 / Postponing timing and responsibilities until shortly before the event leaves the scheduling conflict unresolved. Each side should state constraints and coordinate what can move.」；B「明确各自限制，协调可调整的安排 / Clarify constraints and coordinate flexible arrangements」→「虽然换成同事，仍是在找双方能配合的安排。/ It preserves coordination in a new domain.」答案 B；T1–T3。
 
 **完成**「先读位置任务，再组织全组；单牌资料可以查，但最终回答要回到原问题。/ Read the position's task, then the whole spread. Card references can help, but the final response must return to the question.」下一课 A03。
 
@@ -673,13 +678,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| A03-Q1「哪句话把现状、阻碍和建议都说清楚了？/ Which retains information from all three positions?」 | A「有学习意愿，选择分散，应集中做一组作品 / Willing to learn but scattered; focus on one series」→「连接现状、阻碍和建议。/ It connects situation, obstacle and advice.」；B「没有任何学习意愿，只能放弃 / No willingness to learn, so give up」→「否认现状，也遗漏建议。/ It denies the situation and omits the advice.」 | A；T2–T3 |
+| A03-Q1「哪句话把现状、阻碍和建议都说清楚了？/ Which retains information from all three positions?」 | A「有学习意愿，选择分散，应集中做一组作品 / Willing to learn but scattered; focus on one series」→「连接现状、阻碍和建议。/ It connects situation, obstacle and advice.」；B「有学习意愿，也有很多选择；继续同时尝试，之后自然会找到方向。 / There is motivation and there are many choices; keep trying them together and a direction will emerge.」→「这个案例既有学习意愿，也有选择分散的问题；建议应落到集中完成一组作品。 / The case shows willingness to learn but scattered choices; the advice should focus on completing one body of work.」 | A；T2–T3 |
 | A03-Q2「无牌阵第三张是否自动是结果？/ Is the third card in an open draw automatically the outcome?」 | A「是，最后抽就叫结果 / Yes, last drawn means outcome」→「第三个抽出来，不代表抽牌前已约好它代表结果。/ This changes order into a position meaning.」；B「不是，数字只记抽取顺序 / No, the number records draw order」→「没有事前约定结果位。/ No outcome position was agreed.」 | B；T3 |
 
-- **A03-R1 教学**「本例星币侍从说明他想认真学，圣杯七提醒他想做的太多，星币八建议先选一件、动手练好。只说‘毫无意愿’会否定第一张，也解释不了为什么第三张建议练习。/ Page of Pentacles preserves a serious learning start, Seven of Cups identifies scattered choices, and Eight of Pentacles advises focused practice. Saying 'no willingness' denies the first card and does not explain the third.」题「新例：小周认真看木工资料，却同时想做桌子、柜子和书架，迟迟没做出东西。沿用本课三位与三牌，哪句话既指出目前的困难，也给出了下一步的做法？/ New example: Zhou seriously studies woodworking but wants to make a table, cabinet and shelf at once and has finished nothing. With this lesson's positions and cards, which retains the whole thread?」A「愿意学习，但选择太散；先定一个小作品，实际制作和打磨 / Willing to learn but scattered; choose one small item, then make and refine it」→「既说出了他愿意学，也指出想做的太多，最后给出先做一件的办法。/ It keeps the positive foundation, scattered-choice obstacle and practical advice.」；B「没有成品就说明完全无意愿，应直接停止 / No finished work proves no willingness, so stop」→「忽略已给的认真学习，也丢掉练习建议。/ It ignores the stated serious study and loses the practice advice.」答案 A；T2–T3，回应 Q1 的否定现状及丢失主线。
+- **A03-R1 教学**「本例星币侍从说明他想认真学，圣杯七提醒他想做的太多，星币八建议先选一件、动手练好。只说‘毫无意愿’会否定第一张，也解释不了为什么第三张建议练习。/ Page of Pentacles preserves a serious learning start, Seven of Cups identifies scattered choices, and Eight of Pentacles advises focused practice. Saying 'no willingness' denies the first card and does not explain the third.」题「新例：小周认真看木工资料，却同时想做桌子、柜子和书架，迟迟没做出东西。沿用本课三位与三牌，哪句话既指出目前的困难，也给出了下一步的做法？/ New example: Zhou seriously studies woodworking but wants to make a table, cabinet and shelf at once and has finished nothing. With this lesson's positions and cards, which retains the whole thread?」A「愿意学习，但选择太散；先定一个小作品，实际制作和打磨 / Willing to learn but scattered; choose one small item, then make and refine it」→「既说出了他愿意学，也指出想做的太多，最后给出先做一件的办法。/ It keeps the positive foundation, scattered-choice obstacle and practical advice.」；B「愿意学习，项目多说明兴趣广；先轮流都做一点，再看哪个先有成果。 / The many projects show broad interest; work on each in turn and see which produces a result first.」→「三个项目轮流做，仍然保留了选择分散的阻碍。这里要先缩小范围，完成并打磨一个小作品。 / Rotating among three projects preserves the scattered-choice obstacle. Narrow the scope first, then make and refine one small item.」答案 A；T2–T3，回应 Q1 的否定现状及丢失主线。
 - **A03-R2 教学**「位置需要抽牌前约定。自由三张仍可谈共同主题，只是不假装有过去或结果的位置。/ Positions require advance agreement. Open draws can still discuss shared themes without pretending to have past or outcome positions.」题「自由抽三张后，哪种说法没有临时给牌加上未约定的位置？/ Which respects an open three-card draw?」A「第一张现在改叫过去 / Rename the first card Past」→「事后补了未约定的位置。/ It adds an unagreed position afterward.」；B「这三张共同强调实践与选择 / These cards jointly emphasize practice and choice」→「是在一起解释三张牌，没有临时给某张加上过去或结果的意思。/ It discusses contributions without inventing positions.」答案 B；T1、T3。
 
-**A03-V1**「新例：小周认真看烹饪课，收藏了很多菜谱，却没有做出一道成品。仍用本课三位与三张正位牌：现状星币侍从、阻碍圣杯七、建议星币八。他想学，却一直没做出一道菜。哪项建议更符合这组三张牌？/ New example: Zhou studies cooking seriously and collects many recipes but has made no finished dish. Use the same upright spread: Page of Pentacles as situation, Seven of Cups as obstacle and Eight of Pentacles as advice. Which better addresses the main blockage?」A「先缩小到一道菜，实际制作并检查哪里需要改进 / Narrow the choice to one dish, cook it and review what needs improvement」→「星币侍从说他愿意学，圣杯七提醒想做的太多，星币八建议认真动手练。因此先做一道菜、做好后再改，能把三张牌连起来。/ The situation acknowledges willingness; the obstacle identifies scattered choices; the advice turns learning into focused practice. All three positions are retained.」；B「既然还在初学，先继续增加课程和菜谱，等所有方向都学完再动手 / Because the learner is still a beginner, add more courses and recipes and wait until every direction is covered before cooking」→「这只抓住星币侍从的初学，却忽略圣杯七已指出的选择分散，也延后了星币八的实际练习。本题不是认定课程无用，而是按已给牌位处理当前卡点。/ This uses only the Page's beginner status, ignores the Seven's scattered choices and postpones the Eight's practice. Courses are not inherently useless; this question asks about the stated blockage and positions.」答案 A；T2–T3。
+**A03-V1**「新例：小周认真看烹饪课，收藏了很多菜谱，却没有做出一道成品。仍用本课三位与三张正位牌：现状星币侍从、阻碍圣杯七、建议星币八。他想学，却一直没做出一道菜。哪项建议更符合这组三张牌？/ New example: Zhou studies cooking seriously and collects many recipes but has made no finished dish. Use the same upright spread: Page of Pentacles as situation, Seven of Cups as obstacle and Eight of Pentacles as advice. Which better addresses the main blockage?」A「先缩小到一道菜，实际制作并检查哪里需要改进 / Narrow the choice to one dish, cook it and review what needs improvement」→「星币侍从说他愿意学，圣杯七提醒想做的太多，星币八建议认真动手练。因此先做一道菜、做好后再改，能把三张牌连起来。/ The situation acknowledges willingness; the obstacle identifies scattered choices; the advice turns learning into focused practice. All three positions are retained.」；B「从收藏的菜谱中每天换一道尝试，用多做几个方向来寻找最适合的。 / Try a different saved recipe each day and use several directions to discover the best fit.」→「这个解释没有把画面线索连起来。星币侍从说他愿意学，圣杯七提醒想做的太多，星币八建议认真动手练。因此先做一道菜、做好后再改，能把三张牌连起来。 / This reading does not connect the picture cues. The situation acknowledges willingness; the obstacle identifies scattered choices; the advice turns learning into focused practice. All three positions are retained.」答案 A；T2–T3。
 
 **完成**「本课示范了怎样把逐张解释连成一条主线。下一课检查逆位怎样进入整组。/ This lesson demonstrated how separate meanings form a main thread. Next, integrate a reversal.」下一课 A04；开放解释展示此完整参考路径，不把照抄作为完成条件。
 
@@ -698,9 +703,9 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | A04-Q1「本例哪项更符合星币八逆位？/ Which reading of reversed Eight of Pentacles fits this case?」 | A「从未付出时间 / No time was invested」→「与反复修改矛盾。/ It contradicts repeated revision.」；B「细节改得太多，耽误了提交作品 / Excessive refinement obstructs delivery」→「与已达要求却持续修改相符。/ It fits continued revision after requirements are met.」 | B；T2–T3 |
-| A04-Q2「建议位星币骑士在这里补充了什么？/ What does Knight of Pentacles add in advice here?」 | A「稳步执行到完成的方式 / A steady way to follow through to completion」→「这里卡在一直改、迟迟不交，所以建议按步骤做完并提交。/ It addresses the blockage from unbalanced refinement.」；B「确定帮助者的性别 / A helper's certain gender」→「角色没有提供身份保证。/ The role provides no identity guarantee.」 | A；T2–T3 |
+| A04-Q2「建议位星币骑士在这里补充了什么？/ What does Knight of Pentacles add in advice here?」 | A「稳步执行到完成的方式 / A steady way to follow through to completion」→「这里卡在一直改、迟迟不交，所以建议按步骤做完并提交。/ It addresses the blockage from unbalanced refinement.」；B「帮助主要来自一位经验较少但做事务实的人。 / The help mainly comes from a less experienced but practical person.」→「先别按这个做法继续；这里卡在一直改、迟迟不交，所以建议按步骤做完并提交。 / Do not continue with this approach yet; It addresses the blockage from unbalanced refinement.」 | A；T2–T3 |
 
-- **A04-R1 教学**「两个说法先与背景对照：有大量修改，就不能说完全没做。再看修改是否推进了目标。/ Compare each claim with the context: extensive revision rules out doing nothing. Then check whether revision advances the goal.」题「改动越来越小，提交却不断延后，优先关注什么？/ Revisions shrink while submission keeps slipping. What should be examined first?」A「当事人是否根本没碰作品 / Whether the person never touched the work」→「已知修改事实排除了这项。/ The given revisions rule this out.」；B「是否一直改小细节，耽误了按时做完 / Whether detail work and completion are out of balance」→「直接回应已给变化。/ It addresses the given change.」答案 B；T2。
+- **A04-R1 教学**「两个说法先与背景对照：有大量修改，就不能说完全没做。再看修改是否推进了目标。/ Compare each claim with the context: extensive revision rules out doing nothing. Then check whether revision advances the goal.」题「改动越来越小，提交却不断延后，优先关注什么？/ Revisions shrink while submission keeps slipping. What should be examined first?」A「花在作品上的总时间是不是还不够。 / Whether the total time spent on the work is still insufficient.」→「牌里已经给出“一直改小细节”的线索；先核对它是否拖慢交付，才回应眼前变化。 / The cards already show repeated small edits; check whether they delayed delivery to address the stated change.」；B「是否一直改小细节，耽误了按时做完 / Whether detail work and completion are out of balance」→「直接回应已给变化。/ It addresses the given change.」答案 B；T2。
 - **A04-R2 教学**「星币骑士在这个建议位给出的是稳步做完、可靠跟进的做法，不是在宣布某个男性会出现。任何人都能采取这种方式；若现实有人协助，仍要另外确认。/ In this advice position, Knight of Pentacles offers steady completion and reliable follow-through, not the arrival of a man. Anyone can use that approach; real assistance still needs separate confirmation.」题「新例：小安为社团整理活动材料，建议位是星币骑士。怎样做符合星币骑士刚才讲的建议？/ New example: An is preparing event materials for a club, with Knight of Pentacles as advice. Which applies this lesson's use of the role?」A「把材料列清，按顺序完成并跟进遗漏 / List the materials, complete them in sequence and follow up omissions」→「把稳步执行变成自己的行动，不依赖虚构帮助者。/ It makes steady execution your action without inventing a helper.」；B「暂停整理，等待牌里预告的男性替自己做完 / Stop preparing and wait for the predicted man to finish it」→「牌位没有提供帮助者身份或到来保证，也没有回答自己的行动。/ The position establishes neither a helper's identity nor arrival, and it fails to address your action.」答案 A；T2–T3，回应 Q2 的行动方式误作性别身份。
 
 **A04-V1**「若背景改成报名后从未做作业，同张逆位先关注什么？/ If the context changes to never doing assignments after enrolling, what does the same reversal first highlight?」A「仍断定修改过度 / Still assert excessive revision」→「新背景没有任何修改支持。/ The new facts contain no revision to support that.」；B「报名了，却还没有开始做作业 / Practical effort has not been implemented」→「题目变成从没做作业，应该先开始动手，不能再说是修改太多。/ New context supports a different change within the same theme.」答案 B；I04-T2、A04-T1。
@@ -723,12 +728,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | A05-Q1「本版本 A 路线读哪几个位置？/ Which positions form path A in this version?」 | A「1→2→4 / 1→2→4」→「从共同现状走到 A 发展与 A 趋势。/ It joins the shared situation, A development and A tendency.」；B「1→2→3 / 1→2→3」→「第3位是 B 发展，不属于 A 路线。/ Position 3 is B development, not part of A.」 | A；T1 |
-| A05-Q2「为什么本例更支持 A？/ Why does this example favor A?」 | A「星币永远比权杖好 / Pentacles is always better than Wands」→「不能给花色分高低；要看这次的问题和每个位置的牌。/ There is no across-context suit ranking.」；B「本来工作就不少，A 有人一起讨论和指导，更利于自己继续练、把作品做细 / Under existing workload, collaboration supports sustained refinement」→「他本来就要兼顾工作。A 有合作指导，最后仍要自己认真做，更符合三个月内做好作品的目标。/ It connects situation, development, tendency and goal.」 | B；T2–T4 |
+| A05-Q2「为什么本例更支持 A？/ Why does this example favor A?」 | A「A 路线里星币牌更多，因此先把它看成更稳妥 / Path A has more Pentacles cards, so treat it as the safer route」→「这仍是在数花色，没有结合现有工作、合作过程和三个月内完成作品的目标。/ This still counts suits instead of relating workload, process and goal.」；B「本来工作就不少，A 有人一起讨论和指导，更利于自己继续练、把作品做细 / Under existing workload, collaboration supports sustained refinement」→「他本来就要兼顾工作。A 有合作指导，最后仍要自己认真做，更符合三个月内做好作品的目标。/ It connects situation, development, tendency and goal.」 | B；T2–T4 |
 
 - **A05-R1 教学**「先从第1张开始。选 A 时再看第2、4张；选 B 时再看第3、5张。第1张是两条路线共同的起点。/ Start with card 1. For A, continue with cards 2 and 4. For B, continue with cards 3 and 5. Card 1 is the shared starting point.」题「B 结果趋势在哪里？/ Where is B's outcome tendency?」A「5 / 5」→「右上第5位承接右中第3位。/ Upper-right 5 follows mid-right 3.」；B「4 / 4」→「第4位属于 A。/ Position 4 belongs to A.」答案 A；T1；补学时静态图始终可见，下一次无提示验证编号。
-- **A05-R2 教学**「本例更支持 A，是因为本来就有不少工作，有人一起讨论和指导，更有利于把作品做好。不是因为星币比权杖好。要结合想做成什么，以及 A、B 各自怎样发展来比较。/ A is favored because collaboration can support sustained refinement under an existing workload, not because Pentacles is inherently better than Wands. Retain the goal, shared situation and both paths.」题「新例：小周要在两个月内完成展览作品，又有日常任务。沿用刚才五张牌：选 A，有人一起讨论，之后自己继续修改作品；选 B，独立尝试新方向，但要负责的事越来越多。为什么这里更支持 A？/ New example: Zhou aims to finish exhibition work in two months while keeping daily duties. The same five worked cards show collaboration leading to refinement versus carrying more work alone. Which reason actually supports the collaborative project?」A「因为有权杖的路线在任何问题里都较差 / Because any path with Wands is worse in every question」→「这是脱离目标的花色排名，没有解释两条过程。/ This ranks suits outside the goal and explains neither path.」；B「本来任务就不少，有人合作指导，更方便持续修改作品、争取按期完成 / Collaborative support can sustain refinement and better fit completion under the existing workload」→「比较的是哪种安排更利于按期做好作品，不是在给花色分高低。/ It compares processes against the goal and workload, without ranking suits.」答案 B；T2–T4，回应 Q2 的孤立牌或花色优劣判断。
+- **A05-R2 教学**「本例更支持 A，是因为本来就有不少工作，有人一起讨论和指导，更有利于把作品做好。不是因为星币比权杖好。要结合想做成什么，以及 A、B 各自怎样发展来比较。/ A is favored because collaboration can support sustained refinement under an existing workload, not because Pentacles is inherently better than Wands. Retain the goal, shared situation and both paths.」题「新例：小周要在两个月内完成展览作品，又有日常任务。沿用刚才五张牌：选 A，有人一起讨论，之后自己继续修改作品；选 B，独立尝试新方向，但要负责的事越来越多。为什么这里更支持 A？/ New example: Zhou aims to finish exhibition work in two months while keeping daily duties. The same five worked cards show collaboration leading to refinement versus carrying more work alone. Which reason actually supports the collaborative project?」A「A 路线有人一起讨论，合作本身就足以抵消期限和工作量。 / Path A includes discussion with another person, so collaboration itself offsets the deadline and workload.」→「有人讨论不等于期限和工作量会自动消失。A 更受支持，是因为合作指导能帮助持续修改作品，并更有机会按期完成。 / Discussion with another person does not erase the deadline or workload. A is better supported because guidance can sustain revisions and improve the chance of finishing on time.」；B「本来任务就不少，有人合作指导，更方便持续修改作品、争取按期完成 / Collaborative support can sustain refinement and better fit completion under the existing workload」→「比较的是哪种安排更利于按期做好作品，不是在给花色分高低。/ It compares processes against the goal and workload, without ranking suits.」答案 B；T2–T4，回应 Q2 的孤立牌或花色优劣判断。
 
-**A05-V1**「用本例 B 路线制定准备，哪项回应权杖十的负担？/ To prepare for path B, which action addresses Ten of Wands' burden?」A「限定范围并确认能得到的协助 / Limit scope and confirm available help」→「处理任务积累的实际条件。/ It addresses accumulating tasks.」；B「不断加任务，因为热情会自动解决 / Add tasks because enthusiasm solves everything」→「忽略了发展到负担的提示。/ It ignores the movement toward burden.」答案 A；T3–T4。
+**A05-V1**「用本例 B 路线制定准备，哪项回应权杖十的负担？/ To prepare for path B, which action addresses Ten of Wands' burden?」A「限定范围并确认能得到的协助 / Limit scope and confirm available help」→「处理任务积累的实际条件。/ It addresses accumulating tasks.」；B「保留现有任务，用更严格的日程把它们同时推进。 / Keep the current tasks and use a stricter schedule to move them forward together.」→「任务已经积累时，先限定作品范围并确认协助，才是在处理时间和资源条件。 / When tasks have accumulated, limit the project scope and confirm available help to address the real time and resource constraints.」答案 A；T3–T4。
 
 **完成**「二择一要比较整条路径，而不是只挑喜欢的一张。本课展示了倾向、理由与条件怎样放在一起。/ A choice reading compares whole paths, not a favorite card. This lesson showed how a tendency, reasons and conditions fit together.」下一课 A06。案例表达不是唯一标准答案；题目只检查编号、已讲主线与背景一致性。
 
@@ -761,13 +766,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
-| A06-Q1「第9张在说“希望或担忧”。这里的宝剑九说明了什么？/ Position 9 describes hopes or fears. What does the Nine of Swords mean here?」 | A「活动最后一定会出事故 / An accident will definitely happen at the event」→「把担忧当结果，又新增具体事故。/ It turns fear into outcome and adds an accident.」；B「发起人担心活动准备出错 / The organiser is worried about mistakes in preparing the event」→「第 9 位在说他担心什么。可以接着检查准备工作，不必把担心直接当成会发生的事。/ It keeps fear in its position and links to practical checking.」 | B；T1–T3 |
+| A06-Q1「第9张在说“希望或担忧”。这里的宝剑九说明了什么？/ Position 9 describes hopes or fears. What does the Nine of Swords mean here?」 | A「活动临近时会出现新的麻烦，需要提前防范。 / New problems are likely to appear as the event approaches, so prepare for them.」→「这个说法混淆了题目正在考的含义。第 9 位在说他担心什么。可以接着检查准备工作，不必把担心直接当成会发生的事。 / This statement confuses the meaning being tested. It keeps fear in its position and links to practical checking.」；B「发起人担心活动准备出错 / The organiser is worried about mistakes in preparing the event」→「第 9 位在说他担心什么。可以接着检查准备工作，不必把担心直接当成会发生的事。/ It keeps fear in its position and links to practical checking.」 | B；T1–T3 |
 | A06-Q2「根据本例已给的背景与十个位置，哪项应优先安排来推进活动？/ Given this example's context and ten positions, which priority best advances the event?」 | A「把任务分给负责人，落实登记与场地要求，再跟进执行 / Assign task owners, implement registration and venue requirements, then follow through」→「第 1、2 位说明需要合作，但做法还没谈妥；第 6 位提醒一步步准备，第 4、8 位提醒物品分配和场地规则。因此先分工、登记、确认场地，正好处理目前没定下来的事。/ Three of Pentacles in 1 and Five of Wands in 2 locate the coordination issue; Knight of Pentacles in 6 supports execution; Six of Pentacles in 4 and Hierophant in 8 add resources and rules. This addresses the stated unfinished preparation.」；B「先扩大宣传和创意征集，靠更多热情解决当前分工问题 / Expand promotion and collect more ideas first, relying on enthusiasm to resolve the role problem」→「太阳说的是想办成的样子，魔术师说发起人愿意主动做，并不代表分工已经解决。第 5、6 位也提醒从想办，走到实际准备。宣传可以安排，但眼下先要确定负责人和场地要求。/ The Sun in 3 is a goal and Magician in 7 an organizing attitude, not reasons to bypass the coordination issue in 2. Initial enthusiasm recedes in 5 while 6 calls for execution. Promotion may have a place, but it is not the priority gap stated here.」 | A；T2–T4 |
 
-- **A06-R1 教学**「先把第9、10张分开看：第9张宝剑九说发起人担心什么；第10张权杖四说活动有机会办成。担心出错，不等于最后一定会失败；还要看分工、登记和场地准备能否做好。/ Separate cards 9 and 10: the Nine of Swords in 9 describes the organiser’s worries; the Four of Wands in 10 suggests the event could succeed. Worry does not mean certain failure. Responsibilities, registration and venue preparations still need to be completed.」题「把本例第9张宝剑九和第10张权杖四放在一起，哪种解释更合适？/ Read this example’s Nine of Swords in 9 alongside the Four of Wands in 10. Which interpretation fits?」A「既然有担忧，活动就一定办不成 / Worry means the event is certain to fail」→「第9张是担忧，第10张才是结果趋势，不能用担忧直接替换结果。/ Position 9 describes fear; position 10 describes the outcome tendency. Fear cannot simply replace the outcome.」；B「发起人有担忧，但把准备工作做好，活动仍有机会顺利完成 / The organiser is worried, but the event could still succeed if preparations are completed」→「这把担心的事和可能的结果分开，也保留了前面讲过的准备条件。/ This separates fear from the possible outcome and keeps the preparation conditions already explained.」答案 B；T2、T4。
+- **A06-R1 教学**「先把第9、10张分开看：第9张宝剑九说发起人担心什么；第10张权杖四说活动有机会办成。担心出错，不等于最后一定会失败；还要看分工、登记和场地准备能否做好。/ Separate cards 9 and 10: the Nine of Swords in 9 describes the organiser’s worries; the Four of Wands in 10 suggests the event could succeed. Worry does not mean certain failure. Responsibilities, registration and venue preparations still need to be completed.」题「把本例第9张宝剑九和第10张权杖四放在一起，哪种解释更合适？/ Read this example’s Nine of Swords in 9 alongside the Four of Wands in 10. Which interpretation fits?」A「宝剑九的担忧比权杖四更强，因此结局仍应按担忧来判断。 / The Nine of Swords’ worry outweighs the Four of Wands, so the outcome should follow the worry.」→「请回到画面里的具体细节：这把担心的事和可能的结果分开，也保留了前面讲过的准备条件。 / Return to the specific details in the picture: This separates fear from the possible outcome and keeps the preparation conditions already explained.」；B「发起人有担忧，但把准备工作做好，活动仍有机会顺利完成 / The organiser is worried, but the event could still succeed if preparations are completed」→「这把担心的事和可能的结果分开，也保留了前面讲过的准备条件。/ This separates fear from the possible outcome and keeps the preparation conditions already explained.」答案 B；T2、T4。
 - **A06-R2 教学**「太阳在目标位，说明想把活动办得开心、有趣，但没有说现在最该做宣传。目前分工还没定，权杖五也提醒大家做法不一致。先按星币骑士的提示一步步准备，再按教皇的提示问清场地规则。多一些热情，不能代替这些工作。/ The Sun in the goal position describes the desired experience; it does not by itself make promotion the immediate priority. First check the current obstacle: Five of Wands fits unclear roles; Knight of Pentacles supports execution and Hierophant rules. More enthusiasm does not assign owners or confirm venue requirements.」题「新例：同一活动已收集到足够创意，但登记负责人和场地使用条件仍不明确。保留本例牌位，下一次筹备会先做什么？/ New example: the same event has enough ideas, but the registration owner and venue conditions remain unclear. With the same positions, what should the next preparation meeting do first?」A「确定登记负责人，确认场地条件，并约定跟进日期 / Assign a registration owner, confirm venue conditions and set a follow-up date」→「先分清谁登记、场地怎样用、何时跟进，正是在解决第 2、6、8 位提醒的事，也有助于把原定活动办好。/ It addresses coordination in 2, execution in 6 and rules in 8 while preserving the event's goal.」；B「继续征集更多创意，把责任与规则等到宣传后再定 / Collect more ideas and defer roles and rules until after promotion」→「已有创意不是缺口；这延后了牌位与背景共同指出的准备问题。/ Ideas are not the missing piece; this postpones the preparation gap identified by both positions and context.」答案 A；T2–T4，回应 Q2 的愿景替代执行优先级错误。
 
-**A06-V1**「位置2的牌横放，就必须改记逆位吗？/ Does a horizontal card in position 2 have to be marked reversed?」A「必须，横放就是逆位 / Yes; horizontal means reversed」→「把布局姿态与牌的正逆位混为一谈。/ It confuses layout with drawn orientation.」；B「不必，交叉摆法与抽取方向分开记录 / No; crossing placement and drawn orientation are recorded separately」→「遵守本课采用版本的展示约定。/ It follows this lesson's layout convention.」答案 B；T1；下次十字案例先验位置规则，非背诵速度测试。
+**A06-V1**「位置2的牌横放，就必须改记逆位吗？/ Does a horizontal card in position 2 have to be marked reversed?」A「横放时先按逆位解释，再结合第二张牌修正。 / Read the crossing card as reversed first, then adjust it using the second card.」→「交叉摆放表示牌阵位置，正逆位按抽取方向另行记录；两者不要混在一起。 / The crossing layout marks a spread position, while orientation is recorded from the draw direction; keep the two separate.」；B「不必，交叉摆法与抽取方向分开记录 / No; crossing placement and drawn orientation are recorded separately」→「遵守本课采用版本的展示约定。/ It follows this lesson's layout convention.」答案 B；T1；下次十字案例先验位置规则，非背诵速度测试。
 
 **完成**「你已练习把十张牌一起读：回答正在问的事，说清更可能怎样发展、为什么这样判断，以及还要先做好什么。之后可以回到新案例继续练，不必每次使用十张。/ You have practised reducing a complex spread to the issue, tendency, evidence and conditions. Continue with new cases; ten cards are not required every time.」完成页提供“换一个案例 / Another case”和“回到课程 / Back to lessons”；无自评分、日记或长文必填。
 
@@ -903,7 +908,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 先买齐工作室的全部设备 / Buy all the studio equipment first | 这项不对 / Not correct. 还没试过陶艺就买齐设备，是先作了很大的投入，还没有了解自己是否喜欢。 / Buying everything before trying pottery commits heavily before you know whether you enjoy it. |
+| A | 先买齐一整套设备，再决定自己是否喜欢陶艺。 / Buy a full set of equipment first, then decide whether you enjoy pottery. | 这项不对 / Not correct. 第一次体验前就买齐设备，投入已经很大，却还不知道自己是否喜欢陶艺。 / Buying a full set before a first trial makes a large commitment before you know whether pottery suits you. |
 | B | 先体验一节课 / Try one class | 答对了 / Correct. 上一节课就已经开始探索，也给自己留下了解后再决定的机会。 / One class starts the exploration while leaving room to decide after experiencing it. |
 
 答案：B。内容ID `m00-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -916,7 +921,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 补路线和装备 / Prepare route and equipment | 答对了 / Correct. 例子已经说明缺少路线与装备，先补好这两项准备才回应了问题。 / The example identifies a missing route and equipment; preparing them addresses that problem. |
-| B | 永久放弃户外活动 / Abandon outdoor activity forever | 这项不对 / Not correct. 例子指出的是这次没有准备好，并没有说以后都不能参加户外活动。 / The example concerns this trip’s preparation, not a lifelong ban on outdoor activities. |
+| B | 先把计划放一段时间，等自己不再担心风险。 / Set the plan aside until the risks no longer feel worrying. | 这项不对 / Not correct. 先别按这个做法继续；例子已经说明缺少路线与装备，先补好这两项准备才回应了问题。 / Do not continue with this approach yet; The example identifies a missing route and equipment; preparing them addresses that problem. |
 
 答案：A。内容ID `m00-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -931,7 +936,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 不算，必须长期承诺 / No, it requires a long commitment | 这项不对 / Not correct. 开始不要求先答应长期坚持；试一天也能让你接触一种新体验。 / Beginning does not require a long commitment; one day can introduce a new experience. |
+| A | 不算，至少连续做几次才说明真的开始。 / Not yet; it takes several sessions before it counts as a real beginning. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。试一天已经从没接触过走到亲自尝试，投入虽小，也算开始。 / This conclusion goes beyond the information provided. One day moves you from unfamiliarity to experience; a small attempt still counts as a beginning. |
 | B | 算，已经接触未知 / Yes, it explores something new | 答对了 / Correct. 试一天已经从没接触过走到亲自尝试，投入虽小，也算开始。 / One day moves you from unfamiliarity to experience; a small attempt still counts as a beginning. |
 
 答案：B。内容ID `m00-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -948,7 +953,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 不矛盾，先探索再决定 / No, explore before deciding | 答对了 / Correct. 先体验可以帮助你了解陶艺，再决定买什么，既愿意尝试，也保留判断。 / A trial helps you understand pottery before choosing equipment, combining openness with judgment. |
-| B | 矛盾，开始必须全押 / Yes, a start requires everything | 这项不对 / Not correct. 愚人的开始不要求一次投入全部；本课正是示范先试一节课。 / The Fool does not require committing everything; the taught example starts with one class. |
+| B | 有些矛盾，开放尝试应该在开始前准备好较完整的工具。 / It is somewhat inconsistent because an open trial should begin with a fairly complete set of tools. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。先体验可以帮助你了解陶艺，再决定买什么，既愿意尝试，也保留判断。 / This judgment overlooks a condition given in the question. A trial helps you understand pottery before choosing equipment, combining openness with judgment. |
 
 答案：A。内容ID `m00-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -976,7 +981,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 先写一个短篇 / Write a short piece first | 答对了 / Correct. 写一个短篇能让你亲自接触写作，符合从小尝试开始探索的含义。 / A short piece gives direct experience of writing, fitting exploration through a small beginning. |
-| B | 等完全不再陌生才开始 / Wait until nothing is unfamiliar | 这项不对 / Not correct. 写作还陌生时，也能通过小尝试去了解；等完全熟悉才开始，就失去了探索这一步。 / Small attempts help you learn something unfamiliar; waiting for complete familiarity removes that exploration. |
+| B | 先系统学习写作方法，准备好完整大纲再写第一篇。 / Study writing methods systematically and prepare a full outline before writing the first piece. | 这项不对 / Not correct. 把方法和大纲全部准备好才动笔，会把探索一再推迟。愚人在这里更像先写一个短篇，亲自试试。 / Waiting to master methods and finish a full outline postpones exploration. Here the Fool is closer to writing one short piece and learning through the attempt. |
 
 答案：A。内容ID `m00-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1030,7 +1035,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只陈列所有工具 / Only display every tool | 这项不对 / Not correct. 把工具摆出来还没有使用它们；本课强调的是运用工具去做事。 / Displaying tools leaves them unused; this lesson emphasizes using them to do the work. |
+| A | 先把现有工具分类整理清楚，等方案完整后再开始。 / Sort the available tools clearly and wait for a complete plan before starting. | 这项不对 / Not correct. 先别按这个做法继续；先知道想完成什么，再使用现有工具和能力，才把目标变成了行动。 / Do not continue with this approach yet; A goal becomes action when available tools and abilities are used toward it. |
 | B | 把现有能力和工具用来实现目标 / Use available abilities and tools toward a goal | 答对了 / Correct. 先知道想完成什么，再使用现有工具和能力，才把目标变成了行动。 / A goal becomes action when available tools and abilities are used toward it. |
 
 答案：B。内容ID `m01-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1086,7 +1091,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 必须，否则不算行动 / Yes, otherwise it is not action | 这项不对 / Not correct. 是否开始行动，要看有没有制作短片，不取决于用了多少工具。 / Action depends on making the clip, not on the number of tools used. |
+| A | 更适合尽量多用现有工具，以免遗漏可用资源。 / It is better to use as many available tools as possible so no resource is overlooked. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。按短片需要选工具，才能让现有资源帮助你完成目标。 / This conclusion goes beyond the information provided. Selecting tools for the film lets available resources serve the goal. |
 | B | 不必，选择适用的 / No, use what serves it | 答对了 / Correct. 按短片需要选工具，才能让现有资源帮助你完成目标。 / Selecting tools for the film lets available resources serve the goal. |
 
 答案：B。内容ID `m01-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1114,7 +1119,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永远等更好的材料 / Keep waiting for better materials | 这项不对 / Not correct. 材料已经有了，一直等更好的材料，仍没有把现有资源用起来。 / Materials are available; continually waiting for better ones leaves them unused. |
+| A | 继续收集更合适的材料，等选择更齐全后再做样品。 / Keep collecting better materials and make the sample after the choices are broader. | 这项不对 / Not correct. 继续收集材料没有使用手边已经具备的资源。魔术师在这里要先定目标、做出样品，让材料变成行动。 / Collecting more materials does not use the resources already at hand. Here the Magician calls for choosing a goal and making a sample. |
 | B | 选目标并动手做样品 / Choose a goal and make a sample | 答对了 / Correct. 确定要做什么并做个样品，把已有材料变成了实际行动。 / Choosing what to make and building a sample turns available materials into action. |
 
 答案：B。内容ID `m01-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1226,7 +1231,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 可以，询问帮助澄清 / Yes, questions clarify | 答对了 / Correct. 询问可以补充尚不清楚的信息，暂时不判断不妨碍主动了解。 / Questions can clarify missing information; withholding judgment does not prevent inquiry. |
-| B | 不行，只能一直等待 / No, only wait forever | 这项不对 / Not correct. 本课的暂缓是先了解再判断，不是要求一直等待、什么都不做。 / The pause allows understanding before judgment; it is not an instruction to wait forever. |
+| B | 不太适合；保持观察比主动询问更能保护还没成形的直觉。 / It is not ideal; continued observation protects an emerging intuition better than asking directly. | 这项不对 / Not correct. 先核对眼前例子的条件：询问可以补充尚不清楚的信息，暂时不判断不妨碍主动了解。 / Check the conditions in this example first: Questions can clarify missing information; withholding judgment does not prevent inquiry. |
 
 答案：A。内容ID `m02-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1308,7 +1313,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 强迫立即完成 / Force instant completion | 这项不对 / Not correct. 只要求马上完成，没有提供成长需要的时间与支持。 / Demanding instant completion does not provide the time and support that growth needs. |
+| A | 替对方安排好节奏，尽快把成果催出来。 / Set the pace for the other person and push the result forward quickly. | 这项不对 / Not correct. 替别人定节奏并催成果是控制，不是滋养。皇后所说的滋养，是给成长留出时间、资源和照顾。 / Setting another person’s pace and pushing for results is control, not nurture. The Empress points to time, resources, and care that allow growth. |
 | B | 提供成长需要的时间、资源与照顾 / Provide the time, resources and care needed for growth | 答对了 / Correct. 有时间、资源和照顾，事物才有机会逐渐发展，这就是本课的滋养。 / Time, resources and care allow gradual development, which is nurture as taught here. |
 
 答案：B。内容ID `m03-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1321,7 +1326,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 安排材料时间与休息 / Arrange materials, time and rest | 答对了 / Correct. 材料帮助完成作品，时间和休息让创作者能持续创作。 / Materials support the work; time and rest help the creator keep making it. |
-| B | 只增加完成压力 / Add only pressure to finish | 这项不对 / Not correct. 增加压力不能补足材料、时间或休息，创作仍然缺少支持。 / More pressure does not provide materials, time or rest; support is still missing. |
+| B | 把交稿目标拆得更细，用进度要求推动完成。 / Break the delivery target into smaller milestones and use progress requirements to drive completion. | 这项不对 / Not correct. 先别按这个做法继续；材料帮助完成作品，时间和休息让创作者能持续创作。 / Do not continue with this approach yet; Materials support the work; time and rest help the creator keep making it. |
 
 答案：A。内容ID `m03-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1332,7 +1337,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永久停止关心他人 / Stop caring forever | 这项不对 / Not correct. 问题是长期只付出、不休息，不是关心别人这件事本身有错。 / The problem is giving without rest, not that caring for others is wrong. |
+| A | 暂时停止支持团队，把精力转向自己休息。 / Stop supporting the team for now and turn your attention to your own rest instead. | 这项不对 / Not correct. 停止照顾团队只是把失衡倒向另一边；皇后逆位提醒的是把照顾与休息重新放回平衡。 / Stopping care for the team only flips the imbalance; the reversed Empress asks for care and rest to be brought back into balance. |
 | B | 留出休息时间，恢复精力 / Make time to rest and recover energy | 答对了 / Correct. 例子中创造力已经因缺少休息而下降，先恢复精力回应了这种失衡。 / Creativity has fallen through lack of rest; recovering energy addresses that imbalance. |
 
 答案：B。内容ID `m03-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1364,7 +1369,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 不属于，只有材料重要 / No, only materials matter | 这项不对 / Not correct. 作品需要材料，也需要有精力的创作者；只看材料会漏掉人的需要。 / A work needs both materials and an energized creator; materials alone omit the person’s needs. |
+| A | 休息主要照顾创作者，和作品本身的成长关系不大。 / Rest mainly supports the creator and has little connection to the work’s development. | 这项不对 / Not correct. 先核对眼前例子的条件：作品由人完成，创作者休息好，才更有精力继续创作。 / Check the conditions in this example first: People make the work; rest restores the energy needed to continue. |
 | B | 属于，休息能恢复创作精力 / Yes, rest restores energy for creating | 答对了 / Correct. 作品由人完成，创作者休息好，才更有精力继续创作。 / People make the work; rest restores the energy needed to continue. |
 
 答案：B。内容ID `m03-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1392,7 +1397,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只要求人数立刻翻倍 / Only demand instant growth | 这项不对 / Not correct. 要求人数翻倍只规定了结果，没有说明怎样支持成员成长。 / Demanding doubled membership names a result without supporting members’ growth. |
+| A | 用人数增长和完成指标来判断社团发展，把成员需要的支持放在后面。 / Judge the club by membership growth and completed targets, leaving members’ support needs for later. | 这项不对 / Not correct. 这项做法只看增长指标，没有及时给成员提供成长所需的资源和支持。 / This approach looks at growth metrics but does not give members the timely resources and support they need to develop. |
 | B | 给成员资源与支持 / Offer resources and support | 答对了 / Correct. 给成员所需的资源和帮助，才是在建立能够逐渐发展的环境。 / Giving members resources and help creates conditions in which the club can develop. |
 
 答案：B。内容ID `m03-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1448,7 +1453,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 明确责任与边界 / Clear responsibilities and boundaries | 答对了 / Correct. 每个人知道负责什么、有哪些界限，工作才有清楚的安排。 / Work has a clear arrangement when people know their responsibilities and limits. |
-| B | 所有事只听一人 / One person dictates everything | 这项不对 / Not correct. 所有事只听一人，并不能保证责任清楚，也不等于安排合理。 / One person dictating everything does not ensure clear duties or sound arrangements. |
+| B | 由负责人集中做决定，其他人按统一指令执行。 / Have the leader make centralized decisions while everyone else follows one set of instructions. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。每个人知道负责什么、有哪些界限，工作才有清楚的安排。 / This statement confuses the meaning being tested. Work has a clear arrangement when people know their responsibilities and limits. |
 
 答案：A。内容ID `m04-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1459,7 +1464,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只重复要求认真 / Only demand more care | 这项不对 / Not correct. 只说认真一点，没有说明谁来交接、何时完成，原来的遗漏仍可能发生。 / Asking for more care does not identify who hands over or when; the same omission may recur. |
+| A | 增加一次提醒，让每个人自行留意交接。 / Add another reminder and let each person monitor the handover independently. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。把交接双方和时间说清楚，才让每个人知道该完成哪一步。 / This statement confuses the meaning being tested. Naming both parties and the deadline tells each person what to do. |
 | B | 明确谁交给谁及期限 / Specify people and deadlines | 答对了 / Correct. 把交接双方和时间说清楚，才让每个人知道该完成哪一步。 / Naming both parties and the deadline tells each person what to do. |
 
 答案：B。内容ID `m04-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1472,7 +1477,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 保留边界并调整流程 / Keep boundaries, adapt procedures | 答对了 / Correct. 必要的职责仍然保留，同时按实际情况改流程，可以让事情重新推进。 / Keeping necessary duties while adapting the process lets work proceed again. |
-| B | 禁止一切调整 / Ban every adjustment | 这项不对 / Not correct. 例子已说明不能调整使流程停滞，继续禁止调整会保留这个问题。 / The example says rigidity has stalled work; forbidding change preserves that problem. |
+| B | 先维持原流程，等大家适应后再考虑调整。 / Keep the existing process for now and consider adjustments after people adapt to it. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。必要的职责仍然保留，同时按实际情况改流程，可以让事情重新推进。 / This action does not resolve the situation described. Keeping necessary duties while adapting the process lets work proceed again. |
 
 答案：A。内容ID `m04-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1504,7 +1509,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 不够，还需职责 / No, assign responsibility | 答对了 / Correct. 知道什么时候交，还要知道谁来交、谁来接，否则仍可能无人负责。 / A deadline also needs identified senders and recipients, or responsibility may remain unassigned. |
-| B | 足够，时间解决一切 / Yes, time solves everything | 这项不对 / Not correct. 期限不会自动指定负责人，时间到了仍可能没有人交接。 / A deadline does not assign responsibility; the handover may still lack an owner. |
+| B | 基本够，大家可以根据期限自行认领剩余工作。 / It is mostly enough; people can claim the remaining work themselves based on the deadline. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。知道什么时候交，还要知道谁来交、谁来接，否则仍可能无人负责。 / This conclusion goes beyond the information provided. A deadline also needs identified senders and recipients, or responsibility may remain unassigned. |
 
 答案：A。内容ID `m04-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1532,7 +1537,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 约定分工与边界 / Agree duties and boundaries | 答对了 / Correct. 把清洁等公共事务的分工和界限约定好，大家才知道各自的责任。 / Agreed duties and limits for shared tasks tell residents what each is responsible for. |
-| B | 靠一人一直包办 / Let one person do everything | 这项不对 / Not correct. 一人包办没有让其他人承担清楚的责任，也没有建立共同遵守的安排。 / One person doing everything leaves others without clear duties or a shared arrangement. |
+| B | 由最擅长家务的人统筹，其他人有需要时再帮忙。 / Have the person best at housework coordinate it, with the others helping when needed. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。把清洁等公共事务的分工和界限约定好，大家才知道各自的责任。 / This action does not resolve the situation described. Agreed duties and limits for shared tasks tell residents what each is responsible for. |
 
 答案：A。内容ID `m04-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1586,7 +1591,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 拒绝任何学习方法 / Reject every method | 这项不对 / Not correct. 本课讲的是从已有经验中学习，拒绝所有方法就没有进行这一步。 / This lesson concerns learning from established experience; rejecting every method prevents that. |
+| A | 以沿用传统规则为主，较少追问这些方法是否适合当下。 / Rely mainly on established rules and spend less time asking whether the methods fit the present. | 这项不对 / Not correct. 只沿用规则却不理解它是否适用，会把学习变成照搬。教皇在这里强调跟着已有知识和方法学习，并理解这套传承。 / Following rules without considering why they apply turns learning into imitation. Here the Hierophant concerns learning established knowledge and methods within a tradition. |
 | B | 跟着已有的知识和方法学习 / Learn established knowledge and methods | 答对了 / Correct. 老师或群体传授已有的知识与做法，正体现了传承和学习。 / A teacher or group passing on established knowledge and methods expresses tradition and learning. |
 
 答案：B。内容ID `m05-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1610,7 +1615,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 因古老就永远照做 / Obey forever because it is old | 这项不对 / Not correct. 沿用多久不能证明现在仍适用；例子已经指出这条规定不合实际。 / A rule’s age does not prove present relevance; this example says it no longer fits. |
+| A | 先保留旧规定，再让成员逐步适应它。 / Keep the old rule first and help members adapt to it gradually. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。先弄清规则现在是否有用，才能决定继续保留还是修改。 / This action does not resolve the situation described. Checking current relevance supports a decision about retaining or revising the rule. |
 | B | 评估规则是否适用 / Assess its relevance | 答对了 / Correct. 先弄清规则现在是否有用，才能决定继续保留还是修改。 / Checking current relevance supports a decision about retaining or revising the rule. |
 
 答案：B。内容ID `m05-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1627,7 +1632,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 不违反，可帮助理解 / No, it can deepen understanding | 答对了 / Correct. 问清为什么这样做，可以帮助理解传授的方法，并没有拒绝学习。 / Asking why a method works deepens understanding rather than rejecting instruction. |
-| B | 违反，只能照抄 / Yes, only copying is allowed | 这项不对 / Not correct. 本课没有要求只能照抄；理解原因也是学习的一部分。 / The lesson does not require copying alone; understanding reasons is part of learning. |
+| B | 最好先照着老师示范完成，再把疑问留到学会以后。 / It is better to follow the teacher’s demonstration first and save questions until the method has been learned. | 这项不对 / Not correct. 先核对眼前例子的条件：问清为什么这样做，可以帮助理解传授的方法，并没有拒绝学习。 / Check the conditions in this example first: Asking why a method works deepens understanding rather than rejecting instruction. |
 
 答案：A。内容ID `m05-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1642,7 +1647,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永不形成自己的判断 / Never develop judgment | 这项不对 / Not correct. 学习方法是帮助起步，不是要求以后所有事情都由老师替你判断。 / Learning a method supports a beginning, not permanent dependence on a teacher’s judgment. |
+| A | 为了避免走弯路，先把不同情境都套进同一套步骤。 / To avoid detours, begin by applying the same procedure across different situations. | 这项不对 / Not correct. 这里要分清牌义的边界：先有可以照着练的方法，才能逐步理解并形成自己的判断。 / The boundary of the card meaning matters here: A method to practise provides a starting point for understanding and developing judgment. |
 | B | 建立可依循的方法 / Establish a usable method | 答对了 / Correct. 先有可以照着练的方法，才能逐步理解并形成自己的判断。 / A method to practise provides a starting point for understanding and developing judgment. |
 
 答案：B。内容ID `m05-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1659,7 +1664,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 这条需要重新评估 / This rule needs reassessment | 答对了 / Correct. 已知的是这一条不适用，所以先重新检查这一条规则。 / The known issue concerns this particular rule, so reassess that rule first. |
-| B | 所有指导都无用 / All guidance is useless | 这项不对 / Not correct. 一条规则失效，并没有证明其他规则或指导也都没有用。 / One unsuitable rule does not establish that all other guidance is useless. |
+| B | 这类规则的指导方式整体不再适合当前团队。 / This whole style of guidance no longer suits the current team. | 这项不对 / Not correct. 这个解释把牌义带到了别处。已知的是这一条不适用，所以先重新检查这一条规则。 / This interpretation shifts the card meaning elsewhere. The known issue concerns this particular rule, so reassess that rule first. |
 
 答案：A。内容ID `m05-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1737,7 +1742,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只看两份工资相同 / Only note equal salaries | 这项不对 / Not correct. 工资相近已经是背景条件，真正的差别是能否保留自己重视的创作。 / Similar pay is already given; the relevant difference is whether valued creative work can continue. |
+| A | 工资相近时，优先比较哪份工作看起来更稳定。 / When the salaries are similar, compare which job appears more stable first. | 这项不对 / Not correct. 这里要分清牌义的边界：例子明确说你重视创作，先弄清能否接受放下它，才是在处理这次取舍。 / The boundary of the card meaning matters here: The example says creativity matters to you, so deciding whether to relinquish it addresses the trade-off. |
 | B | 想清楚是否愿意为了工作放下创作 / Decide whether you are willing to give up creative work for the job | 答对了 / Correct. 例子明确说你重视创作，先弄清能否接受放下它，才是在处理这次取舍。 / The example says creativity matters to you, so deciding whether to relinquish it addresses the trade-off. |
 
 答案：B。内容ID `m06-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -1750,7 +1755,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 讨论双方不一致 / Discuss the disagreement | 答对了 / Correct. 已经知道双方想法不同却没有谈清楚，讨论差异才回应了当前问题。 / Different wishes and avoided discussion are given; discussing them addresses the present issue. |
-| B | 宣布必然分手 / Declare inevitable separation | 这项不对 / Not correct. 生活安排不同不等于关系已经结束，例子没有说明双方会怎样决定。 / Different living preferences do not establish separation; the example gives no final decision. |
+| B | 先判断谁更愿意为关系让步，再决定是否继续。 / First determine who is more willing to compromise for the relationship, then decide whether to continue. | 这项不对 / Not correct. 这里要分清牌义的边界：已经知道双方想法不同却没有谈清楚，讨论差异才回应了当前问题。 / The boundary of the card meaning matters here: Different wishes and avoided discussion are given; discussing them addresses the present issue. |
 
 答案：A。内容ID `m06-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1877,7 +1882,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 定目标并协调排期 / Set a goal and coordinate schedules | 答对了 / Correct. 先定目标再排时间，能决定先做什么，避免任务挤在一起。 / A goal and schedule establish priorities instead of crowding tasks together. |
-| B | 所有任务同时加码 / Intensify every task at once | 这项不对 / Not correct. 各项任务同时加量，仍在争用同一段时间，没有解决安排上的冲突。 / Intensifying every task leaves them competing for the same time and does not resolve scheduling conflicts. |
+| B | 先推进最紧急的任务，其他任务也尽量保持原进度。 / Push the most urgent task first while trying to keep the other tasks moving at their current pace. | 这项不对 / Not correct. 先别按这个做法继续；先定目标再排时间，能决定先做什么，避免任务挤在一起。 / Do not continue with this approach yet; A goal and schedule establish priorities instead of crowding tasks together. |
 
 答案：A。内容ID `m07-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -1905,7 +1910,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 不一定，要看方向 / No, direction matters | 答对了 / Correct. 要看忙的事情有没有帮助接近目标，不能只按动作多少判断进展。 / Progress depends on whether activity approaches the goal, not on the amount of activity. |
-| B | 一定，动作多就行 / Yes, activity is enough | 这项不对 / Not correct. 做了很多事，也可能没有做当前目标需要的事。 / Many actions can still omit the work the present goal requires. |
+| B | 大体是，持续忙碌通常说明事情正在推进。 / Generally yes; staying busy usually shows that the work is moving forward. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。要看忙的事情有没有帮助接近目标，不能只按动作多少判断进展。 / This conclusion goes beyond the information provided. Progress depends on whether activity approaches the goal, not on the amount of activity. |
 
 答案：A。内容ID `m07-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2004,7 +2009,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 先稳住情绪，再选择怎样回应 / Steady yourself before choosing how to respond | 答对了 / Correct. 先稳住自己，仍然可以回应问题，只是不让一时冲动决定怎么做。 / Steadying yourself still allows a response without letting impulse decide it. |
-| B | 一律靠压制取胜 / Always win through suppression | 这项不对 / Not correct. 压过别人只是在争输赢，没有体现本课的温和与耐心。 / Overpowering others pursues victory without the taught gentleness and patience. |
+| B | 先压住情绪，不表露立场，等对方态度缓和。 / Hold the emotion down and conceal your position until the other person softens. | 这项不对 / Not correct. 先别按这个做法继续；先稳住自己，仍然可以回应问题，只是不让一时冲动决定怎么做。 / Do not continue with this approach yet; Steadying yourself still allows a response without letting impulse decide it. |
 
 答案：A。内容ID `m08-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2015,7 +2020,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永远不再表达 / Never express yourself again | 这项不对 / Not correct. 冷静下来不等于永远闭口；本课仍要求清楚表达自己的理由。 / Calming down does not mean permanent silence; the lesson retains clear expression. |
+| A | 先不回应，等情绪过去后让这次分歧自然淡化。 / Do not respond for now; let the disagreement fade after the emotion passes. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。先稳住情绪，再讲理由，既没有冲动反击，也没有放弃表达。 / This judgment overlooks a condition given in the question. Steadying yourself before giving reasons avoids both retaliation and abandoning expression. |
 | B | 稳住后说明理由 / Steady yourself and give reasons | 答对了 / Correct. 先稳住情绪，再讲理由，既没有冲动反击，也没有放弃表达。 / Steadying yourself before giving reasons avoids both retaliation and abandoning expression. |
 
 答案：B。内容ID `m08-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2028,7 +2033,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 恢复稳住情绪的能力 / Restore the ability to steady emotions | 答对了 / Correct. 例子说明目前压力大、容易爆发，应帮助自己休息和恢复，而不是贴标签。 / The example concerns stress and outbursts, calling for recovery rather than a label. |
-| B | 证明此人永久软弱 / Prove permanent weakness | 这项不对 / Not correct. 一次或一段时间的困难，不能证明这个人以后的性格永远如此。 / A current difficulty does not establish someone’s permanent character. |
+| B | 暂时减少需要表达意见的场合，避免再次失控。 / Temporarily avoid situations that require expressing an opinion so another outburst is less likely. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。例子说明目前压力大、容易爆发，应帮助自己休息和恢复，而不是贴标签。 / This statement confuses the meaning being tested. The example concerns stress and outbursts, calling for recovery rather than a label. |
 
 答案：A。内容ID `m08-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2142,7 +2147,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永久拒绝外界 / Reject the outside forever | 这项不对 / Not correct. 暂时独处是为了想清楚问题，不是要求以后都拒绝外界。 / Solitude serves understanding, not permanent rejection of the outside world. |
+| A | 先把别人的建议放下，只凭自己的第一感觉决定。 / Set other people’s advice aside and decide from your first instinct alone. | 这项不对 / Not correct. 独处不是拒绝所有建议，也不是只凭第一感觉决定。隐士留出安静时间，是为了反思并找清自己的方向。 / Solitude is not rejecting every suggestion or deciding from first instinct alone. The Hermit uses quiet time to reflect and find direction. |
 | B | 反思并找方向 / Reflect and find direction | 答对了 / Correct. 留出安静思考的时间，帮助自己看清需要什么、往哪里走。 / Quiet reflection helps clarify needs and direction. |
 
 答案：B。内容ID `m09-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2155,7 +2160,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 检查自己的学习需要 / Examine your learning needs | 答对了 / Correct. 先知道自己真正需要学什么，才更容易判断哪些课程适合。 / Knowing your learning needs helps identify suitable courses. |
-| B | 继续跟随所有推荐 / Follow every recommendation | 这项不对 / Not correct. 所有推荐都跟随，仍然没有回答自己究竟需要什么。 / Following every recommendation still leaves your own needs unclear. |
+| B | 从推荐人数最多的课程开始，借助大家的选择缩小范围。 / Start with the most recommended course and use other people’s choice to narrow the options. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。先知道自己真正需要学什么，才更容易判断哪些课程适合。 / This action does not resolve the situation described. Knowing your learning needs helps identify suitable courses. |
 
 答案：A。内容ID `m09-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2166,7 +2171,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 继续拒绝所有帮助 / Keep refusing all help | 这项不对 / Not correct. 已经因拒绝交流而缺少信息，继续拒绝只会保留这个问题。 / Continued refusal preserves the lack of information described in the example. |
+| A | 继续独自整理，等想清楚后再恢复交流。 / Keep working it out alone and resume communication after the answer feels clear. | 这项不对 / Not correct. 先别按这个做法继续；恢复必要联系，才能获得需要的信息；之后仍可以独立判断。 / Do not continue with this approach yet; Necessary contact restores access to information while leaving judgment independent. |
 | B | 恢复必要交流 / Restore necessary communication | 答对了 / Correct. 恢复必要联系，才能获得需要的信息；之后仍可以独立判断。 / Necessary contact restores access to information while leaving judgment independent. |
 
 答案：B。内容ID `m09-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2198,7 +2203,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 不可，隐士只能独自解决 / No, solve everything alone | 这项不对 / Not correct. 主动独处不要求所有事都独自解决，想清楚问题后仍能请教。 / Solitude does not require solving everything alone; consultation remains possible. |
+| A | 可以，不过最好先接受对方给出的方向，减少自己的犹豫。 / Yes, though it is better to adopt the other person’s direction first and reduce your own hesitation. | 这项不对 / Not correct. 先核对眼前例子的条件：带着明确问题请教，是在为自己的判断寻找需要的信息。 / Check the conditions in this example first: A clear question seeks information to inform your own judgment. |
 | B | 可以，带着明确问题 / Yes, with a clear question | 答对了 / Correct. 带着明确问题请教，是在为自己的判断寻找需要的信息。 / A clear question seeks information to inform your own judgment. |
 
 答案：B。内容ID `m09-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2226,7 +2231,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 立刻迎合每个意见 / Immediately please every reviewer | 这项不对 / Not correct. 意见彼此冲突时，一一迎合仍然没有形成自己的创作方向。 / Pleasing conflicting reviewers does not establish your creative direction. |
+| A | 把最受欢迎的建议当成自己的方向，不再检查自己想表达什么。 / Treat the most popular suggestion as your direction without checking what you want to express. | 这项不对 / Not correct. 这里用受欢迎程度代替了自己的方向；隐士提醒先想清楚自己要表达什么，再选择采用哪些建议。 / Popularity replaces your own direction here; the Hermit asks you to clarify what you want to express before choosing feedback. |
 | B | 留时间澄清自己的方向 / Take time to clarify your direction | 答对了 / Correct. 先想清楚自己想表达什么，再决定采用哪些意见，符合本课的反思。 / Clarifying your intent before choosing feedback applies the reflection taught here. |
 
 答案：B。内容ID `m09-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2282,7 +2287,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 周期与局面变化 / Cycles and changing circumstances | 答对了 / Correct. 轮子让我们记住周期和转折：事情会变化，不总由一个人决定。 / The wheel recalls cycles and turning points: circumstances change beyond one person’s control. |
-| B | 所有事情必定变好 / Everything must improve | 这项不对 / Not correct. 变化可能带来机会，也可能带来困难，不能保证每件事都变好。 / Change can bring opportunities or difficulties; improvement is not guaranteed. |
+| B | 外部局面改变后，机会通常会自然转向更有利的一面。 / When external circumstances change, opportunities usually turn in a more favorable direction on their own. | 这项不对 / Not correct. 这个解释把牌义带到了别处。轮子让我们记住周期和转折：事情会变化，不总由一个人决定。 / This interpretation shifts the card meaning elsewhere. The wheel recalls cycles and turning points: circumstances change beyond one person’s control. |
 
 答案：A。内容ID `m10-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2306,7 +2311,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 旧安排不适合新条件 / The old plan no longer fits | 答对了 / Correct. 已知的是旧时间表不再合用，仍坚持它才造成反复受阻。 / The old schedule no longer fits; insisting on it causes the repeated obstacles. |
-| B | 当事人永远没有机会 / The person will never have opportunities | 这项不对 / Not correct. 一份安排目前不适用，不能推出这个人以后都没有机会。 / One unsuitable plan does not mean a person will never have opportunities. |
+| B | 变化来得太快，当事人暂时还没有等到合适的新机会。 / The change came too quickly, and the person has not yet waited long enough for a suitable new opportunity. | 这项不对 / Not correct. 先核对眼前例子的条件：已知的是旧时间表不再合用，仍坚持它才造成反复受阻。 / Check the conditions in this example first: The old schedule no longer fits; insisting on it causes the repeated obstacles. |
 
 答案：A。内容ID `m10-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2321,7 +2326,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 是，转动就必定获利 / Yes; turning guarantees gain | 这项不对 / Not correct. 轮子代表变化，不是保证获利；结果还要结合具体情况看。 / The wheel represents change, not guaranteed gain; circumstances still matter. |
+| A | 大体相同，局面转动通常意味着机会增加。 / They are broadly similar because a turning situation usually brings more opportunities. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。变化会有不同影响，需要看改变了什么、目前能怎样回应。 / This judgment overlooks a condition given in the question. Change has different effects; examine what changed and how to respond. |
 | B | 不是，需要看具体条件 / No; context matters | 答对了 / Correct. 变化会有不同影响，需要看改变了什么、目前能怎样回应。 / Change has different effects; examine what changed and how to respond. |
 
 答案：B。内容ID `m10-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2353,7 +2358,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 放弃所有今后的安排 / Abandon every future plan | 这项不对 / Not correct. 问题是一份安排不合用，不是所有将来的安排都不值得做。 / The issue is one unsuitable plan, not that all future planning is worthless. |
+| A | 先等局面稳定，再决定要不要修改原来的安排。 / Wait for the situation to settle before deciding whether to revise the original plan. | 这项不对 / Not correct. 先别按这个做法继续；把旧安排改成适合现在情况的安排，才回应了已知阻碍。 / Do not continue with this approach yet; Updating the plan to fit present circumstances addresses the identified obstacle. |
 | B | 更新不合适的安排 / Update the unsuitable plan | 答对了 / Correct. 把旧安排改成适合现在情况的安排，才回应了已知阻碍。 / Updating the plan to fit present circumstances addresses the identified obstacle. |
 
 答案：B。内容ID `m10-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2366,7 +2371,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 根据新条件寻找替代学习地点 / Find another place under the new conditions | 答对了 / Correct. 闭馆是外部变化，换个学习地点是自己能够作出的调整。 / The closure is external; finding another study place is an available adjustment. |
-| B | 认定学习永远无法继续 / Decide learning is impossible forever | 这项不对 / Not correct. 临时闭馆只改变了这个地点的使用，不能证明学习永远无法继续。 / A temporary closure affects that location, not the possibility of all future study. |
+| B | 先暂停学习，等图书馆重新开放后再按原计划继续。 / Pause studying and resume the original plan after the library reopens. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。闭馆是外部变化，换个学习地点是自己能够作出的调整。 / This action does not resolve the situation described. The closure is external; finding another study place is an available adjustment. |
 
 答案：A。内容ID `m10-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2420,7 +2425,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 保证自己赢 / Guarantee your victory | 这项不对 / Not correct. 公平要看事实和规则，并不保证结果一定对自己有利。 / Fairness depends on facts and rules, not a guaranteed favorable result. |
+| A | 先找到对自己最有利的规则解释，再准备论据。 / Find the interpretation of the rules that favors you, then prepare supporting arguments. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。先核对事实，再按规则判断，才能说明结论为什么公平。 / This statement confuses the meaning being tested. Facts checked against rules provide reasons for a fair judgment. |
 | B | 核对事实和规则 / Examine facts and rules | 答对了 / Correct. 先核对事实，再按规则判断，才能说明结论为什么公平。 / Facts checked against rules provide reasons for a fair judgment. |
 
 答案：B。内容ID `m11-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2444,7 +2449,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只要我满意就公平 / It is fair if I am satisfied | 这项不对 / Not correct. 自己满意只说明结果合心意，不能证明对所有人使用了同样标准。 / Personal satisfaction does not establish consistent standards for everyone. |
+| A | 评选结果得到多数人接受，就可以视为标准足够公平。 / If most people accept the result, the standard can be treated as fair enough. | 这项不对 / Not correct. 这个解释把牌义带到了别处。问题是标准使用不一致，查清并统一使用标准才回应了它。 / This interpretation shifts the card meaning elsewhere. Inconsistent standards are the problem; checking and applying them consistently addresses it. |
 | B | 检查偏差并统一标准 / Check bias and apply consistent criteria | 答对了 / Correct. 问题是标准使用不一致，查清并统一使用标准才回应了它。 / Inconsistent standards are the problem; checking and applying them consistently addresses it. |
 
 答案：B。内容ID `m11-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2476,7 +2481,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只有对人的好恶 / Only personal likes and dislikes | 这项不对 / Not correct. 喜欢或不喜欢某个人，不能说明对方实际承担了多少任务。 / Personal preference does not show how much work someone actually did. |
+| A | 带上自己认为更合理的分工方案。 / Bring the division of work that you personally consider more reasonable. | 这项不对 / Not correct. 这里要分清牌义的边界：记录可以共同核对，帮助大家按实际工作讨论分工。 / The boundary of the card meaning matters here: Shared records let people discuss responsibilities using actual work. |
 | B | 实际任务与约定记录 / Records of tasks and agreements | 答对了 / Correct. 记录可以共同核对，帮助大家按实际工作讨论分工。 / Shared records let people discuss responsibilities using actual work. |
 
 答案：B。内容ID `m11-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2560,7 +2565,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 先停下原来的做法，换个角度看问题 / Pause the old approach and view the problem differently | 答对了 / Correct. 暂时不沿用原来的做法，才能尝试从读者等其他角度理解问题。 / Pausing the old approach allows another perspective, such as the reader’s. |
-| B | 不做任何事就必有答案 / Doing nothing guarantees an answer | 这项不对 / Not correct. 本课没有说时间会自动带来答案，还需要重新观察和理解。 / Time alone does not supply an answer; observation and reconsideration are still needed. |
+| B | 先保持停顿，让答案随着时间逐渐显现。 / Remain paused and let the answer gradually reveal itself over time. | 这项不对 / Not correct. 这里要分清牌义的边界：暂时不沿用原来的做法，才能尝试从读者等其他角度理解问题。 / The boundary of the card meaning matters here: Pausing the old approach allows another perspective, such as the reader’s. |
 
 答案：A。内容ID `m12-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2584,7 +2589,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 等待没带来信息或新角度 / Waiting brings no information or perspective | 答对了 / Correct. 例子明确说没有收集信息，也没有换角度，只等着并未帮助理解。 / The example supplies neither new information nor a new perspective, so waiting has not helped understanding. |
-| B | 所有暂停都错误 / Every pause is wrong | 这项不对 / Not correct. 有目的的暂停可以帮助重新理解，问题不是所有暂停都错。 / A purposeful pause can aid understanding; not every pause is a problem. |
+| B | 暂停时间还不够长，需要继续等到想法自然变化。 / The pause has not lasted long enough; keep waiting for the perspective to change naturally. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。例子明确说没有收集信息，也没有换角度，只等着并未帮助理解。 / This statement confuses the meaning being tested. The example supplies neither new information nor a new perspective, so waiting has not helped understanding. |
 
 答案：A。内容ID `m12-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2599,7 +2604,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 只计算等了多久 / Only counting elapsed time | 这项不对 / Not correct. 等待多久不能说明是否想清楚了，需要看理解有没有变化。 / Elapsed time does not show whether understanding has changed. |
+| A | 暂停能让情绪降下来，之后继续原来的做法。 / The pause can settle the emotion before resuming the original approach. | 这项不对 / Not correct. 这里要分清牌义的边界：停下来重新检查原来的理解，才用到了暂停后换角度的含义。 / The boundary of the card meaning matters here: Reexamining the original understanding uses the pause to change perspective. |
 | B | 帮助重新理解问题 / It helps reconsider the problem | 答对了 / Correct. 停下来重新检查原来的理解，才用到了暂停后换角度的含义。 / Reexamining the original understanding uses the pause to change perspective. |
 
 答案：B。内容ID `m12-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2631,7 +2636,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 永远等到答案自己来 / Wait forever for an answer | 这项不对 / Not correct. 例子已经说明一直等没有帮助，继续无限等待仍会停在原处。 / The example says waiting has not helped; indefinite waiting preserves the same state. |
+| A | 继续观察一段时间，看答案会不会逐渐出现。 / Keep observing for a while and see whether an answer gradually appears. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。先知道自己还不清楚什么，再去核实，等待才不只是空耗时间。 / This action skips a key step in the question. Identifying and checking what is unknown gives waiting a purpose beyond elapsed time. |
 | B | 明确还缺什么信息并去核实 / Identify and check missing information | 答对了 / Correct. 先知道自己还不清楚什么，再去核实，等待才不只是空耗时间。 / Identifying and checking what is unknown gives waiting a purpose beyond elapsed time. |
 
 答案：B。内容ID `m12-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2644,7 +2649,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 暂停逐字硬读，结合上下文重看 / Pause word-by-word struggle and reread in context | 答对了 / Correct. 从单个字转向前后文，是改变理解的角度，并没有停止学习。 / Moving from individual words to context changes perspective without abandoning study. |
-| B | 认定暂停等于放弃学习 / Treat any pause as abandoning study | 这项不对 / Not correct. 暂停逐字硬读，是为了换一种理解方法，不等于放弃学习。 / Pausing word-by-word struggle allows a different approach rather than giving up. |
+| B | 暂停阅读，等精神更好时再从同一句重新读起。 / Pause the reading and return to the same sentence when concentration improves. | 这项不对 / Not correct. 先别按这个做法继续；从单个字转向前后文，是改变理解的角度，并没有停止学习。 / Do not continue with this approach yet; Moving from individual words to context changes perspective without abandoning study. |
 
 答案：A。内容ID `m12-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2698,7 +2703,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 必定有人死亡 / Someone must die | 这项不对 / Not correct. 本课用结束来解释阶段变化，没有用牌名判断现实中的死亡事件。 / The lesson uses endings to discuss changing phases, not to establish an actual death. |
+| A | 经历重大变化时，重点在原来的生活被打乱和失去。 / In a major change, the focus is disruption of the previous life and loss. | 这项不对 / Not correct. 这项说法只写生活被打乱和失去，缺少死神所强调的阶段结束、收尾与转变。 / This describes disruption and loss as the focus and leaves out the ending, closure, and transition taught for Death. |
 | B | 阶段结束与转变 / Ending and transition | 答对了 / Correct. 一件事结束后，把该收尾的事处理好，再准备下一阶段，符合刚才的讲解。 / Finish what needs closing when something ends, then prepare for the next stage. This matches the explanation. |
 
 答案：B。内容ID `m13-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2711,7 +2716,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 做交接并收尾 / Complete the handover and closure | 答对了 / Correct. 把资料和职责交接清楚，旧任务才有真正的结束，也能腾出时间做下一件事。 / Clear handover finishes the old task and frees time for the next one. |
-| B | 永久维持原任务 / Keep the old task forever | 这项不对 / Not correct. 活动已经完成，仍无限保留原任务，是没有处理已经到来的结束。 / Keeping a completed activity’s duties indefinitely avoids closing what has ended. |
+| B | 先维持原任务，等新的安排更明确后再交接。 / Keep the old task in place until the new arrangement becomes clearer. | 这项不对 / Not correct. 先别按这个做法继续；把资料和职责交接清楚，旧任务才有真正的结束，也能腾出时间做下一件事。 / Do not continue with this approach yet; Clear handover finishes the old task and frees time for the next one. |
 
 答案：A。内容ID `m13-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2722,7 +2727,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 项目保证重新成功 / Guaranteed renewed success | 这项不对 / Not correct. 例子只说明不愿交接，没有提供项目会重新成功的依据。 / Refusal to hand over supplies no evidence of renewed success. |
+| A | 旧项目可能还有恢复机会，因此暂时不宜交接。 / The old project may still recover, so it is better to postpone the handover. | 这项不对 / Not correct. 这个解释把牌义带到了别处。知道项目已结束却不愿放手，正是例子中的抗拒。 / This interpretation shifts the card meaning elsewhere. Knowing a project has ended while refusing to let go is the resistance described. |
 | B | 抗拒承认结束 / Resistance to acknowledging the end | 答对了 / Correct. 知道项目已结束却不愿放手，正是例子中的抗拒。 / Knowing a project has ended while refusing to let go is the resistance described. |
 
 答案：B。内容ID `m13-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2754,7 +2759,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 不告知任何人就丢下责任 / Disappear without communicating | 这项不对 / Not correct. 突然不管，会把未交接的责任留给别人；这不等于妥善结束任务。 / Disappearing leaves duties untransferred and does not properly close the task. |
+| A | 先停止投入，等接手人主动来了解剩余事项。 / Stop investing effort and wait for the next person to ask about the remaining work. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。确认哪些做完、剩余职责由谁接手，是实际完成收尾。 / This judgment overlooks a condition given in the question. Confirming completion and transferring remaining duties provides real closure. |
 | B | 确认已完成并移交剩余职责 / Confirm completion and transfer duties | 答对了 / Correct. 确认哪些做完、剩余职责由谁接手，是实际完成收尾。 / Confirming completion and transferring remaining duties provides real closure. |
 
 答案：B。内容ID `m13-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2782,7 +2787,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 因舍不得而永不调整 / Never adjust because it feels familiar | 这项不对 / Not correct. 习惯已经不合用，只因熟悉而保留它，会继续遇到原来的问题。 / Keeping an unsuitable habit only because it is familiar preserves the problem. |
+| A | 先保留旧习惯，同时慢慢增加新的学习方式。 / Keep the old habit for now while gradually adding a new study method. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。让不再适用的做法结束，再开始替代方法，符合告别与转变。 / This action skips a key step in the question. Ending an unsuitable approach and adopting another applies ending and transition. |
 | B | 结束旧做法并建立替代方式 / Let the old approach end and build a replacement | 答对了 / Correct. 让不再适用的做法结束，再开始替代方法，符合告别与转变。 / Ending an unsuitable approach and adopting another applies ending and transition. |
 
 答案：B。内容ID `m13-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2838,7 +2843,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 按实际需要，调整到合适的程度 / Adjust to a level that fits actual needs | 答对了 / Correct. 不同人、不同任务需要的安排不一样，合适比固定比例更重要。 / Different people and tasks need different arrangements; suitability matters more than a fixed ratio. |
-| B | 凡事都平均一半 / Split everything exactly in half | 这项不对 / Not correct. 平均分配不一定符合实际需要，本课没有规定固定比例。 / Equal division may not fit actual needs; no fixed ratio is taught. |
+| B | 在几个需要之间轮流补齐，尽量让每项投入接近。 / Alternate among the needs and try to keep the investment in each one similar. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。不同人、不同任务需要的安排不一样，合适比固定比例更重要。 / This action skips a key step in the question. Different people and tasks need different arrangements; suitability matters more than a fixed ratio. |
 
 答案：A。内容ID `m14-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2849,7 +2854,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 无论状态都机械对半分 / Always split time equally regardless of condition | 这项不对 / Not correct. 不看精力和任务只对半分，可能仍然让自己疲惫或无法完成任务。 / An equal split that ignores energy and workload may still cause exhaustion or unfinished work. |
+| A | 把学习和休息固定成相等时段，先用统一比例稳定节奏。 / Fix study and rest into equal blocks and use one ratio to stabilize the rhythm. | 这项不对 / Not correct. 先别按这个做法继续；先试再按实际精力调整，才能找到学习和休息都能兼顾的安排。 / Do not continue with this approach yet; Trying and adjusting to actual energy can produce workable study and rest. |
 | B | 先试一份能坚持的安排，再按精力调整 / Try a manageable schedule and adjust it to your energy | 答对了 / Correct. 先试再按实际精力调整，才能找到学习和休息都能兼顾的安排。 / Trying and adjusting to actual energy can produce workable study and rest. |
 
 答案：B。内容ID `m14-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2877,7 +2882,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 调和完全不需要安排 / Integration needs no planning | 这项不对 / Not correct. 不固定一半不等于不安排，仍需要根据精力和任务作调整。 / Rejecting a fixed half does not remove planning; energy and tasks still guide adjustments. |
+| A | 调和应该先定一个固定比例，条件变化后也继续照做。 / Balance should begin with a fixed ratio and keep that ratio when conditions change. | 这项不对 / Not correct. 这个解释把牌义带到了别处。实际精力和任务量会变化，所以合适的时间分配也可能变化。 / This interpretation shifts the card meaning elsewhere. Energy and workload vary, so suitable time allocations may vary too. |
 | B | 需求和条件会不同 / Needs and conditions vary | 答对了 / Correct. 实际精力和任务量会变化，所以合适的时间分配也可能变化。 / Energy and workload vary, so suitable time allocations may vary too. |
 
 答案：B。内容ID `m14-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2909,7 +2914,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 熬夜更多来弥补全部 / Add more all-nighters to compensate | 这项不对 / Not correct. 增加熬夜仍在延续过度用力，可能又接着完全停下来。 / More all-nighters continue overexertion and may lead back to stopping completely. |
+| A | 把每天学习时间定得更长，即使睡眠不足也先坚持。 / Set a longer daily study period and keep going even when sleep is insufficient. | 这项不对 / Not correct. 睡眠不足时仍拉长学习时间，延续了过度用力；节制要找的是能长期保持的学习和休息节奏。 / Extending study while losing sleep continues the same overexertion; Temperance asks for a study-and-rest rhythm you can sustain. |
 | B | 先安排一段能坚持的学习和休息时间 / Start with manageable study and rest periods | 答对了 / Correct. 从能坚持的时段开始，再逐渐调整，才有机会不再反复走向极端。 / Manageable periods followed by gradual adjustment can reduce repeated extremes. |
 
 答案：B。内容ID `m14-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -2922,7 +2927,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 商定衔接节奏并试着调整 / Agree on a shared rhythm and adjust it | 答对了 / Correct. 商定怎样衔接工作，再根据实际情况调整，能让不同速度也配合起来。 / Agreed handoffs and adjustment can coordinate different working speeds. |
-| B | 要求双方所有习惯完全一样 / Require identical habits in every respect | 这项不对 / Not correct. 配合不要求习惯全部一样；重点是双方工作能够接得上。 / Cooperation does not require identical habits, only work that connects effectively. |
+| B | 让较慢的一方跟上较快的一方，把流程统一到同一速度。 / Have the slower side catch up with the faster side so the process runs at one speed. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。商定怎样衔接工作，再根据实际情况调整，能让不同速度也配合起来。 / This action does not resolve the situation described. Agreed handoffs and adjustment can coordinate different working speeds. |
 
 答案：A。内容ID `m14-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -2989,7 +2994,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 留意何时开始刷，并限制使用时间 / Notice when scrolling starts and limit usage time | 答对了 / Correct. 知道什么时候容易开始刷，再限制使用时间，才是在改变具体习惯。 / Noticing when scrolling begins and limiting time addresses the specific habit. |
-| B | 只反复责骂自己 / Only repeat self-blame | 这项不对 / Not correct. 责骂没有改变什么时候打开、为什么继续，也没有给行为作出新的安排。 / Blame does not change when scrolling starts, why it continues, or how it is managed. |
+| B | 给自己设置更严格的练习目标，用任务压力压住刷视频的冲动。 / Set a stricter practice target and use task pressure to suppress the urge to watch short videos. | 这项不对 / Not correct. 先别按这个做法继续；知道什么时候容易开始刷，再限制使用时间，才是在改变具体习惯。 / Do not continue with this approach yet; Noticing when scrolling begins and limiting time addresses the specific habit. |
 
 答案：A。内容ID `m15-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3000,7 +3005,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 从此绝不再反复 / Guaranteed permanent freedom | 这项不对 / Not correct. 关掉自动播放是一个开始，不能据此保证以后绝不会再刷过头。 / Turning off autoplay is a beginning, not a guarantee against future overuse. |
+| A | 已经看清诱因，之后主要靠意志力避免再次发生。 / Now that the trigger is clear, rely mainly on willpower to prevent it from happening again. | 这项不对 / Not correct. 这里要分清牌义的边界：已经采取具体行动，开始减少原来让自己不断刷下去的影响。 / The boundary of the card meaning matters here: A concrete action begins reducing what previously kept the scrolling going. |
 | B | 开始改变让自己停不下来的习惯 / Begin changing a hard-to-stop habit | 答对了 / Correct. 已经采取具体行动，开始减少原来让自己不断刷下去的影响。 / A concrete action begins reducing what previously kept the scrolling going. |
 
 答案：B。内容ID `m15-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3017,7 +3022,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 可以，要一起看吸引与代价 / Yes; consider both attraction and cost | 答对了 / Correct. 刷视频可以当下轻松，同时挤掉练习时间，舒服与付出代价可以并存。 / Scrolling can feel relaxing while taking practice time; comfort and cost can coexist. |
-| B | 不可能，舒服就是完全自由 / No; comfort means complete freedom | 这项不对 / Not correct. 感到舒服不等于可以随时停下，也不代表没有失去别的时间。 / Comfort does not establish an ability to stop or the absence of costs. |
+| B | 短暂舒服说明眼前需求得到满足，限制可以以后再看。 / Short-term comfort shows the immediate need is met; restrictions can be considered later. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。刷视频可以当下轻松，同时挤掉练习时间，舒服与付出代价可以并存。 / This judgment overlooks a condition given in the question. Scrolling can feel relaxing while taking practice time; comfort and cost can coexist. |
 
 答案：A。内容ID `m15-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3032,7 +3037,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 我是不是完全没有价值 / Am I entirely worthless | 这项不对 / Not correct. 这把一个可以检查的习惯，变成了对整个人价值的否定。 / This turns an examinable habit into a judgment about the person’s entire worth. |
+| A | 先问自己怎样增强意志力，避免下一次点开。 / First ask how to strengthen willpower so you do not open it next time. | 这项不对 / Not correct. 先核对眼前例子的条件：问清什么情况让自己一直刷，才可能找到具体能调整的地方。 / Check the conditions in this example first: Understanding what keeps scrolling going helps identify a specific change. |
 | B | 什么场景让我不断继续 / What situation keeps the behaviour going | 答对了 / Correct. 问清什么情况让自己一直刷，才可能找到具体能调整的地方。 / Understanding what keeps scrolling going helps identify a specific change. |
 
 答案：B。内容ID `m15-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3049,7 +3054,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 具体改变与持续观察 / Concrete change and monitoring | 答对了 / Correct. 发现问题后仍要采取改变，并看看是否有用，才不只停在知道这一步。 / Recognition still needs action and observation of whether the change helps. |
-| B | 不用行动，一切已解决 / No action; everything is solved | 这项不对 / Not correct. 知道有问题并没有自动改变习惯，例子也是靠关掉自动播放开始改变。 / Awareness alone does not change the habit; the example begins with disabling autoplay. |
+| B | 继续分析习惯的原因，等理解得更充分后再行动。 / Keep analyzing the habit and act after the causes are understood more fully. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。发现问题后仍要采取改变，并看看是否有用，才不只停在知道这一步。 / This action skips a key step in the question. Recognition still needs action and observation of whether the change helps. |
 
 答案：A。内容ID `m15-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3116,7 +3121,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 原以为可靠的安排突然行不通了 / An arrangement once thought reliable suddenly fails | 答对了 / Correct. 原本以为稳固的塔被闪电击中，帮助记住原先可靠的东西突然被打破。 / Lightning striking a seemingly solid tower recalls the sudden failure of something once reliable. |
-| B | 一定发生交通事故 / A traffic accident is certain | 这项不对 / Not correct. 牌面呈现突然冲击，但没有说明现实中一定发生哪一种事故。 / The image conveys sudden disruption without establishing a particular real accident. |
+| B | 把突然冲击具体理解成近期交通出行会受阻 / Read the sudden disruption specifically as likely travel trouble | 这项不对 / Not correct. 交通受阻是一种可能联想，但题目没有交通背景；这里先学习原本可靠的安排突然失效。 / Travel trouble is one possible association, but the prompt gives no travel context; the taught core is that a once-reliable structure suddenly fails. |
 
 答案：A。内容ID `m16-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3140,7 +3145,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 原来交接不可靠的问题仍需处理 / The unreliable handover still needs attention | 答对了 / Correct. 不改动并没有解决只靠一人的交接问题，它仍需要处理。 / Avoiding change does not resolve reliance on one person; the issue remains. |
-| B | 原来的交接方式因此绝对可靠 / The original handover is therefore completely reliable | 这项不对 / Not correct. 表面维持正常，没有改变实际交接方法，不能因此保证可靠。 / Keeping up appearances does not change the actual handover or guarantee reliability. |
+| B | 先维持表面正常，等出现明确损失后再调整。 / Maintain the appearance of normal operation and adjust after a clear loss appears. | 这项不对 / Not correct. 这里要分清牌义的边界：不改动并没有解决只靠一人的交接问题，它仍需要处理。 / The boundary of the card meaning matters here: Avoiding change does not resolve reliance on one person; the issue remains. |
 
 答案：A。内容ID `m16-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3187,7 +3192,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 会，逆位表示完全取消 / Yes; reversed means cancellation | 这项不对 / Not correct. 逆位没有替你更改交接方法，不讨论也不会让已知问题消失。 / Reversal does not alter the handover, and silence does not remove the problem. |
+| A | 先暂时避开薄弱处，等外部条件改变后再处理。 / Avoid the weak point for now and address it after external conditions change. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。把已经知道的问题拿出来检查、处理，才可能让交接可靠起来。 / This conclusion goes beyond the information provided. Examining and addressing the known problem can make the handover more reliable. |
 | B | 不会，应检查并处理 / No; inspect and address it | 答对了 / Correct. 把已经知道的问题拿出来检查、处理，才可能让交接可靠起来。 / Examining and addressing the known problem can make the handover more reliable. |
 
 答案：B。内容ID `m16-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3254,7 +3259,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 愿望马上必定实现 / Immediate guaranteed fulfilment | 这项不对 / Not correct. 希望说明仍有恢复与前进的可能，不是保证愿望马上实现。 / Hope leaves room for recovery and progress without guaranteeing immediate fulfillment. |
+| A | 保持乐观，相信眼前愿望会按期待推进。 / Stay optimistic and trust that the present wish will unfold as hoped. | 这项不对 / Not correct. 希望不等于愿望会照预期实现。星星讲的是困难后逐渐恢复，并重新看见可以继续的方向。 / Hope does not mean a wish will unfold exactly as expected. The Star concerns gradual recovery and finding a direction forward after difficulty. |
 | B | 希望与恢复 / Hope and renewal | 答对了 / Correct. 困难后慢慢恢复，并重新看见可以继续的方向，正是本课的主旨。 / Gradual recovery and renewed direction after difficulty express the taught theme. |
 
 答案：B。内容ID `m17-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3267,7 +3272,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 从能坚持的短练习重新开始 / Restart with short, manageable practice | 答对了 / Correct. 从做得到的短练习开始，能让恢复有实际行动，而不只停在愿望上。 / Manageable practice gives recovery a concrete action beyond wishing. |
-| B | 只许愿并停止行动 / Only wish and stop acting | 这项不对 / Not correct. 愿望本身没有重新开始练习，不能代替恢复的过程。 / Wishing does not restart practice or replace the recovery process. |
+| B | 先设想最终成功的样子，用积极情绪替代挫败感。 / Visualize the final success first and use positive emotion to replace the discouragement. | 这项不对 / Not correct. 先别按这个做法继续；从做得到的短练习开始，能让恢复有实际行动，而不只停在愿望上。 / Do not continue with this approach yet; Manageable practice gives recovery a concrete action beyond wishing. |
 
 答案：A。内容ID `m17-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3278,7 +3283,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 一次失败证明永远无望 / One failure proves permanent hopelessness | 这项不对 / Not correct. 一次失败只说明那一次未成功，不能据此否定所有后续可能。 / One failure does not rule out every later possibility. |
+| A | 把这次失败当作主要依据，先降低后续目标。 / Use this failure as the main evidence and lower the next goal. | 这项不对 / Not correct. 这个解释把牌义带到了别处。例子已经提到小改善却看不见，重新识别它们才能回应眼前的失望。 / This interpretation shifts the card meaning elsewhere. The example includes overlooked improvements; noticing them responds to the discouragement. |
 | B | 已有但被忽略的小改善 / Small improvements being overlooked | 答对了 / Correct. 例子已经提到小改善却看不见，重新识别它们才能回应眼前的失望。 / The example includes overlooked improvements; noticing them responds to the discouragement. |
 
 答案：B。内容ID `m17-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3310,7 +3315,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 未达巅峰就全算失败 / Count everything below peak as failure | 这项不对 / Not correct. 还没回到最好状态，也可能已经开始进步；全算失败会忽略恢复过程。 / Improvement may begin before peak performance; calling all of it failure ignores recovery. |
+| A | 先恢复到受挫前的强度，借完整投入找回信心。 / Return to the pre-setback intensity and rebuild confidence through a full commitment. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。按目前能力做小练习，更容易真正开始并逐步恢复。 / This action does not resolve the situation described. Small actions suited to present ability support a real start and gradual recovery. |
 | B | 从可坚持的行动开始 / Begin with manageable action | 答对了 / Correct. 按目前能力做小练习，更容易真正开始并逐步恢复。 / Small actions suited to present ability support a real start and gradual recovery. |
 
 答案：B。内容ID `m17-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3327,7 +3332,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 让自己看到仍能进步的实际例子 / Show real examples that improvement remains possible | 答对了 / Correct. 具体的小进步能说明并非毫无变化，帮助重新相信自己还能继续。 / Concrete improvement shows that change exists and can renew belief in continuing. |
-| B | 证明所有目标已经实现 / Prove all goals achieved | 这项不对 / Not correct. 小进步只说明某处变好了，不能扩大成所有目标都已完成。 / A small improvement concerns one area, not completion of every goal. |
+| B | 说明之前的担心多余，可以恢复原来的高目标。 / It shows the earlier worry was unnecessary, so the original ambitious goal can be restored. | 这项不对 / Not correct. 这里要分清牌义的边界：具体的小进步能说明并非毫无变化，帮助重新相信自己还能继续。 / The boundary of the card meaning matters here: Concrete improvement shows that change exists and can renew belief in continuing. |
 
 答案：A。内容ID `m17-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3394,7 +3399,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 区分事实与猜测 / Separate facts and guesses | 答对了 / Correct. 还不清楚时，把已经知道的事和自己想象的原因分开，才不会误判。 / Separating known facts from imagined causes avoids confusing uncertainty with knowledge. |
-| B | 认定所有人说谎 / Assume everyone lies | 这项不对 / Not correct. 不知道实情，只能说明还不清楚，不能证明所有人都在说谎。 / Lacking information establishes uncertainty, not universal deceit. |
+| B | 对信息保持怀疑，优先相信自己的直觉判断。 / Remain skeptical of the information and give priority to your intuitive judgment. | 这项不对 / Not correct. 这个解释把牌义带到了别处。还不清楚时，把已经知道的事和自己想象的原因分开，才不会误判。 / This interpretation shifts the card meaning elsewhere. Separating known facts from imagined causes avoids confusing uncertainty with knowledge. |
 
 答案：A。内容ID `m18-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3405,7 +3410,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 关系必定结束 / The relationship is certainly over | 这项不对 / Not correct. 关系结束是猜测，未收到回复本身没有证明这个原因。 / A missing reply does not establish that the relationship has ended. |
+| A | 朋友可能在回避这段关系。 / The friend may be avoiding the relationship. | 这项不对 / Not correct. 这个说法混淆了题目正在考的含义。目前只知道还没回复，为什么没回仍然需要了解。 / This statement confuses the meaning being tested. Only the absence of a reply is known; the reason remains unclear. |
 | B | 目前还没收到回复 / No reply has arrived yet | 答对了 / Correct. 目前只知道还没回复，为什么没回仍然需要了解。 / Only the absence of a reply is known; the reason remains unclear. |
 
 答案：B。内容ID `m18-Q2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3418,7 +3423,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 沟通提供了新事实 / Communication supplied new facts | 答对了 / Correct. 例子明确说沟通带来了新事实，因此可以说原来的猜测逐渐减少。 / Communication supplies new facts in the example, supporting reduced uncertainty. |
-| B | 逆位自动揭示全部秘密 / Reversal reveals every secret automatically | 这项不对 / Not correct. 让事情清楚的是实际得到的信息，不是逆位自动提供全部答案。 / New information clarifies the issue; reversal does not automatically reveal every answer. |
+| B | 事情开始清楚，是因为直觉逐渐接近真实情况。 / The situation is becoming clearer because intuition is moving closer to the truth. | 这项不对 / Not correct. 这里要分清牌义的边界：例子明确说沟通带来了新事实，因此可以说原来的猜测逐渐减少。 / The boundary of the card meaning matters here: Communication supplies new facts in the example, supporting reduced uncertainty. |
 
 答案：A。内容ID `m18-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3450,7 +3455,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 留出其他可能并适时沟通 / Allow other possibilities and clarify appropriately | 答对了 / Correct. 没有确认原因前，可以保留其他解释，再通过沟通了解实情。 / Other explanations remain possible until communication clarifies the reason. |
-| B | 立即认定最糟猜测 / Immediately adopt the worst guess | 这项不对 / Not correct. 最糟的猜测只是想象中的可能，不因为让人害怕就成为事实。 / The worst guess remains a possibility, not a fact merely because it is frightening. |
+| B | 先按较可能的负面原因做准备，再决定要不要沟通。 / Prepare for the more likely negative explanation first, then decide whether to communicate. | 这项不对 / Not correct. 这个做法没有解决眼前的情况。没有确认原因前，可以保留其他解释，再通过沟通了解实情。 / This action does not resolve the situation described. Other explanations remain possible until communication clarifies the reason. |
 
 答案：A。内容ID `m18-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3532,7 +3537,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 此后再无任何困难 / No difficulties ever again | 这项不对 / Not correct. 本课肯定已经看见的进展与喜悦，没有保证以后所有困难都消失。 / The lesson recognizes progress and joy without guaranteeing a difficulty-free future. |
+| A | 事情进入顺利阶段，接下来的进展会更容易。 / The situation has entered a favorable phase, so the next steps should come more easily. | 这项不对 / Not correct. 这里要分清牌义的边界：清楚看见成果、有活力地表达并感受喜悦，符合刚才的讲解。 / The boundary of the card meaning matters here: Recognizing results, expressing vitality and experiencing joy match the teaching. |
 | B | 清晰、活力与喜悦 / Clarity, vitality and joy | 答对了 / Correct. 清楚看见成果、有活力地表达并感受喜悦，符合刚才的讲解。 / Recognizing results, expressing vitality and experiencing joy match the teaching. |
 
 答案：B。内容ID `m19-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3556,7 +3561,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 一切努力是否必定无效 / Whether all effort must be worthless | 这项不对 / Not correct. 例子已经说明有进步，不能因为不满意就把全部努力说成无效。 / Progress is explicitly given; dissatisfaction does not erase all effort. |
+| A | 是不是目标定得还不够高，导致进展不够明显。 / Whether the goal is not ambitious enough, making the progress feel less noticeable. | 这项不对 / Not correct. 这里要分清牌义的边界：先核对哪些已经进步，才有机会看见被缺点遮住的成就。 / The boundary of the card meaning matters here: Identifying progress can reveal achievements obscured by attention to flaws. |
 | B | 被忽略的实际进展 / Actual progress being overlooked | 答对了 / Correct. 先核对哪些已经进步，才有机会看见被缺点遮住的成就。 / Identifying progress can reveal achievements obscured by attention to flaws. |
 
 答案：B。内容ID `m19-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3573,7 +3578,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 包含 / Yes | 答对了 / Correct. 说清做成了什么、还缺什么，别人才能准确了解作品。 / Stating both completed and unfinished parts gives an accurate account. |
-| B | 不包含，只讲好处 / No; mention only positives | 这项不对 / Not correct. 只讲好处而不说尚未完成的部分，会让人误解实际成果。 / Omitting unfinished parts may misrepresent the actual result. |
+| B | 可以先突出完成的部分，未完成内容等别人追问时再说明。 / Lead with the completed parts and explain unfinished work if someone asks about it. | 这项不对 / Not correct. 这个结论比题目给出的信息多走了一步。说清做成了什么、还缺什么，别人才能准确了解作品。 / This conclusion goes beyond the information provided. Stating both completed and unfinished parts gives an accurate account. |
 
 答案：A。内容ID `m19-R1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3605,7 +3610,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 核对具体已完成部分 / Identify specific completed work | 答对了 / Correct. 列出实际做成的部分，能让评价不只停留在对缺点的不满意。 / Identifying completed work broadens attention beyond dissatisfaction with flaws. |
-| B | 否认全部进展 / Deny all progress | 这项不对 / Not correct. 否认全部进展与例子中已经发生的改善不一致。 / Denying all progress contradicts the improvements explicitly given. |
+| B | 先提高下一阶段目标，让已有进步显得更有意义。 / Raise the next-stage goal so the progress already made feels more meaningful. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。列出实际做成的部分，能让评价不只停留在对缺点的不满意。 / This action skips a key step in the question. Identifying completed work broadens attention beyond dissatisfaction with flaws. |
 
 答案：A。内容ID `m19-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3672,7 +3677,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 想清楚问题后重新作决定 / Make a new decision after understanding the issue | 答对了 / Correct. 想明白过去哪里出了问题，再改变下一次选择，才把回顾用到了行动上。 / Understanding past problems and changing the next choice puts review into action. |
-| B | 永远责备自己 / Blame yourself forever | 这项不对 / Not correct. 反复责备没有说明下一次怎样选，也没有改变原来的做法。 / Repeated blame neither guides the next choice nor changes the old approach. |
+| B | 找出过去是谁造成问题，以免自己再次受影响。 / Identify who caused the past problem so you can avoid being affected again. | 这项不对 / Not correct. 这个解释把牌义带到了别处。想明白过去哪里出了问题，再改变下一次选择，才把回顾用到了行动上。 / This interpretation shifts the card meaning elsewhere. Understanding past problems and changing the next choice puts review into action. |
 
 答案：A。内容ID `m20-Q1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3696,7 +3701,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 看见问题后回避决定 / Avoid deciding after recognition | 答对了 / Correct. 例子已经看清问题，拖住的是接下来不愿作决定这一步。 / Understanding is already present; unwillingness to make the next decision is the obstacle. |
-| B | 完全没有任何信息 / Having no information at all | 这项不对 / Not correct. 例子明确说已经发现共同问题，不是完全没有信息。 / The example explicitly identifies a recurring problem, so information is not absent. |
+| B | 信息还需要整理得更完整，等判断更确定后再决定。 / The information needs more organization; wait until the judgment feels firmer before deciding. | 这项不对 / Not correct. 这个判断忽略了题目给出的条件。例子已经看清问题，拖住的是接下来不愿作决定这一步。 / This judgment overlooks a condition given in the question. Understanding is already present; unwillingness to make the next decision is the obstacle. |
 
 答案：A。内容ID `m20-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3728,7 +3733,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 用明确标准检查是否适合 / Check suitability against clear criteria | 答对了 / Correct. 检查新合作是否又有过去的问题，能让之前的经验真正影响选择。 / Checking for previous problems lets experience inform the new choice. |
-| B | 把全部合作一概否定 / Reject every collaboration equally | 这项不对 / Not correct. 过去几次不合适，没有证明所有合作都不适合自己。 / Several unsuitable collaborations do not establish that all collaboration is unsuitable. |
+| B | 为了避免重蹈覆辙，先拒绝和过去相似的合作方式。 / To avoid repeating the past, reject collaboration arrangements that resemble the previous one. | 这项不对 / Not correct. 先别按这个做法继续；检查新合作是否又有过去的问题，能让之前的经验真正影响选择。 / Do not continue with this approach yet; Checking for previous problems lets experience inform the new choice. |
 
 答案：A。内容ID `m20-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3756,7 +3761,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 发现总在拖延，就提前安排下一次备考 / Recognize the repeated delay and plan the next exam preparation earlier | 答对了 / Correct. 发现总是拖延后提前安排，让下一次做法不同，符合回顾后重新决定。 / Planning earlier after recognizing delay changes the next action and applies renewed choice. |
-| B | 只给自己贴失败标签 / Only label yourself a failure | 这项不对 / Not correct. 失败标签没有说明下一次如何备考，仍没有改变原来的安排。 / A failure label supplies no new study plan and leaves the previous arrangement unchanged. |
+| B | 回想上一次拖延带来的压力，用自责提醒自己下次别再犯。 / Recall the stress caused by the last delay and use self-reproach as a reminder for next time. | 这项不对 / Not correct. 先别按这个做法继续；发现总是拖延后提前安排，让下一次做法不同，符合回顾后重新决定。 / Do not continue with this approach yet; Planning earlier after recognizing delay changes the next action and applies renewed choice. |
 
 答案：A。内容ID `m20-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3834,7 +3839,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 所有成果完全无效 / All work is worthless | 这项不对 / Not correct. 还没提交不能抹掉前面已经完成的工作，只说明最后仍有步骤没做。 / Missing submission does not erase finished work; it identifies remaining steps. |
+| A | 主体内容已经完成，最后手续对成果影响不大。 / The main work is finished, so the final formalities have little effect on the result. | 这项不对 / Not correct. 这里要分清牌义的边界：背景明确缺少最后检查与提交，因此需要补上收尾。 / The boundary of the card meaning matters here: Final checks and submission are explicitly missing, so closure remains necessary. |
 | B | 有收尾环节未完成 / Closure remains unfinished | 答对了 / Correct. 背景明确缺少最后检查与提交，因此需要补上收尾。 / Final checks and submission are explicitly missing, so closure remains necessary. |
 
 答案：B。内容ID `m21-Q3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3866,7 +3871,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 它已证明未来必定成功 / It proves future success | 这项不对 / Not correct. 建议是告诉你眼前可以怎样做，不是证明未来结果已经确定。 / Advice concerns what can be done now, not proof of a fixed future result. |
+| A | 世界显示事情接近完成，因此可以把结果视为已经确定。 / The World shows that the matter is close to completion, so the result can be treated as settled. | 这项不对 / Not correct. 这样做会漏掉题目里的关键一步。这个牌位问的是怎样做，因此要把完成转成可以执行的最后几步。 / This action skips a key step in the question. This position asks what to do, so completion becomes the concrete final steps. |
 | B | 它要回答怎样完成 / It answers how to complete | 答对了 / Correct. 这个牌位问的是怎样做，因此要把完成转成可以执行的最后几步。 / This position asks what to do, so completion becomes the concrete final steps. |
 
 答案：B。内容ID `m21-R2-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3883,7 +3888,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
 | A | 最后还有哪一步没做 / Which final step remains unfinished | 答对了 / Correct. 找出最后缺少的检查或提交，既承认已有成果，也知道接下来补什么。 / Identifying remaining checks or submission recognizes existing work and the next step. |
-| B | 理由证明全部努力没用 / Reasons all effort was useless | 这项不对 / Not correct. 例子说的是最后一步没做，不是之前的努力都没有用。 / The example identifies unfinished closure, not worthless prior effort. |
+| B | 先回顾已经做过的工作，确认前面的投入是否值得继续。 / Review the work already done and decide whether the earlier effort is still worth continuing. | 这项不对 / Not correct. 这个解释把牌义带到了别处。找出最后缺少的检查或提交，既承认已有成果，也知道接下来补什么。 / This interpretation shifts the card meaning elsewhere. Identifying remaining checks or submission recognizes existing work and the next step. |
 
 答案：A。内容ID `m21-R3-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
 
@@ -3894,7 +3899,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 | 选项 | 实际展示文案 | 提交后的逐项反馈 |
 |---|---|---|
-| A | 认定以后所有展览都必然成功 / Assume every future exhibition will succeed | 这项不对 / Not correct. 这次展览完成，只能说明这次的成果，不能保证以后每次都成功。 / This exhibition’s completion establishes its result, not guaranteed success for every future exhibition. |
+| A | 把这次成功当成以后展览的固定模板，继续复制同样做法。 / Treat this success as a fixed template and repeat the same approach for future exhibitions. | 这项不对 / Not correct. 把一次成功固定成以后都照搬的模板，会忽略新阶段可能有不同条件。世界在这里要整理成果，并确认这一阶段已经完成。 / Turning one success into a fixed template ignores the different conditions of a later stage. Here the World asks you to gather the results and acknowledge this stage as complete. |
 | B | 整理成果并确认本阶段完成 / Gather the outcomes and acknowledge completion | 答对了 / Correct. 整理这次的成果、确认它已告一段落，符合本课的完成与圆满。 / Gathering this event’s results and recognizing its completion fits the taught wholeness. |
 
 答案：B。内容ID `m21-V1-target` 绑定正确内容而非字母；最终界面排列变化时，反馈必须跟随内容。
@@ -3966,13 +3971,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：想写一个短篇故事，已经有了灵感。权杖王牌在建议位，哪种做法更合适？ / You have an idea for a short story. With the Ace of Wands as advice, which next step fits?
 
-- A．等所有章节都完美确定才动笔 / Wait until every chapter is perfectly settled
+- A．先把人物设定和章节大纲写完整，再开始第一个场景 / Finish the character profiles and chapter outline before drafting the first scene
 - B．先写一个场景，试出方向 / Draft one scene to test a direction
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：先写一个场景，试出方向。先做一个小样，才能看看想法能不能实现；如果一直等所有条件齐备，就迟迟没有开始。 / B is correct: Draft one scene to test a direction. This lesson turns fresh energy into a small trial; waiting for every condition postpones that start.
-- A 不对：先做一个小样，才能看看想法能不能实现；如果一直等所有条件齐备，就迟迟没有开始。 / A is incorrect: This lesson turns fresh energy into a small trial; waiting for every condition postpones that start.
+- A 不对：请回到画面里的具体细节：先做一个小样，才能看看想法能不能实现；如果一直等所有条件齐备，就迟迟没有开始。 / A is incorrect: Return to the specific details in the picture: This lesson turns fresh energy into a small trial; waiting for every condition postpones that start.
 
 <a id="w01-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -3982,12 +3987,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：在短片迟迟没有第一次拍摄的案例里，逆位解释是哪一个？ / In the case with no first filming session, which reversed reading fits?
 
 - A．想开始却迟迟没动手，需要先找到做得到的一步 / The start is blocked; identify what enables it
-- B．已有成片，只差接受掌声 / A finished film only awaits applause
+- B．灵感已经成熟，先等待合适的拍摄时机 / The idea is mature, so wait for the right moment to film
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：想开始却迟迟没动手，需要先找到做得到的一步。短片还没开始拍，所以这里的问题是怎样迈出第一步，不是拍好了等别人赞赏。 / A is correct: The start is blocked; identify what enables it. The case explicitly has not started; this reversal concerns starting difficulty, not recognition after completion.
-- B 不对：短片还没开始拍，所以这里的问题是怎样迈出第一步，不是拍好了等别人赞赏。 / B is incorrect: The case explicitly has not started; this reversal concerns starting difficulty, not recognition after completion.
+- B 不对：这个判断忽略了题目给出的条件。短片还没开始拍，所以这里的问题是怎样迈出第一步，不是拍好了等别人赞赏。 / B is incorrect: This judgment overlooks a condition given in the question. The case explicitly has not started; this reversal concerns starting difficulty, not recognition after completion.
 
 <a id="w01-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -3996,13 +4001,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：想到做一个阳台花园，刚画了第一张草图。这是开始还是成果保证？ / a balcony-garden idea has its first sketch. Is this a start or a guarantee?
 
-- A．花园一定会成功的保证 / A guarantee the garden will succeed
+- A．第一张草图说明方案已经成熟，可以直接扩大种植规模 / The first sketch shows the plan is mature enough to expand the garden now
 - B．有了新想法，可以开始试一试 / A new opening worth trying
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：有了新想法，可以开始试一试。有了草图，就有机会开始布置；能不能成为花园，还得看后面的种植和照料。 / B is correct: A new opening worth trying. An idea offers an opening; the garden still depends on later conditions.
-- A 不对：有了草图，就有机会开始布置；能不能成为花园，还得看后面的种植和照料。 / A is incorrect: An idea offers an opening; the garden still depends on later conditions.
+- A 不对：这个结论比题目给出的信息多走了一步。有了草图，就有机会开始布置；能不能成为花园，还得看后面的种植和照料。 / A is incorrect: This conclusion goes beyond the information provided. An idea offers an opening; the garden still depends on later conditions.
 
 <a id="w01-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4029,12 +4034,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：想尝试设计桌游，已经知道基本玩法，下一步怎样应用权杖王牌？ / A board-game idea already has basic rules. How can Ace of Wands advice apply next?
 
 - A．用纸片做一轮可试玩的小样。 / Make a paper prototype for one playable round.
-- B．继续只设想完整上市方案，不作任何试玩。 / Keep imagining a full launch without any trial.
+- B．先完善发行定位和包装，再考虑安排试玩。 / Refine the launch positioning and packaging before arranging a playtest.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：用纸片做一轮可试玩的小样。 已经有了基本规则，就能做一个纸上版本试着玩。继续扩大设想却不试玩，仍然不知道游戏能不能玩起来。 / A is correct: Make a paper prototype for one playable round. Starting conditions exist; a prototype makes the impulse testable, while more imagining still postpones practice.
-- B 不对：已经有了基本规则，就能做一个纸上版本试着玩。继续扩大设想却不试玩，仍然不知道游戏能不能玩起来。 / B is incorrect: “Keep imagining a full launch without any trial.” does not address the specific conditions. Starting conditions exist; a prototype makes the impulse testable, while more imagining still postpones practice.
+- B 不对：这个解释没有把画面线索连起来。已经有了基本规则，就能做一个纸上版本试着玩。继续扩大设想却不试玩，仍然不知道游戏能不能玩起来。 / B is incorrect: This reading does not connect the picture cues. Starting conditions exist; a prototype makes the impulse testable, while more imagining still postpones practice.
 
 **依据 / Taught basis**：[本卡应用示范](#w01-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -4137,13 +4142,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：在因害怕陌生渠道而拒绝调查的案例里，逆位重点是什么？ / In the case of refusing research out of fear, what does the reversal emphasise?
 
-- A．新市场已经带来确定收益 / The new market has already produced definite returns
+- A．先沿用熟悉渠道，等需求主动出现再规划 / Stay with the familiar channel and plan after demand appears on its own
 - B．只敢留在熟悉的范围，不敢考虑下一步 / The familiar comfort zone is constraining planning
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：只敢留在熟悉的范围，不敢考虑下一步。题目说的是因为害怕陌生渠道而迟迟不调查，计划还没往前走，更谈不上已经从新市场获利。 / B is correct: The familiar comfort zone is constraining planning. The stated issue is stalled planning, not evidence of returns from a new market.
-- A 不对：题目说的是因为害怕陌生渠道而迟迟不调查，计划还没往前走，更谈不上已经从新市场获利。 / A is incorrect: The stated issue is stalled planning, not evidence of returns from a new market.
+- A 不对：这里要分清牌义的边界：题目说的是因为害怕陌生渠道而迟迟不调查，计划还没往前走，更谈不上已经从新市场获利。 / A is incorrect: The boundary of the card meaning matters here: The stated issue is stalled planning, not evidence of returns from a new market.
 
 <a id="w02-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -4167,13 +4172,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：想尝试远程合作，却因为不熟悉而一直不敢了解。先做什么更合适？ / You want to try remote collaboration but unfamiliarity keeps you from learning about it. What can you do first?
 
-- A．把不了解直接当成永远不可能 / Treat unfamiliarity as permanent impossibility
+- A．先把远程合作搁置，等熟悉的人提出具体方案 / Set remote collaboration aside until someone familiar proposes a specific plan
 - B．先查清合作条件，再决定是否拓展 / Research its conditions before deciding whether to expand
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：先查清合作条件，再决定是否拓展。先调查，才知道新方向需要什么条件。现在不熟悉或不敢尝试，不等于客观上做不到。 / B is correct: Research its conditions before deciding whether to expand. Research gives planning a basis; fear and unfamiliarity do not establish impossibility.
-- A 不对：先调查，才知道新方向需要什么条件。现在不熟悉或不敢尝试，不等于客观上做不到。 / A is incorrect: Research gives planning a basis; fear and unfamiliarity do not establish impossibility.
+- A 不对：这样做会漏掉题目里的关键一步。先调查，才知道新方向需要什么条件。现在不熟悉或不敢尝试，不等于客观上做不到。 / A is incorrect: This action skips a key step in the question. Research gives planning a basis; fear and unfamiliarity do not establish impossibility.
 
 <a id="w02-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -4264,12 +4269,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：权杖三更接近哪一种状态？ / Which state is taught for the Three of Wands here?
 
 - A．已经采取行动，正在关注回应和进展 / Action has reached outward and its response is being watched
-- B．完全没有行动，只在幻想出发 / No action has begun; departure is only imagined
+- B．还在选择方向，尚未把想法交给外部 / The direction is still being chosen and the idea has not reached anyone outside
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：已经采取行动，正在关注回应和进展。这里已经采取了行动，接下来是等待回应、观察进展，不是还停留在想象中。 / A is correct: Action has reached outward and its response is being watched. Outward action is already part of this lesson; observation follows that action.
-- B 不对：这里已经采取了行动，接下来是等待回应、观察进展，不是还停留在想象中。 / B is incorrect: Outward action is already part of this lesson; observation follows that action.
+- B 不对：请回到画面里的具体细节：这里已经采取了行动，接下来是等待回应、观察进展，不是还停留在想象中。 / B is incorrect: Return to the specific details in the picture: Outward action is already part of this lesson; observation follows that action.
 
 <a id="w03-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -4278,13 +4283,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：作品已提交给展览方，正在等回复。权杖三在建议位，下一步更适合做什么？ / Your artwork has been submitted to an exhibition and you are awaiting a reply. With the Three of Wands as advice, what fits next?
 
-- A．认为等待就不需要任何准备 / Assume waiting requires no preparation
+- A．先构思另一件作品，收到回复后再准备补充材料 / Develop another work and prepare the supporting material after a reply arrives
 - B．确认接收情况并准备后续材料 / Confirm receipt and prepare follow-up material
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：确认接收情况并准备后续材料。等消息的时候，也可以跟进进度、做好下一步准备，不必什么都不做。 / B is correct: Confirm receipt and prepare follow-up material. Watching for a response includes follow-up and preparation, not disengaging from development.
-- A 不对：等消息的时候，也可以跟进进度、做好下一步准备，不必什么都不做。 / A is incorrect: Watching for a response includes follow-up and preparation, not disengaging from development.
+- A 不对：这个选项忽略了图中已经给出的区别。等消息的时候，也可以跟进进度、做好下一步准备，不必什么都不做。 / A is incorrect: This option overlooks a distinction already visible in the picture. Watching for a response includes follow-up and preparation, not disengaging from development.
 
 <a id="w03-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -4294,12 +4299,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：提案发出后回复延迟，这张逆位牌提醒了什么？ / A proposal has been sent and the response is late. What does this reversal suggest?
 
 - A．事情已经开始，但进展有延迟，需要查清原因 / Outward progress is delayed and conditions need checking
-- B．从未发出任何提案 / No proposal was ever sent
+- B．回复延迟说明提案还没真正进入合作流程 / The delayed reply means the proposal has not truly entered the collaboration process
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：事情已经开始，但进展有延迟，需要查清原因。提案已经发出，只是回复迟迟没来。因此要跟进进度，不是认定自己从未行动。 / A is correct: Outward progress is delayed and conditions need checking. The proposal was explicitly sent; the difficulty occurs during its progress.
-- B 不对：提案已经发出，只是回复迟迟没来。因此要跟进进度，不是认定自己从未行动。 / B is incorrect: The proposal was explicitly sent; the difficulty occurs during its progress.
+- B 不对：这个说法混淆了题目正在考的含义。提案已经发出，只是回复迟迟没来。因此要跟进进度，不是认定自己从未行动。 / B is incorrect: This statement confuses the meaning being tested. The proposal was explicitly sent; the difficulty occurs during its progress.
 
 <a id="w03-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -4308,13 +4313,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：试用产品已经交给合作方，正在等测试回报。此时关注什么？ / a prototype has reached a partner and test feedback is pending. What matters now?
 
-- A．假装还没有开展任何合作 / Act as though no collaboration has begun
+- A．把注意力转回完善样品，等合作方主动联系 / Return to refining the prototype and wait for the partner to make contact
 - B．看看对方的试用反馈，再商量下一步怎样合作 / Test responses and the next collaboration step
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：看看对方的试用反馈，再商量下一步怎样合作。产品已经交给合作方了，现在要看试用反馈、商量下一步，不能再说成还没开始行动。 / B is correct: Test responses and the next collaboration step. Delivery has occurred, so follow its development rather than describe a venture that never started.
-- A 不对：产品已经交给合作方了，现在要看试用反馈、商量下一步，不能再说成还没开始行动。 / A is incorrect: Delivery has occurred, so follow its development rather than describe a venture that never started.
+- A 不对：这里要分清牌义的边界：产品已经交给合作方了，现在要看试用反馈、商量下一步，不能再说成还没开始行动。 / A is incorrect: The boundary of the card meaning matters here: Delivery has occurred, so follow its development rather than describe a venture that never started.
 
 <a id="w03-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4341,12 +4346,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：已经投出展览申请，主办方说稍后需要作品尺寸。现在怎样做？ / An exhibition application is submitted and the organiser will need dimensions later. What fits now?
 
 - A．核对作品尺寸并准备补充资料。 / Check dimensions and prepare the additional information.
-- B．因为正在等回复，就停止一切后续准备。 / Stop all preparation because a reply is pending.
+- B．先继续修改作品，收到追问后再核对尺寸。 / Keep revising the work and check its dimensions after the organiser asks.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：核对作品尺寸并准备补充资料。 展览方已经要求补充作品尺寸，现在就可以核对并准备资料。只是等着、不做准备，可能耽误后续安排。 / A is correct: Check dimensions and prepare the additional information. The venture is in follow-up; preparing required information supports development, while stopping overlooks available work.
-- B 不对：展览方已经要求补充作品尺寸，现在就可以核对并准备资料。只是等着、不做准备，可能耽误后续安排。 / B is incorrect: “Stop all preparation because a reply is pending.” does not address the specific conditions. The venture is in follow-up; preparing required information supports development, while stopping overlooks available work.
+- B 不对：先别按这个做法继续；展览方已经要求补充作品尺寸，现在就可以核对并准备资料。只是等着、不做准备，可能耽误后续安排。 / B is incorrect: Do not continue with this approach yet; The venture is in follow-up; preparing required information supports development, while stopping overlooks available work.
 
 **依据 / Taught basis**：[本卡应用示范](#w03-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -4357,13 +4362,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：交换学习申请已经提交，正在安排可能的后续面试。哪句贴近？ / an exchange application is submitted and possible interviews are being prepared. Which fits?
 
-- A．所有结果已确定，无须关注 / All outcomes are fixed and need no attention
+- A．申请递交后不再查看通知，也不准备可能的面试。 / After submitting the application, stop checking notices and do not prepare for a possible interview.
 - B．已经递交申请，继续了解后续机会 / Action is underway; follow the external opportunity
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：已经递交申请，继续了解后续机会。申请已经交出，下一步可以准备可能的面试；这不代表已经确定入选。 / B is correct: Action is underway; follow the external opportunity. Submission and preparation show follow-up after action, not a predetermined outcome.
-- A 不对：申请已经交出，下一步可以准备可能的面试；这不代表已经确定入选。 / A is incorrect: Submission and preparation show follow-up after action, not a predetermined outcome.
+- A 不对：申请已经递交，但不看通知也不准备面试，会漏掉权杖三强调的后续跟进。 / A is incorrect: After the application is sent, ignoring notices and interview preparation drops the follow-through that the Three of Wands calls for.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -4419,13 +4424,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：这张牌里的庆祝，主要是在为什么而高兴？ / What does celebration mainly mean?
 
-- A．所有目标从此永久完成 / Every goal is permanently complete
+- A．为阶段成果高兴，也说明后续安排已经稳定 / Celebrate the milestone because it also shows the next stage is settled
 - B．一起庆祝已经做成的事 / Celebrate what has been accomplished together
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：一起庆祝已经做成的事。庆祝的是这一阶段已经取得的成果，不是说以后的事情都已经完成、不会再有变化。 / B is correct: Celebrate what has been accomplished together. This is stability and celebration at a milestone, not a guarantee about all future goals.
-- A 不对：庆祝的是这一阶段已经取得的成果，不是说以后的事情都已经完成、不会再有变化。 / A is incorrect: This is stability and celebration at a milestone, not a guarantee about all future goals.
+- A 不对：这里要分清牌义的边界：庆祝的是这一阶段已经取得的成果，不是说以后的事情都已经完成、不会再有变化。 / A is incorrect: The boundary of the card meaning matters here: This is stability and celebration at a milestone, not a guarantee about all future goals.
 
 <a id="w04-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -4435,12 +4440,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：课程小组完成了第一个作品。权杖四在建议位，哪种做法更合适？ / Your study group has completed its first project. With the Four of Wands as advice, which response fits?
 
 - A．一起庆祝成果，也休息一下 / Acknowledge the achievement together and take a short rest
-- B．认为全部人生目标完成之前，这次成果都不值得庆祝 / Deny any achievement until every life goal is finished
+- B．先继续推进下一个目标，等成果更完整再一起庆祝 / Move on to the next goal and celebrate together when the achievement feels more complete
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：一起庆祝成果，也休息一下。第一个作品已经完成，大家可以为它高兴。不用等所有长期目标都达成，才允许庆祝。 / A is correct: Acknowledge the achievement together and take a short rest. A milestone may be recognised without waiting for every long-term goal.
-- B 不对：第一个作品已经完成，大家可以为它高兴。不用等所有长期目标都达成，才允许庆祝。 / B is incorrect: A milestone may be recognised without waiting for every long-term goal.
+- B 不对：请回到画面里的具体细节：第一个作品已经完成，大家可以为它高兴。不用等所有长期目标都达成，才允许庆祝。 / B is incorrect: Return to the specific details in the picture: A milestone may be recognised without waiting for every long-term goal.
 
 <a id="w04-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -4449,13 +4454,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：已完成活动却缺少接纳感，这张逆位牌更贴近哪种情况？ / An event is finished but inclusion is missing. What does this reversal concern?
 
-- A．活动从未发生 / The event never happened
+- A．活动按计划完成，接纳感的问题会随着庆祝慢慢缓解 / The event went to plan, so the sense of exclusion will ease through the celebration
 - B．大家还没有感到被接纳、得到支持 / Shared support and belonging remain unsettled
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：大家还没有感到被接纳、得到支持。活动确实完成了，但成员还没有觉得自己受到接纳。逆位在这里提醒的是相处中的问题，不是说活动没发生。 / B is correct: Shared support and belonging remain unsettled. The reversal concerns shared support; it does not erase the stated completed event.
-- A 不对：活动确实完成了，但成员还没有觉得自己受到接纳。逆位在这里提醒的是相处中的问题，不是说活动没发生。 / A is incorrect: The reversal concerns shared support; it does not erase the stated completed event.
+- A 不对：这个结论比题目给出的信息多走了一步。活动确实完成了，但成员还没有觉得自己受到接纳。逆位在这里提醒的是相处中的问题，不是说活动没发生。 / A is incorrect: This conclusion goes beyond the information provided. The reversal concerns shared support; it does not erase the stated completed event.
 
 <a id="w04-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -4465,12 +4470,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：搬入新工作室后邀请伙伴一起整理和庆祝。主题是什么？ / partners organise and celebrate a new studio. What is the theme?
 
 - A．为搬进新空间、暂时安定下来而一起庆祝 / Sharing an achieved point of stability
-- B．证明以后再无任何困难 / Proving no difficulty will ever return
+- B．新空间已经启用，接下来主要关注个人效率 / The new space is operating, so the next focus is individual efficiency
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：为搬进新空间、暂时安定下来而一起庆祝。搬进新工作室，让大家暂时安定下来；以后还有新任务，也不影响庆祝这次搬迁。 / A is correct: Sharing an achieved point of stability. The new space offers a stable milestone; future work may still arise.
-- B 不对：搬进新工作室，让大家暂时安定下来；以后还有新任务，也不影响庆祝这次搬迁。 / B is incorrect: The new space offers a stable milestone; future work may still arise.
+- B 不对：这里要分清牌义的边界：搬进新工作室，让大家暂时安定下来；以后还有新任务，也不影响庆祝这次搬迁。 / B is incorrect: The boundary of the card meaning matters here: The new space offers a stable milestone; future work may still arise.
 
 <a id="w04-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4514,12 +4519,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：一家人完成搬家，准备一起吃顿饭感谢彼此。哪句贴近？ / a household finishes moving and shares a meal in thanks. Which fits?
 
 - A．庆祝搬家完成，一起开始新的生活 / Celebrate a shared life milestone
-- B．已经完成所有终身任务 / Every lifetime task is finished
+- B．搬家完成后先各自整理，等生活稳定再表达感谢 / After the move, organise separately and share thanks once daily life settles
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：庆祝搬家完成，一起开始新的生活。搬家终于完成了，可以一起吃饭庆祝。以后还会有别的事情要做，不是所有任务都结束了。 / A is correct: Celebrate a shared life milestone. Completing the move supports a milestone celebration, not lifelong completion.
-- B 不对：搬家终于完成了，可以一起吃饭庆祝。以后还会有别的事情要做，不是所有任务都结束了。 / B is incorrect: Completing the move supports a milestone celebration, not lifelong completion.
+- B 不对：这个说法混淆了题目正在考的含义。搬家终于完成了，可以一起吃饭庆祝。以后还会有别的事情要做，不是所有任务都结束了。 / B is incorrect: This statement confuses the meaning being tested. Completing the move supports a milestone celebration, not lifelong completion.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -4576,12 +4581,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：多人动作不一，帮助记住哪个主题？ / What do the different directions help recall?
 
 - A．大家各说各的，还没配合起来 / Multiple efforts have not been coordinated
-- B．所有人已达成一致并配合 / Everyone has agreed and is cooperating
+- B．大家方向不同，说明各自方案已经成熟，只需选出较好的一项 / The different directions show several mature proposals, so the group just needs to choose the stronger one
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：大家各说各的，还没配合起来。几个人挥杖的方向不同，可以用来记住竞争和配合不足。有分歧，不等于彼此仇恨。 / A is correct: Multiple efforts have not been coordinated. The cue is uncoordinated effort, not proof that participants hate one another.
-- B 不对：几个人挥杖的方向不同，可以用来记住竞争和配合不足。有分歧，不等于彼此仇恨。 / B is incorrect: The cue is uncoordinated effort, not proof that participants hate one another.
+- B 不对：这个说法混淆了题目正在考的含义。几个人挥杖的方向不同，可以用来记住竞争和配合不足。有分歧，不等于彼此仇恨。 / B is incorrect: This statement confuses the meaning being tested. The cue is uncoordinated effort, not proof that participants hate one another.
 
 <a id="w05-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -4590,13 +4595,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：运动社团讨论训练安排时，大家各说各的，讨论不下去。权杖五在建议位，哪种做法更合适？ / Members of a sports club are discussing training but talk over one another and cannot move forward. With the Five of Wands as advice, what fits?
 
-- A．要求所有分歧永远不能提出 / Forbid every disagreement permanently
+- A．先投票淘汰争议较大的意见，再讨论训练目标 / Vote out the most disputed proposal before discussing the training goal
 - B．先明确训练目标和讨论顺序 / Clarify the training goal and discussion order
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：先明确训练目标和讨论顺序。先说清共同目标，再轮流把意见讲完，才有机会商量出做法。禁止大家说话，并不会让分歧自动消失。 / B is correct: Clarify the training goal and discussion order. Coordination gives disagreement a channel; banning expression does not create cooperation.
-- A 不对：先说清共同目标，再轮流把意见讲完，才有机会商量出做法。禁止大家说话，并不会让分歧自动消失。 / A is incorrect: Coordination gives disagreement a channel; banning expression does not create cooperation.
+- A 不对：这个选项忽略了图中已经给出的区别。先说清共同目标，再轮流把意见讲完，才有机会商量出做法。禁止大家说话，并不会让分歧自动消失。 / A is incorrect: This option overlooks a distinction already visible in the picture. Coordination gives disagreement a channel; banning expression does not create cooperation.
 
 <a id="w05-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -4620,13 +4625,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：三位同学同时抢着讲各自方案，任务没人统筹。主要问题是什么？ / three students push plans at once and nobody coordinates. What is central?
 
-- A．可以确定他们彼此憎恨 / Their hatred of one another is certain
+- A．各自方案都很积极，继续自由发挥就会形成配合 / Each proposal is energetic, so continued free expression will develop into coordination
 - B．需要先听完彼此的想法，再商量怎么配合 / Expression and action need coordination
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：需要先听完彼此的想法，再商量怎么配合。几个人抢着说话，说明还没商量好怎么配合，不能因此认定他们一直互相仇恨。 / B is correct: Expression and action need coordination. Talking over one another supports poor coordination, not certain enduring hatred.
-- A 不对：几个人抢着说话，说明还没商量好怎么配合，不能因此认定他们一直互相仇恨。 / A is incorrect: Talking over one another supports poor coordination, not certain enduring hatred.
+- A 不对：这个解释把牌义带到了别处。几个人抢着说话，说明还没商量好怎么配合，不能因此认定他们一直互相仇恨。 / A is incorrect: This interpretation shifts the card meaning elsewhere. Talking over one another supports poor coordination, not certain enduring hatred.
 
 <a id="w05-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4653,12 +4658,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：三位成员对活动流程各有主张，会议一直互相打断。哪项针对协调问题？ / Three members propose different event plans and keep interrupting each other. What addresses coordination?
 
 - A．先确定活动目标，再让每人完整说明方案。 / Agree on the event goal and let each person explain a proposal.
-- B．规定不许再提不同意见，直接结束讨论。 / Ban differing views and immediately end discussion.
+- B．先选出表达最有说服力的人定方案，减少反复讨论。 / Let the most persuasive speaker choose the plan so the discussion stops circling.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先确定活动目标，再让每人完整说明方案。 先知道要做什么，再听完每个人的方案，才好商量。禁止别人提不同意见，只是把问题藏起来。 / A is correct: Agree on the event goal and let each person explain a proposal. Goals and speaking rules support cooperation; banning disagreement merely hides unresolved issues.
-- B 不对：先知道要做什么，再听完每个人的方案，才好商量。禁止别人提不同意见，只是把问题藏起来。 / B is incorrect: “Ban differing views and immediately end discussion.” does not address the specific conditions. Goals and speaking rules support cooperation; banning disagreement merely hides unresolved issues.
+- B 不对：这个解释把牌义带到了别处。先知道要做什么，再听完每个人的方案，才好商量。禁止别人提不同意见，只是把问题藏起来。 / B is incorrect: This interpretation shifts the card meaning elsewhere. Goals and speaking rules support cooperation; banning disagreement merely hides unresolved issues.
 
 **依据 / Taught basis**：[本卡应用示范](#w05-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -4669,13 +4674,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：几个社区小组都想优先使用同一场地。哪项建议贴近？ / several community groups want the same venue first. Which advice fits?
 
-- A．凭有竞争就断言所有人心怀恶意 / Infer malicious intent solely from competition
+- A．让使用经验较长的小组先决定场地规则 / Let the group with the longest experience decide the venue rules
 - B．一起商量使用规则，让不同小组都能说明需要 / Use shared rules to coordinate competing demands
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：一起商量使用规则，让不同小组都能说明需要。几个小组都想用同一场地，需要商量规则，不能只因竞争就认定大家都怀有恶意。 / B is correct: Use shared rules to coordinate competing demands. Competition calls for coordination and does not establish malicious motives.
-- A 不对：几个小组都想用同一场地，需要商量规则，不能只因竞争就认定大家都怀有恶意。 / A is incorrect: Competition calls for coordination and does not establish malicious motives.
+- A 不对：先别按这个做法继续；几个小组都想用同一场地，需要商量规则，不能只因竞争就认定大家都怀有恶意。 / A is incorrect: Do not continue with this approach yet; Competition calls for coordination and does not establish malicious motives.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -4731,13 +4736,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：花环和周围的人群，可以帮助记住什么？ / What do the wreath and people help recall here?
 
-- A．成果永远不可能被看见 / An achievement can never be seen
+- A．努力取得了成果，重点是自己心里感到满意 / The effort produced a result, with the emphasis on personal satisfaction
 - B．努力做出了成果，也得到别人肯定 / An achievement is seen and recognised
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：努力做出了成果，也得到别人肯定。桂冠和周围的人群，可以帮助记住受到肯定、获得荣誉。它与“努力始终无人认可”不是同一个意思。 / B is correct: An achievement is seen and recognised. The theme is recognition that is present, not permanent invisibility.
-- A 不对：桂冠和周围的人群，可以帮助记住受到肯定、获得荣誉。它与“努力始终无人认可”不是同一个意思。 / A is incorrect: The theme is recognition that is present, not permanent invisibility.
+- A 不对：这个解释把牌义带到了别处。桂冠和周围的人群，可以帮助记住受到肯定、获得荣誉。它与“努力始终无人认可”不是同一个意思。 / A is incorrect: This interpretation shifts the card meaning elsewhere. The theme is recognition that is present, not permanent invisibility.
 
 <a id="w06-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -4761,13 +4766,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：因掌声不足就否定所有努力，这张逆位牌更贴近哪种情况？ / Rejecting all effort because applause is insufficient illustrates what here?
 
-- A．已经不在意任何外部评价 / External evaluation no longer matters at all
+- A．掌声不够，说明作品还没有值得肯定的成果 / The limited applause shows the work has not yet achieved something worth recognising
 - B．太依赖别人夸奖，才觉得自己做得好 / Self-evaluation depends too heavily on applause
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：太依赖别人夸奖，才觉得自己做得好。题目里的人因为点赞少就否定自己，说明他很在意别人的评价，不是完全不在意。 / B is correct: Self-evaluation depends too heavily on applause. The case is explicitly driven by applause, not independence from recognition.
-- A 不对：题目里的人因为点赞少就否定自己，说明他很在意别人的评价，不是完全不在意。 / A is incorrect: The case is explicitly driven by applause, not independence from recognition.
+- A 不对：这个结论比题目给出的信息多走了一步。题目里的人因为点赞少就否定自己，说明他很在意别人的评价，不是完全不在意。 / A is incorrect: This conclusion goes beyond the information provided. The case is explicitly driven by applause, not independence from recognition.
 
 <a id="w06-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -4777,12 +4782,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：老师公开肯定作品，学生信心增加。可以确认什么主题？ / public praise increases a student's confidence. What theme is supported?
 
 - A．自己的努力得到了别人的肯定 / Effort receives external recognition
-- B．能力从此永远超过所有人 / Ability now permanently exceeds everyone else's
+- B．公开肯定说明这次作品已经达到成熟水平 / The public praise shows this work has reached a mature standard
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：自己的努力得到了别人的肯定。被公开表扬，说明这次的努力得到了肯定，不代表以后一直会胜过所有人。 / A is correct: Effort receives external recognition. One instance establishes recognition, not a lifelong ranking.
-- B 不对：被公开表扬，说明这次的努力得到了肯定，不代表以后一直会胜过所有人。 / B is incorrect: One instance establishes recognition, not a lifelong ranking.
+- B 不对：公开肯定只能说明这次努力被看见，不能证明作品已经成熟。这里能确认的是外部认可，而不是永久水平。 / B is incorrect: Public praise shows that this effort was recognized; it does not prove the work is fully mature. The supported theme is external recognition, not a permanent level.
 
 <a id="w06-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4791,13 +4796,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：项目本身做得不错，却因为点赞少就想放弃。作决定前，还可以看什么？ / The project is good, but few likes make you want to abandon it. What else can you consider before deciding?
 
-- A．只把点赞数当成全部价值 / Use likes as the entire measure of value
+- A．先增加宣传，让点赞数跟上作品质量 / Increase promotion first so the likes catch up with the work's quality
 - B．回看实际质量与目标，不只看点赞 / Review quality and goals as well as likes
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：回看实际质量与目标，不只看点赞。没有得到很多点赞，也可以看看作品本身是否达到目标。不必只靠别人夸不夸来判断自己。 / B is correct: Review quality and goals as well as likes. The aim is to reduce reliance on applause alone, not intensify it.
-- A 不对：没有得到很多点赞，也可以看看作品本身是否达到目标。不必只靠别人夸不夸来判断自己。 / A is incorrect: The aim is to reduce reliance on applause alone, not intensify it.
+- A 不对：这个解释把牌义带到了别处。没有得到很多点赞，也可以看看作品本身是否达到目标。不必只靠别人夸不夸来判断自己。 / A is incorrect: This interpretation shifts the card meaning elsewhere. The aim is to reduce reliance on applause alone, not intensify it.
 
 <a id="w06-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -4808,13 +4813,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **新题 / New prompt**：设计作品刚获校内奖，下次项目使用陌生工具。怎样应用权杖六建议？ / A design wins a school award, but the next project uses an unfamiliar tool. What fits Six of Wands advice?
 
-- A．凭获奖认定任何新工具都无需学习。 / Assume the award removes any need to learn new tools.
+- A．继续沿用获奖时的工具，避免新工具影响表现。 / Keep using the award-winning toolset so an unfamiliar tool does not affect performance.
 - B．接受肯定，同时为新工具安排练习。 / Accept the recognition and practise the unfamiliar tool.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：接受肯定，同时为新工具安排练习。 奖项肯定的是已有作品，不代表新工具也已经会用了。高兴之余，仍要练习没学过的内容。 / B is correct: Accept the recognition and practise the unfamiliar tool. Recognition shows existing work was appreciated, not mastery of unlearned material.
-- A 不对：奖项肯定的是已有作品，不代表新工具也已经会用了。高兴之余，仍要练习没学过的内容。 / A is incorrect: “Assume the award removes any need to learn new tools.” does not address the specific conditions. Recognition shows existing work was appreciated, not mastery of unlearned material.
+- A 不对：请回到画面里的具体细节：奖项肯定的是已有作品，不代表新工具也已经会用了。高兴之余，仍要练习没学过的内容。 / A is incorrect: Return to the specific details in the picture: Recognition shows existing work was appreciated, not mastery of unlearned material.
 
 **依据 / Taught basis**：[本卡应用示范](#w06-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -4888,12 +4893,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：权杖七说的坚持，主要是守住什么？ / What does persistence mainly protect?
 
 - A．重要立场和已经争取的位置 / An important position or boundary already gained
-- B．每一句小分歧都必须赢 / Victory in every minor disagreement
+- B．遇到挑战时尽量守住当前做法，不轻易调整 / When challenged, preserve the current approach and avoid changing it too readily
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：重要立场和已经争取的位置。重点是守住真正重要的事。每件小事都要争个输赢，反而会顾不上最该坚持的立场。 / A is correct: An important position or boundary already gained. Defence protects priorities; trying to win everything scatters effort.
-- B 不对：重点是守住真正重要的事。每件小事都要争个输赢，反而会顾不上最该坚持的立场。 / B is incorrect: Defence protects priorities; trying to win everything scatters effort.
+- B 不对：这个解释没有把画面线索连起来。重点是守住真正重要的事。每件小事都要争个输赢，反而会顾不上最该坚持的立场。 / B is incorrect: This reading does not connect the picture cues. Defence protects priorities; trying to win everything scatters effort.
 
 <a id="w07-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -4902,13 +4907,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：社团不断要求你增加任务，已经影响最重要的工作。权杖七在建议位，哪种做法更合适？ / Extra club tasks are putting your most important work at risk. With the Seven of Wands as advice, which response fits?
 
-- A．为了不被挑战接受所有要求 / Accept every demand to avoid being challenged
+- A．先把新增任务接下来，再从原任务中删掉一部分 / Accept the new tasks first, then remove part of the original workload
 - B．说明能承担的范围并守住重要任务 / State capacity and protect the essential work
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：说明能承担的范围并守住重要任务。说清哪些要求能接受、哪些不能让步，才能保住重要的工作。全部答应，可能连最关键的任务也做不好。 / B is correct: State capacity and protect the essential work. A boundary needs clear expression; accepting everything may sacrifice the priority.
-- A 不对：说清哪些要求能接受、哪些不能让步，才能保住重要的工作。全部答应，可能连最关键的任务也做不好。 / A is incorrect: A boundary needs clear expression; accepting everything may sacrifice the priority.
+- A 不对：这个选项忽略了图中已经给出的区别。说清哪些要求能接受、哪些不能让步，才能保住重要的工作。全部答应，可能连最关键的任务也做不好。 / A is incorrect: This option overlooks a distinction already visible in the picture. A boundary needs clear expression; accepting everything may sacrifice the priority.
 
 <a id="w07-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -4932,13 +4937,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：朋友误解一句无关紧要的话，与合作底线相比该怎样分配精力？ / how should a minor verbal misunderstanding compare with an essential partnership boundary?
 
-- A．把两件事都当成必须决战 / Treat both as battles that must be won
+- A．先花时间解释那句误会，避免关系继续紧张 / Address the verbal misunderstanding first so the relationship does not stay tense
 - B．优先说明并守住真正重要的底线 / Prioritise the genuinely important boundary
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：优先说明并守住真正重要的底线。先分清哪些原则不能让步，哪些小争执可以放下，不必每件事都争到底。 / B is correct: Prioritise the genuinely important boundary. The lesson distinguishes priorities rather than escalating every dispute equally.
-- A 不对：先分清哪些原则不能让步，哪些小争执可以放下，不必每件事都争到底。 / A is incorrect: The lesson distinguishes priorities rather than escalating every dispute equally.
+- A 不对：先别按这个做法继续；先分清哪些原则不能让步，哪些小争执可以放下，不必每件事都争到底。 / A is incorrect: Do not continue with this approach yet; The lesson distinguishes priorities rather than escalating every dispute equally.
 
 <a id="w07-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -4948,12 +4953,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：每天花三小时反驳无关评论，重要工作却没时间做。怎样调整更合适？ / Three hours a day go into rebutting irrelevant comments, leaving little time for important work. What adjustment fits?
 
 - A．停止无关争执，把精力留给必须坚持的事 / Stop irrelevant disputes and protect key boundaries
-- B．增加反驳时间直到所有人同意 / Spend longer until everyone agrees
+- B．挑较容易反驳的评论回应，证明立场站得住 / Respond to the easier comments to demonstrate that the position is defensible
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：停止无关争执，把精力留给必须坚持的事。少卷入无关争论，才能把精力留给重要的事。一直争下去，只会更累。 / A is correct: Stop irrelevant disputes and protect key boundaries. Selecting what to defend restores priorities; endless argument continues the drain.
-- B 不对：少卷入无关争论，才能把精力留给重要的事。一直争下去，只会更累。 / B is incorrect: Selecting what to defend restores priorities; endless argument continues the drain.
+- B 不对：这样做会漏掉题目里的关键一步。少卷入无关争论，才能把精力留给重要的事。一直争下去，只会更累。 / B is incorrect: This action skips a key step in the question. Selecting what to defend restores priorities; endless argument continues the drain.
 
 <a id="w07-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -4981,13 +4986,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：研究小组被催省略必要检查。哪项更贴近？ / a research group is pressured to omit necessary checks. Which fits?
 
-- A．为结束争执直接取消所有标准 / Remove every standard just to end disagreement
+- A．先答应省略一次检查，等项目顺利后再恢复标准 / Agree to skip the check this time and restore the standard after the project moves forward
 - B．说明检查的必要性并守住标准 / Explain why checks matter and maintain the standard
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：说明检查的必要性并守住标准。必要检查不能因为催促就省掉。说明理由、坚持标准，是在保护工作质量，不是为了争输赢。 / B is correct: Explain why checks matter and maintain the standard. The necessary checks are a defined priority to protect, not a trivial contest.
-- A 不对：必要检查不能因为催促就省掉。说明理由、坚持标准，是在保护工作质量，不是为了争输赢。 / A is incorrect: The necessary checks are a defined priority to protect, not a trivial contest.
+- A 不对：这个说法混淆了题目正在考的含义。必要检查不能因为催促就省掉。说明理由、坚持标准，是在保护工作质量，不是为了争输赢。 / A is incorrect: This statement confuses the meaning being tested. The necessary checks are a defined priority to protect, not a trivial contest.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -5043,13 +5048,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：同向飞行的权杖帮助记哪个主题？ / What theme does the same-direction flight help recall?
 
-- A．进展必定在八天后结束 / Progress definitely ends in eight days
+- A．八根权杖对应八个连续步骤，需要按顺序推进 / The eight wands represent eight consecutive steps that should be followed in order
 - B．消息或行动快速推进 / Messages or actions move rapidly
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：消息或行动快速推进。八根权杖同向飞行，可以帮助记住速度和进展。八根并不是“八天”，不能只靠数量确定日期。 / B is correct: Messages or actions move rapidly. The image aids speed; the count does not specify a time unit.
-- A 不对：八根权杖同向飞行，可以帮助记住速度和进展。八根并不是“八天”，不能只靠数量确定日期。 / A is incorrect: The image aids speed; the count does not specify a time unit.
+- A 不对：这个解释没有把画面线索连起来。八根权杖同向飞行，可以帮助记住速度和进展。八根并不是“八天”，不能只靠数量确定日期。 / A is incorrect: This reading does not connect the picture cues. The image aids speed; the count does not specify a time unit.
 
 <a id="w08-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -5073,13 +5078,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：行程通知互相冲突，这张逆位牌在建议位时，先处理什么更合适？ / Schedule notices conflict. What should this reversed case address first?
 
-- A．凭消息多就认定安排完全清楚 / Assume many messages mean a fully clear schedule
+- A．先按最近收到的通知执行，之后再处理冲突 / Follow the most recently received notice first and resolve the conflict later
 - B．核对消息，确认大家收到的是同一个安排 / Verify information and restore consistency
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：核对消息，确认大家收到的是同一个安排。几条通知给出的时间互相矛盾，需要先查清哪个有效。消息多，不代表安排已经清楚。 / B is correct: Verify information and restore consistency. The problem is inconsistent information; more messages do not ensure accuracy.
-- A 不对：几条通知给出的时间互相矛盾，需要先查清哪个有效。消息多，不代表安排已经清楚。 / A is incorrect: The problem is inconsistent information; more messages do not ensure accuracy.
+- A 不对：先别按这个做法继续；几条通知给出的时间互相矛盾，需要先查清哪个有效。消息多，不代表安排已经清楚。 / A is incorrect: Do not continue with this approach yet; The problem is inconsistent information; more messages do not ensure accuracy.
 
 <a id="w08-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -5214,13 +5219,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：训练后已经疲惫，但还想完成比赛准备。权杖九在建议位，哪种安排更合适？ / You are tired after training but still want to prepare for a competition. With the Nine of Wands as advice, which arrangement fits?
 
-- A．把所有休息取消以证明坚强 / Cancel all rest to prove strength
+- A．维持原训练量，把恢复安排放到比赛之后 / Maintain the current training load and schedule recovery after the competition
 - B．守住关键训练并留出恢复时间 / Keep essential practice and allow recovery
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：守住关键训练并留出恢复时间。还想继续，就要留出恢复时间。已经疲惫时再不断加练，并不等于更坚强。 / B is correct: Keep essential practice and allow recovery. Resilience includes protecting the capacity to continue, not limitless escalation.
-- A 不对：还想继续，就要留出恢复时间。已经疲惫时再不断加练，并不等于更坚强。 / A is incorrect: Resilience includes protecting the capacity to continue, not limitless escalation.
+- A 不对：请回到画面里的具体细节：还想继续，就要留出恢复时间。已经疲惫时再不断加练，并不等于更坚强。 / A is incorrect: Return to the specific details in the picture: Resilience includes protecting the capacity to continue, not limitless escalation.
 
 <a id="w09-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -5230,12 +5235,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：连续消耗已无法集中，这张逆位牌更贴近哪种情况？ / Prolonged strain prevents concentration. What does this reversal concern?
 
 - A．已经很累，快撑不住了 / The ability to keep going is depleted
-- B．只要再加任务就证明已经恢复 / Adding demands would prove recovery
+- B．注意力下降说明需要更强的训练刺激来找回状态 / The loss of focus suggests stronger training is needed to regain form
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：已经很累，快撑不住了。已经累得无法集中，说明需要恢复精力。再加任务，并不会证明自己已经缓过来了。 / A is correct: The ability to keep going is depleted. The case shows fatigue; increased demands are not evidence of recovery.
-- B 不对：已经累得无法集中，说明需要恢复精力。再加任务，并不会证明自己已经缓过来了。 / B is incorrect: The case shows fatigue; increased demands are not evidence of recovery.
+- B 不对：这个判断忽略了题目给出的条件。已经累得无法集中，说明需要恢复精力。再加任务，并不会证明自己已经缓过来了。 / B is incorrect: This judgment overlooks a condition given in the question. The case shows fatigue; increased demands are not evidence of recovery.
 
 <a id="w09-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -5277,12 +5282,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：连续排练后声音疲惫，明天还要走台。这张牌在建议位时，怎样做更合适？ / After repeated rehearsals, a performer is tired and still has a stage walkthrough tomorrow. What fits the lesson?
 
 - A．保留必要的走位准备，并安排恢复。 / Keep necessary blocking preparation and allow recovery.
-- B．取消全部休息，用额外排练证明坚持。 / Cancel rest and add rehearsals to prove persistence.
+- B．保持原排练量，把恢复留到走台结束。 / Keep the rehearsal load unchanged and recover after the walkthrough.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：保留必要的走位准备，并安排恢复。 留出恢复时间，是为了还能完成后面的任务。已经疲惫时继续加练，只会消耗更多精力。 / A is correct: Keep necessary blocking preparation and allow recovery. Protecting capacity serves continued work; escalating strain is not greater resilience.
-- B 不对：留出恢复时间，是为了还能完成后面的任务。已经疲惫时继续加练，只会消耗更多精力。 / B is incorrect: “Cancel rest and add rehearsals to prove persistence.” does not address the specific conditions. Protecting capacity serves continued work; escalating strain is not greater resilience.
+- B 不对：这个做法没有解决眼前的情况。留出恢复时间，是为了还能完成后面的任务。已经疲惫时继续加练，只会消耗更多精力。 / B is incorrect: This action does not resolve the situation described. Protecting capacity serves continued work; escalating strain is not greater resilience.
 
 **依据 / Taught basis**：[本卡应用示范](#w09-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -5293,13 +5298,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：长期筹备活动后仍需守住最后检查。哪项更贴近？ / after long event preparation, final checks remain. Which fits?
 
-- A．因为已坚持很久就不需任何检查 / Skip all checks because effort has lasted a long time
+- A．把最后检查交给临场状态，先集中精力继续推进 / Rely on performance-day judgement for the final check and keep pushing ahead now
 - B．保持必要警觉，也保护剩余精力 / Keep necessary vigilance and protect remaining energy
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：保持必要警觉，也保护剩余精力。坚持了很久，最后仍要做好必要检查，也要留住精力。不能因为已经很辛苦，就认定后面不会出问题。 / B is correct: Keep necessary vigilance and protect remaining energy. Past effort does not eliminate later problems; persistence needs capacity and reasonable protection.
-- A 不对：坚持了很久，最后仍要做好必要检查，也要留住精力。不能因为已经很辛苦，就认定后面不会出问题。 / A is incorrect: Past effort does not eliminate later problems; persistence needs capacity and reasonable protection.
+- A 不对：这里要分清牌义的边界：坚持了很久，最后仍要做好必要检查，也要留住精力。不能因为已经很辛苦，就认定后面不会出问题。 / A is incorrect: The boundary of the card meaning matters here: Past effort does not eliminate later problems; persistence needs capacity and reasonable protection.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -5355,13 +5360,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：弯身抱着许多权杖，主要帮助记什么？ / What does bending beneath many wands mainly help recall?
 
-- A．任务越多就一定越有价值 / More tasks necessarily mean more value
+- A．任务多说明承担能力强，应该维持现有负荷 / A large workload reflects strong capacity, so the current load should be maintained
 - B．事情揽得太多，做起来很吃力 / Responsibilities are excessive and movement is burdened
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：事情揽得太多，做起来很吃力。抱着那么多权杖，连走路都很吃力，可以帮助记住负担过重。忙碌本身不代表每件事都值得做。 / B is correct: Responsibilities are excessive and movement is burdened. The lesson describes the cost of carrying a load, not busyness as proof of value.
-- A 不对：抱着那么多权杖，连走路都很吃力，可以帮助记住负担过重。忙碌本身不代表每件事都值得做。 / A is incorrect: The lesson describes the cost of carrying a load, not busyness as proof of value.
+- A 不对：这个选项忽略了图中已经给出的区别。抱着那么多权杖，连走路都很吃力，可以帮助记住负担过重。忙碌本身不代表每件事都值得做。 / A is incorrect: This option overlooks a distinction already visible in the picture. The lesson describes the cost of carrying a load, not busyness as proof of value.
 
 <a id="w10-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -5371,12 +5376,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：一位学生包办了小组的所有任务，已经忙不过来。权杖十在建议位，哪种做法更合适？ / A student is overwhelmed by handling every group task alone. With the Ten of Wands as advice, which step fits?
 
 - A．列清任务并协商分担 / List tasks and agree on shared responsibilities
-- B．继续接下全部任务来证明投入 / Keep every task to prove commitment
+- B．先调整自己的时间，提高处理任务的效率 / Reorganise personal time and improve the efficiency of handling the tasks
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：列清任务并协商分担。问题是一个人承担得太多。把任务分清、请别人分担，才能减轻负担；继续全包只会更累。 / A is correct: List tasks and agree on shared responsibilities. Reducing excess addresses the problem; continuing to carry everything maintains it.
-- B 不对：问题是一个人承担得太多。把任务分清、请别人分担，才能减轻负担；继续全包只会更累。 / B is incorrect: Reducing excess addresses the problem; continuing to carry everything maintains it.
+- B 不对：请回到画面里的具体细节：问题是一个人承担得太多。把任务分清、请别人分担，才能减轻负担；继续全包只会更累。 / B is incorrect: Return to the specific details in the picture: Reducing excess addresses the problem; continuing to carry everything maintains it.
 
 <a id="w10-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -5385,13 +5390,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：把活动任务分给伙伴后，这张逆位牌更贴近哪种情况？ / After event tasks are delegated, what does this reversal mean here?
 
-- A．所有责任已经永久消失 / All responsibility has vanished permanently
+- A．任务分出去以后，协调责任也交给接手的伙伴 / Once tasks are delegated, the coordinating responsibility passes to the partners who take them
 - B．开始卸下并重新分配负担 / Beginning to release and redistribute the burden
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：开始卸下并重新分配负担。把任务分给伙伴，可以减轻自己的负担，但活动仍要继续做，不是从此没有责任。 / B is correct: Beginning to release and redistribute the burden. Redistribution changes how responsibility is carried, not whether it ever exists.
-- A 不对：把任务分给伙伴，可以减轻自己的负担，但活动仍要继续做，不是从此没有责任。 / A is incorrect: Redistribution changes how responsibility is carried, not whether it ever exists.
+- A 不对：这个判断忽略了题目给出的条件。把任务分给伙伴，可以减轻自己的负担，但活动仍要继续做，不是从此没有责任。 / A is incorrect: This judgment overlooks a condition given in the question. Redistribution changes how responsibility is carried, not whether it ever exists.
 
 <a id="w10-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -5401,12 +5406,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：忙到看不到下一步路，仍说越忙越有价值。哪种理解更合适？ / Someone is too busy to see the next step but calls greater busyness greater worth. Which interpretation fits better?
 
 - A．任务太多，可能顾不上重要的事，需要重新取舍 / Excess work can obscure priorities and needs review
-- B．只要工作很多就无需评估 / High workload makes review unnecessary
+- B．先提高做事效率，再判断是否需要删减任务 / Improve working efficiency before deciding whether the workload needs to be reduced
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：任务太多，可能顾不上重要的事，需要重新取舍。人物被一大捆权杖挡住视线，走路也很费力。这里要记住负担过重，而不是认定每项任务都值得承担。 / A is correct: Excess work can obscure priorities and needs review. Restricted movement cues the cost of overload, not the worth of every task.
-- B 不对：人物被一大捆权杖挡住视线，走路也很费力。这里要记住负担过重，而不是认定每项任务都值得承担。 / B is incorrect: Restricted movement cues the cost of overload, not the worth of every task.
+- B 不对：这样做会漏掉题目里的关键一步。人物被一大捆权杖挡住视线，走路也很费力。这里要记住负担过重，而不是认定每项任务都值得承担。 / B is incorrect: This action skips a key step in the question. Restricted movement cues the cost of overload, not the worth of every task.
 
 <a id="w10-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -5415,13 +5420,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：把两项任务分给伙伴，自己仍负责协调。这样算减轻负担吗？ / Two tasks are delegated while you still coordinate the work. Does this count as easing your burden?
 
-- A．必须什么也不做才算卸下负担 / Release only counts if nothing at all is done
+- A．只分出执行任务还不算减负，协调也应交出去 / Delegating execution does not reduce the burden unless coordination is handed over too
 - B．分出去一部分任务，自己仍负责该做的事 / A more workable load with necessary responsibility retained
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：分出去一部分任务，自己仍负责该做的事。减轻负担，可以是交出一部分工作，仍负责必要的事情，不是非得什么都不做。 / B is correct: A more workable load with necessary responsibility retained. Release adjusts the load; it does not require abandoning every duty.
-- A 不对：减轻负担，可以是交出一部分工作，仍负责必要的事情，不是非得什么都不做。 / A is incorrect: Release adjusts the load; it does not require abandoning every duty.
+- A 不对：这个判断忽略了题目给出的条件。减轻负担，可以是交出一部分工作，仍负责必要的事情，不是非得什么都不做。 / A is incorrect: This judgment overlooks a condition given in the question. Release adjusts the load; it does not require abandoning every duty.
 
 <a id="w10-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -5432,13 +5437,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **新题 / New prompt**：活动负责人同时包办报名、采购和主持，已无时间核对现场。这张牌在建议位时，怎样做更合适？ / An organiser handles registration, purchasing, and hosting with no time for venue checks. What fits?
 
-- A．继续全包，再用更忙证明自己负责。 / Keep every task and use greater busyness to prove responsibility.
+- A．压缩每项任务的用时，继续由负责人统一完成。 / Shorten the time spent on each task and keep the organiser responsible for completing them.
 - B．协商交接可分担任务，保留必要的现场核对。 / Agree on handovers and retain essential venue checks.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：协商交接可分担任务，保留必要的现场核对。 一个人已经忙不过来，就要把任务交接清楚。继续全包，可能连必要检查都没时间做。 / B is correct: Agree on handovers and retain essential venue checks. The known issue is overload; explicit sharing addresses it, while busyness alone does not show duties are covered.
-- A 不对：一个人已经忙不过来，就要把任务交接清楚。继续全包，可能连必要检查都没时间做。 / A is incorrect: “Keep every task and use greater busyness to prove responsibility.” does not address the specific conditions. The known issue is overload; explicit sharing addresses it, while busyness alone does not show duties are covered.
+- A 不对：这个做法没有解决眼前的情况。一个人已经忙不过来，就要把任务交接清楚。继续全包，可能连必要检查都没时间做。 / A is incorrect: This action does not resolve the situation described. The known issue is overload; explicit sharing addresses it, while busyness alone does not show duties are covered.
 
 **依据 / Taught basis**：[本卡应用示范](#w10-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -5450,12 +5455,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：照顾社区活动时一人承担采购、布置、联络而疲惫。哪项贴近建议？ / one organiser is exhausted by shopping, setup, and communication. What fits?
 
 - A．把可分担的工作明确分出去 / Explicitly share work that others can carry
-- B．用疲惫证明所有任务不能分担 / Treat exhaustion as proof nothing can be shared
+- B．重新排好三项工作的先后，继续由一人完成 / Reorder the three duties and continue having one organiser complete them
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：把可分担的工作明确分出去。已经累到顾不过来，说明一个人承担太多了。把能分担的任务交接出去，才能减轻负担。 / A is correct: Explicitly share work that others can carry. Exhaustion reveals a load problem that appropriate sharing can address.
-- B 不对：已经累到顾不过来，说明一个人承担太多了。把能分担的任务交接出去，才能减轻负担。 / B is incorrect: Exhaustion reveals a load problem that appropriate sharing can address.
+- B 不对：这个做法没有解决眼前的情况。已经累到顾不过来，说明一个人承担太多了。把能分担的任务交接出去，才能减轻负担。 / B is incorrect: This action does not resolve the situation described. Exhaustion reveals a load problem that appropriate sharing can address.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -5512,12 +5517,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：权杖侍从描述的是哪一种状态？ / What does the Page describe?
 
 - A．带着好奇尝试新想法的状态 / A curious state of trying new ideas
-- B．只能指某个年龄的人 / Only a person of a particular age
+- B．主要描述年轻、经验较少的学习者 / It mainly describes a young learner with limited experience
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：带着好奇尝试新想法的状态。这里的“侍从”描述初学时好奇、愿意尝试的样子，不是只指某个年龄的人。 / A is correct: A curious state of trying new ideas. The court role describes a learning and action style rather than fixing age.
-- B 不对：这里的“侍从”描述初学时好奇、愿意尝试的样子，不是只指某个年龄的人。 / B is incorrect: The court role describes a learning and action style rather than fixing age.
+- B 不对：这个选项忽略了图中已经给出的区别。这里的“侍从”描述初学时好奇、愿意尝试的样子，不是只指某个年龄的人。 / B is incorrect: This option overlooks a distinction already visible in the picture. The court role describes a learning and action style rather than fixing age.
 
 <a id="w11-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -5542,12 +5547,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：只收藏教程却不停换兴趣，这张逆位牌更贴近哪种情况？ / Collecting tutorials while changing interests illustrates what here?
 
 - A．很有兴趣，却始终没有亲手试过 / Enthusiasm is not becoming an initial experiment
-- B．已经通过实践确认全部兴趣 / Every interest has already been tested in practice
+- B．收藏的教程已经足够说明自己适合这些兴趣 / Collecting the tutorials gives enough evidence that these interests are a good fit
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：很有兴趣，却始终没有亲手试过。他收藏了很多教程，却一次都没有做过，所以问题是迟迟没开始，而不是已经试过了。 / A is correct: Enthusiasm is not becoming an initial experiment. Practice is precisely what is missing; collecting does not replace trying.
-- B 不对：他收藏了很多教程，却一次都没有做过，所以问题是迟迟没开始，而不是已经试过了。 / B is incorrect: Practice is precisely what is missing; collecting does not replace trying.
+- B 不对：这个结论比题目给出的信息多走了一步。他收藏了很多教程，却一次都没有做过，所以问题是迟迟没开始，而不是已经试过了。 / B is incorrect: This conclusion goes beyond the information provided. Practice is precisely what is missing; collecting does not replace trying.
 
 <a id="w11-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -5589,12 +5594,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：对版画感兴趣，只读过介绍，还没操作过。这张牌在建议位时，怎样做更合适？ / A beginner is interested in printmaking but has only read descriptions. What applies the advice?
 
 - A．参加一次基础体验，亲手完成一个小练习。 / Take an introductory session and complete one small exercise.
-- B．先要求自己具备专业水平，才能首次尝试。 / Require professional competence before any first attempt.
+- B．先把基础理论学得比较完整，再安排第一次操作。 / Learn the foundations in depth before arranging the first hands-on attempt.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：参加一次基础体验，亲手完成一个小练习。 初学当然可以从基础做起。要求自己先达到专业水平才肯试，就一直没法开始。 / A is correct: Take an introductory session and complete one small exercise. Page-like exploration allows a basic start; requiring mastery first blocks initial learning.
-- B 不对：初学当然可以从基础做起。要求自己先达到专业水平才肯试，就一直没法开始。 / B is incorrect: “Require professional competence before any first attempt.” does not address the specific conditions. Page-like exploration allows a basic start; requiring mastery first blocks initial learning.
+- B 不对：这个做法没有解决眼前的情况。初学当然可以从基础做起。要求自己先达到专业水平才肯试，就一直没法开始。 / B is incorrect: This action does not resolve the situation described. Page-like exploration allows a basic start; requiring mastery first blocks initial learning.
 
 **依据 / Taught basis**：[本卡应用示范](#w11-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -5683,12 +5688,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：准备开始一次创作挑战。权杖骑士在建议位，怎样把热情变成持续的行动？ / You are preparing for a creative challenge. With the Knight of Wands as advice, how can enthusiasm become continued action?
 
 - A．先动手做，再安排下次接着做什么 / Begin and schedule the next follow-through step
-- B．有热情开始，就认为以后不用再安排 / Treat starting enthusiasm as removing all need for follow-through
+- B．趁热情较强时多开几个项目，之后再挑一个完成 / Start several projects while enthusiasm is high, then choose one to finish later
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先动手做，再安排下次接着做什么。热情能让人很快开始，但之后怎么做、什么时候再做，仍要安排好。 / A is correct: Begin and schedule the next follow-through step. Enthusiasm enables a start, but continuity still requires arrangements.
-- B 不对：热情能让人很快开始，但之后怎么做、什么时候再做，仍要安排好。 / B is incorrect: Enthusiasm enables a start, but continuity still requires arrangements.
+- B 不对：这个解释没有把画面线索连起来。热情能让人很快开始，但之后怎么做、什么时候再做，仍要安排好。 / B is incorrect: This reading does not connect the picture cues. Enthusiasm enables a start, but continuity still requires arrangements.
 
 <a id="w12-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -5697,13 +5702,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：不断启动又换方向，这张逆位牌更贴近哪种情况？ / Repeated starts followed by switching illustrate what here?
 
-- A．每项计划都已稳定推进 / Every plan is progressing steadily
+- A．不断换方向说明探索范围正在稳步扩大 / Repeated changes of direction show that the range of exploration is steadily expanding
 - B．开始时很有冲劲，却没坚持做完 / Drive lacks continuity and completion
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：开始时很有冲劲，却没坚持做完。题目说，原来的任务总是没人做完。开始很多次，不等于每件事都在好好进行。 / B is correct: Drive lacks continuity and completion. Tasks are explicitly abandoned; frequent starts do not equal steady progress.
-- A 不对：题目说，原来的任务总是没人做完。开始很多次，不等于每件事都在好好进行。 / A is incorrect: Tasks are explicitly abandoned; frequent starts do not equal steady progress.
+- A 不对：这个结论比题目给出的信息多走了一步。题目说，原来的任务总是没人做完。开始很多次，不等于每件事都在好好进行。 / A is incorrect: This conclusion goes beyond the information provided. Tasks are explicitly abandoned; frequent starts do not equal steady progress.
 
 <a id="w12-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -5713,12 +5718,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：有人积极邀请合作，能仅凭这张牌确认长期承诺吗？ / someone eagerly proposes collaboration. Does this card alone establish lasting commitment?
 
 - A．不能，现在很主动，不代表以后一定会按约做到 / No; energetic action differs from lasting follow-through
-- B．能，只要热情就保证长期履约 / Yes; enthusiasm guarantees lasting commitment
+- B．能，主动发出邀请说明他愿意长期投入 / Yes; making an eager invitation shows a willingness to stay committed
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：不能，现在很主动，不代表以后一定会按约做到。现在主动、热情，不等于以后一定能履行承诺；还要看后续行动。 / A is correct: No; energetic action differs from lasting follow-through. The lesson teaches pursuit, not a guarantee derived from present energy.
-- B 不对：现在主动、热情，不等于以后一定能履行承诺；还要看后续行动。 / B is incorrect: The lesson teaches pursuit, not a guarantee derived from present energy.
+- B 不对：先核对眼前例子的条件：现在主动、热情，不等于以后一定能履行承诺；还要看后续行动。 / B is incorrect: Check the conditions in this example first: The lesson teaches pursuit, not a guarantee derived from present energy.
 
 <a id="w12-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -5824,12 +5829,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：权杖王后的自信和热情，怎样表现出来？ / How is confident influence expressed?
 
 - A．自然表达热情并邀请别人参与 / Express enthusiasm naturally and invite participation
-- B．必须让所有目光都只看自己 / Require all attention to remain on oneself
+- B．不断抢过话题，要求别人照自己的办法参与。 / Keep taking over the conversation and require others to follow your way of participating.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：自然表达热情并邀请别人参与。自信可以让别人也愿意参与，不需要把所有人的注意力都抢到自己身上。 / A is correct: Express enthusiasm naturally and invite participation. Warm confidence can engage others without monopolising attention.
-- B 不对：自信可以让别人也愿意参与，不需要把所有人的注意力都抢到自己身上。 / B is incorrect: Warm confidence can engage others without monopolising attention.
+- B 不对：抢过话题并要求别人照办，缺少权杖王后那种能邀请他人参与的热情与自信。 / B is incorrect: Taking over the conversation and dictating participation leaves no room for the warm confidence that invites others in.
 
 <a id="w13-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -5868,13 +5873,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：一个男性导师热情分享所长，鼓励别人加入。王后角色适用吗？ / a male mentor shares skills warmly and invites others in. Can the Queen role apply?
 
-- A．不可以，角色只允许女性 / No; the role applies only to women
+- A．不太适用，王后角色更侧重女性的表达方式 / It is a weaker fit because the Queen role is more about a feminine style of expression
 - B．可以，描述的是自信热情的方式 / Yes; it describes a confident and warm style
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：可以，描述的是自信热情的方式。这里看的是一个人是否自信、热情、愿意带动别人，不是看性别。 / B is correct: Yes; it describes a confident and warm style. This lesson reads court cards as qualities, not gender restrictions.
-- A 不对：这里看的是一个人是否自信、热情、愿意带动别人，不是看性别。 / A is incorrect: This lesson reads court cards as qualities, not gender restrictions.
+- A 不对：这个结论比题目给出的信息多走了一步。这里看的是一个人是否自信、热情、愿意带动别人，不是看性别。 / A is incorrect: This conclusion goes beyond the information provided. This lesson reads court cards as qualities, not gender restrictions.
 
 <a id="w13-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -5884,12 +5889,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：担心作品不够完美，一直不敢给别人看。可以先试着做什么？ / Fear that your work is imperfect keeps you from showing it to anyone. What could you try first?
 
 - A．先向可信伙伴展示一个已完成部分 / Share one completed part with a trusted person
-- B．必须证明永远完美才允许表达 / Allow expression only after proving permanent perfection
+- B．继续打磨，等自己觉得足够成熟再展示 / Keep refining the work and share it after it feels mature enough
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先向可信伙伴展示一个已完成部分。先给可信的伙伴看一小部分，就能重新试着分享。要求自己完美之后才能展示，只会继续不敢开口。 / A is correct: Share one completed part with a trusted person. A real, modest act can restore participation; a perfection requirement keeps expression closed.
-- B 不对：先给可信的伙伴看一小部分，就能重新试着分享。要求自己完美之后才能展示，只会继续不敢开口。 / B is incorrect: A real, modest act can restore participation; a perfection requirement keeps expression closed.
+- B 不对：这个说法混淆了题目正在考的含义。先给可信的伙伴看一小部分，就能重新试着分享。要求自己完美之后才能展示，只会继续不敢开口。 / B is incorrect: This statement confuses the meaning being tested. A real, modest act can restore participation; a perfection requirement keeps expression closed.
 
 <a id="w13-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -5917,13 +5922,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：同学主动带动校园园艺活动，也让新人尝试。哪句贴近？ / a student energises a gardening group and welcomes newcomers. Which fits?
 
-- A．领导参与必须排除其他人的主意 / Engagement requires excluding others' ideas
+- A．由带领者先确定做法，新人照着参与 / Let the leader set the approach and have newcomers follow it
 - B．自信热情使他人愿意参与 / Confident enthusiasm invites participation
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：自信热情使他人愿意参与。能带动别人一起做，就是这张牌的热情和感染力，不必排除别人的主意。 / B is correct: Confident enthusiasm invites participation. The card's engaging quality includes others rather than requiring their exclusion.
-- A 不对：能带动别人一起做，就是这张牌的热情和感染力，不必排除别人的主意。 / A is incorrect: The card's engaging quality includes others rather than requiring their exclusion.
+- A 不对：这里要分清牌义的边界：能带动别人一起做，就是这张牌的热情和感染力，不必排除别人的主意。 / A is incorrect: The boundary of the card meaning matters here: The card's engaging quality includes others rather than requiring their exclusion.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -5979,13 +5984,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：权杖国王所说的带领大家，重点是什么？ / How is leadership understood?
 
-- A．只要拥有领导头衔就已足够 / A leadership title alone is sufficient
+- A．先树立有感染力的大目标，具体条件让团队边做边补 / Set an inspiring direction first and let the team fill in the practical conditions while working
 - B．说清目标、安排好条件，也为自己的决定负责 / Set direction, own decisions, and enable action
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：说清目标、安排好条件，也为自己的决定负责。要看这个人有没有带大家做事、承担责任，不是看有没有领导头衔。 / B is correct: Set direction, own decisions, and enable action. The role is shown through responsibility, not a title replacing action.
-- A 不对：要看这个人有没有带大家做事、承担责任，不是看有没有领导头衔。 / A is incorrect: The role is shown through responsibility, not a title replacing action.
+- A 不对：这个选项忽略了图中已经给出的区别。要看这个人有没有带大家做事、承担责任，不是看有没有领导头衔。 / A is incorrect: This option overlooks a distinction already visible in the picture. The role is shown through responsibility, not a title replacing action.
 
 <a id="w14-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -5995,12 +6000,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：你要带领大家做一次志愿服务。权杖国王在建议位，哪种做法更合适？ / You are leading a volunteer activity. With the King of Wands as advice, which approach fits?
 
 - A．说清目标、分工，并承担协调责任 / Clarify goals and roles, taking coordination responsibility
-- B．只说大目标，把所有困难留给别人 / State a grand vision and leave every obstacle to others
+- B．重点放在鼓舞大家，具体分工让成员自行协调 / Focus on motivating the group and let members coordinate the roles themselves
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：说清目标、分工，并承担协调责任。带大家做事，既要说清目标，也要安排人手和资源、处理困难。只喊口号还不够。 / A is correct: Clarify goals and roles, taking coordination responsibility. Leading action needs enabling conditions and accountability, not slogans alone.
-- B 不对：带大家做事，既要说清目标，也要安排人手和资源、处理困难。只喊口号还不够。 / B is incorrect: Leading action needs enabling conditions and accountability, not slogans alone.
+- B 不对：这个解释没有把画面线索连起来。带大家做事，既要说清目标，也要安排人手和资源、处理困难。只喊口号还不够。 / B is incorrect: This reading does not connect the picture cues. Leading action needs enabling conditions and accountability, not slogans alone.
 
 <a id="w14-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6074,12 +6079,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：剧社负责人明确演出方向，也处理时间和场地冲突。哪句贴近？ / a theatre organiser sets direction and resolves schedule and venue conflicts. Which fits?
 
 - A．说清目标、安排工作，并负责把事情做下去 / Vision becomes action through responsibility and organisation
-- B．只要方向响亮就无须协调现实 / A stirring vision removes any need for coordination
+- B．方向清楚之后，让成员自行解决时间和场地冲突 / Once the direction is clear, let members resolve the schedule and venue conflicts themselves
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：说清目标、安排工作，并负责把事情做下去。除了说清演出方向，他还解决时间和场地的冲突，这正是带领大家把事情做下去。 / A is correct: Vision becomes action through responsibility and organisation. The lesson includes direction and execution; practical coordination is part of leadership.
-- B 不对：除了说清演出方向，他还解决时间和场地的冲突，这正是带领大家把事情做下去。 / B is incorrect: The lesson includes direction and execution; practical coordination is part of leadership.
+- B 不对：只说方向、把时间和场地冲突留给成员，少了负责人把愿景落实的责任。这里还要安排工作并处理实际条件。 / B is incorrect: Stating direction while leaving schedule and venue conflicts to members omits the leader’s responsibility to execute the vision. The work and practical constraints still need coordination.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -6136,12 +6141,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：杯里溢出的水，可以帮助记住什么？ / What does the overflowing cup help recall here?
 
 - A．开始有了新的感动，也想关心别人 / New feeling and care begin to emerge
-- B．稳定关系已经完全建立 / A stable relationship is fully established
+- B．这份感动说明双方关系已经进入稳定阶段 / This feeling suggests the relationship has already entered a stable stage
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：开始有了新的感动，也想关心别人。刚开始有感情，只说明新的感受出现了，还不代表两个人已经建立稳定关系。 / A is correct: New feeling and care begin to emerge. Emerging feeling is a beginning, not proof of an established stable relationship.
-- B 不对：刚开始有感情，只说明新的感受出现了，还不代表两个人已经建立稳定关系。 / B is incorrect: Emerging feeling is a beginning, not proof of an established stable relationship.
+- B 不对：请回到画面里的具体细节：刚开始有感情，只说明新的感受出现了，还不代表两个人已经建立稳定关系。 / B is incorrect: Return to the specific details in the picture: Emerging feeling is a beginning, not proof of an established stable relationship.
 
 <a id="c01-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6150,13 +6155,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：第一次被一首诗深深打动。圣杯王牌在建议位，怎样对待这份感受更合适？ / A poem moves you deeply for the first time. With the Ace of Cups as advice, which response fits this feeling?
 
-- A．立刻认定所有未来情感都确定了 / Immediately treat every future feeling as settled
+- A．先把这份感动理解为长期方向，再决定怎样表达 / Treat this feeling as a long-term direction before deciding how to express it
 - B．留意这份感动，试着把它表达出来 / Receive the feeling and try expressing it simply
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：留意这份感动，试着把它表达出来。可以先感受这份触动、试着表达，但它不能保证未来的关系会怎样。 / B is correct: Receive the feeling and try expressing it simply. The lesson welcomes an emerging feeling without making it a guarantee about the future.
-- A 不对：可以先感受这份触动、试着表达，但它不能保证未来的关系会怎样。 / A is incorrect: The lesson welcomes an emerging feeling without making it a guarantee about the future.
+- A 不对：这个解释没有把画面线索连起来。可以先感受这份触动、试着表达，但它不能保证未来的关系会怎样。 / A is incorrect: This reading does not connect the picture cues. The lesson welcomes an emerging feeling without making it a guarantee about the future.
 
 <a id="c01-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6166,12 +6171,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：一直压住想感谢朋友的感受，这张逆位牌更贴近哪种情况？ / Holding back gratitude toward a friend illustrates what here?
 
 - A．明明有感受，却压着不说、也不愿承认 / Feeling is difficult to receive and express
-- B．完全没有任何感受出现 / No feeling exists at all
+- B．说不出口说明这份感谢还不够明确 / Difficulty speaking suggests the gratitude itself is still unclear
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：明明有感受，却压着不说、也不愿承认。他明明很感谢朋友，只是压着不肯说，不能因此认定他没有感受。 / A is correct: Feeling is difficult to receive and express. Gratitude is explicitly present; the block is in receiving and expressing it, not its existence.
-- B 不对：他明明很感谢朋友，只是压着不肯说，不能因此认定他没有感受。 / B is incorrect: Gratitude is explicitly present; the block is in receiving and expressing it, not its existence.
+- B 不对：这个结论比题目给出的信息多走了一步。他明明很感谢朋友，只是压着不肯说，不能因此认定他没有感受。 / B is incorrect: This conclusion goes beyond the information provided. Gratitude is explicitly present; the block is in receiving and expressing it, not its existence.
 
 <a id="c01-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -6196,12 +6201,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：很想感谢朋友，却总说不出口。可以先试着做什么？ / You want to thank a friend but cannot get the words out. What could you try first?
 
 - A．先承认自己想感谢对方，再用一句简单的话说出来 / Acknowledge gratitude and choose a simple expression
-- B．认为说不出就证明从未在意 / Treat difficulty speaking as proof of never caring
+- B．等找到足够郑重的表达方式，再向朋友道谢 / Wait for a sufficiently formal way to express the thanks before speaking to the friend
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先承认自己想感谢对方，再用一句简单的话说出来。感谢说不出口，不代表没有感谢。先承认自己想表达，再试着说一句简单的话。 / A is correct: Acknowledge gratitude and choose a simple expression. Difficulty expressing is not absence of feeling; acknowledging it addresses the block.
-- B 不对：感谢说不出口，不代表没有感谢。先承认自己想表达，再试着说一句简单的话。 / B is incorrect: Difficulty expressing is not absence of feeling; acknowledging it addresses the block.
+- B 不对：这个解释把牌义带到了别处。感谢说不出口，不代表没有感谢。先承认自己想表达，再试着说一句简单的话。 / B is incorrect: This interpretation shifts the card meaning elsewhere. Difficulty expressing is not absence of feeling; acknowledging it addresses the block.
 
 <a id="c01-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -6213,12 +6218,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：听到朋友帮助自己的细节后很感动，这张牌在建议位时，怎样做更合适？ / Hearing how a friend helped you feels moving. How can this advice apply?
 
 - A．用一句真诚的话，把感谢说出来。 / Acknowledge gratitude and respond sincerely.
-- B．必须先确认终身关系，才允许表达感谢。 / Require lifelong commitment before expressing thanks.
+- B．先判断这份感谢会不会改变关系，再决定是否说出来。 / Decide whether the gratitude might change the relationship before expressing it.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：用一句真诚的话，把感谢说出来。 一句真诚的感谢，就能表达现在的感动，不需要先决定一辈子的关系。 / A is correct: Acknowledge gratitude and respond sincerely. A simple expression can meet the present feeling; gratitude needs no prior lifelong arrangement.
-- B 不对：一句真诚的感谢，就能表达现在的感动，不需要先决定一辈子的关系。 / B is incorrect: “Require lifelong commitment before expressing thanks.” does not address the specific conditions. A simple expression can meet the present feeling; gratitude needs no prior lifelong arrangement.
+- B 不对：这个解释没有把画面线索连起来。一句真诚的感谢，就能表达现在的感动，不需要先决定一辈子的关系。 / B is incorrect: This reading does not connect the picture cues. A simple expression can meet the present feeling; gratitude needs no prior lifelong arrangement.
 
 **依据 / Taught basis**：[本卡应用示范](#c01-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -6229,13 +6234,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：重新接触绘画时涌起温柔的创作感受。哪句贴近？ / returning to painting brings tender creative feeling. Which fits?
 
-- A．圣杯只能解释恋爱所以不适用 / Cups only mean romance and cannot apply
+- A．这份创作灵感主要来自技巧进步，与感受关系不大 / The creative inspiration mainly reflects technical progress rather than an emotional opening
 - B．开始有了新的感受和创作灵感 / A new emotional and creative experience is opening
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：开始有了新的感受和创作灵感。被一幅画或一首诗打动，也属于圣杯所说的感受，不一定是在谈恋爱。 / B is correct: A new emotional and creative experience is opening. Cups also include feeling and creative receptivity, not romance alone.
-- A 不对：被一幅画或一首诗打动，也属于圣杯所说的感受，不一定是在谈恋爱。 / A is incorrect: Cups also include feeling and creative receptivity, not romance alone.
+- A 不对：这里要分清牌义的边界：被一幅画或一首诗打动，也属于圣杯所说的感受，不一定是在谈恋爱。 / A is incorrect: The boundary of the card meaning matters here: Cups also include feeling and creative receptivity, not romance alone.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -6291,13 +6296,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：两个人面对面举杯，可以帮助记住关系中的哪一点？ / What is the key condition recalled by the two facing figures?
 
-- A．只要一方愿意就已形成双向共识 / One willing party alone establishes mutual agreement
+- A．一方主动表达，另一方默认接受，也算形成共识 / One person speaks and the other's quiet acceptance is enough to form mutual agreement
 - B．双方都有回应和交流意愿 / Both parties are willing to respond and communicate
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：双方都有回应和交流意愿。两个人都愿意回应，才算相互认可。只有自己愿意，不能代表对方也答应了。 / B is correct: Both parties are willing to respond and communicate. Mutuality needs participation from both sides; one person's wish is not agreement from both.
-- A 不对：两个人都愿意回应，才算相互认可。只有自己愿意，不能代表对方也答应了。 / A is incorrect: Mutuality needs participation from both sides; one person's wish is not agreement from both.
+- A 不对：这个选项忽略了图中已经给出的区别。两个人都愿意回应，才算相互认可。只有自己愿意，不能代表对方也答应了。 / A is incorrect: This option overlooks a distinction already visible in the picture. Mutuality needs participation from both sides; one person's wish is not agreement from both.
 
 <a id="c02-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6337,12 +6342,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：两家社团互相听取需求并确认合作。圣杯二适用吗？ / two clubs listen and confirm cooperation. Can the Two of Cups apply?
 
 - A．可以，合作也需要双方交流、彼此回应 / Yes; mutual connection also includes partnership
-- B．不可以，必须是恋人才适用 / No; only romantic partners qualify
+- B．不太适用，社团合作更适合从星币角度理解 / It is a weaker fit because club cooperation is better understood through Pentacles
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：可以，合作也需要双方交流、彼此回应。重点是双方愿意交流、回应。朋友或合作伙伴也可以这样相处，不一定非得是恋人。 / A is correct: Yes; mutual connection also includes partnership. Reciprocity is central, not romantic status.
-- B 不对：重点是双方愿意交流、回应。朋友或合作伙伴也可以这样相处，不一定非得是恋人。 / B is incorrect: Reciprocity is central, not romantic status.
+- B 不对：这个选项忽略了图中已经给出的区别。重点是双方愿意交流、回应。朋友或合作伙伴也可以这样相处，不一定非得是恋人。 / B is incorrect: This option overlooks a distinction already visible in the picture. Reciprocity is central, not romantic status.
 
 <a id="c02-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -6386,12 +6391,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：导师与学生都愿意倾听，谈清合作期待。哪句贴近？ / mentor and student listen and clarify expectations. Which fits?
 
 - A．双方愿意听取意见、回应彼此，有助于一起做事 / Mutual recognition and response support cooperation
-- B．彼此认可就保证永远没有分歧 / Recognition guarantees no future disagreement
+- B．彼此愿意倾听，说明合作期待已经一致 / Their willingness to listen shows that their expectations for the partnership already match
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：双方愿意听取意见、回应彼此，有助于一起做事。彼此愿意听取意见，有助于合作；以后有了分歧，仍然需要继续商量。 / A is correct: Mutual recognition and response support cooperation. Reciprocity supports connection without eliminating future adjustments.
-- B 不对：彼此愿意听取意见，有助于合作；以后有了分歧，仍然需要继续商量。 / B is incorrect: Reciprocity supports connection without eliminating future adjustments.
+- B 不对：这里要分清牌义的边界：彼此愿意听取意见，有助于合作；以后有了分歧，仍然需要继续商量。 / B is incorrect: The boundary of the card meaning matters here: Reciprocity supports connection without eliminating future adjustments.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -6448,12 +6453,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：几个人一起举杯，可以帮助记住什么？ / What does gathering with raised cups help recall here?
 
 - A．朋友之间分享喜悦与支持 / Friends share joy and support
-- B．只要出现三人就确定有第三者 / Three figures establish a romantic affair
+- B．三个人聚在一起，重点是共同完成正式仪式 / The three people are gathered to complete a formal ceremony together
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：朋友之间分享喜悦与支持。画面上的三个人正在举杯庆祝。要记住的是朋友相聚的喜悦，不能只数出三个人就认定有第三者。 / A is correct: Friends share joy and support. The figures show shared celebration; their number does not establish an actual relationship event.
-- B 不对：画面上的三个人正在举杯庆祝。要记住的是朋友相聚的喜悦，不能只数出三个人就认定有第三者。 / B is incorrect: The figures show shared celebration; their number does not establish an actual relationship event.
+- B 不对：这个选项忽略了图中已经给出的区别。画面上的三个人正在举杯庆祝。要记住的是朋友相聚的喜悦，不能只数出三个人就认定有第三者。 / B is incorrect: This option overlooks a distinction already visible in the picture. The figures show shared celebration; their number does not establish an actual relationship event.
 
 <a id="c03-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6462,13 +6467,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：终于完成了一门很难的课程。圣杯三在建议位，哪种做法更合适？ / You have finished a difficult course. With the Three of Cups as advice, which response fits?
 
-- A．把所有感受隔绝以避免任何分享 / Exclude all feeling to prevent any sharing
+- A．先独自整理成绩，等下一次课程再和伙伴交流 / Reflect on the achievement privately and discuss it with classmates at the next course
 - B．与支持自己的伙伴一起庆祝 / Celebrate with supportive companions
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：与支持自己的伙伴一起庆祝。和信任的朋友分享这次经历，可以一起庆祝，也能得到鼓励；把所有感受都隔绝起来，就失去了这种交流。 / B is correct: Celebrate with supportive companions. The lesson emphasises sharing with a trusted group rather than cutting off support.
-- A 不对：和信任的朋友分享这次经历，可以一起庆祝，也能得到鼓励；把所有感受都隔绝起来，就失去了这种交流。 / A is incorrect: The lesson emphasises sharing with a trusted group rather than cutting off support.
+- A 不对：请回到画面里的具体细节：和信任的朋友分享这次经历，可以一起庆祝，也能得到鼓励；把所有感受都隔绝起来，就失去了这种交流。 / A is incorrect: Return to the specific details in the picture: The lesson emphasises sharing with a trusted group rather than cutting off support.
 
 <a id="c03-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6492,13 +6497,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：三位同事互相祝贺项目完成。可以概括什么？ / three colleagues congratulate each other on completion. What is supported?
 
-- A．必然存在恋爱纠纷 / A romantic conflict must exist
+- A．项目完成后的祝贺主要代表个人获得认可 / The congratulations mainly show that each person received individual recognition
 - B．大家一起为做成的事高兴 / Shared joy in a group
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：大家一起为做成的事高兴。题目说三位同事在互相祝贺，可以概括为一起高兴，不能因为有三个人就认定有感情纠纷。 / B is correct: Shared joy in a group. The stated interaction is congratulations; three participants do not imply romantic conflict.
-- A 不对：题目说三位同事在互相祝贺，可以概括为一起高兴，不能因为有三个人就认定有感情纠纷。 / A is incorrect: The stated interaction is congratulations; three participants do not imply romantic conflict.
+- A 不对：这个解释把牌义带到了别处。题目说三位同事在互相祝贺，可以概括为一起高兴，不能因为有三个人就认定有感情纠纷。 / A is incorrect: This interpretation shifts the card meaning elsewhere. The stated interaction is congratulations; three participants do not imply romantic conflict.
 
 <a id="c03-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -6525,12 +6530,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：完成一次困难演讲，想和支持自己的朋友庆祝。这张牌在建议位时，怎样做更合适？ / After a difficult presentation, you want to celebrate with supportive friends. What fits?
 
 - A．找愿意倾听的伙伴分享这次经历和喜悦。 / Share the experience and joy with friends who listen.
-- B．只追求参加人数，不让任何人交流真实经历。 / Maximise attendance while allowing no real exchange.
+- B．把重点放在场地和流程上，不安排与支持自己的朋友交流。 / Focus on the venue and schedule without making time to talk with the friends who supported you.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：找愿意倾听的伙伴分享这次经历和喜悦。 找愿意听的朋友分享，才能一起为这次经历高兴。人再多，如果没人愿意交流，也没有得到这种支持。 / A is correct: Share the experience and joy with friends who listen. The goal is shared support; a large crowd cannot replace mutual participation.
-- B 不对：找愿意听的朋友分享，才能一起为这次经历高兴。人再多，如果没人愿意交流，也没有得到这种支持。 / B is incorrect: “Maximise attendance while allowing no real exchange.” does not address the specific conditions. The goal is shared support; a large crowd cannot replace mutual participation.
+- B 不对：只安排场地和流程，却没有和支持自己的朋友分享，缺少圣杯三强调的共同喜悦与支持。 / B is incorrect: Managing the venue and schedule without sharing with supportive friends misses the mutual joy and support of the Three of Cups.
 
 **依据 / Taught basis**：[本卡应用示范](#c03-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -6541,13 +6546,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：读书伙伴彼此分享心得和鼓励。哪句贴近？ / reading partners exchange reflections and encouragement. Which fits?
 
-- A．只有正式庆典才能体现这张牌 / Only a formal ceremony can express this card
+- A．要有明确成果值得庆祝，伙伴间的日常支持还不算 / A clear achievement needs to be celebrated; everyday support between companions is a weaker fit
 - B．在熟悉的伙伴中分享经历、得到支持 / A community offers sharing and emotional support
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：在熟悉的伙伴中分享经历、得到支持。平时一起读书、交流心得，也能互相鼓励，不一定要有正式庆典。 / B is correct: A community offers sharing and emotional support. Group support can occur in everyday gatherings, not only formal ceremonies.
-- A 不对：平时一起读书、交流心得，也能互相鼓励，不一定要有正式庆典。 / A is incorrect: Group support can occur in everyday gatherings, not only formal ceremonies.
+- A 不对：这个说法混淆了题目正在考的含义。平时一起读书、交流心得，也能互相鼓励，不一定要有正式庆典。 / A is incorrect: This statement confuses the meaning being tested. Group support can occur in everyday gatherings, not only formal ceremonies.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -6603,13 +6608,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：没有回应，就说明没有机会吗？ / How does this card distinguish no response from no opportunity?
 
-- A．没有回应就证明机会完全不存在 / No response proves there is no opportunity
+- A．没有回应通常说明这个机会吸引力不足 / A lack of response usually shows that the opportunity is not appealing enough
 - B．有机会出现，也可能暂时不想回应 / An opportunity may be present without a response
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：有机会出现，也可能暂时不想回应。旁边明明有一只杯子递过来，人物却抱着双臂，没有伸手。可以这样记：有机会出现，但自己暂时不想回应。 / B is correct: An opportunity may be present without a response. The offered cup and withdrawn posture coexist, showing the distinction.
-- A 不对：旁边明明有一只杯子递过来，人物却抱着双臂，没有伸手。可以这样记：有机会出现，但自己暂时不想回应。 / A is incorrect: The offered cup and withdrawn posture coexist, showing the distinction.
+- A 不对：这个结论比题目给出的信息多走了一步。旁边明明有一只杯子递过来，人物却抱着双臂，没有伸手。可以这样记：有机会出现，但自己暂时不想回应。 / A is incorrect: This conclusion goes beyond the information provided. The offered cup and withdrawn posture coexist, showing the distinction.
 
 <a id="c04-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6619,12 +6624,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：收到课程邀请，却提不起兴趣。圣杯四在建议位，先做什么更合适？ / You receive a course invitation but feel little interest. With the Four of Cups as advice, what fits first?
 
 - A．先了解自己的状态，再评估邀请 / Check one's state and then assess the invitation
-- B．只因没兴趣就认定外界没有任何机会 / Infer no opportunity exists anywhere from low interest
+- B．马上拒绝邀请，不再了解自己只是疲惫还是课程确实不合适。 / Reject the invitation right away without checking whether you are tired or the course truly does not fit.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先了解自己的状态，再评估邀请。自己现在有没有兴趣，和机会本身适不适合，是两件事。提不起劲，不代表外面没有机会。 / A is correct: Check one's state and then assess the invitation. Internal interest and external opportunity need separate consideration.
-- B 不对：自己现在有没有兴趣，和机会本身适不适合，是两件事。提不起劲，不代表外面没有机会。 / B is incorrect: Internal interest and external opportunity need separate consideration.
+- B 不对：马上拒绝邀请，把一时提不起劲当成了最终判断；应先分开看自己的状态和课程是否合适。 / B is incorrect: Rejecting the invitation immediately treats low energy as a settled judgement; first separate your current state from whether the course fits.
 
 <a id="c04-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6633,13 +6638,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：休整后愿意回复邀请，这张逆位牌更贴近哪种变化？ / Replying to invitations after a pause shows which reversal here?
 
-- A．越来越完全拒绝任何回应 / Increasingly refusing all response
+- A．只礼貌回复已经收到，不再了解活动内容。 / Acknowledge the invitation politely without learning anything more about the event.
 - B．又愿意了解活动、回复邀请了 / Re-engaging with opportunities
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：又愿意了解活动、回复邀请了。原来不想回复，现在开始答复邀请，说明又愿意了解和参加了。 / B is correct: Re-engaging with opportunities. The behaviour explicitly changes from silence to replies, showing renewed engagement.
-- A 不对：原来不想回复，现在开始答复邀请，说明又愿意了解和参加了。 / A is incorrect: The behaviour explicitly changes from silence to replies, showing renewed engagement.
+- A 不对：只回复收到却不再了解内容，仍缺少逆位在本例中所说的重新参与。 / A is incorrect: A polite acknowledgement without learning more still lacks the renewed engagement shown by this reversal.
 
 <a id="c04-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -6663,13 +6668,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：原来不想参加活动，现在开始主动询问内容。哪句话更贴近这个变化？ / Someone who did not want to join an event now asks about it. Which statement best describes the change?
 
-- A．继续认定此人绝不会回应 / Continue declaring they will never respond
+- A．礼貌问一句活动时间，之后不再了解内容。 / Ask the event time as a courtesy, then stop learning about it.
 - B．不再那么冷淡，开始愿意了解活动 / Disengagement eases and curiosity returns
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：不再那么冷淡，开始愿意了解活动。他已经开始主动问活动内容，说明愿意重新了解了。不能还按之前的不回应来判断。 / B is correct: Disengagement eases and curiosity returns. The new action supports renewed engagement; the changed context matters.
-- A 不对：他已经开始主动问活动内容，说明愿意重新了解了。不能还按之前的不回应来判断。 / A is incorrect: The new action supports renewed engagement; the changed context matters.
+- A 不对：礼貌问一句后又停止了解，没有表现出兴趣正在恢复。 / A is incorrect: A single polite question followed by disengagement does not show curiosity returning.
 
 <a id="c04-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -6760,12 +6765,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：三只杯倒了，还有两只立着。把这两处一起看，哪句话更贴近牌义？ / Three cups have fallen but two stand. What is the lesson's summary?
 
 - A．失落占据注意，但支持并未全部消失 / Loss dominates attention but support is not entirely gone
-- B．已经失去全部可能的支持 / Every possible support has been lost
+- B．倒下的杯子更重要，应先集中处理已经失去的部分 / The fallen cups matter most, so attention should stay on what has been lost
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：失落占据注意，但支持并未全部消失。人物面前有三只倒下的杯，身后还有两只立着的杯。失去的是真的，但并不是所有东西都失去了。 / A is correct: Loss dominates attention but support is not entirely gone. The upright cups preserve remaining support without denying the loss recalled by the fallen cups.
-- B 不对：人物面前有三只倒下的杯，身后还有两只立着的杯。失去的是真的，但并不是所有东西都失去了。 / B is incorrect: The upright cups preserve remaining support without denying the loss recalled by the fallen cups.
+- B 不对：这个选项忽略了图中已经给出的区别。人物面前有三只倒下的杯，身后还有两只立着的杯。失去的是真的，但并不是所有东西都失去了。 / B is incorrect: This option overlooks a distinction already visible in the picture. The upright cups preserve remaining support without denying the loss recalled by the fallen cups.
 
 <a id="c05-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6774,13 +6779,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：考试失利，心里很难过。圣杯五在建议位，哪种做法更合适？ / You feel upset after an exam setback. With the Five of Cups as advice, which response fits?
 
-- A．要求自己立刻开心，假装没有失利 / Demand instant happiness and pretend no setback occurred
+- A．先把失败原因分析清楚，等能独立调整好再考虑求助 / Analyse the setback fully and consider asking for help after making a private adjustment
 - B．允许自己难过，再看看还有哪些帮助和机会 / Acknowledge sadness and use remaining help and opportunities
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：允许自己难过，再看看还有哪些帮助和机会。可以为失利难过，也可以接受仍然有的帮助。不必假装没失败，才能继续往前走。 / B is correct: Acknowledge sadness and use remaining help and opportunities. The lesson holds both real loss and remaining support; neither should be erased.
-- A 不对：可以为失利难过，也可以接受仍然有的帮助。不必假装没失败，才能继续往前走。 / A is incorrect: The lesson holds both real loss and remaining support; neither should be erased.
+- A 不对：请回到画面里的具体细节：可以为失利难过，也可以接受仍然有的帮助。不必假装没失败，才能继续往前走。 / A is incorrect: Return to the specific details in the picture: The lesson holds both real loss and remaining support; neither should be erased.
 
 <a id="c05-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6790,12 +6795,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：失去机会后开始联系支持者，这张逆位牌更贴近哪种情况？ / Reconnecting with supporters after a lost opportunity illustrates what here?
 
 - A．慢慢接受失利，也开始注意到仍愿意帮助自己的人 / Gradually accepting loss and noticing support
-- B．证明过去的失落从未发生 / Proving the loss never occurred
+- B．开始联系支持者，说明这次失利对自己的影响已经很小 / Contacting supporters shows that the setback now has little emotional impact
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：慢慢接受失利，也开始注意到仍愿意帮助自己的人。重新愿意求助，说明正在慢慢走出失落，不代表之前的损失没有发生过。 / A is correct: Gradually accepting loss and noticing support. Recovery changes the response to loss, not the fact that it occurred.
-- B 不对：重新愿意求助，说明正在慢慢走出失落，不代表之前的损失没有发生过。 / B is incorrect: Recovery changes the response to loss, not the fact that it occurred.
+- B 不对：这个结论比题目给出的信息多走了一步。重新愿意求助，说明正在慢慢走出失落，不代表之前的损失没有发生过。 / B is incorrect: This conclusion goes beyond the information provided. Recovery changes the response to loss, not the fact that it occurred.
 
 <a id="c05-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -6820,12 +6825,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：已经开始向别人求助，但想起失败还是难过。怎样看待这种变化更合适？ / You have started asking for help but still feel sad about the setback. How can you understand this change?
 
 - A．可以边难过边重新接受帮助 / Help can be accepted while sadness remains
-- B．必须完全不难过才算恢复 / Recovery only counts after all sadness disappears
+- B．仍会难过，说明现在还没准备好接受别人的帮助 / Continuing sadness suggests the person is not ready to accept help yet
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：可以边难过边重新接受帮助。接受失利需要时间。还会难过，也可以开始求助、继续生活，不用等到一点都不难过。 / A is correct: Help can be accepted while sadness remains. Acceptance is a process and does not require eliminating every feeling before continuing.
-- B 不对：接受失利需要时间。还会难过，也可以开始求助、继续生活，不用等到一点都不难过。 / B is incorrect: Acceptance is a process and does not require eliminating every feeling before continuing.
+- B 不对：这个做法没有解决眼前的情况。接受失利需要时间。还会难过，也可以开始求助、继续生活，不用等到一点都不难过。 / B is incorrect: This action does not resolve the situation described. Acceptance is a process and does not require eliminating every feeling before continuing.
 
 <a id="c05-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -6853,13 +6858,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：演出取消令人遗憾，团队仍愿意支持新安排。哪句贴近？ / a cancelled show hurts, while the team supports a new plan. Which fits?
 
-- A．取消一场演出证明所有资源消失 / One cancellation proves all resources are gone
+- A．先专注演出取消的原因，等问题解决后再联系团队 / Focus on why the show was cancelled and contact the team after the problem is resolved
 - B．承认这次的遗憾，也看看谁还愿意一起想办法 / Recognise the loss and the people still present
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：承认这次的遗憾，也看看谁还愿意一起想办法。演出确实取消了，但团队还愿意继续支持，不能把一次取消当成什么都没有了。 / B is correct: Recognise the loss and the people still present. A particular loss does not erase all support; both parts matter.
-- A 不对：演出确实取消了，但团队还愿意继续支持，不能把一次取消当成什么都没有了。 / A is incorrect: A particular loss does not erase all support; both parts matter.
+- A 不对：这个解释把牌义带到了别处。演出确实取消了，但团队还愿意继续支持，不能把一次取消当成什么都没有了。 / A is incorrect: This interpretation shifts the card meaning elsewhere. A particular loss does not erase all support; both parts matter.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -6915,13 +6920,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：孩子递出装着花的杯子，可以帮助记住什么？ / What does offering the flower-filled cup connect to here?
 
-- A．某个旧人一定会回来 / A particular person from the past must return
+- A．温暖回忆说明过去的关系适合在现在重新开始 / The warm memory suggests that the past relationship is suitable to restart now
 - B．单纯善意与温暖回忆 / Simple goodwill and warm memory
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：单纯善意与温暖回忆。孩子递出装着花的杯子，可以帮助记住童年、善意和温暖回忆；这不等于某位旧友一定会回来。 / B is correct: Simple goodwill and warm memory. The image aids kindness and the past, not certainty about someone else's actions.
-- A 不对：孩子递出装着花的杯子，可以帮助记住童年、善意和温暖回忆；这不等于某位旧友一定会回来。 / A is incorrect: The image aids kindness and the past, not certainty about someone else's actions.
+- A 不对：这个解释没有把画面线索连起来。孩子递出装着花的杯子，可以帮助记住童年、善意和温暖回忆；这不等于某位旧友一定会回来。 / A is incorrect: This reading does not connect the picture cues. The image aids kindness and the past, not certainty about someone else's actions.
 
 <a id="c06-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -6931,12 +6936,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：想重新拾起小时候的阅读爱好。圣杯六在建议位，哪种做法更合适？ / You want to return to a childhood love of reading. With the Six of Cups as advice, which approach fits?
 
 - A．保留阅读带来的乐趣，按现在节奏安排 / Keep the pleasure and adapt it to the current routine
-- B．要求生活完全回到小时候 / Require life to become exactly as it was in childhood
+- B．尽量照搬小时候的阅读方式，才能找回原来的快乐 / Recreate the childhood reading routine closely to recover the earlier enjoyment
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：保留阅读带来的乐趣，按现在节奏安排。可以保留小时候读书的快乐，再按现在有空的时间安排，不需要让整个生活回到小时候。 / A is correct: Keep the pleasure and adapt it to the current routine. Memory can offer warmth, while practical arrangements still need present-day fit.
-- B 不对：可以保留小时候读书的快乐，再按现在有空的时间安排，不需要让整个生活回到小时候。 / B is incorrect: Memory can offer warmth, while practical arrangements still need present-day fit.
+- B 不对：请回到画面里的具体细节：可以保留小时候读书的快乐，再按现在有空的时间安排，不需要让整个生活回到小时候。 / B is incorrect: Return to the specific details in the picture: Memory can offer warmth, while practical arrangements still need present-day fit.
 
 <a id="c06-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -6945,13 +6950,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：旧合作方式已不合新时间条件却坚持照搬，这张逆位牌更贴近哪种情况？ / An outdated arrangement is imposed despite changed schedules. What is this reversal?
 
-- A．只要熟悉就证明永远适合 / Familiarity proves permanent suitability
+- A．熟悉的做法曾经有效，可以先继续沿用再观察 / The familiar method worked before, so continue it for now and observe the result
 - B．仍坚持旧做法，没有按现在的条件调整 / A past pattern limits present adjustment
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：仍坚持旧做法，没有按现在的条件调整。大家现在有了不同的时间安排，旧办法即使熟悉，也不一定还适合。 / B is correct: A past pattern limits present adjustment. Familiarity does not establish fit; the context explicitly changed.
-- A 不对：大家现在有了不同的时间安排，旧办法即使熟悉，也不一定还适合。 / A is incorrect: Familiarity does not establish fit; the context explicitly changed.
+- A 不对：先核对眼前例子的条件：大家现在有了不同的时间安排，旧办法即使熟悉，也不一定还适合。 / A is incorrect: Check the conditions in this example first: Familiarity does not establish fit; the context explicitly changed.
 
 <a id="c06-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -6961,12 +6966,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：收到老朋友一句温暖问候，可以确认什么？ / an old friend sends a warm greeting. What is supported?
 
 - A．老朋友的关心让人觉得温暖、亲切 / A familiar connection brings goodwill and warmth
-- B．所有旧关系都会恢复原样 / Every old relationship will return unchanged
+- B．这句问候说明老朋友有意恢复过去的相处方式 / The greeting suggests that the old friend wants to restore the previous relationship pattern
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：老朋友的关心让人觉得温暖、亲切。收到老朋友的问候，可以感到温暖，但不能因此认定所有旧关系都会回到从前。 / A is correct: A familiar connection brings goodwill and warmth. One kind interaction cannot establish that the entire past will return.
-- B 不对：收到老朋友的问候，可以感到温暖，但不能因此认定所有旧关系都会回到从前。 / B is incorrect: One kind interaction cannot establish that the entire past will return.
+- B 不对：这个说法混淆了题目正在考的含义。收到老朋友的问候，可以感到温暖，但不能因此认定所有旧关系都会回到从前。 / B is incorrect: This statement confuses the meaning being tested. One kind interaction cannot establish that the entire past will return.
 
 <a id="c06-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -6992,13 +6997,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **新题 / New prompt**：重新喜欢上学生时代的读书会，但现在只有每月一晚空闲。怎样应用？ / You miss a school-era reading group but now have only one evening a month. What fits?
 
-- A．认为不能每天相聚，就完全否定这份旧爱好。 / Reject the old interest entirely because daily meetings are impossible.
+- A．把每月小聚改成线上每周见，尽量还原从前的频率。 / Replace the monthly meeting with a weekly online session to recreate the former rhythm.
 - B．按现在时间安排一次小聚，保留阅读与联系。 / Arrange a small meeting within current time, keeping reading and connection.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：按现在时间安排一次小聚，保留阅读与联系。 仍然可以一起读书，只需改成现在做得到的频率。不必要求和学生时代一模一样，也不用彻底放弃。 / B is correct: Arrange a small meeting within current time, keeping reading and connection. A valuable memory can continue in an adapted form, not only exact repetition or total rejection.
-- A 不对：仍然可以一起读书，只需改成现在做得到的频率。不必要求和学生时代一模一样，也不用彻底放弃。 / A is incorrect: “Reject the old interest entirely because daily meetings are impossible.” does not address the specific conditions. A valuable memory can continue in an adapted form, not only exact repetition or total rejection.
+- A 不对：先别按这个做法继续；仍然可以一起读书，只需改成现在做得到的频率。不必要求和学生时代一模一样，也不用彻底放弃。 / A is incorrect: Do not continue with this approach yet; A valuable memory can continue in an adapted form, not only exact repetition or total rejection.
 
 **依据 / Taught basis**：[本卡应用示范](#c06-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -7010,12 +7015,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：祖辈教过的手艺让人感到亲切，想重新练习。哪句贴近？ / a craft taught by a grandparent feels comforting to revisit. Which fits?
 
 - A．过去的美好经历，仍能给现在的自己温暖和支持 / Past experience can be a warm resource in the present
-- B．只有过去才有价值，新的做法都应拒绝 / Only the past has value and all new methods should be rejected
+- B．重新练习时保持祖辈原来的做法，避免加入新的方法 / Keep the grandparent's original method when returning to the craft and avoid newer approaches
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：过去的美好经历，仍能给现在的自己温暖和支持。重拾旧手艺，可以感到亲切，也可以学新做法，不必认为只有过去才好。 / A is correct: Past experience can be a warm resource in the present. The lesson welcomes memory's support without rejecting present life or new methods.
-- B 不对：重拾旧手艺，可以感到亲切，也可以学新做法，不必认为只有过去才好。 / B is incorrect: The lesson welcomes memory's support without rejecting present life or new methods.
+- B 不对：这里要分清牌义的边界：重拾旧手艺，可以感到亲切，也可以学新做法，不必认为只有过去才好。 / B is incorrect: The boundary of the card meaning matters here: The lesson welcomes memory's support without rejecting present life or new methods.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7072,12 +7077,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：面对杯中许多吸引人的东西，人物像处在哪种状态？ / What do the many images in cups illustrate here?
 
 - A．想做的事很多，还要看看哪些做得到 / Possibilities are many; wishes need separating from conditions
-- B．看起来诱人的选项都已可实现 / Every attractive option is already achievable
+- B．吸引人的选项很多，先都保留可以避免错过机会 / Keep the appealing options open for now so promising opportunities are not missed
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：想做的事很多，还要看看哪些做得到。想到很多可能，不等于每一种都能实现。还要看看时间、预算和其他条件够不够。 / A is correct: Possibilities are many; wishes need separating from conditions. Imagination presents options, but feasibility needs checking separately.
-- B 不对：想到很多可能，不等于每一种都能实现。还要看看时间、预算和其他条件够不够。 / B is incorrect: Imagination presents options, but feasibility needs checking separately.
+- B 不对：这个解释没有把画面线索连起来。想到很多可能，不等于每一种都能实现。还要看看时间、预算和其他条件够不够。 / B is incorrect: This reading does not connect the picture cues. Imagination presents options, but feasibility needs checking separately.
 
 <a id="c07-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -7086,13 +7091,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：同时对很多课程感兴趣，想全部报名。圣杯七在建议位，先做什么更合适？ / Many courses appeal to you and you want to enrol in all of them. With the Seven of Cups as advice, what fits first?
 
-- A．只要都喜欢就认定都有时间完成 / Assume liking them creates time to finish them all
+- A．先报名几门最喜欢的课，开课后再根据时间决定退掉哪门 / Enrol in several favourites and decide which course to drop after the schedules begin
 - B．比较时间、费用与目标，再选一项 / Compare time, cost, and goals before choosing one
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：比较时间、费用与目标，再选一项。喜欢一门课，不等于有时间和钱上完；选择前，要把这些条件一起看。 / B is correct: Compare time, cost, and goals before choosing one. Preference and resources are different conditions; screening considers both.
-- A 不对：喜欢一门课，不等于有时间和钱上完；选择前，要把这些条件一起看。 / A is incorrect: Preference and resources are different conditions; screening considers both.
+- A 不对：这个选项忽略了图中已经给出的区别。喜欢一门课，不等于有时间和钱上完；选择前，要把这些条件一起看。 / A is incorrect: This option overlooks a distinction already visible in the picture. Preference and resources are different conditions; screening considers both.
 
 <a id="c07-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -7116,13 +7121,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：列出十个旅行目的地，还没查预算。现在可以确认什么？ / ten destinations are listed without checking budget. What is established?
 
-- A．所有目的地都已经可以成行 / Every trip is already feasible
+- A．列出目的地后，优先从最想去的地方开始订票 / After listing the destinations, begin booking the place that feels most appealing
 - B．有几个想去的地方，还不知道能不能成行 / Several wishes exist but feasibility is not established
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：有几个想去的地方，还不知道能不能成行。写下十个想去的地方，只说明有这些愿望，还不知道预算和时间够不够。 / B is correct: Several wishes exist but feasibility is not established. A list presents possibilities, not evidence of budget or time.
-- A 不对：写下十个想去的地方，只说明有这些愿望，还不知道预算和时间够不够。 / A is incorrect: A list presents possibilities, not evidence of budget or time.
+- A 不对：这里要分清牌义的边界：写下十个想去的地方，只说明有这些愿望，还不知道预算和时间够不够。 / A is incorrect: The boundary of the card meaning matters here: A list presents possibilities, not evidence of budget or time.
 
 <a id="c07-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -7132,12 +7137,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：查过预算后，排除了三个不合适的计划。哪句话更贴近这件事？ / After checking your budget, you remove three unsuitable plans. Which statement best describes this?
 
 - A．在减少幻想、让选择更具体 / Reducing fantasy and making selection more concrete
-- B．删掉选项就代表完全没有想象力 / Removing options means imagination is entirely absent
+- B．排除计划会限制创造力，应先继续扩充选择 / Removing plans could limit creativity, so the list should be expanded further first
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：在减少幻想、让选择更具体。根据预算排除不合适的计划，是在作出可行的选择，不是失去了想象力。 / A is correct: Reducing fantasy and making selection more concrete. Screening uses conditions for judgement; it is not loss of imagination.
-- B 不对：根据预算排除不合适的计划，是在作出可行的选择，不是失去了想象力。 / B is incorrect: Screening uses conditions for judgement; it is not loss of imagination.
+- B 不对：这里要分清牌义的边界：根据预算排除不合适的计划，是在作出可行的选择，不是失去了想象力。 / B is incorrect: The boundary of the card meaning matters here: Screening uses conditions for judgement; it is not loss of imagination.
 
 <a id="c07-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -7149,12 +7154,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：同时想报摄影、陶艺和舞蹈，但本月只够一门课的时间。怎样应用？ / Photography, pottery, and dance appeal, but this month has time for one course. What fits?
 
 - A．比较当下目标和安排，选一门先试。 / Compare present goals and schedules and try one.
-- B．三门都报名，把喜欢当成时间自动增加。 / Enrol in all three as though interest creates more time.
+- B．先报名三门，把上课时间冲突留到开课后协调。 / Enrol in the three courses and resolve schedule conflicts after classes begin.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：比较当下目标和安排，选一门先试。 本月只有上一门课的时间，就需要先选一门。三门都喜欢，也不会自动多出时间。 / A is correct: Compare present goals and schedules and try one. Available time is explicitly limited; choosing must respect it, and more wishes do not create time.
-- B 不对：本月只有上一门课的时间，就需要先选一门。三门都喜欢，也不会自动多出时间。 / B is incorrect: “Enrol in all three as though interest creates more time.” does not address the specific conditions. Available time is explicitly limited; choosing must respect it, and more wishes do not create time.
+- B 不对：这个做法没有解决眼前的情况。本月只有上一门课的时间，就需要先选一门。三门都喜欢，也不会自动多出时间。 / B is incorrect: This action does not resolve the situation described. Available time is explicitly limited; choosing must respect it, and more wishes do not create time.
 
 **依据 / Taught basis**：[本卡应用示范](#c07-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -7165,13 +7170,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：创业想法很多，但团队只有一个月试做时间。哪项贴近建议？ / many venture ideas compete for one month of trial time. Which fits?
 
-- A．把所有想法同时列为确定成果 / List every idea as an assured result
+- A．把三种想法都按完整项目推进，不先比较时间和资源。 / Run three ideas as full projects without first comparing time and resources.
 - B．按可用资源选一个小试验 / Select one small trial using available resources
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：按可用资源选一个小试验。只有一个月，就要挑一个条件允许的想法先试。想到了很多，并不等于已经做出了成果。 / B is correct: Select one small trial using available resources. Connecting wishes to resources answers the lesson; ideas are not achievements.
-- A 不对：只有一个月，就要挑一个条件允许的想法先试。想到了很多，并不等于已经做出了成果。 / A is incorrect: Connecting wishes to resources answers the lesson; ideas are not achievements.
+- A 不对：把三种想法都做成完整项目，没有回应一个月的时间和资源限制；这里要先选一个小试验。 / A is incorrect: Running three full projects ignores the one-month limit and available resources; the advice is to choose one small trial.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7227,13 +7232,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：人物背向杯子走开，主要表达了什么？ / What is mainly taught by the figure walking away from the cups?
 
-- A．只要离开就保证选择永远正确 / Any departure guarantees the correct choice
+- A．离开代表对原来的投入失望，重点是尽快换方向 / Walking away reflects disappointment with the old investment, so changing direction quickly is the priority
 - B．原来的事情不再让自己满足，开始找更值得做的事 / An old situation no longer fulfils needs, prompting a search
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：原来的事情不再让自己满足，开始找更值得做的事。这张牌强调的是不再满足、转身寻找。它不保证只要离开，就一定选对了方向。 / B is correct: An old situation no longer fulfils needs, prompting a search. The card describes departure and seeking without guaranteeing every departure is wise.
-- A 不对：这张牌强调的是不再满足、转身寻找。它不保证只要离开，就一定选对了方向。 / A is incorrect: The card describes departure and seeking without guaranteeing every departure is wise.
+- A 不对：这个解释没有把画面线索连起来。这张牌强调的是不再满足、转身寻找。它不保证只要离开，就一定选对了方向。 / A is incorrect: This reading does not connect the picture cues. The card describes departure and seeking without guaranteeing every departure is wise.
 
 <a id="c08-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -7243,12 +7248,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：参加多年的活动已不再符合现在的目标。圣杯八在建议位，哪种做法更合适？ / An activity you have pursued for years no longer fits your goals. With the Eight of Cups as advice, which step fits?
 
 - A．确认需求后安排退出或转向 / Clarify needs and plan an exit or change
-- B．不问原因就立即放弃一切投入 / Abandon all commitments without examining why
+- B．因为已经投入多年，继续参加，不再检查它是否符合现在的目标。 / Continue because of the years already invested, without checking whether the activity still fits your goals.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：确认需求后安排退出或转向。要先了解为什么想离开、下一步准备做什么，不能看见这张牌就马上放弃所有投入。 / A is correct: Clarify needs and plan an exit or change. The lesson emphasises a reasoned turn, not an instruction to leave without judgement.
-- B 不对：要先了解为什么想离开、下一步准备做什么，不能看见这张牌就马上放弃所有投入。 / B is incorrect: The lesson emphasises a reasoned turn, not an instruction to leave without judgement.
+- B 不对：过去投入很多，不代表现在仍要继续；圣杯八提醒重新检查是否适合，并安排下一步方向。 / B is incorrect: Past investment alone is not a reason to continue; the Eight of Cups asks whether this still fits and what direction to take next.
 
 <a id="c08-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -7273,12 +7278,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：仍拥有原来的成果，却决定寻找不同方向。离开是否必须因为一无所有？ / past achievements remain, but a new direction is sought. Must departure mean nothing remains?
 
 - A．不是，拥有一些成果也可能不再满足 / No; achievements can remain without fulfilling current needs
-- B．是，只有失去全部才能转向 / Yes; a new direction requires total loss
+- B．是，若成果还在，离开就更像逃避现有问题 / Yes; leaving while achievements remain is more likely to be avoidance of the current problem
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：不是，拥有一些成果也可能不再满足。杯子还好好地摆在那里，人物却转身离开了。可以这样记：不是一无所有，而是已有的东西不再让自己满足。 / A is correct: No; achievements can remain without fulfilling current needs. The cups remain; the focus is changed fulfilment and direction, not total destruction.
-- B 不对：杯子还好好地摆在那里，人物却转身离开了。可以这样记：不是一无所有，而是已有的东西不再让自己满足。 / B is incorrect: The cups remain; the focus is changed fulfilment and direction, not total destruction.
+- B 不对：这个判断忽略了题目给出的条件。杯子还好好地摆在那里，人物却转身离开了。可以这样记：不是一无所有，而是已有的东西不再让自己满足。 / B is incorrect: This judgment overlooks a condition given in the question. The cups remain; the focus is changed fulfilment and direction, not total destruction.
 
 <a id="c08-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -7304,13 +7309,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **新题 / New prompt**：参与多年的兴趣社团已不符合现在目标，但还有已答应的任务。怎样应用？ / A long-term club no longer fits current goals, but agreed duties remain. What fits?
 
-- A．不说明需求就突然取消全部约定。 / Cancel every agreement abruptly without clarifying needs.
+- A．先退出社团，把已答应的任务留到之后再解释。 / Leave the club first and explain the previously agreed duties afterward.
 - B．理清需求，安排交接后探索新方向。 / Clarify needs, arrange a handover, then explore a new direction.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：理清需求，安排交接后探索新方向。 可以去找更合适的方向，同时把已经答应的任务交接好。想离开，不等于必须突然取消所有约定。 / B is correct: Clarify needs, arrange a handover, then explore a new direction. A prepared transition addresses new needs and existing responsibilities; abrupt cancellation is not required by the lesson.
-- A 不对：可以去找更合适的方向，同时把已经答应的任务交接好。想离开，不等于必须突然取消所有约定。 / A is incorrect: “Cancel every agreement abruptly without clarifying needs.” does not address the specific conditions. A prepared transition addresses new needs and existing responsibilities; abrupt cancellation is not required by the lesson.
+- A 不对：这个做法没有解决眼前的情况。可以去找更合适的方向，同时把已经答应的任务交接好。想离开，不等于必须突然取消所有约定。 / A is incorrect: This action does not resolve the situation described. A prepared transition addresses new needs and existing responsibilities; abrupt cancellation is not required by the lesson.
 
 **依据 / Taught basis**：[本卡应用示范](#c08-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -7322,12 +7327,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：已经读过许多书，但原来的读书方向不再回答关心的问题。哪句贴近？ / much reading has been done, but the old subject no longer answers current questions. Which fits?
 
 - A．承认旧投入价值，同时寻找新方向 / Acknowledge past investment while seeking a new direction
-- B．只有否认全部过去才能开始寻找 / All past value must be denied before seeking
+- B．旧方向既然已经有成果，就应继续深化而不是转向 / Because the old direction produced results, it should be developed further rather than changed
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：承认旧投入价值，同时寻找新方向。过去的投入仍然有价值，只是现在想解决的问题变了，所以需要找新方向。 / A is correct: Acknowledge past investment while seeking a new direction. Changing direction need not erase past value; current needs have changed.
-- B 不对：过去的投入仍然有价值，只是现在想解决的问题变了，所以需要找新方向。 / B is incorrect: Changing direction need not erase past value; current needs have changed.
+- B 不对：这个解释把牌义带到了别处。过去的投入仍然有价值，只是现在想解决的问题变了，所以需要找新方向。 / B is incorrect: This interpretation shifts the card meaning elsewhere. Changing direction need not erase past value; current needs have changed.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7384,12 +7389,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：圣杯九说的满足，主要是谁的感受？ / Whose experience of satisfaction is central here?
 
 - A．个人愿望或需要得到满足 / An individual's wish or need is satisfied
-- B．所有相关者一定同样满意 / Every involved person must be equally satisfied
+- B．重点是共同关系中的满足感，个人感受放在其次 / The main theme is satisfaction shared in a relationship, with personal enjoyment secondary
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：个人愿望或需要得到满足。这里说的是自己感到满意，不能据此认定其他人也都满意。 / A is correct: An individual's wish or need is satisfied. Personal satisfaction cannot speak for others; the subject matters.
-- B 不对：这里说的是自己感到满意，不能据此认定其他人也都满意。 / B is incorrect: Personal satisfaction cannot speak for others; the subject matters.
+- B 不对：这个选项忽略了图中已经给出的区别。这里说的是自己感到满意，不能据此认定其他人也都满意。 / B is incorrect: This option overlooks a distinction already visible in the picture. Personal satisfaction cannot speak for others; the subject matters.
 
 <a id="c09-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -7398,13 +7403,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：终于学会了一首很喜欢的曲子。圣杯九在建议位，怎样对待这份成绩更合适？ / You have learned a piece of music you love. With the Nine of Cups as advice, which response fits?
 
-- A．因为满意就认定别人都必须喜欢 / Assume personal satisfaction obliges everyone else to like it
+- A．先把成绩分享给别人，得到肯定后再享受成果 / Share the achievement first and enjoy it after other people recognise it
 - B．欣赏成果并享受这份满足 / Appreciate the achievement and enjoy satisfaction
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：欣赏成果并享受这份满足。自己学会了喜欢的曲子，当然可以高兴；别人可能喜欢不同的音乐，不必和自己一样。 / B is correct: Appreciate the achievement and enjoy satisfaction. One may enjoy an achievement without deciding everyone else's preferences.
-- A 不对：自己学会了喜欢的曲子，当然可以高兴；别人可能喜欢不同的音乐，不必和自己一样。 / A is incorrect: One may enjoy an achievement without deciding everyone else's preferences.
+- A 不对：请回到画面里的具体细节：自己学会了喜欢的曲子，当然可以高兴；别人可能喜欢不同的音乐，不必和自己一样。 / A is incorrect: Return to the specific details in the picture: One may enjoy an achievement without deciding everyone else's preferences.
 
 <a id="c09-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -7414,12 +7419,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：购物愿望达成却仍缺休息与联系，这张逆位牌更贴近哪种情况？ / A purchase is obtained but rest and connection remain unmet. What is this reversal?
 
 - A．东西买到了，但真正缺的休息和陪伴没有得到满足 / Outer gratification has missed the underlying need
-- B．只要买到东西就证明全部需要满足 / Getting the item proves every need is met
+- B．买到想要的东西，满足感会随着时间慢慢出现 / After obtaining the desired item, the feeling of satisfaction may develop with time
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：东西买到了，但真正缺的休息和陪伴没有得到满足。案例区分了获得物品与真实需要，不能把两者等同。 / A is correct: Outer gratification has missed the underlying need. The case distinguishes obtaining an item from meeting the actual need.
-- B 不对：案例区分了获得物品与真实需要，不能把两者等同。 / B is incorrect: The case distinguishes obtaining an item from meeting the actual need.
+- B 不对：这个结论比题目给出的信息多走了一步。案例区分了获得物品与真实需要，不能把两者等同。 / B is incorrect: This conclusion goes beyond the information provided. The case distinguishes obtaining an item from meeting the actual need.
 
 <a id="c09-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -7444,12 +7449,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：买了很多东西犒劳自己，还是觉得缺少陪伴。怎样做更合适？ / You buy many treats for yourself but still miss companionship. What response fits?
 
 - A．弄清自己缺的是陪伴，找人聊聊、相处一下 / Identify the need for connection and arrange real contact
-- B．继续购买并认定孤单必然消失 / Keep buying and assume loneliness must disappear
+- B．再换一种更符合期待的商品，看看心情能否改善 / Try a different purchase that better matches expectations and see whether the mood improves
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：弄清自己缺的是陪伴，找人聊聊、相处一下。如果真正缺的是陪伴，再买东西也不能代替和人相处。先弄清缺什么，才知道该怎么补上。 / A is correct: Identify the need for connection and arrange real contact. Meeting a need first requires identifying it; more purchases do not directly provide companionship.
-- B 不对：如果真正缺的是陪伴，再买东西也不能代替和人相处。先弄清缺什么，才知道该怎么补上。 / B is incorrect: Meeting a need first requires identifying it; more purchases do not directly provide companionship.
+- B 不对：先别按这个做法继续；如果真正缺的是陪伴，再买东西也不能代替和人相处。先弄清缺什么，才知道该怎么补上。 / B is incorrect: Do not continue with this approach yet; Meeting a need first requires identifying it; more purchases do not directly provide companionship.
 
 <a id="c09-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -7461,12 +7466,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：做成一直想做的蛋糕，自己很满意，朋友更喜欢另一种口味。怎样应用？ / You are pleased with a long-desired cake, while a friend prefers another flavour. What fits?
 
 - A．享受自己的满足，也允许朋友有不同喜好。 / Enjoy your satisfaction and allow the friend's different preference.
-- B．要求朋友必须同样喜欢，才能承认自己满意。 / Require the friend to like it equally before allowing your satisfaction.
+- B．先说服朋友欣赏这款口味，再庆祝自己的成果。 / Persuade the friend to appreciate the flavour before celebrating the achievement.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：享受自己的满足，也允许朋友有不同喜好。 自己喜欢这个蛋糕，可以高兴；朋友喜欢另一种口味，也不影响自己的满足。 / A is correct: Enjoy your satisfaction and allow the friend's different preference. Personal satisfaction does not require identical preferences or demand that others validate the feeling.
-- B 不对：自己喜欢这个蛋糕，可以高兴；朋友喜欢另一种口味，也不影响自己的满足。 / B is incorrect: “Require the friend to like it equally before allowing your satisfaction.” does not address the specific conditions. Personal satisfaction does not require identical preferences or demand that others validate the feeling.
+- B 不对：这样做会漏掉题目里的关键一步。自己喜欢这个蛋糕，可以高兴；朋友喜欢另一种口味，也不影响自己的满足。 / B is incorrect: This action skips a key step in the question. Personal satisfaction does not require identical preferences or demand that others validate the feeling.
 
 **依据 / Taught basis**：[本卡应用示范](#c09-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -7477,13 +7482,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：完成长期想做的个人画作，自己很满意。哪句贴近？ / a long-desired personal painting is completed and enjoyed. Which fits?
 
-- A．个人满意证明作品得到所有人认可 / Personal satisfaction proves universal acclaim
+- A．自己满意还不够，要先得到观众认可才算完成 / Personal satisfaction is not enough; audience recognition is needed before the work feels complete
 - B．个人愿望实现带来满足 / A fulfilled personal wish brings satisfaction
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：个人愿望实现带来满足。自己为作品满意，就已经符合这张牌的个人满足；别人可能有不同看法。 / B is correct: A fulfilled personal wish brings satisfaction. The theme can hold in personal experience without requiring or proving universal approval.
-- A 不对：自己为作品满意，就已经符合这张牌的个人满足；别人可能有不同看法。 / A is incorrect: The theme can hold in personal experience without requiring or proving universal approval.
+- A 不对：这个说法混淆了题目正在考的含义。自己为作品满意，就已经符合这张牌的个人满足；别人可能有不同看法。 / A is incorrect: This statement confuses the meaning being tested. The theme can hold in personal experience without requiring or proving universal approval.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7539,13 +7544,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：这张牌说的幸福，重点在哪里？ / What is central beyond one person's satisfaction?
 
-- A．只要一人满意就可代表所有人 / One satisfied person represents everyone
+- A．重点是家庭或群体呈现出和谐的样子 / The emphasis is on a family or group presenting a harmonious image
 - B．和亲近的人一起感到幸福、彼此支持 / Happiness is shared in relationships and communal life
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：和亲近的人一起感到幸福、彼此支持。成人和孩子一起出现在家园前，可以帮助记住“一起生活的幸福”。这里不只是一个人对自己的生活满意。 / B is correct: Happiness is shared in relationships and communal life. The shared setting aids belonging and shared fulfilment; the communal element matters.
-- A 不对：成人和孩子一起出现在家园前，可以帮助记住“一起生活的幸福”。这里不只是一个人对自己的生活满意。 / A is incorrect: The shared setting aids belonging and shared fulfilment; the communal element matters.
+- A 不对：这个判断忽略了题目给出的条件。成人和孩子一起出现在家园前，可以帮助记住“一起生活的幸福”。这里不只是一个人对自己的生活满意。 / A is incorrect: This judgment overlooks a condition given in the question. The shared setting aids belonging and shared fulfilment; the communal element matters.
 
 <a id="c10-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -7569,13 +7574,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：表面完美却不谈不同生活需求，这张逆位牌更贴近哪种情况？ / An image of perfection hides different daily needs. What is this reversal?
 
-- A．照片好看就证明所有人和谐 / A pleasing image proves harmony for everyone
+- A．照片里的和谐说明分歧暂时不会影响共同生活 / The harmony in the photograph suggests that the differences will not disrupt shared life for now
 - B．表面相处和睦，彼此想要的生活却不一样 / The shared ideal is disconnected from the lived relationship
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：表面相处和睦，彼此想要的生活却不一样。题目已经说，大家想要的生活不同、又不愿说出来。照片好看，不能说明这些分歧已经解决。 / B is correct: The shared ideal is disconnected from the lived relationship. Appearance cannot replace actual needs and interaction; disagreement is explicitly given.
-- A 不对：题目已经说，大家想要的生活不同、又不愿说出来。照片好看，不能说明这些分歧已经解决。 / A is incorrect: Appearance cannot replace actual needs and interaction; disagreement is explicitly given.
+- A 不对：这个判断忽略了题目给出的条件。题目已经说，大家想要的生活不同、又不愿说出来。照片好看，不能说明这些分歧已经解决。 / A is incorrect: This judgment overlooks a condition given in the question. Appearance cannot replace actual needs and interaction; disagreement is explicitly given.
 
 <a id="c10-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -7585,12 +7590,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：几位朋友一起旅行，其中一人玩得很开心，其他人却一直觉得被忽略。这能说明大家共享幸福吗？ / Friends travel together. One has a wonderful time, but the others keep feeling ignored. Does this show happiness shared by the group?
 
 - A．还不能，要看其他人的需要有没有被照顾到 / Not yet; the others' needs matter too
-- B．能，只要其中一人开心就够了 / Yes; one happy person is enough
+- B．能，有人玩得很开心，说明行程整体安排得不错 / Yes; one person's enjoyment suggests the trip was well arranged overall
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：题目里其他人觉得被忽略，说明他们还没有一起感到开心。圣杯十强调的是大家共享的幸福。 / The others feel ignored, so the enjoyment is not yet shared. The Ten of Cups emphasizes happiness experienced together.
-- B 不对：一个人开心不能代表所有人都开心。这里要把其他人的感受和需要也算进去。 / One person's happiness does not represent everyone's experience. Include the others' feelings and needs too.
+- B 不对：这个结论比题目给出的信息多走了一步。题目里其他人觉得被忽略，说明他们还没有一起感到开心。圣杯十强调的是大家共享的幸福。 / B is incorrect: This conclusion goes beyond the information provided. The others feel ignored, so the enjoyment is not yet shared. The Ten of Cups emphasizes happiness experienced together.
 
 <a id="c10-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -7599,13 +7604,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：大家想过的生活不一样，却一直假装没有分歧。先做什么更合适？ / People want different ways of living but keep pretending they agree. What can they do first?
 
-- A．只要求继续展示和谐外表 / Demand continued display of harmony only
+- A．先把共同生活的安排照旧维持，等时机合适再谈差异 / Keep the shared-life arrangements unchanged and discuss the differences when the timing feels better
 - B．说清各自想要怎样的生活，商量哪些事情能一起做到 / Clarify expectations and seek what can be shared
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：说清各自想要怎样的生活，商量哪些事情能一起做到。先把不同的想法说出来，才能商量怎样一起生活。只装作和睦，分歧仍然在那里。 / B is correct: Clarify expectations and seek what can be shared. Acknowledging differences enables a shared vision; appearances hide the issue.
-- A 不对：先把不同的想法说出来，才能商量怎样一起生活。只装作和睦，分歧仍然在那里。 / A is incorrect: Acknowledging differences enables a shared vision; appearances hide the issue.
+- A 不对：这个做法没有解决眼前的情况。先把不同的想法说出来，才能商量怎样一起生活。只装作和睦，分歧仍然在那里。 / A is incorrect: This action does not resolve the situation described. Acknowledging differences enables a shared vision; appearances hide the issue.
 
 <a id="c10-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -7634,12 +7639,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：一群长期合住的朋友平时互相照顾，也愿意继续住在一起。哪句贴近？ / Friends who have lived together for years support one another and want to keep sharing a home. Which fits?
 
 - A．和亲近的人一起感到幸福、像有一个家 / Belonging and fulfilment within shared relationships
-- B．从此永远不会出现任何分歧 / No disagreement can ever arise again
+- B．愿意继续合住，说明彼此的生活期待已经相同 / Wanting to continue living together shows that their expectations for daily life already match
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：和亲近的人一起感到幸福、像有一个家。现在相处幸福、彼此支持，不代表以后永远不会意见不同。 / A is correct: Belonging and fulfilment within shared relationships. Shared fulfilment is the present theme, not a prediction of permanent agreement.
-- B 不对：现在相处幸福、彼此支持，不代表以后永远不会意见不同。 / B is incorrect: Shared fulfilment is the present theme, not a prediction of permanent agreement.
+- B 不对：这个说法混淆了题目正在考的含义。现在相处幸福、彼此支持，不代表以后永远不会意见不同。 / B is incorrect: This statement confuses the meaning being tested. Shared fulfilment is the present theme, not a prediction of permanent agreement.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7726,12 +7731,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：因害怕说不好而压住感谢，这张逆位牌更贴近哪种情况？ / Fear of imperfect wording suppresses gratitude. What is this reversal?
 
 - A．明明有感谢，却因为害羞说不出口 / Shyness obstructs expression of real feeling
-- B．没有表达就证明完全不在意 / No expression proves there is no care
+- B．没能表达，说明自己还没有理解这份感受 / The difficulty expressing it suggests the feeling has not yet been understood
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：明明有感谢，却因为害羞说不出口。题目说他很感谢伙伴，只是担心说不好，所以没有表达，不是完全不在意。 / A is correct: Shyness obstructs expression of real feeling. Gratitude is already stated; expression, not feeling itself, is difficult.
-- B 不对：题目说他很感谢伙伴，只是担心说不好，所以没有表达，不是完全不在意。 / B is incorrect: Gratitude is already stated; expression, not feeling itself, is difficult.
+- B 不对：这个结论比题目给出的信息多走了一步。题目说他很感谢伙伴，只是担心说不好，所以没有表达，不是完全不在意。 / B is incorrect: This conclusion goes beyond the information provided. Gratitude is already stated; expression, not feeling itself, is difficult.
 
 <a id="c11-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -7740,13 +7745,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：第一次感到某个创作想法很打动自己。可以怎样理解？ / a creative idea feels moving for the first time. How can it be understood?
 
-- A．必须立刻作出一生的承诺 / An immediate lifelong promise is required
+- A．先把这份感受定义清楚，再决定是否继续接触创作 / Define the feeling clearly before deciding whether to continue exploring the creative idea
 - B．带着好奇，慢慢了解刚出现的感受 / Open exploration of an emerging feeling
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：带着好奇，慢慢了解刚出现的感受。可以先感受这份触动，试着了解它，不必刚有灵感就决定一辈子都要做什么。 / B is correct: Open exploration of an emerging feeling. A new feeling can be explored without an unsupported major promise.
-- A 不对：可以先感受这份触动，试着了解它，不必刚有灵感就决定一辈子都要做什么。 / A is incorrect: A new feeling can be explored without an unsupported major promise.
+- A 不对：这个做法没有解决眼前的情况。可以先感受这份触动，试着了解它，不必刚有灵感就决定一辈子都要做什么。 / A is incorrect: This action does not resolve the situation described. A new feeling can be explored without an unsupported major promise.
 
 <a id="c11-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -7756,12 +7761,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：想感谢合作伙伴，又不知道怎样说才好。可以先试着做什么？ / You want to thank a collaborator but do not know how to say it. What could you try first?
 
 - A．先说一件具体感谢的小事 / Name one specific thing to be thankful for
-- B．等到保证永不说错才表达 / Wait until flawless expression is guaranteed
+- B．先在心里反复练习，等措辞比较成熟再开口 / Rehearse privately and speak after the wording feels more polished
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先说一件具体感谢的小事。先说一件具体感谢的事，就比要求自己说得完美更容易开口。 / A is correct: Name one specific thing to be thankful for. A simple specific expression reduces the block; waiting for perfection maintains silence.
-- B 不对：先说一件具体感谢的事，就比要求自己说得完美更容易开口。 / B is incorrect: A simple specific expression reduces the block; waiting for perfection maintains silence.
+- B 不对：这个做法没有解决眼前的情况。先说一件具体感谢的事，就比要求自己说得完美更容易开口。 / B is incorrect: This action does not resolve the situation described. A simple specific expression reduces the block; waiting for perfection maintains silence.
 
 <a id="c11-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -7773,12 +7778,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **新题 / New prompt**：第一次想写一张感谢卡，却觉得不会写长文。这张牌在建议位时，怎样做更合适？ / You want to write a first thank-you card but cannot write a long letter. What fits?
 
 - A．写下一个具体感谢的小细节。 / Write one specific detail you appreciate.
-- B．等到能写完美长文才允许任何表达。 / Allow no expression until a perfect long letter is possible.
+- B．先多读几篇范文，等能写得完整再开始感谢卡。 / Read more examples and begin the thank-you card after the wording feels complete.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：写下一个具体感谢的小细节。 初次写感谢卡，可以先写一件想感谢的小事。等到会写完美长文才动笔，就迟迟没有开始。 / A is correct: Write one specific detail you appreciate. A small expression fits open beginner exploration; a perfection threshold blocks the start.
-- B 不对：初次写感谢卡，可以先写一件想感谢的小事。等到会写完美长文才动笔，就迟迟没有开始。 / B is incorrect: “Allow no expression until a perfect long letter is possible.” does not address the specific conditions. A small expression fits open beginner exploration; a perfection threshold blocks the start.
+- B 不对：先别按这个做法继续；初次写感谢卡，可以先写一件想感谢的小事。等到会写完美长文才动笔，就迟迟没有开始。 / B is incorrect: Do not continue with this approach yet; A small expression fits open beginner exploration; a perfection threshold blocks the start.
 
 **依据 / Taught basis**：[本卡应用示范](#c11-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -7789,13 +7794,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：孩子或成年人第一次尝试把心情画出来。哪句贴近？ / a child or adult first tries drawing a feeling. Which fits?
 
-- A．只有孩子才能体现侍从 / Only a child can embody the Page
+- A．成年人更适合王后或国王，侍从偏向还没成熟的孩子 / Adults fit Queens or Kings better, while Pages are mainly immature children
 - B．留意到自己的感受，开始试着表达 / Begin expressing with curiosity and sensitivity
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：留意到自己的感受，开始试着表达。第一次试着画出心情，无论孩子还是成年人，都可以有这种好奇又不熟练的状态。 / B is correct: Begin expressing with curiosity and sensitivity. The Page is a beginner state in this lesson and can appear at any age.
-- A 不对：第一次试着画出心情，无论孩子还是成年人，都可以有这种好奇又不熟练的状态。 / A is incorrect: The Page is a beginner state in this lesson and can appear at any age.
+- A 不对：这里要分清牌义的边界：第一次试着画出心情，无论孩子还是成年人，都可以有这种好奇又不熟练的状态。 / A is incorrect: The boundary of the card meaning matters here: The Page is a beginner state in this lesson and can appear at any age.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -7851,13 +7856,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：骑士端着杯子向前，重点是哪种行动？ / Where is the emphasis of the rider moving with a cup here?
 
-- A．只在心里想，从不接近或表达 / Only think privately, never approach or express
+- A．先在心里形成理想，再等待对方给出回应机会 / Shape the ideal privately and wait for the other person to create an opening to respond
 - B．主动表达自己的感受或理想 / Turn feeling or an ideal into an active expression
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：主动表达自己的感受或理想。骑士端着杯子向前走，可以帮助记住主动靠近、表达心意，不只是放在心里想。 / B is correct: Turn feeling or an ideal into an active expression. This Knight includes active approach, not feeling held entirely still.
-- A 不对：骑士端着杯子向前走，可以帮助记住主动靠近、表达心意，不只是放在心里想。 / A is incorrect: This Knight includes active approach, not feeling held entirely still.
+- A 不对：这个解释没有把画面线索连起来。骑士端着杯子向前走，可以帮助记住主动靠近、表达心意，不只是放在心里想。 / A is incorrect: This reading does not connect the picture cues. This Knight includes active approach, not feeling held entirely still.
 
 <a id="c12-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -7897,12 +7902,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：收到浪漫邀请，能仅凭这张牌保证长久关系吗？ / a romantic invitation arrives. Does this card alone guarantee a lasting relationship?
 
 - A．不能，发出一次邀请，不等于以后一定会守约 / No; an invitation differs from sustained commitment
-- B．能，一次邀请等于永久承诺 / Yes; one invitation equals a permanent promise
+- B．能，主动邀请说明他愿意认真经营这段关系 / Yes; the active invitation shows a willingness to invest seriously in the relationship
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：不能，发出一次邀请，不等于以后一定会守约。主动邀请，说明现在愿意靠近；以后是否可靠，还要看答应的事能不能做到。 / A is correct: No; an invitation differs from sustained commitment. The lesson supports an active expression; reliability depends on later conduct.
-- B 不对：主动邀请，说明现在愿意靠近；以后是否可靠，还要看答应的事能不能做到。 / B is incorrect: The lesson supports an active expression; reliability depends on later conduct.
+- B 不对：这个结论比题目给出的信息多走了一步。主动邀请，说明现在愿意靠近；以后是否可靠，还要看答应的事能不能做到。 / B is incorrect: This conclusion goes beyond the information provided. The lesson supports an active expression; reliability depends on later conduct.
 
 <a id="c12-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -7911,13 +7916,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：合作方把计划说得很好，却已两次没交答应的材料。下一步怎样安排更合适？ / A partner describes an appealing plan but has twice failed to provide promised materials. What arrangement would help next?
 
-- A．用更浪漫的说法替代所有交付 / Replace every deliverable with more romantic wording
+- A．先重写更有吸引力的合作愿景，重新激发对方动力 / Rewrite the partnership vision in a more appealing way to renew the partner's motivation
 - B．约定先完成哪一项准备，再看是否按约做到了 / Set a clear small deliverable and observe follow-through
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：约定先完成哪一项准备，再看是否按约做到了。缺的是按约完成准备工作，不是再换一种更动听的说法。 / B is correct: Set a clear small deliverable and observe follow-through. The missing part is delivery, not sufficiently attractive language.
-- A 不对：缺的是按约完成准备工作，不是再换一种更动听的说法。 / A is incorrect: The missing part is delivery, not sufficiently attractive language.
+- A 不对：这样做会漏掉题目里的关键一步。缺的是按约完成准备工作，不是再换一种更动听的说法。 / A is incorrect: This action skips a key step in the question. The missing part is delivery, not sufficiently attractive language.
 
 <a id="c12-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -7946,12 +7951,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：为喜欢的社区设计活动，主动递交一份提案。哪句贴近？ / affection for a community leads to submitting an event proposal. Which fits?
 
 - A．因为喜欢或认同，主动表达想法、争取参与 / Feeling and ideals drive a concrete approach and offer
-- B．圣杯骑士只能用在恋爱告白 / The Knight of Cups only applies to romantic confession
+- B．社区活动提案更偏工作安排，与这张牌的情感动力关系不大 / A community event proposal is mainly a work arrangement and has little connection to this card's emotional motivation
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：因为喜欢或认同，主动表达想法、争取参与。主动表达也可用于创作和关怀，不限爱情。 / A is correct: Feeling and ideals drive a concrete approach and offer. Active expression can concern creativity and care, not romance alone.
-- B 不对：主动表达也可用于创作和关怀，不限爱情。 / B is incorrect: Active expression can concern creativity and care, not romance alone.
+- B 不对：这个解释把牌义带到了别处。主动表达也可用于创作和关怀，不限爱情。 / B is incorrect: This interpretation shifts the card meaning elsewhere. Active expression can concern creativity and care, not romance alone.
 
 **继续、补学与完成 / Continue, support, and finish**：首次走“讲解 → Q1 → 已完成的应用示范 → Q2 → 总结”，正确后不追加相同题；Q1 错误或提示后完成，展示 R1 的补讲与新题。Q2 错误先回看应用示范，再进入 RA 的应用专属补讲与新题；不调用 R1 去处理另一种误解。RA 已用过则不重复计作独立掌握，转总结并把 V1 留待回访。后续 Q3 错误只进入 R2，不用无关正位题替代逆位补学。若 R1/RA/R2 仍困难，展示以下总结并结束本轮；最多两轮支持，不能机械用满额度。 / First learning follows explanation → Q1 → worked application → Q2 → summary. A correct answer does not trigger an identical extra item. After Q1 error or prompted completion, use R1's explanation and new item. For Q2 errors, revisit the worked example and use RA's application-specific explanation and new question; do not substitute R1's different misconception. If RA was already used, do not count repetition as independent evidence—summarise and reserve V1 for later. A later Q3 error routes only to R2, not an unrelated upright item. If R1/RA/R2 remains difficult, summarise and end this round. Two support cycles are a maximum, not a quota. Use the [adaptive contract](#adaptive-contract).
 
@@ -8008,12 +8013,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：圣杯王后所说的体谅别人，哪种做法更贴近？ / How is empathy understood?
 
 - A．认真倾听、体会感受再回应 / Listen carefully, understand feeling, then respond
-- B．不用询问就能确定对方全部想法 / Know all another person's thoughts without asking
+- B．根据自己的类似经历推测对方现在需要什么 / Use a similar personal experience to infer what the other person needs now
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：认真倾听、体会感受再回应。要理解别人，先听对方怎么说，再确认自己有没有听懂，不能凭感觉认定自己全知道。 / A is correct: Listen carefully, understand feeling, then respond. Empathy depends on listening and understanding, not direct access to another mind.
-- B 不对：要理解别人，先听对方怎么说，再确认自己有没有听懂，不能凭感觉认定自己全知道。 / B is incorrect: Empathy depends on listening and understanding, not direct access to another mind.
+- B 不对：这个解释没有把画面线索连起来。要理解别人，先听对方怎么说，再确认自己有没有听懂，不能凭感觉认定自己全知道。 / B is incorrect: This reading does not connect the picture cues. Empathy depends on listening and understanding, not direct access to another mind.
 
 <a id="c13-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -8022,13 +8027,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：朋友正在为一件事烦恼。圣杯王后在建议位，怎样回应更合适？ / A friend is troubled by something. With the Queen of Cups as advice, which response fits?
 
-- A．直接宣布自己知道对方全部感受 / Announce complete knowledge of the other's feelings
+- A．先分享自己的类似经历，让朋友知道你理解他 / Share a similar personal experience first so the friend knows you understand
 - B．先倾听并确认对方需要的支持 / Listen and check what support is needed
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：先倾听并确认对方需要的支持。先听、再问，才知道对方真正需要什么。没听完就说“我全明白”，可能把自己的想法当成了对方的感受。 / B is correct: Listen and check what support is needed. Checking helps the response fit; defining feelings for someone bypasses listening.
-- A 不对：先听、再问，才知道对方真正需要什么。没听完就说“我全明白”，可能把自己的想法当成了对方的感受。 / A is incorrect: Checking helps the response fit; defining feelings for someone bypasses listening.
+- A 不对：请回到画面里的具体细节：先听、再问，才知道对方真正需要什么。没听完就说“我全明白”，可能把自己的想法当成了对方的感受。 / A is incorrect: Return to the specific details in the picture: Checking helps the response fit; defining feelings for someone bypasses listening.
 
 <a id="c13-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -8038,12 +8043,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：朋友的所有困难都变成自己的责任，这张逆位牌更贴近哪种情况？ / A friend's every difficulty becomes one’s own responsibility. What is this reversal?
 
 - A．太受对方情绪影响，分不清哪些事该由谁负责 / Emotional involvement blurs boundaries
-- B．承担越多就一定越懂对方 / Taking on more always means understanding better
+- B．多承担朋友的事情，可以减轻他的情绪压力 / Taking on more of the friend's responsibilities can reduce their emotional strain
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：太受对方情绪影响，分不清哪些事该由谁负责。替朋友做更多事，不等于更懂朋友。题目里已经连自己的休息都顾不上了。 / A is correct: Emotional involvement blurs boundaries. Extent of responsibility differs from depth of understanding; personal needs are being neglected.
-- B 不对：替朋友做更多事，不等于更懂朋友。题目里已经连自己的休息都顾不上了。 / B is incorrect: Extent of responsibility differs from depth of understanding; personal needs are being neglected.
+- B 不对：先核对眼前例子的条件：替朋友做更多事，不等于更懂朋友。题目里已经连自己的休息都顾不上了。 / B is incorrect: Check the conditions in this example first: Extent of responsibility differs from depth of understanding; personal needs are being neglected.
 
 <a id="c13-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -8052,13 +8057,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：对方说沉默是疲惫，你原先猜是生气。共情应该怎样做？ / silence is explained as fatigue rather than your guess of anger. What does empathy require?
 
-- A．坚持自己的猜测一定更懂对方 / Insist your guess understands them better
+- A．保留原先判断，同时从他的疲惫里寻找生气的迹象 / Keep the original interpretation while looking for signs of anger within the reported fatigue
 - B．以对方说明为依据，继续倾听 / Use their explanation and keep listening
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：以对方说明为依据，继续倾听。对方已经说明是累了，就应当按这个信息重新理解，不能坚持自己猜的“他在生气”。 / B is correct: Use their explanation and keep listening. Listening allows a guess to change; sensitivity is not certainty.
-- A 不对：对方已经说明是累了，就应当按这个信息重新理解，不能坚持自己猜的“他在生气”。 / A is incorrect: Listening allows a guess to change; sensitivity is not certainty.
+- A 不对：这个做法没有解决眼前的情况。对方已经说明是累了，就应当按这个信息重新理解，不能坚持自己猜的“他在生气”。 / A is incorrect: This action does not resolve the situation described. Listening allows a guess to change; sensitivity is not certainty.
 
 <a id="c13-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -8068,12 +8073,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：为了陪伴朋友，总是取消自己的休息。怎样做才能关心对方，也顾到自己？ / You repeatedly cancel your rest to support a friend. How can you care for them while also caring for yourself?
 
 - A．说清自己能帮到哪一步，也留出休息时间 / Agree on support one can offer and keep recovery time
-- B．认定只有完全牺牲自己才是关怀 / Treat total self-sacrifice as the only form of care
+- B．先把朋友的需要安排好，自己的休息之后再补回来 / Arrange the friend's needs first and recover the missed rest afterward
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：说清自己能帮到哪一步，也留出休息时间。可以关心朋友，也可以保留自己的休息时间。不必把自己累坏，才能证明在乎对方。 / A is correct: Agree on support one can offer and keep recovery time. Care can have boundaries; empathy need not be proven by self-neglect.
-- B 不对：可以关心朋友，也可以保留自己的休息时间。不必把自己累坏，才能证明在乎对方。 / B is incorrect: Care can have boundaries; empathy need not be proven by self-neglect.
+- B 不对：这样做会漏掉题目里的关键一步。可以关心朋友，也可以保留自己的休息时间。不必把自己累坏，才能证明在乎对方。 / B is incorrect: This action skips a key step in the question. Care can have boundaries; empathy need not be proven by self-neglect.
 
 <a id="c13-ra"></a>
 **RA · 应用专属补学 / Application-specific support**
@@ -8163,13 +8168,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：水面有波动，国王却坐得平稳，可以帮助记住什么？ / What does the seated figure amid moving water teach here?
 
-- A．成熟意味着没有任何情绪 / Maturity means having no emotion at all
+- A．把情绪压下来，保持外表平静地处理事情 / Push the emotion down and handle the situation with a calm outward manner
 - B．有情绪，也能想清楚、稳妥地处理事情 / Allow emotion while keeping judgement and response steady
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：有情绪，也能想清楚、稳妥地处理事情。水面仍有波动，国王却坐得平稳。可以这样记：有情绪，也能冷静处理，不是完全没有情绪。 / B is correct: Allow emotion while keeping judgement and response steady. The moving water remains; steadiness concerns response, not the absence of emotion.
-- A 不对：水面仍有波动，国王却坐得平稳。可以这样记：有情绪，也能冷静处理，不是完全没有情绪。 / A is incorrect: The moving water remains; steadiness concerns response, not the absence of emotion.
+- A 不对：这个解释把牌义带到了别处。水面仍有波动，国王却坐得平稳。可以这样记：有情绪，也能冷静处理，不是完全没有情绪。 / A is incorrect: This interpretation shifts the card meaning elsewhere. The moving water remains; steadiness concerns response, not the absence of emotion.
 
 <a id="c14-q2"></a>
 **Q2 · 把含义用进问题 / Apply the meaning**
@@ -8179,12 +8184,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：团队因为分工发生争执。圣杯国王在建议位，怎样处理更合适？ / A team is arguing about how work is divided. With the King of Cups as advice, which response fits?
 
 - A．先听清大家为什么不满，再冷静商量分歧 / Acknowledge feelings and handle the practical disagreement steadily
-- B．禁止任何人提感受就算解决 / Ban mention of feelings and call the issue solved
+- B．先由负责人定好分工，大家接受安排后情绪会慢慢缓和 / Have the organiser set the roles first and expect the feelings to settle after the group accepts them
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：先听清大家为什么不满，再冷静商量分歧。先听清大家为什么不满，再商量分工。只禁止谈感受，看起来安静了，问题却还在。 / A is correct: Acknowledge feelings and handle the practical disagreement steadily. A mature response addresses feeling and the issue rather than manufacturing calm through denial.
-- B 不对：先听清大家为什么不满，再商量分工。只禁止谈感受，看起来安静了，问题却还在。 / B is incorrect: A mature response addresses feeling and the issue rather than manufacturing calm through denial.
+- B 不对：请回到画面里的具体细节：先听清大家为什么不满，再商量分工。只禁止谈感受，看起来安静了，问题却还在。 / B is incorrect: Return to the specific details in the picture: A mature response addresses feeling and the issue rather than manufacturing calm through denial.
 
 <a id="c14-q3"></a>
 **Q3 · 有背景的逆位 / A contextual reversal**
@@ -8193,13 +8198,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **题目 / Prompt**：长期否认愤怒后突然爆发，这张逆位牌更贴近哪种情况？ / Denied anger eventually erupts. What is this reversal?
 
-- A．只要平时不说就证明情绪已处理 / Usual silence proves the emotion was resolved
+- A．平时保持沉默，有助于把愤怒慢慢消化掉 / Keeping quiet in daily life helps the anger settle gradually
 - B．一直压着情绪不说，后来忍不住发火 / Suppression destabilises the response
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：一直压着情绪不说，后来忍不住发火。一直不说，不代表怒气已经处理好了。后来忍不住发火，正说明之前的问题还在。 / B is correct: Suppression destabilises the response. Not expressing is not the same as understanding and regulating; the eruption shows the stated imbalance.
-- A 不对：一直不说，不代表怒气已经处理好了。后来忍不住发火，正说明之前的问题还在。 / A is incorrect: Not expressing is not the same as understanding and regulating; the eruption shows the stated imbalance.
+- A 不对：这个结论比题目给出的信息多走了一步。一直不说，不代表怒气已经处理好了。后来忍不住发火，正说明之前的问题还在。 / A is incorrect: This conclusion goes beyond the information provided. Not expressing is not the same as understanding and regulating; the eruption shows the stated imbalance.
 
 <a id="c14-r1"></a>
 **R1 · 补学：澄清核心误解 / Support: clarify the core misconception**
@@ -8209,12 +8214,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **题目 / Prompt**：承认自己难过，但仍能清楚商量下一步。算稳定吗？ / sadness is acknowledged while next steps are discussed clearly. Can this be steady?
 
 - A．可以，有难过，也能冷静地回应 / Yes; a steady response can include emotion
-- B．不可以，有难过就一定不成熟 / No; sadness necessarily means immaturity
+- B．不算稳定，应该先把难过平复后再讨论下一步 / This is not yet steady; the sadness should settle before the next step is discussed
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - A 正确：可以，有难过，也能冷静地回应。难过不代表不能冷静商量事情。要看怎样处理，而不是要求自己一点情绪都没有。 / A is correct: Yes; a steady response can include emotion. The lesson distinguishes having emotion from being entirely governed by it.
-- B 不对：难过不代表不能冷静商量事情。要看怎样处理，而不是要求自己一点情绪都没有。 / B is incorrect: The lesson distinguishes having emotion from being entirely governed by it.
+- B 不对：这样做会漏掉题目里的关键一步。难过不代表不能冷静商量事情。要看怎样处理，而不是要求自己一点情绪都没有。 / B is incorrect: This action skips a key step in the question. The lesson distinguishes having emotion from being entirely governed by it.
 
 <a id="c14-r2"></a>
 **R2 · 补学：澄清本例逆位 / Support: clarify this reversal**
@@ -8240,13 +8245,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **新题 / New prompt**：活动成员因分工不满而激动，负责人需要继续安排任务。怎样应用？ / Members are upset about roles, and the organiser needs to assign work. What fits?
 
-- A．只要求所有人别有情绪，不处理分工问题。 / Demand that nobody feel upset and leave roles unresolved.
+- A．先把任务重新分配好，情绪问题等活动结束再谈。 / Reassign the tasks first and discuss the emotional concerns after the event.
 - B．先听清不满，再按明确条件协商分工。 / Hear the concerns, then agree on roles using clear conditions.
 
 **答案与逐项反馈 / Answer and option feedback**：
 
 - B 正确：先听清不满，再按明确条件协商分工。 先听清不满，再协商分工，才能处理真正的问题。只叫大家别激动，分工上的分歧仍然没有解决。 / B is correct: Hear the concerns, then agree on roles using clear conditions. The lesson combines emotional understanding and practical judgement; banning emotion does not resolve the dispute.
-- A 不对：先听清不满，再协商分工，才能处理真正的问题。只叫大家别激动，分工上的分歧仍然没有解决。 / A is incorrect: “Demand that nobody feel upset and leave roles unresolved.” does not address the specific conditions. The lesson combines emotional understanding and practical judgement; banning emotion does not resolve the dispute.
+- A 不对：先别按这个做法继续；先听清不满，再协商分工，才能处理真正的问题。只叫大家别激动，分工上的分歧仍然没有解决。 / A is incorrect: Do not continue with this approach yet; The lesson combines emotional understanding and practical judgement; banning emotion does not resolve the dispute.
 
 **依据 / Taught basis**：[本卡应用示范](#c14-application)及 RA 替代讲解。 / The card's worked application and the RA explanation above.
 
@@ -8342,13 +8347,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: In the assignment example, what comes first?
 
-- A. 不说清“完成”指什么，只看谁说话更有把握。 / Skip the definition and count who sounds more certain.
+- A. 先判断哪位同学看起来进度更快，再决定要不要讨论标准。 / First judge who seems further along, then decide whether the standard needs discussion.
 - B. 先说清“完成”指写好初稿，还是交出终稿。 / Agree whether finished means draft or final.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。两人说的“完成”不是一回事：一个指初稿，一个指终稿。先说清这一点，才能继续讨论。 / Correct. Different definitions caused the dispute; clarify them first.
-- 选择 A 的反馈：这题不对。本题应选：先说清“完成”指写好初稿，还是交出终稿。 两人说的“完成”不是一回事：一个指初稿，一个指终稿。先说清这一点，才能继续讨论。 / Not quite. The supported answer is: Agree whether finished means draft or final. Different definitions caused the dispute; clarify them first.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；两人说的“完成”不是一回事：一个指初稿，一个指终稿。先说清这一点，才能继续讨论。 / Not quite. Do not continue with this approach yet; Different definitions caused the dispute; clarify them first.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -8369,12 +8374,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: The team treats rumor as fact. What does this reversal suggest?
 
 - A. 先查传言的来源，再重新判断。 / Check sources and reconsider the judgment.
-- B. 立刻认定传言一定是假的。 / Immediately declare the rumor false.
+- B. 把传言当成误会，先安抚团队再说。 / Treat the rumor as a misunderstanding and calm the team before checking it.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。还没核实传言，就既不能认定它是真的，也不能认定它是假的。 / Correct. Confusion calls for verification, not another unsupported conclusion.
-- 选择 B 的反馈：这题不对。本题应选：先查传言的来源，再重新判断。 还没核实传言，就既不能认定它是真的，也不能认定它是假的。 / Not quite. The supported answer is: Check sources and reconsider the judgment. Confusion calls for verification, not another unsupported conclusion.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。还没核实传言，就既不能认定它是真的，也不能认定它是假的。 / Not quite. This interpretation shifts the card meaning elsewhere. Confusion calls for verification, not another unsupported conclusion.
 
 
 #### s01-R1 · Q1 对应的补讲
@@ -8588,13 +8593,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Deadline and new information arrive. What does this reversal describe?
 
-- A. 已经能保证其中一门课一定适合小周。 / One course is now guaranteed suitable.
+- A. 先选听起来更轻松的课程，再慢慢了解新要求。 / Choose the course that sounds easier, then look into the new requirement later.
 - B. 已经不能继续拖着不选了。 / The old stalemate cannot be maintained.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。小周不能再靠拖延避开选择了，但还得比较两门课，牌不会替他决定。 / Correct. The context supports pressure breaking balance, not a guaranteed outcome.
-- 选择 A 的反馈：这题不对。本题应选：已经不能继续拖着不选了。 小周不能再靠拖延避开选择了，但还得比较两门课，牌不会替他决定。 / Not quite. The supported answer is: The old stalemate cannot be maintained. The context supports pressure breaking balance, not a guaranteed outcome.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。小周不能再靠拖延避开选择了，但还得比较两门课，牌不会替他决定。 / Not quite. This statement confuses the meaning being tested. The context supports pressure breaking balance, not a guaranteed outcome.
 
 
 #### s02-R1 · Q1 对应的补讲
@@ -8617,12 +8622,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why is refusing to look different from reaching clarity?
 
 - A. 因为还没了解作决定需要的信息。 / Needed information has not entered the judgment.
-- B. 因为只要闭眼就会自动消除差异。 / Closing one’s eyes removes differences.
+- B. 暂时避开资料，让情绪平静后就算有了答案。 / Step away from the information and treat a calmer mood as the answer.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。不去看课程要求，仍然会有时间和难度的差别，只是小周还不知道。 / Correct. Avoidance stalls a decision; it cannot remove real differences.
-- 选择 B 的反馈：这题不对。本题应选：因为还没了解作决定需要的信息。 不去看课程要求，仍然会有时间和难度的差别，只是小周还不知道。 / Not quite. The supported answer is: Needed information has not entered the judgment. Avoidance stalls a decision; it cannot remove real differences.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。不去看课程要求，仍然会有时间和难度的差别，只是小周还不知道。 / Not quite. This interpretation shifts the card meaning elsewhere. Avoidance stalls a decision; it cannot remove real differences.
 
 
 #### s02-R2 · Q2 对应的补讲
@@ -8644,13 +8649,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Two job offers remain unread. How can the decision move?
 
-- A. 把两份邀请收起来，假定完全一样。 / Put them away and assume they are identical.
+- A. 先凭公司名气挑一份，再看排班能否配合。 / Pick one by company reputation, then see whether its schedule fits.
 - B. 先核对排班与自己的可用时间。 / Compare schedules with actual availability.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。看过排班，才能知道哪份兼职与自己的时间冲突；一直收着不看，就仍然无从选择。 / Correct. Facts help resolve stalemate better than maintaining appearances.
-- 选择 A 的反馈：这题不对。本题应选：先核对排班与自己的可用时间。 看过排班，才能知道哪份兼职与自己的时间冲突；一直收着不看，就仍然无从选择。 / Not quite. The supported answer is: Compare schedules with actual availability. Facts help resolve stalemate better than maintaining appearances.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。看过排班，才能知道哪份兼职与自己的时间冲突；一直收着不看，就仍然无从选择。 / Not quite. This action does not resolve the situation described. Facts help resolve stalemate better than maintaining appearances.
 
 
 #### s02-R3 · Q3 对应的逆位补讲
@@ -8672,13 +8677,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: An avoided decision can no longer wait. What next?
 
-- A. 既然压力增加，就假定两个选项都自动失效。 / Assume both options are invalid because pressure rose.
+- A. 沿用原先偏好的课程，暂时不把新要求放进比较。 / Keep the course already preferred and leave the new requirement out of the comparison.
 - B. 根据新要求重新比较两门课，再作决定。 / Include new information and face the decision.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。截止日期逼近，只说明必须面对选择了；选哪一项仍要看具体条件。 / Correct. Pressure breaks stalemate without replacing comparison.
-- 选择 A 的反馈：这题不对。本题应选：根据新要求重新比较两门课，再作决定。 截止日期逼近，只说明必须面对选择了；选哪一项仍要看具体条件。 / Not quite. The supported answer is: Include new information and face the decision. Pressure breaks stalemate without replacing comparison.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。截止日期逼近，只说明必须面对选择了；选哪一项仍要看具体条件。 / Not quite. This action skips a key step in the question. Pressure breaks stalemate without replacing comparison.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -8809,12 +8814,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Speaking about hurt and rebuilding life: interpret this reversal.
 
 - A. 开始承认这次伤痛，慢慢恢复生活。 / Gradual repair after acknowledging the pain.
-- B. 从来没有受伤，不需要承认。 / There was never any hurt to acknowledge.
+- B. 既然愿意谈，就把伤痛视为已经处理好了。 / Treat the hurt as resolved once someone is willing to talk about it.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。慢慢好起来，不等于当初没有受伤；恢复是在承认这段经历之后发生的。 / Correct. Recovery follows experience; it does not erase it.
-- 选择 B 的反馈：这题不对。本题应选：开始承认这次伤痛，慢慢恢复生活。 慢慢好起来，不等于当初没有受伤；恢复是在承认这段经历之后发生的。 / Not quite. The supported answer is: Gradual repair after acknowledging the pain. Recovery follows experience; it does not erase it.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。慢慢好起来，不等于当初没有受伤；恢复是在承认这段经历之后发生的。 / Not quite. This action does not resolve the situation described. Recovery follows experience; it does not erase it.
 
 
 #### s03-R1 · Q1 对应的补讲
@@ -8836,13 +8841,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Which is supported by this lesson?
 
-- A. 只要痛苦，就已证明别人背叛。 / Pain itself proves betrayal.
+- A. 痛苦很强烈时，可以把背叛当作最合理解释。 / When the pain feels intense, take betrayal as the most plausible explanation.
 - B. 这张牌表达伤痛；有没有人背叛，还需要事实来判断。 / Hurt is a theme; betrayal needs separate evidence.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。难过是真实的，但“有人背叛了我”仍是需要证据的判断。 / Correct. A real feeling does not verify every guessed cause.
-- 选择 A 的反馈：这题不对。本题应选：这张牌表达伤痛；有没有人背叛，还需要事实来判断。 难过是真实的，但“有人背叛了我”仍是需要证据的判断。 / Not quite. The supported answer is: Hurt is a theme; betrayal needs separate evidence. A real feeling does not verify every guessed cause.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。难过是真实的，但“有人背叛了我”仍是需要证据的判断。 / Not quite. This statement confuses the meaning being tested. A real feeling does not verify every guessed cause.
 
 
 #### s03-R2 · Q2 对应的补讲
@@ -8893,12 +8898,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Does occasional sadness negate recovery here?
 
 - A. 不会，慢慢恢复不表示痛苦要一下全部消失。 / No; gradual repair need not erase pain instantly.
-- B. 会，恢复必须证明从未难过。 / Yes; recovery must prove there was never pain.
+- B. 会，情绪又低落说明恢复方向可能选错了。 / Yes. Feeling low again suggests that the recovery approach may be wrong.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。恢复需要时间，偶尔难过并不表示前面的恢复都白费了。 / Correct. Repair is a process, not denial.
-- 选择 B 的反馈：这题不对。本题应选：不会，慢慢恢复不表示痛苦要一下全部消失。 恢复需要时间，偶尔难过并不表示前面的恢复都白费了。 / Not quite. The supported answer is: No; gradual repair need not erase pain instantly. Repair is a process, not denial.
+- 选择 B 的反馈：这题不对。偶尔难过不等于之前的支持都失效；恢复本来就需要时间，可以继续照顾仍会反复的情绪。 / Not quite. Occasional sadness does not erase earlier support; recovery takes time, and recurring feelings can still be cared for.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -8914,13 +8919,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: An honest conversation hurts a relationship. Which fits?
 
-- A. 牌已经确定双方永远无法修复。 / The card guarantees the relationship can never heal.
+- A. 先判断这段关系值不值得修复，再谈自己的痛苦。 / Judge whether the relationship deserves repair before addressing the pain.
 - B. 先处理听到事实后的痛苦。 / Address the pain of hearing the facts.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。这张牌让我们注意当下的伤痛，不能由此断定关系永远无法修复。 / Correct. The meaning describes hurt without fixing the permanent outcome.
-- 选择 A 的反馈：这题不对。本题应选：先处理听到事实后的痛苦。 这张牌让我们注意当下的伤痛，不能由此断定关系永远无法修复。 / Not quite. The supported answer is: Address the pain of hearing the facts. The meaning describes hurt without fixing the permanent outcome.
+- 选择 A 的反馈：这题不对。这里要分清牌义的边界：这张牌让我们注意当下的伤痛，不能由此断定关系永远无法修复。 / Not quite. The boundary of the card meaning matters here: The meaning describes hurt without fixing the permanent outcome.
 
 
 #### 完成与接续
@@ -8978,13 +8983,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What is the pause for?
 
-- A. 证明自己失败，永久退出。 / Prove failure and leave forever.
+- A. 把决定往后放，等外部问题自己缓下来。 / Put the decision off and wait for the outside problem to ease on its own.
 - B. 恢复状态，再考虑下一步。 / Regain capacity before the next step.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。暂停是为了恢复后再继续，不是宣布从此不做了。 / Correct. Temporary recovery differs from permanent withdrawal.
-- 选择 A 的反馈：这题不对。本题应选：恢复状态，再考虑下一步。 暂停是为了恢复后再继续，不是宣布从此不做了。 / Not quite. The supported answer is: Regain capacity before the next step. Temporary recovery differs from permanent withdrawal.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。暂停是为了恢复后再继续，不是宣布从此不做了。 / Not quite. This statement confuses the meaning being tested. Temporary recovery differs from permanent withdrawal.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -9028,13 +9033,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Task messages continue during rest. What does this reversal suggest?
 
-- A. 已经永远失去恢复能力。 / Recovery is permanently impossible.
+- A. 休息被打断说明当前不适合休息，应该先把任务赶完。 / Interrupted rest means this is a poor time to rest, so finish the tasks first.
 - B. 休息一直被打断，需要留出不处理任务的时间。 / Rest is interrupted; protect the break.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。这个例子只说明休息不断被打断，不能说小许以后再也恢复不了。 / Correct. The background supports insufficient rest, not permanence.
-- 选择 A 的反馈：这题不对。本题应选：休息一直被打断，需要留出不处理任务的时间。 这个例子只说明休息不断被打断，不能说小许以后再也恢复不了。 / Not quite. The supported answer is: Rest is interrupted; protect the break. The background supports insufficient rest, not permanence.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。这个例子只说明休息不断被打断，不能说小许以后再也恢复不了。 / Not quite. This statement confuses the meaning being tested. The background supports insufficient rest, not permanence.
 
 
 #### s04-R1 · Q1 对应的补讲
@@ -9057,12 +9062,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Does a night off before replanning equal surrender?
 
 - A. 不是，暂停可以帮助自己恢复状态。 / No; a pause can support recovery.
-- B. 是，只有不停工作才算继续。 / Yes; only uninterrupted work counts.
+- B. 是，暂停会让别人觉得自己没有承担责任。 / Yes. A pause makes it look as though responsibility was avoided.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。想继续做好一件事，也可以先停下来休息；不停工作不一定做得更好。 / Correct. Continued commitment does not require eliminating rest.
-- 选择 B 的反馈：这题不对。本题应选：不是，暂停可以帮助自己恢复状态。 想继续做好一件事，也可以先停下来休息；不停工作不一定做得更好。 / Not quite. The supported answer is: No; a pause can support recovery. Continued commitment does not require eliminating rest.
+- 选择 B 的反馈：这题不对。这个判断忽略了题目给出的条件。想继续做好一件事，也可以先停下来休息；不停工作不一定做得更好。 / Not quite. This judgment overlooks a condition given in the question. Continued commitment does not require eliminating rest.
 
 
 #### s04-R2 · Q2 对应的补讲
@@ -9084,13 +9089,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Errors rise after intensive rehearsal. Apply the theme.
 
-- A. 把休息全部换成观看自己的失误录像。 / Replace all rest with reviewing mistakes.
+- A. 继续按原强度排练，用更多次数把失误压下去。 / Keep rehearsing at the same intensity and use more repetitions to push through the mistakes.
 - B. 先安静休息，再看接下来的排练怎么安排。 / Rest quietly, then reassess the schedule.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。想缓过来，需要暂时不处理排练的事；一直看失误录像，注意力仍在任务上。 / Correct. Restoration needs space away from task strain.
-- 选择 A 的反馈：这题不对。本题应选：先安静休息，再看接下来的排练怎么安排。 想缓过来，需要暂时不处理排练的事；一直看失误录像，注意力仍在任务上。 / Not quite. The supported answer is: Rest quietly, then reassess the schedule. Restoration needs space away from task strain.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。想缓过来，需要暂时不处理排练的事；一直看失误录像，注意力仍在任务上。 / Not quite. This action does not resolve the situation described. Restoration needs space away from task strain.
 
 
 #### s04-R3 · Q3 对应的逆位补讲
@@ -9112,13 +9117,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: After muting work messages, rest is still needed. What next?
 
-- A. 既已关消息，就立即恢复满负荷工作。 / Resume maximum work instantly because messages are off.
+- A. 马上用更密集的安排补回刚才停下的进度。 / Make the schedule denser to recover the time spent resting.
 - B. 真正休息一段时间，再看看自己缓过来没有。 / Allow real recovery time, then reassess.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。关掉消息只是减少打扰，还要真正休息一段时间，才能看看状态有没有恢复。 / Correct. Removing interruption improves conditions; recovery still takes time.
-- 选择 A 的反馈：这题不对。本题应选：真正休息一段时间，再看看自己缓过来没有。 关掉消息只是减少打扰，还要真正休息一段时间，才能看看状态有没有恢复。 / Not quite. The supported answer is: Allow real recovery time, then reassess. Removing interruption improves conditions; recovery still takes time.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。关掉消息只是减少打扰，还要真正休息一段时间，才能看看状态有没有恢复。 / Not quite. This action skips a key step in the question. Removing interruption improves conditions; recovery still takes time.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -9135,12 +9140,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Thinking is muddled after an argument. Which fits?
 
 - A. 约好稍后再谈，先让自己安静下来。 / Agree to talk later and settle first.
-- B. 以暂停为由永久拒绝所有沟通。 / Use the pause to refuse all future discussion.
+- B. 趁情绪还在，把争论一次谈到底。 / Use the remaining emotion to push the argument through to a conclusion.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。约好稍后再谈，是先让自己平静下来，并没有放弃之后的沟通。 / Correct. The pause supports recovery rather than canceling communication.
-- 选择 B 的反馈：这题不对。本题应选：约好稍后再谈，先让自己安静下来。 约好稍后再谈，是先让自己平静下来，并没有放弃之后的沟通。 / Not quite. The supported answer is: Agree to talk later and settle first. The pause supports recovery rather than canceling communication.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。约好稍后再谈，是先让自己平静下来，并没有放弃之后的沟通。 / Not quite. This action does not resolve the situation described. The pause supports recovery rather than canceling communication.
 
 
 #### 完成与接续
@@ -9199,12 +9204,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why examine the cost of winning?
 
 - A. 争赢了，却可能让大家原本想一起做的事更难完成。 / A win may damage the shared goal.
-- B. 赢过争论就证明方法一定合适。 / Winning proves the method was appropriate.
+- B. 争论中占上风，说明这次做法更有效。 / Having the upper hand in the argument shows that this approach works better.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。不能只看争论赢没赢，还要看这样赢了以后，同伴是否还愿意合作。 / Correct. Winning does not replace examining consequences.
-- 选择 B 的反馈：这题不对。本题应选：争赢了，却可能让大家原本想一起做的事更难完成。 不能只看争论赢没赢，还要看这样赢了以后，同伴是否还愿意合作。 / Not quite. The supported answer is: A win may damage the shared goal. Winning does not replace examining consequences.
+- 选择 B 的反馈：这题不对。这个说法混淆了题目正在考的含义。不能只看争论赢没赢，还要看这样赢了以后，同伴是否还愿意合作。 / Not quite. This statement confuses the meaning being tested. Winning does not replace examining consequences.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -9249,12 +9254,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: The team agrees to stop blaming. Interpret the reversal.
 
 - A. 愿意和解了，还需要实际行动来修复关系。 / Willingness to reconcile appears; repair remains.
-- B. 冲突已经自动彻底解决。 / All conflict has automatically vanished.
+- B. 停止指责就说明关系已经修复，不必再谈影响。 / Once the blame stops, treat the relationship as repaired and leave its effects undiscussed.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。愿意和解只是第一步。彼此的意见和受到的伤害，仍需要好好处理。 / Correct. Willingness is a starting point, not completed repair.
-- 选择 B 的反馈：这题不对。本题应选：愿意和解了，还需要实际行动来修复关系。 愿意和解只是第一步。彼此的意见和受到的伤害，仍需要好好处理。 / Not quite. The supported answer is: Willingness to reconcile appears; repair remains. Willingness is a starting point, not completed repair.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。愿意和解只是第一步。彼此的意见和受到的伤害，仍需要好好处理。 / Not quite. This action skips a key step in the question. Willingness is a starting point, not completed repair.
 
 
 #### s05-R1 · Q1 对应的补讲
@@ -9333,12 +9338,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: After agreeing to reconcile, resentment remains. What next?
 
 - A. 谈清哪件事伤害了彼此，以及接下来怎样改变。 / Discuss specific harm and repair actions.
-- B. 用和解二字要求所有人立刻忘记。 / Demand instant forgetting because reconciliation was named.
+- B. 把分歧先放下，避免再提受伤的细节。 / Set the disagreement aside and avoid revisiting the details that caused hurt.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。说好和解后，还要谈清哪里受了伤、接下来怎样改变，关系才有机会改善。 / Correct. Willingness does not replace actual repair.
-- 选择 B 的反馈：这题不对。本题应选：谈清哪件事伤害了彼此，以及接下来怎样改变。 说好和解后，还要谈清哪里受了伤、接下来怎样改变，关系才有机会改善。 / Not quite. The supported answer is: Discuss specific harm and repair actions. Willingness does not replace actual repair.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。说好和解后，还要谈清哪里受了伤、接下来怎样改变，关系才有机会改善。 / Not quite. This action skips a key step in the question. Willingness does not replace actual repair.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -9443,12 +9448,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: The new study method requires adjustment. What fits?
 
 - A. 按新计划一步步做，同时处理仍然存在的困难。 / Implement it gradually and address old difficulties.
-- B. 只要还有压力就立即否定新方法。 / Reject it immediately because pressure remains.
+- B. 把剩余压力当成新方法选错的信号，尽快换回旧方法。 / Read the remaining pressure as evidence that the new method was a mistake and return to the old one.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。换了复习方法，还需要一段适应时间；有压力不表示新方法一定无效。 / Correct. The example concerns transition, not instant perfection.
-- 选择 B 的反馈：这题不对。本题应选：按新计划一步步做，同时处理仍然存在的困难。 换了复习方法，还需要一段适应时间；有压力不表示新方法一定无效。 / Not quite. The supported answer is: Implement it gradually and address old difficulties. The example concerns transition, not instant perfection.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；换了复习方法，还需要一段适应时间；有压力不表示新方法一定无效。 / Not quite. Do not continue with this approach yet; The example concerns transition, not instant perfection.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -9468,13 +9473,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: The plan changes but late nights remain. What fits?
 
-- A. 一次换计划就应消除全部习惯。 / A new plan should erase every habit instantly.
+- A. 先等新计划自然带来规律，再考虑作息。 / Wait for the new plan to create a routine before changing sleep habits.
 - B. 旧习惯还在影响自己，需要继续调整。 / Old problems follow; transition needs adjustment.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。计划改了，熬夜的做法却没改；要真正减轻疲惫，还得调整作息。 / Correct. Behavior must change; a new label is insufficient.
-- 选择 A 的反馈：这题不对。本题应选：旧习惯还在影响自己，需要继续调整。 计划改了，熬夜的做法却没改；要真正减轻疲惫，还得调整作息。 / Not quite. The supported answer is: Old problems follow; transition needs adjustment. Behavior must change; a new label is insufficient.
+- 选择 A 的反馈：这题不对。这个解释把牌义带到了别处。计划改了，熬夜的做法却没改；要真正减轻疲惫，还得调整作息。 / Not quite. This interpretation shifts the card meaning elsewhere. Behavior must change; a new label is insufficient.
 
 
 #### s06-R1 · Q1 对应的补讲
@@ -9497,12 +9502,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Boat moving, swords remaining: remember what?
 
 - A. 开始离开困境后，过去的问题可能还在。 / Leaving difficulty can carry experience along.
-- B. 任何新阶段都与过去完全无关。 / A new stage has no connection to the past.
+- B. 进入新阶段后，重点放在前方，旧问题可以先不处理。 / Focus on what lies ahead in the new stage and leave the old problems unaddressed.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。船在向前走，剑还在船上。可以用这幅画记住：改变开始了，过去的问题未必马上消失。 / Correct. The picture combines movement and carrying, not total erasure.
-- 选择 B 的反馈：这题不对。本题应选：开始离开困境后，过去的问题可能还在。 船在向前走，剑还在船上。可以用这幅画记住：改变开始了，过去的问题未必马上消失。 / Not quite. The supported answer is: Leaving difficulty can carry experience along. The picture combines movement and carrying, not total erasure.
+- 选择 B 的反馈：这题不对。这个说法混淆了题目正在考的含义。船在向前走，剑还在船上。可以用这幅画记住：改变开始了，过去的问题未必马上消失。 / Not quite. This statement confuses the meaning being tested. The picture combines movement and carrying, not total erasure.
 
 
 #### s06-R2 · Q2 对应的补讲
@@ -9575,12 +9580,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: A quieter study space does not immediately restore focus. Interpret.
 
 - A. 环境改善只是过渡的一步，仍需适应。 / Better conditions are one step; adjustment remains.
-- B. 没有立刻轻松就证明任何改变无效。 / No immediate relief proves all change useless.
+- B. 把注意力困难归因于新环境，继续换学习地点。 / Blame the concentration problem on the new setting and move to another study place.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。换个安静地方有帮助，但专注状态不一定立刻恢复，还可以给自己一点适应时间。 / Correct. This theme does not require instantaneous improvement.
-- 选择 B 的反馈：这题不对。本题应选：环境改善只是过渡的一步，仍需适应。 换个安静地方有帮助，但专注状态不一定立刻恢复，还可以给自己一点适应时间。 / Not quite. The supported answer is: Better conditions are one step; adjustment remains. This theme does not require instantaneous improvement.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。换个安静地方有帮助，但专注状态不一定立刻恢复，还可以给自己一点适应时间。 / Not quite. This action does not resolve the situation described. This theme does not require instantaneous improvement.
 
 
 #### 完成与接续
@@ -9662,13 +9667,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Changes affect teammates. What is the advice?
 
-- A. 把所有隐瞒都解释成高明策略。 / Treat every concealment as clever strategy.
+- A. 等同伴发现改动后再解释，免得提前打断合作。 / Wait until teammates notice the change, then explain it so the work is not interrupted beforehand.
 - B. 把会影响合作的改动告诉同伴。 / Share information needed for coordination.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。文件改动会影响同伴接下来的工作，就应告诉他们；不能把这种隐瞒一律说成聪明。 / Correct. Coordination requires information; appropriateness depends on effects.
-- 选择 A 的反馈：这题不对。本题应选：把会影响合作的改动告诉同伴。 文件改动会影响同伴接下来的工作，就应告诉他们；不能把这种隐瞒一律说成聪明。 / Not quite. The supported answer is: Share information needed for coordination. Coordination requires information; appropriateness depends on effects.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。文件改动会影响同伴接下来的工作，就应告诉他们；不能把这种隐瞒一律说成聪明。 / Not quite. This action skips a key step in the question. Coordination requires information; appropriateness depends on effects.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -9689,12 +9694,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Explaining edits and reviewing them together: what fits?
 
 - A. 开始坦白并处理原问题。 / Disclosure and renewed engagement.
-- B. 已经证明以前一定恶意欺骗。 / Proof of deliberate past deception.
+- B. 主动说明改动，重点是为自己之前的做法辩解。 / Explain the change mainly to defend what you did earlier.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。主动说明改动，是开始坦白的表现，但不能因此推断他之前一定有恶意。 / Correct. Disclosure supports that direction without proving motives.
-- 选择 B 的反馈：这题不对。本题应选：开始坦白并处理原问题。 主动说明改动，是开始坦白的表现，但不能因此推断他之前一定有恶意。 / Not quite. The supported answer is: Disclosure and renewed engagement. Disclosure supports that direction without proving motives.
+- 选择 B 的反馈：这题不对。把说明改动变成为自己辩解，缺少坦白说明并和同伴一起核对影响的行动。 / Not quite. Defending the earlier action shifts attention away from honestly explaining the change and checking its effects together.
 
 
 #### s07-R1 · Q1 对应的补讲
@@ -9716,13 +9721,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Why distinguish a private draft from a hidden shared decision?
 
-- A. 只要独自行动就一定是背叛。 / Any solitary action is betrayal.
+- A. 独自行动通常会破坏信任，因此草稿也应先报备。 / Working alone tends to damage trust, so a private draft should be reported in advance.
 - B. 共同决定会影响伙伴怎么做，所以改动后需要告诉他们。 / A hidden shared decision affects others and needs communication.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。自己先写一份草稿，和瞒着伙伴改共同决定，不是一回事；瞒着伙伴改共同决定会影响别人，应该沟通。 / Correct. Strategy and avoidance depend on responsibilities and consequences.
-- 选择 A 的反馈：这题不对。本题应选：共同决定会影响伙伴怎么做，所以改动后需要告诉他们。 自己先写一份草稿，和瞒着伙伴改共同决定，不是一回事；瞒着伙伴改共同决定会影响别人，应该沟通。 / Not quite. The supported answer is: A hidden shared decision affects others and needs communication. Strategy and avoidance depend on responsibilities and consequences.
+- 选择 A 的反馈：这题不对。这个结论比题目给出的信息多走了一步。自己先写一份草稿，和瞒着伙伴改共同决定，不是一回事；瞒着伙伴改共同决定会影响别人，应该沟通。 / Not quite. This conclusion goes beyond the information provided. Strategy and avoidance depend on responsibilities and consequences.
 
 
 #### s07-R2 · Q2 对应的补讲
@@ -9773,12 +9778,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: After explaining earlier edits, what remains?
 
 - A. 请受影响的伙伴核对改动，并说好以后怎样通知。 / Let affected partners review and agree on future updates.
-- B. 因为已经解释，就不允许任何人询问。 / Ban questions because an explanation was given.
+- B. 解释过原因后先观察同伴反应，不再讨论通知方式。 / After explaining the reason, watch the teammates' response and leave the notification process unchanged.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。解释过改动之后，还应让伙伴检查、提问，并说好以后怎样通知，才算认真处理这件事。 / Correct. Facing an issue includes review, not merely declaring disclosure.
-- 选择 B 的反馈：这题不对。本题应选：请受影响的伙伴核对改动，并说好以后怎样通知。 解释过改动之后，还应让伙伴检查、提问，并说好以后怎样通知，才算认真处理这件事。 / Not quite. The supported answer is: Let affected partners review and agree on future updates. Facing an issue includes review, not merely declaring disclosure.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。解释过改动之后，还应让伙伴检查、提问，并说好以后怎样通知，才算认真处理这件事。 / Not quite. This interpretation shifts the card meaning elsewhere. Facing an issue includes review, not merely declaring disclosure.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -9794,13 +9799,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Does a private draft for a surprise establish deception?
 
-- A. 能，任何保密都说明恶意。 / Yes; privacy always proves malice.
+- A. 保密会让对方不安，所以应先按欺骗来理解。 / Secrecy can make someone uneasy, so interpret it as deception at first.
 - B. 不能，要看实际背景与有没有违反双方的约定。 / No; consider context and obligations.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。为惊喜暂时保密，不一定是在伤害别人；要看具体安排和双方原有的约定。 / Correct. The lesson separates strategy from avoidance, not privacy from morality.
-- 选择 A 的反馈：这题不对。本题应选：不能，要看实际背景与有没有违反双方的约定。 为惊喜暂时保密，不一定是在伤害别人；要看具体安排和双方原有的约定。 / Not quite. The supported answer is: No; consider context and obligations. The lesson separates strategy from avoidance, not privacy from morality.
+- 选择 A 的反馈：这题不对。这个判断忽略了题目给出的条件。为惊喜暂时保密，不一定是在伤害别人；要看具体安排和双方原有的约定。 / Not quite. This judgment overlooks a condition given in the question. The lesson separates strategy from avoidance, not privacy from morality.
 
 
 #### 完成与接续
@@ -9858,13 +9863,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: When restricted, what comes first here?
 
-- A. 认定全部困难都是自己想多了。 / Declare every difficulty imaginary.
+- A. 先提醒自己别想太多，把困难暂时放到一边。 / Tell yourself to stop overthinking and set the difficulty aside for now.
 - B. 弄清卡在哪一步，再找目前能做的事。 / Identify real blocks and remaining possible actions.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。寻找还能做什么，不等于否认困难。先弄清卡在哪里，才能找到一个可行步骤。 / Correct. Finding options does not require denying real constraints.
-- 选择 A 的反馈：这题不对。本题应选：弄清卡在哪一步，再找目前能做的事。 寻找还能做什么，不等于否认困难。先弄清卡在哪里，才能找到一个可行步骤。 / Not quite. The supported answer is: Identify real blocks and remaining possible actions. Finding options does not require denying real constraints.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；寻找还能做什么，不等于否认困难。先弄清卡在哪里，才能找到一个可行步骤。 / Not quite. Do not continue with this approach yet; Finding options does not require denying real constraints.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -9883,12 +9888,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Xia does not know how to seek help. Which follows?
 
 - A. 选一个具体难点向助教询问。 / Ask a tutor about one specific difficulty.
-- B. 要求自己立刻独立解决所有困难。 / Demand an immediate solo solution to everything.
+- B. 把整个课程问题一次交给助教，让对方安排学习步骤。 / Hand the whole course problem to the teaching assistant and let them arrange the study steps.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。先问清一个具体难点，就开始有了办法；不必要求自己一下解决所有问题。 / Correct. A feasible small step better fits finding options.
-- 选择 B 的反馈：这题不对。本题应选：选一个具体难点向助教询问。 先问清一个具体难点，就开始有了办法；不必要求自己一下解决所有问题。 / Not quite. The supported answer is: Ask a tutor about one specific difficulty. A feasible small step better fits finding options.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；先问清一个具体难点，就开始有了办法；不必要求自己一下解决所有问题。 / Not quite. Do not continue with this approach yet; A feasible small step better fits finding options.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -9908,13 +9913,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A stepwise support plan appears. Interpret.
 
-- A. 所有课程任务已经自动完成。 / Every task has automatically been completed.
+- A. 既然有了补基础的方法，可以先不处理剩下的课程要求。 / Now that there is a way to rebuild the basics, leave the remaining course requirements for later.
 - B. 开始发现自己还有别的办法。 / Options begin to become visible.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。找到补基础的方法，只是开始知道怎样学；具体课程仍要一步步完成。 / Correct. Seeing a way forward starts change, not task completion.
-- 选择 A 的反馈：这题不对。本题应选：开始发现自己还有别的办法。 找到补基础的方法，只是开始知道怎样学；具体课程仍要一步步完成。 / Not quite. The supported answer is: Options begin to become visible. Seeing a way forward starts change, not task completion.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；找到补基础的方法，只是开始知道怎样学；具体课程仍要一步步完成。 / Not quite. Do not continue with this approach yet; Seeing a way forward starts change, not task completion.
 
 
 #### s08-R1 · Q1 对应的补讲
@@ -9937,12 +9942,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Do gaps mean there are no constraints?
 
 - A. 不是，人物仍被绑着，但可以继续寻找有没有别的办法。 / No; consider both constraints and openings.
-- B. 是，有空隙就表示人物根本没有受限制。 / Yes; helplessness must be invented.
+- B. 是，看到空隙说明限制主要来自人物的想象。 / Yes. The gap suggests that the restriction mainly exists in the figure's imagination.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。人物仍被绑着，所以有空隙不等于没有限制。两处细节要一起看。 / Correct. The binding remains; the image does not deny difficulty.
-- 选择 B 的反馈：这题不对。本题应选：不是，人物仍被绑着，但可以继续寻找有没有别的办法。 人物仍被绑着，所以有空隙不等于没有限制。两处细节要一起看。 / Not quite. The supported answer is: No; consider both constraints and openings. The binding remains; the image does not deny difficulty.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。人物仍被绑着，所以有空隙不等于没有限制。两处细节要一起看。 / Not quite. This interpretation shifts the card meaning elsewhere. The binding remains; the image does not deny difficulty.
 
 
 #### s08-R2 · Q2 对应的补讲
@@ -9964,13 +9969,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A process is confusing and contacts unclear. Start how?
 
-- A. 因为暂时不会，就确定永远没有办法。 / Conclude no solution will ever exist.
+- A. 先凭经验选一个环节尝试，等出错后再找负责人。 / Choose a step by intuition and contact the responsible person after an error occurs.
 - B. 先确定卡在哪一步，查询对应负责人。 / Identify the blocked step and its contact.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。说清卡在哪一步，才容易找到可以询问的人；只说“全都没办法”，就难以开始。 / Correct. A concrete issue is more workable than global helplessness.
-- 选择 A 的反馈：这题不对。本题应选：先确定卡在哪一步，查询对应负责人。 说清卡在哪一步，才容易找到可以询问的人；只说“全都没办法”，就难以开始。 / Not quite. The supported answer is: Identify the blocked step and its contact. A concrete issue is more workable than global helplessness.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。说清卡在哪一步，才容易找到可以询问的人；只说“全都没办法”，就难以开始。 / Not quite. This action skips a key step in the question. A concrete issue is more workable than global helplessness.
 
 
 #### s08-R3 · Q3 对应的逆位补讲
@@ -9992,13 +9997,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A help option becomes visible. How follow through?
 
-- A. 认为找到一个办法，就表示所有限制都消失了。 / Treat seeing an option as every restriction disappearing.
+- A. 把找到联系人当成问题已解决，先等待对方主动安排。 / Treat finding a contact as solving the problem and wait for them to arrange the next step.
 - B. 先尝试一个具体求助步骤。 / Try one concrete step toward help.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。知道可以找谁帮忙之后，还要实际开口询问，事情才会往前走。 / Correct. Recovered options still need action.
-- 选择 A 的反馈：这题不对。本题应选：先尝试一个具体求助步骤。 知道可以找谁帮忙之后，还要实际开口询问，事情才会往前走。 / Not quite. The supported answer is: Try one concrete step toward help. Recovered options still need action.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；知道可以找谁帮忙之后，还要实际开口询问，事情才会往前走。 / Not quite. Do not continue with this approach yet; Recovered options still need action.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -10015,12 +10020,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Learning software, someone says I can do nothing. First?
 
 - A. 找出一个已经会的操作，再指出一个需要求助的操作。 / Name one known action and one needing help.
-- B. 直接宣布不需要任何学习支持。 / Declare that no support is needed.
+- B. 先跳过不熟的功能，照着别人完成的结果模仿。 / Skip the unfamiliar feature and imitate someone else's finished result.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。先分清哪些会、哪些不会，才知道要学什么；不用否认自己遇到的困难。 / Correct. Defining the difficulty fits better than denying it.
-- 选择 B 的反馈：这题不对。本题应选：找出一个已经会的操作，再指出一个需要求助的操作。 先分清哪些会、哪些不会，才知道要学什么；不用否认自己遇到的困难。 / Not quite. The supported answer is: Name one known action and one needing help. Defining the difficulty fits better than denying it.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；先分清哪些会、哪些不会，才知道要学什么；不用否认自己遇到的困难。 / Not quite. Do not continue with this approach yet; Defining the difficulty fits better than denying it.
 
 
 #### 完成与接续
@@ -10079,12 +10084,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Does intense worry prove the worst outcome?
 
 - A. 不能，担心不等于事情一定会那样发生。 / No; distress and external evidence differ.
-- B. 证明，越担心就越说明结果确定。 / Yes; stronger worry makes the outcome certain.
+- B. 可以把这种担心当作最坏结果正在靠近的信号。 / The worry can be read as a sign that the worst outcome is approaching.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。担心确实会让人难受，但不能据此判断最坏的事一定会发生。 / Correct. The lesson acknowledges worry without treating it as prophecy.
-- 选择 B 的反馈：这题不对。本题应选：不能，担心不等于事情一定会那样发生。 担心确实会让人难受，但不能据此判断最坏的事一定会发生。 / Not quite. The supported answer is: No; distress and external evidence differ. The lesson acknowledges worry without treating it as prophecy.
+- 选择 B 的反馈：这题不对。这个判断忽略了题目给出的条件。担心确实会让人难受，但不能据此判断最坏的事一定会发生。 / Not quite. This judgment overlooks a condition given in the question. The lesson acknowledges worry without treating it as prophecy.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -10102,13 +10107,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: No immediate interview reply: which fits?
 
-- A. 没立即回复已经证明完全失败。 / No instant reply proves total failure.
+- A. 把沉默当成婉拒，尽快停止准备后续面试。 / Read the silence as a polite rejection and stop preparing for the next interview stage.
 - B. 目前没回复，失败仍只是猜测。 / No reply is known; failure remains a guess.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。目前只知道还没收到回复；“面试失败”是小宁的猜测，还没有得到证实。 / Correct. Known fact and inference must be separated.
-- 选择 A 的反馈：这题不对。本题应选：目前没回复，失败仍只是猜测。 目前只知道还没收到回复；“面试失败”是小宁的猜测，还没有得到证实。 / Not quite. The supported answer is: No reply is known; failure remains a guess. Known fact and inference must be separated.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。目前只知道还没收到回复；“面试失败”是小宁的猜测，还没有得到证实。 / Not quite. This action does not resolve the situation described. Known fact and inference must be separated.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -10129,12 +10134,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Sharing worry and receiving support: reversal?
 
 - A. 压力可能逐渐缓和。 / Pressure may gradually ease.
-- B. 此后永远不可能再担心。 / Worry can never recur.
+- B. 得到一次支持后，今后的担心可以忽略。 / After receiving support once, future worries can be dismissed.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。说出担忧、得到支持，可能让小宁慢慢轻松一些，但不表示以后绝不会再紧张。 / Correct. The context supports gradual relief, not a permanent guarantee.
-- 选择 B 的反馈：这题不对。本题应选：压力可能逐渐缓和。 说出担忧、得到支持，可能让小宁慢慢轻松一些，但不表示以后绝不会再紧张。 / Not quite. The supported answer is: Pressure may gradually ease. The context supports gradual relief, not a permanent guarantee.
+- 选择 B 的反馈：这题不对。这个说法混淆了题目正在考的含义。说出担忧、得到支持，可能让小宁慢慢轻松一些，但不表示以后绝不会再紧张。 / Not quite. This statement confuses the meaning being tested. The context supports gradual relief, not a permanent guarantee.
 
 
 #### s09-R1 · Q1 对应的补讲
@@ -10156,13 +10161,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What does I fear an error directly establish?
 
-- A. 错误一定已发生而且无法修复。 / An irreversible error must already exist.
+- A. 担心很强烈，说明错误大概已经发生。 / Strong worry suggests that the feared mistake has probably happened.
 - B. 现在确实很担心，需要先弄清自己在担心什么。 / Worry is present and deserves attention.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。害怕出错，说明你正在担心；要知道有没有真的出错，还得检查实际情况。 / Correct. An emotion is real without verifying an external event.
-- 选择 A 的反馈：这题不对。本题应选：现在确实很担心，需要先弄清自己在担心什么。 害怕出错，说明你正在担心；要知道有没有真的出错，还得检查实际情况。 / Not quite. The supported answer is: Worry is present and deserves attention. An emotion is real without verifying an external event.
+- 选择 A 的反馈：这题不对。这里要分清牌义的边界：害怕出错，说明你正在担心；要知道有没有真的出错，还得检查实际情况。 / Not quite. The boundary of the card meaning matters here: An emotion is real without verifying an external event.
 
 
 #### s09-R2 · Q2 对应的补讲
@@ -10213,12 +10218,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Tension remains after sharing worry. Interpret.
 
 - A. 缓和可以逐步发生，继续区分事实和猜测。 / Relief can be gradual; keep separating fact from guess.
-- B. 只要再紧张就证明支持完全无效。 / Any further tension proves support useless.
+- B. 把偶尔仍紧张理解成之前的支持没有起作用。 / Treat occasional remaining tension as evidence that the earlier support did not help.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。得到支持后，担忧也可能慢慢才减轻；偶尔仍紧张，不等于之前的帮助全无用处。 / Correct. Relief need not eliminate worry permanently in one step.
-- 选择 B 的反馈：这题不对。本题应选：缓和可以逐步发生，继续区分事实和猜测。 得到支持后，担忧也可能慢慢才减轻；偶尔仍紧张，不等于之前的帮助全无用处。 / Not quite. The supported answer is: Relief can be gradual; keep separating fact from guess. Relief need not eliminate worry permanently in one step.
+- 选择 B 的反馈：这题不对。偶尔仍紧张，不会抹掉之前支持的作用；缓和可以逐步发生，同时继续区分事实和猜测。 / Not quite. Occasional tension does not erase earlier support; relief can be gradual while you keep separating facts from assumptions.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -10298,13 +10303,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Which matches this ending?
 
-- A. 一个人此后绝无任何可能。 / A person has no future possibilities.
+- A. 把这次结束理解为个人能力已经耗尽。 / Interpret this ending as a sign that the person's capacity has run out.
 - B. 某种旧处境已无法继续。 / An old situation cannot continue.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。结束的是眼前这个阶段或做法，不是说这个人以后一切都没有希望。 / Correct. The lesson concerns a specific phase, not an entire life.
-- 选择 A 的反馈：这题不对。本题应选：某种旧处境已无法继续。 结束的是眼前这个阶段或做法，不是说这个人以后一切都没有希望。 / Not quite. The supported answer is: An old situation cannot continue. The lesson concerns a specific phase, not an entire life.
+- 选择 A 的反馈：这题不对。先核对眼前例子的条件：结束的是眼前这个阶段或做法，不是说这个人以后一切都没有希望。 / Not quite. Check the conditions in this example first: The lesson concerns a specific phase, not an entire life.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -10323,12 +10328,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: For the canceled project, which follows?
 
 - A. 承认旧方案结束并整理可保留成果。 / Acknowledge closure and preserve usable work.
-- B. 继续假定旧安排完全有效。 / Keep assuming the old arrangement is valid.
+- B. 先保留旧安排，等项目可能恢复后再整理成果。 / Keep the old arrangements in place and organize the results if the project returns.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。项目已经明确取消，就要接受旧安排结束了，再整理可以保留的成果。 / Correct. The known cancellation requires acknowledging an end.
-- 选择 B 的反馈：这题不对。本题应选：承认旧方案结束并整理可保留成果。 项目已经明确取消，就要接受旧安排结束了，再整理可以保留的成果。 / Not quite. The supported answer is: Acknowledge closure and preserve usable work. The known cancellation requires acknowledging an end.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；项目已经明确取消，就要接受旧安排结束了，再整理可以保留的成果。 / Not quite. Do not continue with this approach yet; The known cancellation requires acknowledging an end.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -10348,13 +10353,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Starting a new plan: interpret this reversal.
 
-- A. 旧项目已被保证恢复原样。 / The original project is guaranteed restored.
+- A. 开始计划就表示旧项目正在恢复。 / Starting to plan means that the old project is coming back.
 - B. 从低点逐步恢复。 / Gradually recover from the low point.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。从受挫中恢复，可以是开始新计划，不一定是把旧项目重新办起来。 / Correct. Recovery can take a new direction.
-- 选择 A 的反馈：这题不对。本题应选：从低点逐步恢复。 从受挫中恢复，可以是开始新计划，不一定是把旧项目重新办起来。 / Not quite. The supported answer is: Gradually recover from the low point. Recovery can take a new direction.
+- 选择 A 的反馈：这题不对。从低点恢复不一定要回到旧项目；接受它已经结束，再开始新计划，也是一种恢复。 / Not quite. Recovery from a low point need not restore the old project; accepting its end and beginning a new plan is also recovery.
 
 
 #### s10-R1 · Q1 对应的补讲
@@ -10377,12 +10382,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Does one plan ending rule out all plans?
 
 - A. 不是，旧方案行不通，还可以考虑新的方案。 / No; distinguish that plan from future possibilities.
-- B. 是，结束一次就永远不能再开始。 / Yes; one ending prevents every new beginning.
+- B. 是，眼前失败说明相近方案也缺少可行性。 / Yes. This failure suggests that similar plans are also unworkable.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。已知的是旧方案行不通，不能因此断定以后所有方案都行不通。 / Correct. Limit the ending to the known situation.
-- 选择 B 的反馈：这题不对。本题应选：不是，旧方案行不通，还可以考虑新的方案。 已知的是旧方案行不通，不能因此断定以后所有方案都行不通。 / Not quite. The supported answer is: No; distinguish that plan from future possibilities. Limit the ending to the known situation.
+- 选择 B 的反馈：这题不对。这个判断忽略了题目给出的条件。已知的是旧方案行不通，不能因此断定以后所有方案都行不通。 / Not quite. This judgment overlooks a condition given in the question. Limit the ending to the known situation.
 
 
 #### s10-R2 · Q2 对应的补讲
@@ -10432,13 +10437,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Must recovery return to the old project?
 
-- A. 必须，否则任何恢复都不算数。 / Yes; otherwise no recovery counts.
+- A. 把回到旧项目当成恢复的主要目标。 / Treat returning to the old project as the main goal of recovery.
 - B. 不需要，可以接受旧项目结束，再开始新的计划。 / No; acknowledging closure can lead to a new direction.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。团队开始整理成果、准备新计划，就是在恢复；不需要旧项目恢复原样才算数。 / Correct. Recovery concerns action and planning, not reviving the old form.
-- 选择 A 的反馈：这题不对。本题应选：不需要，可以接受旧项目结束，再开始新的计划。 团队开始整理成果、准备新计划，就是在恢复；不需要旧项目恢复原样才算数。 / Not quite. The supported answer is: No; acknowledging closure can lead to a new direction. Recovery concerns action and planning, not reviving the old form.
+- 选择 A 的反馈：这题不对。恢复可以从接受旧项目结束、开始新计划发生，不需要把回到原项目当成目标。 / Not quite. Recovery can come from accepting the old project’s ending and beginning a new plan; returning to the old project need not be the goal.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -10519,12 +10524,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: How does curiosity differ from established knowledge?
 
 - A. 感兴趣以后，还要提问、核实，才能真正弄懂。 / Curiosity needs inquiry and verification to become understanding.
-- B. 只要感兴趣，猜测就自动正确。 / Interest automatically makes guesses correct.
+- B. 兴趣足够强时，可以先按直觉下结论，再补资料。 / With strong interest, form a conclusion from intuition and gather sources afterward.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。侍从愿意问、愿意学，但还在学习中；感兴趣不表示已经知道答案。 / Correct. A Page is learning, not already complete in knowledge.
-- 选择 B 的反馈：这题不对。本题应选：感兴趣以后，还要提问、核实，才能真正弄懂。 侍从愿意问、愿意学，但还在学习中；感兴趣不表示已经知道答案。 / Not quite. The supported answer is: Curiosity needs inquiry and verification to become understanding. A Page is learning, not already complete in knowledge.
+- 选择 B 的反馈：这题不对。这里要分清牌义的边界：侍从愿意问、愿意学，但还在学习中；感兴趣不表示已经知道答案。 / Not quite. The boundary of the card meaning matters here: A Page is learning, not already complete in knowledge.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -10569,12 +10574,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Sharing from a headline alone: what fits?
 
 - A. 转发前先读原文，检查说法对不对。 / Check the original before sharing.
-- B. 停止提出任何问题。 / Stop asking questions altogether.
+- B. 先转发标题引发讨论，再根据反馈判断内容。 / Share the headline to start a discussion, then judge the content from the responses.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。小叶的问题是没读正文就转发，不是好奇心太多；应该补上核查。 / Correct. The problem is lack of verification, not curiosity.
-- 选择 B 的反馈：这题不对。本题应选：转发前先读原文，检查说法对不对。 小叶的问题是没读正文就转发，不是好奇心太多；应该补上核查。 / Not quite. The supported answer is: Check the original before sharing. The problem is lack of verification, not curiosity.
+- 选择 B 的反馈：这题不对。这个说法混淆了题目正在考的含义。小叶的问题是没读正文就转发，不是好奇心太多；应该补上核查。 / Not quite. This statement confuses the meaning being tested. The problem is lack of verification, not curiosity.
 
 
 #### s11-R1 · Q1 对应的补讲
@@ -10763,12 +10768,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: A key requirement is unclear at meeting end. What fits?
 
 - A. 直接提出关键问题并确认事实。 / Raise the key question directly and confirm facts.
-- B. 不问需求，立刻要求所有人照猜测做。 / Skip the requirement and demand action on a guess.
+- B. 先按最常见的需求推进，会议后再补确认。 / Proceed with the most common requirement and confirm it after the meeting.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。先直接问清关键需求，才知道该往哪里做；不问清就催大家行动，可能走错方向。 / Correct. Rapid progress still needs a clear judgment.
-- 选择 B 的反馈：这题不对。本题应选：直接提出关键问题并确认事实。 先直接问清关键需求，才知道该往哪里做；不问清就催大家行动，可能走错方向。 / Not quite. The supported answer is: Raise the key question directly and confirm facts. Rapid progress still needs a clear judgment.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；先直接问清关键需求，才知道该往哪里做；不问清就催大家行动，可能走错方向。 / Not quite. Do not continue with this approach yet; Rapid progress still needs a clear judgment.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -10788,13 +10793,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Rushing execution without checking: what fits?
 
-- A. 既然已开始，就绝不能检查方向。 / Once started, never check direction.
+- A. 先保持速度把当前版本做完，核对可以放到复盘。 / Maintain momentum and finish the current version, leaving verification for the review.
 - B. 先核实关键条件再推进。 / Verify critical conditions before proceeding.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。这次是没核对任务就开始，才做错了方向；先把条件查清，才能避免继续做错。 / Correct. Haste caused the problem; checking is the correction.
-- 选择 A 的反馈：这题不对。本题应选：先核实关键条件再推进。 这次是没核对任务就开始，才做错了方向；先把条件查清，才能避免继续做错。 / Not quite. The supported answer is: Verify critical conditions before proceeding. Haste caused the problem; checking is the correction.
+- 选择 A 的反馈：这题不对。这里要分清牌义的边界：这次是没核对任务就开始，才做错了方向；先把条件查清，才能避免继续做错。 / Not quite. The boundary of the card meaning matters here: Haste caused the problem; checking is the correction.
 
 
 #### s12-R1 · Q1 对应的补讲
@@ -10844,13 +10849,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Requirements are unclear near submission. First?
 
-- A. 立即提交未检查的版本来证明效率。 / Submit an unchecked version to prove efficiency.
+- A. 按自己熟悉的格式直接交终稿，不再确认关键要求。 / Submit the final version in a familiar format without confirming the key requirements.
 - B. 赶快问清关键要求，再做已经确认的部分。 / Quickly clarify the requirement and act on what is clear.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。先问清提交要求，才能交对内容；交得很快但不符合要求，也没有解决问题。 / Correct. Efficiency should serve the goal, not speed alone.
-- 选择 A 的反馈：这题不对。本题应选：赶快问清关键要求，再做已经确认的部分。 先问清提交要求，才能交对内容；交得很快但不符合要求，也没有解决问题。 / Not quite. The supported answer is: Quickly clarify the requirement and act on what is clear. Efficiency should serve the goal, not speed alone.
+- 选择 A 的反馈：这题不对。按熟悉格式直接交终稿，仍然跳过了确认；速度不能代替已经问清的要求。 / Not quite. Submitting a final version in a familiar format still skips clarification; speed cannot replace confirmed requirements.
 
 
 #### s12-R3 · Q3 对应的逆位补讲
@@ -10872,13 +10877,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Direction is wrong. How retain useful momentum?
 
-- A. 把所有核对都看成阻碍，继续冲。 / Treat all checking as obstruction and charge on.
+- A. 保持原速度推进，等结果出现后再讨论方向。 / Keep the same pace and discuss the direction after results appear.
 - B. 核实任务，修正方向后继续。 / Verify the task, correct direction, and continue.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。发现方向错了，先停下来核对任务，再继续做，才不会越忙越偏。 / Correct. Slowing to verify supports effective progress.
-- 选择 A 的反馈：这题不对。本题应选：核实任务，修正方向后继续。 发现方向错了，先停下来核对任务，再继续做，才不会越忙越偏。 / Not quite. The supported answer is: Verify the task, correct direction, and continue. Slowing to verify supports effective progress.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。发现方向错了，先停下来核对任务，再继续做，才不会越忙越偏。 / Not quite. This action skips a key step in the question. Slowing to verify supports effective progress.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -10895,12 +10900,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Someone argues firmly. How interpret this style?
 
 - A. 可能积极争取，但观点仍需核对。 / They may press actively; their claim still needs checking.
-- B. 坚定本身就能替代全部证据。 / Firmness replaces all evidence.
+- B. 表达很坚定时，观点通常可以先作为事实使用。 / A firmly expressed view can usually be treated as fact at first.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。这个人积极、说话坚定，描述的是做事风格；他的观点对不对，仍要核对事实。 / Correct. The lesson separates action style from truth.
-- 选择 B 的反馈：这题不对。本题应选：可能积极争取，但观点仍需核对。 这个人积极、说话坚定，描述的是做事风格；他的观点对不对，仍要核对事实。 / Not quite. The supported answer is: They may press actively; their claim still needs checking. The lesson separates action style from truth.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。这个人积极、说话坚定，描述的是做事风格；他的观点对不对，仍要核对事实。 / Not quite. This action does not resolve the situation described. The lesson separates action style from truth.
 
 
 #### 完成与接续
@@ -10959,12 +10964,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Do clear boundaries require refusing dialogue?
 
 - A. 不需要，可以说清自己的底线，也听听对方的情况。 / No; state them and hear an explanation.
-- B. 必须，不听任何解释才算清醒。 / Yes; clarity means hearing no explanation.
+- B. 需要，继续听解释会让边界变得不清楚。 / Yes. Continuing to listen would make the boundary less clear.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。你可以坚持自己的底线，也可以听对方解释；两件事并不冲突。 / Correct. The lesson preserves both judgment and dialogue.
-- 选择 B 的反馈：这题不对。本题应选：不需要，可以说清自己的底线，也听听对方的情况。 你可以坚持自己的底线，也可以听对方解释；两件事并不冲突。 / Not quite. The supported answer is: No; state them and hear an explanation. The lesson preserves both judgment and dialogue.
+- 选择 B 的反馈：这题不对。这个判断忽略了题目给出的条件。你可以坚持自己的底线，也可以听对方解释；两件事并不冲突。 / Not quite. This judgment overlooks a condition given in the question. The lesson preserves both judgment and dialogue.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -10982,13 +10987,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A friend cancels at short notice. What fits?
 
-- A. 不说需求，只以沉默让对方猜。 / Say nothing and make them guess.
+- A. 先减少联系，让对方从沉默里理解自己的不满。 / Reduce contact and let the other person infer the concern from the silence.
 - B. 说明可接受的提前通知方式。 / State an acceptable notice arrangement.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。想让对方提前通知，就把要求说清楚；一直沉默，对方可能仍不知道你介意什么。 / Correct. Stated boundaries fit the example better than hidden ones.
-- 选择 A 的反馈：这题不对。本题应选：说明可接受的提前通知方式。 想让对方提前通知，就把要求说清楚；一直沉默，对方可能仍不知道你介意什么。 / Not quite. The supported answer is: State an acceptable notice arrangement. Stated boundaries fit the example better than hidden ones.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；想让对方提前通知，就把要求说清楚；一直沉默，对方可能仍不知道你介意什么。 / Not quite. Do not continue with this approach yet; Stated boundaries fit the example better than hidden ones.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -11036,13 +11041,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: How can declining be clear and open?
 
-- A. 把所有不同意见都当冒犯。 / Treat every disagreement as an insult.
+- A. 把不同意见视为对方不尊重边界，直接结束讨论。 / Treat disagreement as disrespect for the boundary and end the discussion.
 - B. 说清自己哪里不方便，再商量有没有别的安排。 / State the limit and discuss feasible alternatives.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。说清自己哪里不方便后，仍可以听听有没有别的安排，不必把不同意见都当成冒犯。 / Correct. Boundaries do not require rejecting disagreement.
-- 选择 A 的反馈：这题不对。本题应选：说清自己哪里不方便，再商量有没有别的安排。 说清自己哪里不方便后，仍可以听听有没有别的安排，不必把不同意见都当成冒犯。 / Not quite. The supported answer is: State the limit and discuss feasible alternatives. Boundaries do not require rejecting disagreement.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；说清自己哪里不方便后，仍可以听听有没有别的安排，不必把不同意见都当成冒犯。 / Not quite. Do not continue with this approach yet; Boundaries do not require rejecting disagreement.
 
 
 #### s13-R2 · Q2 对应的补讲
@@ -11093,12 +11098,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: A new friend explains a late reply. Correct the past-pain bias how?
 
 - A. 听听这次的解释、核对事实，也保留自己的底线。 / Hear and check current facts while keeping boundaries.
-- B. 无需听说明，旧经历已经证明全部。 / Ignore the explanation because the past proves everything.
+- B. 先按旧经历判断这次情况，再决定是否听说明。 / Judge the current situation through the old experience before deciding whether to hear the explanation.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。先听新朋友这次的说明，再看是否可信；过去的经历不能直接证明这次也一样。 / Correct. Experience should not block judgment of new facts.
-- 选择 B 的反馈：这题不对。本题应选：听听这次的解释、核对事实，也保留自己的底线。 先听新朋友这次的说明，再看是否可信；过去的经历不能直接证明这次也一样。 / Not quite. The supported answer is: Hear and check current facts while keeping boundaries. Experience should not block judgment of new facts.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。先听新朋友这次的说明，再看是否可信；过去的经历不能直接证明这次也一样。 / Not quite. This action does not resolve the situation described. Experience should not block judgment of new facts.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -11114,13 +11119,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Family proposes an unsuitable arrangement. Apply the theme.
 
-- A. 认为独立就必须永远断绝沟通。 / Assume independence requires permanent silence.
+- A. 先退出这次沟通，让家人自行猜测你的底线。 / Leave the conversation and let the family infer the boundary themselves.
 - B. 说明自己的条件与可接受范围。 / Explain your conditions and acceptable limits.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。你可以说明自己能接受什么，再讨论安排；有自己的判断，不等于必须断绝沟通。 / Correct. Independent judgment can coexist with dialogue.
-- 选择 A 的反馈：这题不对。本题应选：说明自己的条件与可接受范围。 你可以说明自己能接受什么，再讨论安排；有自己的判断，不等于必须断绝沟通。 / Not quite. The supported answer is: Explain your conditions and acceptable limits. Independent judgment can coexist with dialogue.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。你可以说明自己能接受什么，再讨论安排；有自己的判断，不等于必须断绝沟通。 / Not quite. This action does not resolve the situation described. Independent judgment can coexist with dialogue.
 
 
 #### 完成与接续
@@ -11178,13 +11183,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What makes a judgment accountable?
 
-- A. 只要有头衔就不需要说明。 / A title removes the need to explain.
+- A. 看表达是否果断，以及别人是否愿意服从。 / Look at how decisive the person sounds and whether others are willing to follow.
 - B. 理由、证据和一致标准。 / Reasons, evidence, and consistent standards.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。一个判断是否可靠，要看理由和证据；有头衔的人也应该说明依据。 / Correct. The lesson emphasizes checkable judgment, not status replacing reasons.
-- 选择 A 的反馈：这题不对。本题应选：理由、证据和一致标准。 一个判断是否可靠，要看理由和证据；有头衔的人也应该说明依据。 / Not quite. The supported answer is: Reasons, evidence, and consistent standards. The lesson emphasizes checkable judgment, not status replacing reasons.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。一个判断是否可靠，要看理由和证据；有头衔的人也应该说明依据。 / Not quite. This statement confuses the meaning being tested. The lesson emphasizes checkable judgment, not status replacing reasons.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -11228,13 +11233,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Changing criteria for a favorite: interpret.
 
-- A. 只要负责人决定就一定公平。 / A leader’s decision is automatically fair.
+- A. 负责人承担后果，因此可以按个人判断调整标准。 / Because the person in charge bears the consequences, personal judgment can be used to adjust the standard.
 - B. 负责人在偏袒喜欢的方案，需要检查评分标准是否一样。 / Authority favors someone; examine the criteria.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。负责人说自己“按规则办”，不表示真的做到了；还要看有没有为喜欢的方案改标准。 / Correct. Rule-based language does not prove consistency.
-- 选择 A 的反馈：这题不对。本题应选：负责人在偏袒喜欢的方案，需要检查评分标准是否一样。 负责人说自己“按规则办”，不表示真的做到了；还要看有没有为喜欢的方案改标准。 / Not quite. The supported answer is: Authority favors someone; examine the criteria. Rule-based language does not prove consistency.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。负责人说自己“按规则办”，不表示真的做到了；还要看有没有为喜欢的方案改标准。 / Not quite. This action skips a key step in the question. Rule-based language does not prove consistency.
 
 
 #### s14-R1 · Q1 对应的补讲
@@ -11449,12 +11454,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Neither tools nor time are secured. Reversal?
 
 - A. 机会已经有了，但工具和时间还需要安排好。 / The opportunity needs practical preparation.
-- B. 绘画能力永远无法形成。 / Drawing ability can never develop.
+- B. 机会已经出现，细节可以等真正要用时再安排。 / The opportunity exists, so arrange the practical details when they become necessary.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。现在还没准备好，不表示以后也做不到；可以先把缺少的工具和时间安排好。 / Correct. Lack of preparation differs from permanent inability.
-- 选择 B 的反馈：这题不对。本题应选：机会已经有了，但工具和时间还需要安排好。 现在还没准备好，不表示以后也做不到；可以先把缺少的工具和时间安排好。 / Not quite. The supported answer is: The opportunity needs practical preparation. Lack of preparation differs from permanent inability.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。现在还没准备好，不表示以后也做不到；可以先把缺少的工具和时间安排好。 / Not quite. This action skips a key step in the question. Lack of preparation differs from permanent inability.
 
 
 #### p01-R1 · Q1 对应的补讲
@@ -11476,13 +11481,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What does cultivable mean?
 
-- A. 只要能开始，就表示最后已经做好了。 / The beginning contains every finished result.
+- A. 有了机会就可以先按成果已到手来规划下一步。 / Once the opportunity appears, plan the next step as though the result is already secured.
 - B. 有机会开始，之后还要花时间实际去做。 / There is a start that needs continued care.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。成长仍需要资源与行动。 / Correct. Growth still needs resources and action.
-- 选择 A 的反馈：这题不对。本题应选：有机会开始，之后还要花时间实际去做。 成长仍需要资源与行动。 / Not quite. The supported answer is: There is a start that needs continued care. Growth still needs resources and action.
+- 选择 A 的反馈：这题不对。星币王牌表示有可用的起点；机会要变成成果，仍需要投入时间和实际行动。 / Not quite. The Ace of Pentacles offers a usable beginning; turning the opportunity into a result still takes time and action.
 
 
 #### p01-R2 · Q2 对应的补讲
@@ -11533,12 +11538,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: The opportunity remains unrealized. What directly addresses the gap?
 
 - A. 确认所需工具和实际开始时间。 / Secure needed tools and a real start time.
-- B. 只要求自己相信结果一定会来。 / Merely believe the result must arrive.
+- B. 先想象理想成果，等信心稳定后再定时间。 / Picture the ideal result first and set a start time after confidence grows.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。这次缺的是设备和时间；光说“我一定行”，不会让设备和时间自动出现。 / Correct. The gap concerns preparation, not strength of belief.
-- 选择 B 的反馈：这题不对。本题应选：确认所需工具和实际开始时间。 这次缺的是设备和时间；光说“我一定行”，不会让设备和时间自动出现。 / Not quite. The supported answer is: Secure needed tools and a real start time. The gap concerns preparation, not strength of belief.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。这次缺的是设备和时间；光说“我一定行”，不会让设备和时间自动出现。 / Not quite. This action does not resolve the situation described. The gap concerns preparation, not strength of belief.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -11554,13 +11559,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A friend offers practice space. Apply the theme.
 
-- A. 认为有人提供场地就保证获奖。 / Assume access guarantees an award.
+- A. 先把获奖当作目标，再看有没有必要安排练习。 / Set winning as the goal, then decide whether practice needs to be scheduled.
 - B. 约定可用时间，实际开始练习。 / Agree on access times and begin practicing.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。有场地可用，让计划有了开始的条件；能做到什么程度，还要看后续怎么做。 / Correct. Conditions support beginning without guaranteeing outcomes.
-- 选择 A 的反馈：这题不对。本题应选：约定可用时间，实际开始练习。 有场地可用，让计划有了开始的条件；能做到什么程度，还要看后续怎么做。 / Not quite. The supported answer is: Agree on access times and begin practicing. Conditions support beginning without guaranteeing outcomes.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。有场地可用，让计划有了开始的条件；能做到什么程度，还要看后续怎么做。 / Not quite. This action does not resolve the situation described. Conditions support beginning without guaranteeing outcomes.
 
 
 #### 完成与接续
@@ -11618,13 +11623,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Does dynamic balance allow tradeoffs?
 
-- A. 不可以，必须永远兼顾全部。 / No; everything must always be maintained.
+- A. 不太适合，减少任务会说明自己的协调能力不足。 / It is a poor fit because reducing tasks would reveal weak coordination skills.
 - B. 可以，情况变了，就需要重新安排。 / Yes; changing conditions require reallocation.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。每件事都会花时间和精力；安排不过来时，就需要调整先后或减少任务。 / Correct. Coordination includes recognizing limited time and energy.
-- 选择 A 的反馈：这题不对。本题应选：可以，情况变了，就需要重新安排。 每件事都会花时间和精力；安排不过来时，就需要调整先后或减少任务。 / Not quite. The supported answer is: Yes; changing conditions require reallocation. Coordination includes recognizing limited time and energy.
+- 选择 A 的反馈：这题不对。先核对眼前例子的条件：每件事都会花时间和精力；安排不过来时，就需要调整先后或减少任务。 / Not quite. Check the conditions in this example first: Coordination includes recognizing limited time and energy.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -11668,13 +11673,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: More shifts lead to missed work. Reversal?
 
-- A. 只要更用力，时间就会自动增加。 / More effort automatically creates more time.
+- A. 保持当前承诺，尝试把每项任务压缩一点时间。 / Keep the current commitments and shorten the time spent on each task.
 - B. 事情排得太多，需要减少一些或重新安排。 / Demand exceeds capacity; reduce or reschedule.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。一天的时间有限，喊“我都能做到”不会多出几个小时；需要重新安排任务。 / Correct. Practical capacity cannot disappear through slogans.
-- 选择 A 的反馈：这题不对。本题应选：事情排得太多，需要减少一些或重新安排。 一天的时间有限，喊“我都能做到”不会多出几个小时；需要重新安排任务。 / Not quite. The supported answer is: Demand exceeds capacity; reduce or reschedule. Practical capacity cannot disappear through slogans.
+- 选择 A 的反馈：这题不对。这个解释把牌义带到了别处。一天的时间有限，喊“我都能做到”不会多出几个小时；需要重新安排任务。 / Not quite. This interpretation shifts the card meaning elsewhere. Practical capacity cannot disappear through slogans.
 
 
 #### p02-R1 · Q1 对应的补讲
@@ -11697,12 +11702,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why is flexibility not saying yes to everything?
 
 - A. 灵活安排，也包括分清先后、拒绝做不完的任务。 / It includes priorities and declining excess.
-- B. 灵活意味着所有任务都无需时间。 / It means tasks require no time.
+- B. 灵活就是把任务随时挪动，不必判断优先级。 / Flexibility means moving tasks around whenever needed without judging their priority.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。即使你擅长同时做几件事，每件事也会花时间和精力，不能无限加任务。 / Correct. Every task still uses limited resources.
-- 选择 B 的反馈：这题不对。本题应选：灵活安排，也包括分清先后、拒绝做不完的任务。 即使你擅长同时做几件事，每件事也会花时间和精力，不能无限加任务。 / Not quite. The supported answer is: It includes priorities and declining excess. Every task still uses limited resources.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。即使你擅长同时做几件事，每件事也会花时间和精力，不能无限加任务。 / Not quite. This interpretation shifts the card meaning elsewhere. Every task still uses limited resources.
 
 
 #### p02-R2 · Q2 对应的补讲
@@ -11752,13 +11757,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Does dropping one task violate coordination?
 
-- A. 违背，协调永远不许减少任何任务。 / Yes; coordination forbids reducing any task.
+- A. 违背，协调能力主要体现在把原任务维持住。 / It does. Coordination is mainly shown by keeping the original task list intact.
 - B. 不违背，少做一件，可能才有时间把重要的事做好。 / No; tradeoffs can restore a workable balance.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。时间不够时，可以减少一项任务，把重要的事安排好；这也是调整，并不是失败。 / Correct. Reallocation under limited time may require reduction.
-- 选择 A 的反馈：这题不对。本题应选：不违背，少做一件，可能才有时间把重要的事做好。 时间不够时，可以减少一项任务，把重要的事安排好；这也是调整，并不是失败。 / Not quite. The supported answer is: No; tradeoffs can restore a workable balance. Reallocation under limited time may require reduction.
+- 选择 A 的反馈：这题不对。这个判断忽略了题目给出的条件。时间不够时，可以减少一项任务，把重要的事安排好；这也是调整，并不是失败。 / Not quite. This judgment overlooks a condition given in the question. Reallocation under limited time may require reduction.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -11775,12 +11780,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Volunteering uses weekend time. Apply the theme.
 
 - A. 检查原安排，决定哪些要减少。 / Review commitments and decide what to reduce.
-- B. 不检查时间，承诺所有事情照旧。 / Promise everything unchanged without checking.
+- B. 先把新活动塞进空档，再看原计划哪里能补回来。 / Fit the new activity into an open slot, then find time to make up the original plan.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。多了一项志愿活动，就要重新看看时间够不够，再调整原来的安排。 / Correct. New demands require rebalancing.
-- 选择 B 的反馈：这题不对。本题应选：检查原安排，决定哪些要减少。 多了一项志愿活动，就要重新看看时间够不够，再调整原来的安排。 / Not quite. The supported answer is: Review commitments and decide what to reduce. New demands require rebalancing.
+- 选择 B 的反馈：这题不对。新增志愿活动会改变原来的时间分配；先检查容量，再决定哪些安排要减少。 / Not quite. A new volunteer activity changes the existing time balance; check capacity before deciding what to reduce.
 
 
 #### 完成与接续
@@ -11839,12 +11844,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: How does collaboration work here?
 
 - A. 大家发挥各自的技能，并按事先说好的要求一起完成工作。 / Different skills coordinate around shared standards.
-- B. 只要多人在场就自动高效。 / Several people together automatically work well.
+- B. 成员各自把擅长部分做好，成品自然会拼合。 / If members do their strongest parts well, the pieces will come together on their own.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。大家要知道在一起做什么、各自负责什么，遇到问题也要交流；不是人聚在一起就算合作。 / Correct. Coordination needs common goals and communication.
-- 选择 B 的反馈：这题不对。本题应选：大家发挥各自的技能，并按事先说好的要求一起完成工作。 大家要知道在一起做什么、各自负责什么，遇到问题也要交流；不是人聚在一起就算合作。 / Not quite. The supported answer is: Different skills coordinate around shared standards. Coordination needs common goals and communication.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。大家要知道在一起做什么、各自负责什么，遇到问题也要交流；不是人聚在一起就算合作。 / Not quite. This action does not resolve the situation described. Coordination needs common goals and communication.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -11889,12 +11894,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Delivered pieces differ in size. Reversal?
 
 - A. 重新说清尺寸、内容和交付要求。 / Agree on dimensions, content, and delivery requirements again.
-- B. 必然是所有成员都没有技能。 / Every member must lack skill.
+- B. 说明团队的个人水平不够，需要换更熟练的人。 / It suggests that the team's skill level is too low and more experienced members are needed.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。每个人都会做自己的部分，不代表彼此的要求已经说清；这次需要先把要求统一。 / Correct. Technical skill and coordination standards differ.
-- 选择 B 的反馈：这题不对。本题应选：重新说清尺寸、内容和交付要求。 每个人都会做自己的部分，不代表彼此的要求已经说清；这次需要先把要求统一。 / Not quite. The supported answer is: Agree on dimensions, content, and delivery requirements again. Technical skill and coordination standards differ.
+- 选择 B 的反馈：这题不对。这里要分清牌义的边界：每个人都会做自己的部分，不代表彼此的要求已经说清；这次需要先把要求统一。 / Not quite. The boundary of the card meaning matters here: Technical skill and coordination standards differ.
 
 
 #### p03-R1 · Q1 对应的补讲
@@ -11916,13 +11921,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Good individual work does not fit together. What is missing?
 
-- A. 只要再加人就一定解决。 / More people will necessarily solve it.
+- A. 让大家继续按各自标准完成，最后再找人拼在一起。 / Let everyone finish to their own standards, then find someone to assemble the pieces at the end.
 - B. 缺少事先说好的要求，以及交接时的检查。 / Shared agreements and integration checks.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。人多不一定做得好。大家要先说清怎么配合，才能把各自的工作接起来。 / Correct. The problem is coordination, not headcount.
-- 选择 A 的反馈：这题不对。本题应选：缺少事先说好的要求，以及交接时的检查。 人多不一定做得好。大家要先说清怎么配合，才能把各自的工作接起来。 / Not quite. The supported answer is: Shared agreements and integration checks. The problem is coordination, not headcount.
+- 选择 A 的反馈：这题不对。等到最后才拼接各自完成的内容，仍缺少事先统一的要求和交接检查。 / Not quite. Waiting until the end to assemble separately made work still lacks shared requirements and handoff checks.
 
 
 #### p03-R2 · Q2 对应的补讲
@@ -11945,12 +11950,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: A club prepares a show. What fits?
 
 - A. 表演与灯光先确认同一套流程。 / Performers and lighting agree on one cue plan.
-- B. 各方完全不沟通，等上台再碰运气。 / Keep teams separate and improvise compatibility on stage.
+- B. 表演和灯光各自按经验准备，彩排时再对齐。 / Let performance and lighting prepare from experience and align during rehearsal.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。表演和灯光先说好提示信号、进场时间，各自的技能才能配合起来。 / Correct. Shared standards turn expertise into collaboration.
-- 选择 B 的反馈：这题不对。本题应选：表演与灯光先确认同一套流程。 表演和灯光先说好提示信号、进场时间，各自的技能才能配合起来。 / Not quite. The supported answer is: Performers and lighting agree on one cue plan. Shared standards turn expertise into collaboration.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；表演和灯光先说好提示信号、进场时间，各自的技能才能配合起来。 / Not quite. Do not continue with this approach yet; Shared standards turn expertise into collaboration.
 
 
 #### p03-R3 · Q3 对应的逆位补讲
@@ -12058,13 +12063,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Why examine how tightly resources are held?
 
-- A. 任何保留资源都必然错误。 / Any retention of resources is wrong.
+- A. 留得越多越安全，使用会削弱安全感。 / Keeping more creates greater security, while using resources weakens that security.
 - B. 留点储备能让人安心，但抓得太紧，也会妨碍必要的使用。 / Reserves protect; excessive control restricts use.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。保留资源可以带来安全感；但抓得太紧，也可能让你不敢做必要的事。 / Correct. The lesson recognizes both protection and restriction.
-- 选择 A 的反馈：这题不对。本题应选：留点储备能让人安心，但抓得太紧，也会妨碍必要的使用。 保留资源可以带来安全感；但抓得太紧，也可能让你不敢做必要的事。 / Not quite. The supported answer is: Reserves protect; excessive control restricts use. The lesson recognizes both protection and restriction.
+- 选择 A 的反馈：这题不对。这个解释把牌义带到了别处。保留资源可以带来安全感；但抓得太紧，也可能让你不敢做必要的事。 / Not quite. This interpretation shifts the card meaning elsewhere. The lesson recognizes both protection and restriction.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -12083,12 +12088,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Essential materials are refused. What fits?
 
 - A. 先留好生活需要的钱，再安排付得起的材料费用。 / Separate minimum reserves from affordable essentials.
-- B. 为了不受限制，立刻花完全部储备。 / Spend all reserves immediately to feel free.
+- B. 先把想买的材料列齐，再从储备里一次购入。 / List the desired materials and purchase them together from the reserve.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。可以在预算内支付必要费用，不需要一下把存款全花掉。 / Correct. Adjusting control does not require the opposite extreme.
-- 选择 B 的反馈：这题不对。本题应选：先留好生活需要的钱，再安排付得起的材料费用。 可以在预算内支付必要费用，不需要一下把存款全花掉。 / Not quite. The supported answer is: Separate minimum reserves from affordable essentials. Adjusting control does not require the opposite extreme.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。可以在预算内支付必要费用，不需要一下把存款全花掉。 / Not quite. This action skips a key step in the question. Adjusting control does not require the opposite extreme.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -12108,13 +12113,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A budget allows reasonable spending. Reversal?
 
-- A. 所有消费因此无需判断。 / Every purchase now needs no judgment.
+- A. 预算内的支出风险较低，可以省去用途检查。 / Spending within the budget carries less risk, so the purpose does not need review.
 - B. 开始不再抓得那么紧，愿意合理花费了。 / Excessive holding is loosening.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。愿意花必要的钱，不表示不看预算；先留好生活费用，再决定怎么使用。 / Correct. Less control still requires practical judgment.
-- 选择 A 的反馈：这题不对。本题应选：开始不再抓得那么紧，愿意合理花费了。 愿意花必要的钱，不表示不看预算；先留好生活费用，再决定怎么使用。 / Not quite. The supported answer is: Excessive holding is loosening. Less control still requires practical judgment.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。愿意花必要的钱，不表示不看预算；先留好生活费用，再决定怎么使用。 / Not quite. This statement confuses the meaning being tested. Less control still requires practical judgment.
 
 
 #### p04-R1 · Q1 对应的补讲
@@ -12137,12 +12142,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Are keeping reserves and using nothing the same?
 
 - A. 不同，留好储备后，也可以把一部分用在需要的地方。 / No; resources beyond reserves can have sensible uses.
-- B. 相同，想安心就必须一分钱都不花。 / Yes; stability requires no movement.
+- B. 相同，储备的意义就是暂时不动用这笔钱。 / They are the same because a reserve is meant to remain untouched for now.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。留好必要储备后，也可以使用一部分资源；不必把每一次使用都当成危险。 / Correct. Security can coexist with measured use.
-- 选择 B 的反馈：这题不对。本题应选：不同，留好储备后，也可以把一部分用在需要的地方。 留好必要储备后，也可以使用一部分资源；不必把每一次使用都当成危险。 / Not quite. The supported answer is: No; resources beyond reserves can have sensible uses. Security can coexist with measured use.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。留好必要储备后，也可以使用一部分资源；不必把每一次使用都当成危险。 / Not quite. This interpretation shifts the card meaning elsewhere. Security can coexist with measured use.
 
 
 #### p04-R2 · Q2 对应的补讲
@@ -12164,13 +12169,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Equipment is hoarded despite reasonable needs. What fits?
 
-- A. 为保持完整而永久禁止使用。 / Permanently ban use to preserve everything.
+- A. 继续由熟悉设备的人保管，需要时由他决定是否外借。 / Keep the equipment with the person who knows it best and let that person decide on loans.
 - B. 建立借用与归还规则，让资源可用。 / Set borrowing and return rules so resources can be used.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。借用时约好归还时间和维护方式，既能保护器材，也不必拒绝所有借用。 / Correct. Rules can protect resources without blocking all use.
-- 选择 A 的反馈：这题不对。本题应选：建立借用与归还规则，让资源可用。 借用时约好归还时间和维护方式，既能保护器材，也不必拒绝所有借用。 / Not quite. The supported answer is: Set borrowing and return rules so resources can be used. Rules can protect resources without blocking all use.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。借用时约好归还时间和维护方式，既能保护器材，也不必拒绝所有借用。 / Not quite. This action skips a key step in the question. Rules can protect resources without blocking all use.
 
 
 #### p04-R3 · Q3 对应的逆位补讲
@@ -12192,13 +12197,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: After loosening control, avoid the opposite extreme how?
 
-- A. 把所有保留都取消，以证明开放。 / Eliminate all reserves to prove openness.
+- A. 先把过去没花的钱补回到学习投入里，再恢复储备。 / Move the previously unspent money into study expenses before rebuilding the reserve.
 - B. 先留好生活费，再看哪些学习费用确实需要支付。 / Preserve essentials and use resources purposefully.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。先留好生活费，再支付必要的学习费用；放松一点不等于放弃所有保障。 / Correct. Adjusting control need not abandon practical security.
-- 选择 A 的反馈：这题不对。本题应选：先留好生活费，再看哪些学习费用确实需要支付。 先留好生活费，再支付必要的学习费用；放松一点不等于放弃所有保障。 / Not quite. The supported answer is: Preserve essentials and use resources purposefully. Adjusting control need not abandon practical security.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；先留好生活费，再支付必要的学习费用；放松一点不等于放弃所有保障。 / Not quite. Do not continue with this approach yet; Adjusting control need not abandon practical security.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -12279,12 +12284,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: What does this lesson first examine?
 
 - A. 眼前缺少什么，以及需要哪些帮助。 / Practical needs and gaps in support.
-- B. 只要困难就认定本人懒惰。 / Treat hardship as proof of laziness.
+- B. 困难反映个人准备不足，应先加强自律再考虑求助。 / Difficulty reflects poor preparation, so improve discipline before seeking support.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。缺少教材，需要解决教材从哪里来；不能因此认定这个人不努力。 / Correct. Resource gaps need practical responses, not moral blame.
-- 选择 B 的反馈：这题不对。本题应选：眼前缺少什么，以及需要哪些帮助。 缺少教材，需要解决教材从哪里来；不能因此认定这个人不努力。 / Not quite. The supported answer is: Practical needs and gaps in support. Resource gaps need practical responses, not moral blame.
+- 选择 B 的反馈：这题不对。这里要分清牌义的边界：缺少教材，需要解决教材从哪里来；不能因此认定这个人不努力。 / Not quite. The boundary of the card meaning matters here: Resource gaps need practical responses, not moral blame.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -12302,13 +12307,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Missing materials disrupt learning. First?
 
-- A. 只要求自己积极想象，不找材料。 / Only imagine positively and seek no materials.
+- A. 先用已有内容继续学习，等课程结束再补齐教材。 / Continue with the materials on hand and replace the missing texts after the course.
 - B. 查清缺哪些教材，再找可以借阅的地方。 / Identify missing materials and borrowing support.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。这次缺的是教材，借阅、申请援助等办法才能直接解决；只鼓励自己还不够。 / Correct. The practical gap requires actual resources.
-- 选择 A 的反馈：这题不对。本题应选：查清缺哪些教材，再找可以借阅的地方。 这次缺的是教材，借阅、申请援助等办法才能直接解决；只鼓励自己还不够。 / Not quite. The supported answer is: Identify missing materials and borrowing support. The practical gap requires actual resources.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。这次缺的是教材，借阅、申请援助等办法才能直接解决；只鼓励自己还不够。 / Not quite. This action does not resolve the situation described. The practical gap requires actual resources.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -12329,12 +12334,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Materials and tutoring become available. Reversal?
 
 - A. 支持增加，困难开始改善。 / Support grows and hardship begins easing.
-- B. 从此所有困难永久消失。 / Every difficulty disappears forever.
+- B. 获得辅导说明问题已经过去，可以降低后续投入。 / Receiving tutoring means the problem has passed, so later effort can be reduced.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。借到教材、得到辅导，让眼前的困难有了改善；并不保证以后不会再遇到困难。 / Correct. Improved conditions are not a permanent guarantee.
-- 选择 B 的反馈：这题不对。本题应选：支持增加，困难开始改善。 借到教材、得到辅导，让眼前的困难有了改善；并不保证以后不会再遇到困难。 / Not quite. The supported answer is: Support grows and hardship begins easing. Improved conditions are not a permanent guarantee.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；借到教材、得到辅导，让眼前的困难有了改善；并不保证以后不会再遇到困难。 / Not quite. Do not continue with this approach yet; Improved conditions are not a permanent guarantee.
 
 
 #### p05-R1 · Q1 对应的补讲
@@ -12413,12 +12418,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Work remains after receiving support. Interpret.
 
 - A. 有了教材和帮助，就更方便继续学习，但作业仍要自己做。 / Better conditions create a basis for action.
-- B. 没有自动做完就说明帮助没有价值。 / If work is not automatic, help has no value.
+- B. 帮助没有直接减少作业量，说明作用比较有限。 / Because the help did not reduce the assignment load, its value is limited.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。得到设备或教材后，更容易继续学习，但作业和练习仍要自己完成。 / Correct. Support improves conditions without completing every task.
-- 选择 B 的反馈：这题不对。本题应选：有了教材和帮助，就更方便继续学习，但作业仍要自己做。 得到设备或教材后，更容易继续学习，但作业和练习仍要自己完成。 / Not quite. The supported answer is: Better conditions create a basis for action. Support improves conditions without completing every task.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。得到设备或教材后，更容易继续学习，但作业和练习仍要自己完成。 / Not quite. This action skips a key step in the question. Support improves conditions without completing every task.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -12434,13 +12439,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Broken equipment prevents work. First?
 
-- A. 直接把困难解释为必然失败。 / Declare failure inevitable.
+- A. 先暂停作业，等自己的设备修好后再继续。 / Pause the assignment and wait for the original device to be repaired.
 - B. 确认临时借用或替代设备。 / Check temporary loans or replacement access.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。先问清有没有设备可以借、有没有维修帮助，才能知道下一步有哪些办法。 / Correct. Available support needs checking first.
-- 选择 A 的反馈：这题不对。本题应选：确认临时借用或替代设备。 先问清有没有设备可以借、有没有维修帮助，才能知道下一步有哪些办法。 / Not quite. The supported answer is: Check temporary loans or replacement access. Available support needs checking first.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；先问清有没有设备可以借、有没有维修帮助，才能知道下一步有哪些办法。 / Not quite. Do not continue with this approach yet; Available support needs checking first.
 
 
 #### 完成与接续
@@ -12498,13 +12503,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Is giving automatically fair?
 
-- A. 一定，提供资源的人无需解释条件。 / Yes; a giver need not explain conditions.
+- A. 比较公平，愿意提供资源通常已经承担了较多责任。 / It is fairly balanced because the person providing resources has usually taken on more responsibility.
 - B. 不一定，要看谁决定给谁、附带什么条件。 / Not necessarily; examine conditions and power.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。有人愿意帮忙，不代表条件一定公平；还要看对方要求你付出什么、你能不能拒绝。 / Correct. Resource flow does not guarantee balanced power or conditions.
-- 选择 A 的反馈：这题不对。本题应选：不一定，要看谁决定给谁、附带什么条件。 有人愿意帮忙，不代表条件一定公平；还要看对方要求你付出什么、你能不能拒绝。 / Not quite. The supported answer is: Not necessarily; examine conditions and power. Resource flow does not guarantee balanced power or conditions.
+- 选择 A 的反馈：这题不对。先核对眼前例子的条件：有人愿意帮忙，不代表条件一定公平；还要看对方要求你付出什么、你能不能拒绝。 / Not quite. Check the conditions in this example first: Resource flow does not guarantee balanced power or conditions.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -12523,12 +12528,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: What should equipment borrowers clarify?
 
 - A. 期限、责任和双方可接受的条件。 / Duration, responsibility, and acceptable terms.
-- B. 默认接受帮助就必须答应所有要求。 / Assume receiving help requires accepting every demand.
+- B. 先表达感谢，具体期限和责任等使用后再谈。 / Express gratitude first and discuss the deadline and responsibility after using the equipment.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。接受帮助后要遵守说好的约定，但不表示以后必须答应对方所有要求。 / Correct. Reciprocity needs clear terms, not unlimited obligation.
-- 选择 B 的反馈：这题不对。本题应选：期限、责任和双方可接受的条件。 接受帮助后要遵守说好的约定，但不表示以后必须答应对方所有要求。 / Not quite. The supported answer is: Duration, responsibility, and acceptable terms. Reciprocity needs clear terms, not unlimited obligation.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。接受帮助后要遵守说好的约定，但不表示以后必须答应对方所有要求。 / Not quite. This interpretation shifts the card meaning elsewhere. Reciprocity needs clear terms, not unlimited obligation.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -12577,12 +12582,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why look at giver and recipient?
 
 - A. 谁决定怎么分、附带什么条件，都会影响双方能不能接受或拒绝。 / Allocation affects both parties’ choices.
-- B. 只要给出东西，接受者处境就不用问。 / A gift makes the recipient’s situation irrelevant.
+- B. 重点看提供者是否付出了足够资源，接受者的处境可以之后再谈。 / Focus on whether the giver contributed enough; discuss the recipient's circumstances later.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。这份帮助是否合适，要看对方附带什么要求，以及接受者能否承担。 / Correct. The effect of help depends on recipients’ circumstances.
-- 选择 B 的反馈：这题不对。本题应选：谁决定怎么分、附带什么条件，都会影响双方能不能接受或拒绝。 这份帮助是否合适，要看对方附带什么要求，以及接受者能否承担。 / Not quite. The supported answer is: Allocation affects both parties’ choices. The effect of help depends on recipients’ circumstances.
+- 选择 B 的反馈：这题不对。只看提供者给了多少，会漏掉接受者是否承担得起条件。星币六要同时看谁决定分配、附带什么要求，以及双方能否接受或拒绝。 / Not quite. Looking only at how much the giver contributes misses whether the recipient can bear the conditions. The Six of Pentacles also asks who controls allocation, what terms apply, and whether both sides can accept or refuse.
 
 
 #### p06-R2 · Q2 对应的补讲
@@ -12604,13 +12609,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A senior offers tutoring. How clarify it?
 
-- A. 把辅导理解成以后任何请求都得答应。 / Treat tutoring as obligation to accept all later requests.
+- A. 先接受辅导，等对方提出回报时再决定如何回应。 / Accept the tutoring first and decide how to respond when the other person asks for something in return.
 - B. 说好辅导的时间、内容，以及对方希望你怎样回报。 / Agree on time, scope, and feasible reciprocity.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。先说好辅导的时间、内容和双方各自承担的事情，才知道这份帮助是否合适。 / Correct. Clear scope protects both parties.
-- 选择 A 的反馈：这题不对。本题应选：说好辅导的时间、内容，以及对方希望你怎样回报。 先说好辅导的时间、内容和双方各自承担的事情，才知道这份帮助是否合适。 / Not quite. The supported answer is: Agree on time, scope, and feasible reciprocity. Clear scope protects both parties.
+- 选择 A 的反馈：这题不对。帮助不能只说“我来辅导”；先约定时间、内容和回报，双方才知道这份支持是否合适。 / Not quite. Help needs more than an offer to tutor; agree on time, content, and return so both sides know whether the support is workable.
 
 
 #### p06-R3 · Q3 对应的逆位补讲
@@ -12632,13 +12637,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Added conditions exceed capacity. What next?
 
-- A. 因曾接受帮助就必须无限答应。 / Accept unlimited demands because help was received.
+- A. 继续答应这次，等回报完成后再说明压力。 / Agree this time and explain the pressure after the return favor is complete.
 - B. 说清哪些要求自己做不到，再商量双方都能接受的条件。 / State limits and renegotiate acceptable terms.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。对方后来追加的要求，如果超出了原来的约定，就应该重新讨论；接受过帮助不表示必须全部答应。 / Correct. Giving and receiving both need boundaries.
-- 选择 A 的反馈：这题不对。本题应选：说清哪些要求自己做不到，再商量双方都能接受的条件。 对方后来追加的要求，如果超出了原来的约定，就应该重新讨论；接受过帮助不表示必须全部答应。 / Not quite. The supported answer is: State limits and renegotiate acceptable terms. Giving and receiving both need boundaries.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。对方后来追加的要求，如果超出了原来的约定，就应该重新讨论；接受过帮助不表示必须全部答应。 / Not quite. This action does not resolve the situation described. Giving and receiving both need boundaries.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -12719,12 +12724,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: How do patience and evaluation relate?
 
 - A. 坚持做，也定期看看方法有没有效果。 / Invest patiently and periodically check results.
-- B. 耐心就是永远不能改变方法。 / Patience means never changing the method.
+- B. 只计算自己坚持了多久，不检查方法有没有效果。 / Count how long you have persisted without checking whether the method works.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。先看看方法有没有帮助，再决定继续还是调整；这不是轻易放弃，而是让后面的努力更有方向。 / Correct. Review informs continuation rather than automatic quitting.
-- 选择 B 的反馈：这题不对。本题应选：坚持做，也定期看看方法有没有效果。 先看看方法有没有帮助，再决定继续还是调整；这不是轻易放弃，而是让后面的努力更有方向。 / Not quite. The supported answer is: Invest patiently and periodically check results. Review informs continuation rather than automatic quitting.
+- 选择 B 的反馈：这题不对。只计算坚持时间却不看效果，缺少星币七强调的阶段检查与方法调整。 / Not quite. Counting elapsed time without checking results misses the Seven of Pentacles’ review of whether the method works.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -12796,13 +12801,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Does reviewing results necessarily mean quitting?
 
-- A. 是，只要停下检查就失去耐心。 / Yes; any review proves impatience.
+- A. 是，检查成果会打断节奏，耐心应体现在持续重复。 / Yes. Reviewing results interrupts the rhythm, while patience is shown through continued repetition.
 - B. 不是，是为了看看哪些做法可以继续、哪些需要改。 / No; it informs what to keep or change.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。停下来检查方法，不等于放弃；找到问题后，反而更知道该怎样继续。 / Correct. Evaluation can support more purposeful persistence.
-- 选择 A 的反馈：这题不对。本题应选：不是，是为了看看哪些做法可以继续、哪些需要改。 停下来检查方法，不等于放弃；找到问题后，反而更知道该怎样继续。 / Not quite. The supported answer is: No; it informs what to keep or change. Evaluation can support more purposeful persistence.
+- 选择 A 的反馈：这题不对。先核对眼前例子的条件：停下来检查方法，不等于放弃；找到问题后，反而更知道该怎样继续。 / Not quite. Check the conditions in this example first: Evaluation can support more purposeful persistence.
 
 
 #### p07-R2 · Q2 对应的补讲
@@ -12825,12 +12830,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Progress after speaking practice is unclear. What fits?
 
 - A. 对照录音检查具体变化，再调整。 / Compare recordings, identify changes, and adjust.
-- B. 只按练了多少天判断方法必然有效。 / Assume the method works from the day count alone.
+- B. 先按练习时长判断，等课程结束再听录音。 / Judge progress from practice time and listen to the recordings after the course ends.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。练得久不表示练得有效；还要看哪里进步了、哪里仍然卡住。 / Correct. Duration and results need separate examination.
-- 选择 B 的反馈：这题不对。本题应选：对照录音检查具体变化，再调整。 练得久不表示练得有效；还要看哪里进步了、哪里仍然卡住。 / Not quite. The supported answer is: Compare recordings, identify changes, and adjust. Duration and results need separate examination.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。练得久不表示练得有效；还要看哪里进步了、哪里仍然卡住。 / Not quite. This action skips a key step in the question. Duration and results need separate examination.
 
 
 #### p07-R3 · Q3 对应的逆位补讲
@@ -12938,13 +12943,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Which captures this lesson?
 
-- A. 只要忙得久，就已证明水平提高。 / Long hours alone prove improvement.
+- A. 保持高频重复，熟练会随着次数慢慢出现。 / Keep repeating at a high frequency and let fluency emerge from repetition.
 - B. 认真练习，把动作做熟，把细节做好。 / Attend to skill and detail to improve work quality.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。不只是花时间做，还要看动作有没有更熟练、作品有没有做得更细致。 / Correct. Time spent is not enough: check whether your technique is becoming more fluent and your work more carefully finished.
-- 选择 A 的反馈：这题不对。本题应选：认真练习，把动作做熟，把细节做好。 不只是花时间做，还要看动作有没有更熟练、作品有没有做得更细致。 / Not quite. The supported answer is: Attend to skill and detail to improve work quality. Time spent is not enough: check whether your technique is becoming more fluent and your work more carefully finished.
+- 选择 A 的反馈：这题不对。这里要分清牌义的边界：不只是花时间做，还要看动作有没有更熟练、作品有没有做得更细致。 / Not quite. The boundary of the card meaning matters here: Time spent is not enough: check whether your technique is becoming more fluent and your work more carefully finished.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -12988,13 +12993,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: The same passage is played repeatedly without checking mistakes. What problem does the reversed Eight of Pentacles highlight here?
 
-- A. 所有练习都毫无意义，应永远停止。 / All practice is meaningless and must stop forever.
+- A. 练了很久还没有进步，说明更适合换一种技能学习。 / Lack of progress after long practice suggests switching to a different skill.
 - B. 花了很多时间，动作却没有练得更准确。 / Effort is disconnected from learning quality.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。问题是同一个错误一直没有纠正；需要换一种练法，不是认定自己学不会。 / Correct. The issue is ineffective practice, not learning itself.
-- 选择 A 的反馈：这题不对。本题应选：花了很多时间，动作却没有练得更准确。 问题是同一个错误一直没有纠正；需要换一种练法，不是认定自己学不会。 / Not quite. The supported answer is: Effort is disconnected from learning quality. The issue is ineffective practice, not learning itself.
+- 选择 A 的反馈：这题不对。本题应选：花了很多时间，动作却没有练得更准确。 题目已经指出他没有检查错误，所以先改练法、看动作是否变准；不能仅凭这段时间没进步，就换掉要学的技能。 / Not quite. The supported answer is: Effort is disconnected from learning quality. The prompt says mistakes were not checked, so revise the practice method and see whether accuracy improves before abandoning the skill.
 
 
 #### p08-R1 · Q1 对应的补讲
@@ -13017,12 +13022,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: What is the difference between repeating something many times and actually improving?
 
 - A. 要看动作有没有更熟练，做出来的东西有没有更好。 / Check whether your technique is more fluent and your work is better.
-- B. 只看重复了多少遍，次数多就算进步。 / Count only repetitions: more repetitions mean improvement.
+- B. 练习次数增加，通常就可以推断能力提高。 / More practice sessions usually indicate that the skill has improved.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。次数只能说明你练过多少遍；还要检查错误有没有减少，才能知道有没有进步。 / Correct. Counts record effort but do not alone prove improvement.
-- 选择 B 的反馈：这题不对。本题应选：要看动作有没有更熟练，做出来的东西有没有更好。 次数只能说明你练过多少遍；还要检查错误有没有减少，才能知道有没有进步。 / Not quite. The supported answer is: Check whether your technique is more fluent and your work is better. Counts record effort but do not alone prove improvement.
+- 选择 B 的反馈：这题不对。这里要分清牌义的边界：次数只能说明你练过多少遍；还要检查错误有没有减少，才能知道有没有进步。 / Not quite. The boundary of the card meaning matters here: Counts record effort but do not alone prove improvement.
 
 
 #### p08-R2 · Q2 对应的补讲
@@ -13072,13 +13077,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: The same mistake keeps recurring, but its cause has never been checked. How should the learner practise next?
 
-- A. 完全取消细节，只追求更快重复。 / Eliminate detail and repeat faster.
+- A. 保持当前动作，先提升速度，再在成品里看问题。 / Keep the current motion, build speed first, and inspect problems in the finished work.
 - B. 先检查错在哪里，再专门练习出错的部分。 / Add error-focused checking and practice.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。这个逆位例子提醒我们：先找出总错的地方，再有针对性地练，不要只增加次数。 / Correct. This reversal reconnects effort to skill quality.
-- 选择 A 的反馈：这题不对。本题应选：先检查错在哪里，再专门练习出错的部分。 这个逆位例子提醒我们：先找出总错的地方，再有针对性地练，不要只增加次数。 / Not quite. The supported answer is: Add error-focused checking and practice. This reversal reconnects effort to skill quality.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。这个逆位例子提醒我们：先找出总错的地方，再有针对性地练，不要只增加次数。 / Not quite. This action skips a key step in the question. This reversal reconnects effort to skill quality.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -13095,12 +13100,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Your charts often misalign in presentations. Following the Eight of Pentacles, how could you improve?
 
 - A. 练习对齐操作，并检查实际效果。 / Practice alignment and check results.
-- B. 仅按坐在电脑前的小时数评价水平。 / Rate skill only by hours at the computer.
+- B. 延长制作时间，用投入时长衡量熟练程度。 / Spend longer making the slides and use time invested as the measure of skill.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。先检查幻灯片哪里没对齐，再练习调整；页数做得更多，不表示做得更仔细。 / Correct. Check where the charts misalign and practise correcting them. Making more slides does not necessarily mean making them more carefully.
-- 选择 B 的反馈：这题不对。本题应选：练习对齐操作，并检查实际效果。 先检查幻灯片哪里没对齐，再练习调整；页数做得更多，不表示做得更仔细。 / Not quite. The supported answer is: Practice alignment and check results. Check where the charts misalign and practise correcting them. Making more slides does not necessarily mean making them more carefully.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。先检查幻灯片哪里没对齐，再练习调整；页数做得更多，不表示做得更仔细。 / Not quite. This action skips a key step in the question. Check where the charts misalign and practise correcting them. Making more slides does not necessarily mean making them more carefully.
 
 
 #### 完成与接续
@@ -13159,12 +13164,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Does independence mean never needing anyone?
 
 - A. 不是，能管理自己也可以接受帮助。 / No; self-management can include receiving help.
-- B. 是，求助一次就失去全部独立。 / Yes; one request erases independence.
+- B. 是，求助会让成果不再算作自己的能力。 / Yes. Seeking help means the result no longer reflects one's own ability.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。有能力安排自己的生活，也可以接受别人的帮助，两者并不冲突。 / Correct. Capability and connection can coexist.
-- 选择 B 的反馈：这题不对。本题应选：不是，能管理自己也可以接受帮助。 有能力安排自己的生活，也可以接受别人的帮助，两者并不冲突。 / Not quite. The supported answer is: No; self-management can include receiving help. Capability and connection can coexist.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。有能力安排自己的生活，也可以接受别人的帮助，两者并不冲突。 / Not quite. This interpretation shifts the card meaning elsewhere. Capability and connection can coexist.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -13182,13 +13187,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Able to complete a work independently: what fits?
 
-- A. 为证明独立拒绝所有必要建议。 / Refuse all useful advice to prove independence.
+- A. 把成果展示给更多人，用外界反应确认价值。 / Show the work to more people and use their reaction to confirm its value.
 - B. 肯定自己的努力，在预算内安排一份享受。 / Acknowledge progress and enjoy within means.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。可以在预算内奖励自己、享受成果；不必为了证明独立而拒绝所有人的帮助。 / Correct. Appreciating results does not require isolation.
-- 选择 A 的反馈：这题不对。本题应选：肯定自己的努力，在预算内安排一份享受。 可以在预算内奖励自己、享受成果；不必为了证明独立而拒绝所有人的帮助。 / Not quite. The supported answer is: Acknowledge progress and enjoy within means. Appreciating results does not require isolation.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。可以在预算内奖励自己、享受成果；不必为了证明独立而拒绝所有人的帮助。 / Not quite. This action skips a key step in the question. Appreciating results does not require isolation.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -13236,13 +13241,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Distinguish enjoying results from proving status.
 
-- A. 只要让别人羡慕就算自我管理。 / Envy from others proves self-management.
+- A. 选择容易被看见的奖励，让成果获得他人认可。 / Choose a visible reward so that the achievement gains recognition from others.
 - B. 肯定自己已经做好的事，在负担得起的范围内享受成果。 / Enjoyment fits actual conditions and accumulated work.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。重点是能把自己的日子安排好，而不是让别人觉得你比他们过得好。 / Correct. The theme centers on sustainable personal life.
-- 选择 A 的反馈：这题不对。本题应选：肯定自己已经做好的事，在负担得起的范围内享受成果。 重点是能把自己的日子安排好，而不是让别人觉得你比他们过得好。 / Not quite. The supported answer is: Enjoyment fits actual conditions and accumulated work. The theme centers on sustainable personal life.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。重点是能把自己的日子安排好，而不是让别人觉得你比他们过得好。 / Not quite. This action skips a key step in the question. The theme centers on sustainable personal life.
 
 
 #### p09-R2 · Q2 对应的补讲
@@ -13265,12 +13270,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: After a long-term study goal, apply.
 
 - A. 肯定能力进步，安排适量放松。 / Recognize capability gained and allow measured relaxation.
-- B. 因为还有人更强，就否定全部成果。 / Dismiss all achievement because others are stronger.
+- B. 先拿更强的人作参照，找出自己还不够好的地方。 / Compare with someone more advanced and focus on where improvement is still needed.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。完成长期学习目标，值得给自己一点奖励；不用比别人强，才有资格肯定自己的努力。 / Correct. Achievement can be appreciated without comparison.
-- 选择 B 的反馈：这题不对。本题应选：肯定能力进步，安排适量放松。 完成长期学习目标，值得给自己一点奖励；不用比别人强，才有资格肯定自己的努力。 / Not quite. The supported answer is: Recognize capability gained and allow measured relaxation. Achievement can be appreciated without comparison.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。完成长期学习目标，值得给自己一点奖励；不用比别人强，才有资格肯定自己的努力。 / Not quite. This action does not resolve the situation described. Achievement can be appreciated without comparison.
 
 
 #### p09-R3 · Q3 对应的逆位补讲
@@ -13314,13 +13319,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Life is organized through personal effort. Maintain independence how?
 
-- A. 把一切关系都视为失败证据。 / Treat every relationship as evidence of failure.
+- A. 减少和他人合作，把生活事项尽量留给自己处理。 / Reduce collaboration and keep daily matters under personal control as much as possible.
 - B. 继续安排好自己的生活，需要时也可以求助或帮助别人。 / Maintain conditions and sensible mutual support.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。能够自己安排生活，不表示必须事事独自承担；遇到需要时仍可以求助。 / Correct. Independence is capability, not total isolation.
-- 选择 A 的反馈：这题不对。本题应选：继续安排好自己的生活，需要时也可以求助或帮助别人。 能够自己安排生活，不表示必须事事独自承担；遇到需要时仍可以求助。 / Not quite. The supported answer is: Maintain conditions and sensible mutual support. Independence is capability, not total isolation.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；能够自己安排生活，不表示必须事事独自承担；遇到需要时仍可以求助。 / Not quite. Do not continue with this approach yet; Independence is capability, not total isolation.
 
 
 #### 完成与接续
@@ -13378,13 +13383,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Why look beyond individual results?
 
-- A. 只有马上拿到个人奖励才有意义。 / Only immediate personal rewards matter.
+- A. 看个人目前能控制多少资源，以及这些资源能否增加地位。 / Look at how many resources a person controls and whether they raise social standing.
 - B. 还要看积累下来的东西，怎样留给家人或团队继续使用。 / Consider how results endure and support others.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。这张牌关注长期积累，以及家人或团队怎样一起保留、使用这些成果。 / Correct. The meaning concerns shared structures and long-term accumulation.
-- 选择 A 的反馈：这题不对。本题应选：还要看积累下来的东西，怎样留给家人或团队继续使用。 这张牌关注长期积累，以及家人或团队怎样一起保留、使用这些成果。 / Not quite. The supported answer is: Consider how results endure and support others. The meaning concerns shared structures and long-term accumulation.
+- 选择 A 的反馈：这题不对。个人控制多少资源只说明眼前占有，不能说明成果能否延续。星币十还要看积累怎样留给家人或团队继续使用。 / Not quite. A person’s current control of resources describes possession, not whether the result endures. The Ten of Pentacles also asks how accumulated results continue to support family or a group.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -13428,13 +13433,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Knowledge leaves with one person. Reversal?
 
-- A. 社团已被保证必然解散。 / The club is guaranteed to dissolve.
+- A. 说明负责人不够可靠，换人后从头建立资料更稳妥。 / It shows that the person in charge was unreliable, so rebuilding the records under a new person would be safer.
 - B. 资料只在一个人的设备里，其他人离开他就没法接着做。 / The foundation for continuity is insecure.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。可以备份文件、补上交接，来解决眼前的问题；不能因此断定整个社团一定失败。 / Correct. The gap can be addressed without fixing the outcome.
-- 选择 A 的反馈：这题不对。本题应选：资料只在一个人的设备里，其他人离开他就没法接着做。 可以备份文件、补上交接，来解决眼前的问题；不能因此断定整个社团一定失败。 / Not quite. The supported answer is: The foundation for continuity is insecure. The gap can be addressed without fixing the outcome.
+- 选择 A 的反馈：这题不对。这个解释把牌义带到了别处。可以备份文件、补上交接，来解决眼前的问题；不能因此断定整个社团一定失败。 / Not quite. This interpretation shifts the card meaning elsewhere. The gap can be addressed without fixing the outcome.
 
 
 #### p10-R1 · Q1 对应的补讲
@@ -13457,12 +13462,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why is transmission more than telling a story once?
 
 - A. 后续成员要能实际使用经验。 / Future members must be able to use it.
-- B. 只要过去成功过，资料就不重要。 / Past success makes documentation irrelevant.
+- B. 讲清过去成功的做法，就足以让后来者照着使用。 / Explaining the past method gives later members enough to follow it.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。接手的人需要找得到文件，也知道怎样使用；只有一句口头叮嘱，往往不够。 / Correct. Continuity needs accessible, usable knowledge.
-- 选择 B 的反馈：这题不对。本题应选：后续成员要能实际使用经验。 接手的人需要找得到文件，也知道怎样使用；只有一句口头叮嘱，往往不够。 / Not quite. The supported answer is: Future members must be able to use it. Continuity needs accessible, usable knowledge.
+- 选择 B 的反馈：这题不对。这个解释把牌义带到了别处。接手的人需要找得到文件，也知道怎样使用；只有一句口头叮嘱，往往不够。 / Not quite. This interpretation shifts the card meaning elsewhere. Continuity needs accessible, usable knowledge.
 
 
 #### p10-R2 · Q2 对应的补讲
@@ -13484,13 +13489,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A household manages shared items. Apply.
 
-- A. 只让一个人知道所有安排且不交接。 / Keep all arrangements with one person and no handover.
+- A. 由最熟悉的人统一保管，其他人有需要时再问。 / Have the most experienced person keep the shared items and let others ask when needed.
 - B. 说清物品放在哪里、怎样使用和维护，让家人都能继续用。 / Clarify care and access for continued use.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。把家中共用物品放在哪里、怎样维护说清楚，家人才能继续使用，而不必总依赖某一个人。 / Correct. Shared security depends on sustainable arrangements.
-- 选择 A 的反馈：这题不对。本题应选：说清物品放在哪里、怎样使用和维护，让家人都能继续用。 把家中共用物品放在哪里、怎样维护说清楚，家人才能继续使用，而不必总依赖某一个人。 / Not quite. The supported answer is: Clarify care and access for continued use. Shared security depends on sustainable arrangements.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。把家中共用物品放在哪里、怎样维护说清楚，家人才能继续使用，而不必总依赖某一个人。 / Not quite. This action does not resolve the situation described. Shared security depends on sustainable arrangements.
 
 
 #### p10-R3 · Q3 对应的逆位补讲
@@ -13535,12 +13540,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: A team changes leaders. Preserve outcomes how?
 
 - A. 交接流程、资源与维护责任。 / Hand over processes, resources, and maintenance duties.
-- B. 认为负责人离开就必须否定全部积累。 / Assume a departing leader invalidates all past work.
+- B. 重新设计流程，避免继续使用前任留下的做法。 / Redesign the process and avoid continuing the previous leader's methods.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。负责人会更换，但资料、分工和操作方法交接好了，团队仍可以接着做。 / Correct. Long-term structures can carry through personnel changes.
-- 选择 B 的反馈：这题不对。本题应选：交接流程、资源与维护责任。 负责人会更换，但资料、分工和操作方法交接好了，团队仍可以接着做。 / Not quite. The supported answer is: Hand over processes, resources, and maintenance duties. Long-term structures can carry through personnel changes.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。负责人会更换，但资料、分工和操作方法交接好了，团队仍可以接着做。 / Not quite. This action does not resolve the situation described. Long-term structures can carry through personnel changes.
 
 
 #### 完成与接续
@@ -13622,13 +13627,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Beginning photography: which follows?
 
-- A. 只购器材，不进行任何操作。 / Buy equipment without practicing.
+- A. 先比较器材参数，等确定合适设备后再练。 / Compare equipment specifications first and practise after choosing the right device.
 - B. 练一个设置并观察照片差异。 / Practice one setting and compare photos.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。选一个相机设置实际拍摄、比较照片，才能知道这个设置会带来什么变化。 / Correct. Practical learning requires concrete action.
-- 选择 A 的反馈：这题不对。本题应选：练一个设置并观察照片差异。 选一个相机设置实际拍摄、比较照片，才能知道这个设置会带来什么变化。 / Not quite. The supported answer is: Practice one setting and compare photos. Practical learning requires concrete action.
+- 选择 A 的反馈：这题不对。先别按这个做法继续；选一个相机设置实际拍摄、比较照片，才能知道这个设置会带来什么变化。 / Not quite. Do not continue with this approach yet; Practical learning requires concrete action.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -13818,13 +13823,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What defines reliable execution?
 
-- A. 只看第一天冲得多快。 / Only first-day speed.
+- A. 看起步时投入多大，以及能否快速超出计划。 / Judge by the size of the initial effort and whether progress quickly exceeds the plan.
 - B. 按自己能坚持的安排，持续完成该做的事。 / Consistently carrying out feasible steps.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。每天完成必要的复习，比只在某一天特别拼、之后全停下来，更能体现认真负责。 / Correct. Sustained responsibility fits better than one burst.
-- 选择 A 的反馈：这题不对。本题应选：按自己能坚持的安排，持续完成该做的事。 每天完成必要的复习，比只在某一天特别拼、之后全停下来，更能体现认真负责。 / Not quite. The supported answer is: Consistently carrying out feasible steps. Sustained responsibility fits better than one burst.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。每天完成必要的复习，比只在某一天特别拼、之后全停下来，更能体现认真负责。 / Not quite. This statement confuses the meaning being tested. Sustained responsibility fits better than one burst.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -13843,12 +13848,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Preparing for a long-term exam: which fits?
 
 - A. 安排每天能完成的复习量，并检查有没有完成。 / Set sustainable daily tasks and check follow-through.
-- B. 第一天做尽所有计划，之后不再安排。 / Exhaust the plan on day one and schedule nothing later.
+- B. 前几天集中完成大部分内容，后面按状态补漏。 / Complete most of the material in the first few days and fill gaps later according to energy.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。每天的量要安排得过来，才能坚持；一下塞太多，很容易第二天就停下来。 / Correct. Sustainable execution needs a workable pace.
-- 选择 B 的反馈：这题不对。本题应选：安排每天能完成的复习量，并检查有没有完成。 每天的量要安排得过来，才能坚持；一下塞太多，很容易第二天就停下来。 / Not quite. The supported answer is: Set sustainable daily tasks and check follow-through. Sustainable execution needs a workable pace.
+- 选择 B 的反馈：这题不对。先别按这个做法继续；每天的量要安排得过来，才能坚持；一下塞太多，很容易第二天就停下来。 / Not quite. Do not continue with this approach yet; Sustainable execution needs a workable pace.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -13868,13 +13873,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Requirements change but routine does not. Reversal?
 
-- A. 稳定意味着永远不准调整。 / Stability means never adjusting.
+- A. 为了保持节奏，继续用原清单，复习后再看新要求。 / Keep the old checklist to preserve momentum and review the new requirement afterward.
 - B. 先看新的考试要求，再调整复习安排。 / Review the goal and update steps.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。考试要求已经变了，就要更新复习安排；认真做旧清单，也可能漏掉现在要考的内容。 / Correct. Reliability serves the goal, not an outdated list.
-- 选择 A 的反馈：这题不对。本题应选：先看新的考试要求，再调整复习安排。 考试要求已经变了，就要更新复习安排；认真做旧清单，也可能漏掉现在要考的内容。 / Not quite. The supported answer is: Review the goal and update steps. Reliability serves the goal, not an outdated list.
+- 选择 A 的反馈：这题不对。这个说法混淆了题目正在考的含义。考试要求已经变了，就要更新复习安排；认真做旧清单，也可能漏掉现在要考的内容。 / Not quite. This statement confuses the meaning being tested. Reliability serves the goal, not an outdated list.
 
 
 #### p12-R1 · Q1 对应的补讲
@@ -13897,12 +13902,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why can slow, steady work be effective?
 
 - A. 每一步都认真完成，日子久了也能不断进步。 / Steps are completed and can accumulate.
-- B. 因为只要慢就不需要成果。 / Because slowness removes the need for results.
+- B. 把较慢的节奏本身当作效果，主要记录坚持了多少天。 / Treat the slower pace itself as evidence of progress and mainly track days of persistence.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。做得快不快是一回事，有没有持续把该做的事做完，是另一回事。 / Correct. Evaluate follow-through, not speed alone.
-- 选择 B 的反馈：这题不对。本题应选：每一步都认真完成，日子久了也能不断进步。 做得快不快是一回事，有没有持续把该做的事做完，是另一回事。 / Not quite. The supported answer is: Steps are completed and can accumulate. Evaluate follow-through, not speed alone.
+- 选择 B 的反馈：这题不对。先核对眼前例子的条件：做得快不快是一回事，有没有持续把该做的事做完，是另一回事。 / Not quite. Check the conditions in this example first: Evaluate follow-through, not speed alone.
 
 
 #### p12-R2 · Q2 对应的补讲
@@ -13924,13 +13929,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: Maintaining club equipment daily: what fits?
 
-- A. 想起来才做，每次都忘掉关键步骤。 / Act only when remembered and omit essentials.
+- A. 发现问题时再记录，平时按印象检查。 / Record an issue when one appears and rely on memory for routine checks.
 - B. 按清单检查并记录需要处理的项。 / Follow a checklist and note needed repairs.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。按计划检查和保养设备，才能减少遗漏；不能只在出问题时才想起来。 / Correct. Responsibility appears in consistent essential actions.
-- 选择 A 的反馈：这题不对。本题应选：按清单检查并记录需要处理的项。 按计划检查和保养设备，才能减少遗漏；不能只在出问题时才想起来。 / Not quite. The supported answer is: Follow a checklist and note needed repairs. Responsibility appears in consistent essential actions.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。按计划检查和保养设备，才能减少遗漏；不能只在出问题时才想起来。 / Not quite. This action does not resolve the situation described. Responsibility appears in consistent essential actions.
 
 
 #### p12-R3 · Q3 对应的逆位补讲
@@ -13952,13 +13957,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: An outdated checklist causes stagnation. Restore execution how?
 
-- A. 认为只要每天照旧做，就一定算负责。 / Treat mechanical repetition as the only responsibility.
+- A. 继续照旧清单做一段时间，用持续性弥补目标变化。 / Continue with the old checklist for a while and use consistency to offset the changed goal.
 - B. 先确认现在要达到什么目标，再调整每天要做的事。 / Confirm the current goal and update repeatable steps.
 
 **答案：B。讲解依据：T3 逆位背景。**
 
 - 选择 B 的反馈：答对了。认真负责也包括检查要求有没有变化，再调整做法，而不是永远照旧做。 / Correct. Responsibility includes keeping action aligned with purpose.
-- 选择 A 的反馈：这题不对。本题应选：先确认现在要达到什么目标，再调整每天要做的事。 认真负责也包括检查要求有没有变化，再调整做法，而不是永远照旧做。 / Not quite. The supported answer is: Confirm the current goal and update repeatable steps. Responsibility includes keeping action aligned with purpose.
+- 选择 A 的反馈：这题不对。这个做法没有解决眼前的情况。认真负责也包括检查要求有没有变化，再调整做法，而不是永远照旧做。 / Not quite. This action does not resolve the situation described. Responsibility includes keeping action aligned with purpose.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -13975,12 +13980,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Apply this style to language study.
 
 - A. 安排每天做得完的练习，并坚持去做。 / Plan and carry out sustainable daily practice.
-- B. 只用学习速度排名决定是否继续。 / Decide whether to continue only from speed ranking.
+- B. 先比较自己和同学的速度，再决定是否值得坚持。 / Compare study speed with classmates before deciding whether the practice deserves continuation.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。按自己能坚持的节奏练习，并完成每天的任务，比一味追求学得比别人快更重要。 / Correct. Consistent execution does not require outrunning others.
-- 选择 B 的反馈：这题不对。本题应选：安排每天做得完的练习，并坚持去做。 按自己能坚持的节奏练习，并完成每天的任务，比一味追求学得比别人快更重要。 / Not quite. The supported answer is: Plan and carry out sustainable daily practice. Consistent execution does not require outrunning others.
+- 选择 B 的反馈：这题不对。这样做会漏掉题目里的关键一步。按自己能坚持的节奏练习，并完成每天的任务，比一味追求学得比别人快更重要。 / Not quite. This action skips a key step in the question. Consistent execution does not require outrunning others.
 
 
 #### 完成与接续
@@ -14105,24 +14110,24 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: The theme emphasizes concrete forms of care.
 
-**中**：这里的“王后”描述照顾生活需要的做事方式，不限定某个性别、年龄或家庭身份。
+**中**：先分清“希望对方过得好”和“真的把需要安排好”。愿望表达关心，但只有实际确认场地、用品、吃饭或休息，并动手安排，才是这道题要练的实际照顾。
 
-**EN**: Court roles here are behavior patterns, not identity labels.
+**EN**: Separate wishing someone well from arranging what daily life actually needs. Practical care checks the space, supplies, food or rest and then acts on them.
 
 
 #### p13-R1-CHECK · 换个例子确认
 
-**中**：能够照顾生活需要的人，必须是某个性别或某种家庭身份吗？
+**中**：伙伴要在工作室连续做一天作品。哪种关心更贴近星币王后？
 
-**EN**: Does practical care require a particular identity?
+**EN**: A partner will work in the studio all day. Which response better fits practical care?
 
-- A. 需要，只能由女性家长承担。 / Yes; only a female parent can do it.
-- B. 不需要，任何人都可以照顾生活中的实际需要。 / No; anyone can provide practical support.
+- A. 先确认材料、照明和休息时间，缺的东西一起准备好。 / Check materials, lighting, and rest time, then help prepare what is missing.
+- B. 告诉对方自己真心希望这次进展顺利，具体准备由对方临时处理。 / Express sincere good wishes and leave the practical setup until the day itself.
 
-**答案：B。讲解依据：T1 核心含义。**
+**答案：A。讲解依据：T1 核心含义。**
 
-- 选择 B 的反馈：答对了。这里的“王后”描述照顾生活需要的做事方式，不限定某个性别、年龄或家庭身份。 / Correct. Court roles here are behavior patterns, not identity labels.
-- 选择 A 的反馈：这题不对。本题应选：不需要，任何人都可以照顾生活中的实际需要。 这里的“王后”描述照顾生活需要的做事方式，不限定某个性别、年龄或家庭身份。 / Not quite. The supported answer is: No; anyone can provide practical support. Court roles here are behavior patterns, not identity labels.
+- 选择 A 的反馈：答对了。先确认并安排材料、环境和休息，关心才落实成对方实际能用到的帮助。 / Correct. Checking and arranging resources and rest turns care into support the person can actually use.
+- 选择 B 的反馈：这题不对。本题应选：先确认材料、照明和休息时间，缺的东西一起准备好。 真心祝愿表达了关心，但没有处理这次工作真正需要的材料、环境和休息。 / Not quite. The supported answer is: Check materials, lighting, and rest time, then help prepare what is missing. Good wishes express care but do not arrange the practical conditions this workday needs.
 
 
 #### p13-R2 · Q2 对应的补讲
@@ -14173,12 +14178,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Overextended by helping others, how continue caring?
 
 - A. 商量哪些事能请别人分担，也给自己留出休息时间。 / Share tasks and preserve essential recovery.
-- B. 取消全部个人需要来证明关怀。 / Eliminate personal needs to prove care.
+- B. 继续多承担一些，等对方状态稳定后再安排自己的休息。 / Take on more for now and plan personal rest after the other person becomes stable.
 
 **答案：A。讲解依据：T3 逆位背景。**
 
 - 选择 A 的反馈：答对了。负责照顾的人也有精力限制，需要休息和分工，才能继续提供帮助。 / Correct. Caregiver capacity is part of sustainable support.
-- 选择 B 的反馈：这题不对。本题应选：商量哪些事能请别人分担，也给自己留出休息时间。 负责照顾的人也有精力限制，需要休息和分工，才能继续提供帮助。 / Not quite. The supported answer is: Share tasks and preserve essential recovery. Caregiver capacity is part of sustainable support.
+- 选择 B 的反馈：这题不对。这个做法没有解决眼前的情况。负责照顾的人也有精力限制，需要休息和分工，才能继续提供帮助。 / Not quite. This action does not resolve the situation described. Caregiver capacity is part of sustainable support.
 
 
 **补学上限**：本卡每个目标最多两轮；这里明确提供一个针对性分支。没有另一个与当前误解匹配、已审定的分支时，直接使用下方总结并标记稍后回访，不临时生成题目凑足两轮、不重复原题刷正确率。补讲后答对记录为“在帮助下完成”，不计独立掌握。
@@ -14194,13 +14199,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A friend struggles during exams. Offer suitable support how?
 
-- A. 包办一切并永久取消自己的安排。 / Take over everything and cancel all personal plans.
+- A. 先替对方安排任务，再看哪些事情需要他自己完成。 / Arrange the person's tasks first, then decide which parts they should handle themselves.
 - B. 先问对方需要什么，再提供自己做得到的帮助。 / Ask what is needed and help within capacity.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。先问朋友需要什么，再看看自己能帮多少；不必把对方所有事情都接过来。 / Correct. Care considers both needs and feasible capacity.
-- 选择 A 的反馈：这题不对。本题应选：先问对方需要什么，再提供自己做得到的帮助。 先问朋友需要什么，再看看自己能帮多少；不必把对方所有事情都接过来。 / Not quite. The supported answer is: Ask what is needed and help within capacity. Care considers both needs and feasible capacity.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。先问朋友需要什么，再看看自己能帮多少；不必把对方所有事情都接过来。 / Not quite. This action skips a key step in the question. Care considers both needs and feasible capacity.
 
 
 #### 完成与接续
@@ -14258,13 +14263,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: What makes results sustainable?
 
-- A. 只要拥有昂贵物品就自动稳定。 / Expensive possessions automatically create stability.
+- A. 把资源集中保存起来，暂时不安排使用和维护。 / Keep the resources stored together without arranging their use or maintenance.
 - B. 不只拥有资源，还安排好怎样使用、谁来维护。 / Resources, maintenance, and responsibility align.
 
 **答案：B。讲解依据：T1 核心含义。**
 
 - 选择 B 的反馈：答对了。设备买回来以后，还要安排使用、保养和维修，才能一直有用。 / Correct. Enduring results need stewardship, not mere possession.
-- 选择 A 的反馈：这题不对。本题应选：不只拥有资源，还安排好怎样使用、谁来维护。 设备买回来以后，还要安排使用、保养和维修，才能一直有用。 / Not quite. The supported answer is: Resources, maintenance, and responsibility align. Enduring results need stewardship, not mere possession.
+- 选择 A 的反馈：这题不对。只保存资源却不安排使用和维护，缺少让成果长期发挥作用的管理与责任。 / Not quite. Storing resources without a plan for use or maintenance lacks the stewardship that makes results last.
 
 
 #### T2 · 先看一个有背景的应用示范
@@ -14283,12 +14288,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Running a shared workshop: check what?
 
 - A. 购买、维护、使用与负责人的安排。 / Purchase, upkeep, access, and responsibility.
-- B. 只比较哪种设备看起来最昂贵。 / Only compare which equipment looks most expensive.
+- B. 先比较设备性能，运营和维护等购入后再补。 / Compare equipment performance first and add operation and maintenance plans after purchase.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。共用工作室想长期运行，就要考虑设备怎么保养、费用由谁承担，而不只是开张那一天。 / Correct. Long-term security includes conditions for ongoing use.
-- 选择 B 的反馈：这题不对。本题应选：购买、维护、使用与负责人的安排。 共用工作室想长期运行，就要考虑设备怎么保养、费用由谁承担，而不只是开张那一天。 / Not quite. The supported answer is: Purchase, upkeep, access, and responsibility. Long-term security includes conditions for ongoing use.
+- 选择 B 的反馈：这题不对。这里要分清牌义的边界：共用工作室想长期运行，就要考虑设备怎么保养、费用由谁承担，而不只是开张那一天。 / Not quite. The boundary of the card meaning matters here: Long-term security includes conditions for ongoing use.
 
 
 #### T3 · 后续深化：正位基础上的逆位情境
@@ -14337,12 +14342,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Why manage after obtaining results?
 
 - A. 有人维护、也有后续费用，成果才能继续使用下去。 / Results require upkeep and continuity.
-- B. 成果一出现就永远不会变化。 / Once achieved, results never change.
+- B. 有了成熟成果后，维护安排可以等出现问题再补。 / Once the result is mature, maintenance arrangements can wait until a problem appears.
 
 **答案：A。讲解依据：T1 核心含义。**
 
 - 选择 A 的反馈：答对了。一项资源想长期有用，就要有人负责后续的保养和管理，不能买完就不管。 / Correct. Practical security requires continuing responsibility.
-- 选择 B 的反馈：这题不对。本题应选：有人维护、也有后续费用，成果才能继续使用下去。 一项资源想长期有用，就要有人负责后续的保养和管理，不能买完就不管。 / Not quite. The supported answer is: Results require upkeep and continuity. Practical security requires continuing responsibility.
+- 选择 B 的反馈：这题不对。这个说法混淆了题目正在考的含义。一项资源想长期有用，就要有人负责后续的保养和管理，不能买完就不管。 / Not quite. This statement confuses the meaning being tested. Practical security requires continuing responsibility.
 
 
 #### p14-R2 · Q2 对应的补讲
@@ -14364,13 +14369,13 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **EN**: A club has bought props. What next?
 
-- A. 认为买好就永远不必再管理。 / Assume purchases need no further management.
+- A. 先投入使用，等损坏或丢失时再确定保管责任。 / Put the props into use and assign custody after damage or loss occurs.
 - B. 说清谁保管、谁检查维修，以后谁负责安排使用。 / Assign storage, repair, and use responsibilities.
 
 **答案：B。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 B 的反馈：答对了。社团道具不只要买回来，还要安排存放、使用和维修，才能反复使用。 / Correct. Stewardship concerns the full use cycle.
-- 选择 A 的反馈：这题不对。本题应选：说清谁保管、谁检查维修，以后谁负责安排使用。 社团道具不只要买回来，还要安排存放、使用和维修，才能反复使用。 / Not quite. The supported answer is: Assign storage, repair, and use responsibilities. Stewardship concerns the full use cycle.
+- 选择 A 的反馈：这题不对。这样做会漏掉题目里的关键一步。社团道具不只要买回来，还要安排存放、使用和维修，才能反复使用。 / Not quite. This action skips a key step in the question. Stewardship concerns the full use cycle.
 
 
 #### p14-R3 · Q3 对应的逆位补讲
@@ -14415,12 +14420,12 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **EN**: Turning a skill into a reliable service: apply.
 
 - A. 先确认自己的时间、设备和工作安排，能不能持续完成答应客户的服务。 / Check capacity, resources, and repeatable delivery.
-- B. 只靠一次成功保证以后全部成功。 / Treat one success as a guarantee of all future success.
+- B. 先承诺客户需要的服务，再根据订单补齐时间和设备。 / Promise the requested service first and add the needed time and equipment as orders arrive.
 
 **答案：A。讲解依据：T1 核心含义与 T2 示范。**
 
 - 选择 A 的反馈：答对了。把技能做成服务后，还需要安排时间、维护设备、按约定完成工作，才能持续做下去。 / Correct. Sustained results need sustained stewardship.
-- 选择 B 的反馈：这题不对。本题应选：先确认自己的时间、设备和工作安排，能不能持续完成答应客户的服务。 把技能做成服务后，还需要安排时间、维护设备、按约定完成工作，才能持续做下去。 / Not quite. The supported answer is: Check capacity, resources, and repeatable delivery. Sustained results need sustained stewardship.
+- 选择 B 的反馈：这题不对。先承诺再补时间和设备，可能让服务无法持续兑现。星币国王要先核对容量、设备和工作安排，再答应客户。 / Not quite. Promising first and adding time or equipment later may make delivery unsustainable. The King of Pentacles asks you to check capacity, equipment, and workflow before committing.
 
 
 #### 完成与接续
@@ -14449,6 +14454,415 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 
 <a id="sources"></a>
+### 8.3 整牌理解题的显式修订
+
+整牌理解题 Q4 沿用历史引导课程的稳定选项 ID。若其中的展示文案需要修订，必须在这里逐项记录旧文案和新文案；构建器只按稳定题目与选项 ID 应用，并核对旧文案恰好匹配，不在代码里秘密改写教材。
+
+| 题目 ID | 选项 ID | 原中文 | 原英文 | 修订后中文 | 修订后英文 |
+|---|---|---|---|---|---|
+| p02-Q4 | p02-Q4-2503863740 | 任务全部压在一人身上，需要重新分担。 | All tasks rest on one person and need redistribution. | 任务分配不均，需要把一部分工作交给别人。 | The workload is uneven, so some tasks should be handed to other people. |
+| m00-Q4 | m00-Q4-81eb2c109a | 已经有具体目标，正带着计划向前。 | A definite goal and plan are already guiding you forward. | 对前路已经很有把握，所以可以轻装出发。 | The path ahead feels well understood, so it is reasonable to set out lightly. |
+| w03-Q4 | w03-Q4-563a94b6bf | 消息已迅速到来，需要立即衔接下一步。 | Messages arrive quickly and need prompt follow-through. | 还在远处规划方向，尚未迈出第一步。 | The direction is still being planned from afar and the first step has not been taken. |
+<!-- learning-q4-copy-overrides-end -->
+
+整牌理解题的错误项反馈也必须跟随已经修订的选项。下表只覆写指定稳定选项 ID 的错误反馈；构建器同时核对旧反馈，避免选项已经变化、反馈却仍在解释旧答案。
+
+| 题目 ID | 选项 ID | 原中文反馈 | 原英文反馈 | 修订后中文反馈 | 修订后英文反馈 |
+|---|---|---|---|---|---|
+| m00-Q4 | m00-Q4-81eb2c109a | 再看看这些细节：他轻装抬头向前，脚边却是悬崖：愿意尝试和留意风险要同时记住。所以本题更贴近「带着好奇开始，也别忘了看脚下。」。 | Look at these details again: He looks ahead with little baggage, but stands by a cliff: openness and caution belong together. The best fit here is “Start with curiosity, and watch your step.” | 这个解释没有把画面线索连起来。他轻装抬头向前，脚边却是悬崖：愿意尝试和留意风险要同时记住。 | This reading does not connect the picture cues. He looks ahead with little baggage, but stands by a cliff: openness and caution belong together. |
+| w03-Q4 | w03-Q4-563a94b6bf | 再看看这些细节：人物望着水面上的船，适合联想到行动已经向外展开，正在观察后续。所以本题更贴近「已经迈出第一步，接下来跟进回应。」。 | Look at these details again: The figure watching ships suggests activity sent outward and attention to what comes next. The best fit here is “The first step is taken: follow up on the response.” | 这个选项忽略了图中已经给出的区别。人物望着水面上的船，适合联想到行动已经向外展开，正在观察后续。 | This option overlooks a distinction already visible in the picture. The figure watching ships suggests activity sent outward and attention to what comes next. |
+<!-- learning-q4-feedback-overrides-end -->
+
+逐题文案修订后，选项继续使用改写前的稳定 ID，避免恢复中的旧答案失去指向。这里记录的中文必须与题目正文一致；构建时逐项核对，缺失、重复或文案不一致都会失败。
+
+| 题目 ID | 选项字母 | 稳定选项 ID | 当前中文 |
+|---|---|---|---|
+| A05-Q2 | A | A05-Q2-5b3d55505c | A 路线里星币牌更多，因此先把它看成更稳妥 |
+| m16-Q1 | B | m16-Q1-a7443682d9 | 把突然冲击具体理解成近期交通出行会受阻 |
+| p08-Q3 | A | p08-Q3-db60b7ed2d | 练了很久还没有进步，说明更适合换一种技能学习。 |
+| p13-R1 | A | p13-R1-e9de76c57f | 先确认材料、照明和休息时间，缺的东西一起准备好。 |
+| p13-R1 | B | p13-R1-f6e7ab2989 | 告诉对方自己真心希望这次进展顺利，具体准备由对方临时处理。 |
+| B02-Q2 | B | B02-Q2-3b37370369 | 建议按固定三次切牌，让这套流程更完整。 |
+| B02-R2 | B | B02-R2-b85758f650 | 先补做一次切牌，再按原问题重新抽一张。 |
+| B04-R2 | B | B04-R2-865e9d02ff | 先把不同的“八”统一成一条口诀，再用同一口诀解释星币八。 |
+| B04-V1 | A | B04-V1-324ef69c9f | 先暂停应用，等把数字表背熟后再解释这张牌。 |
+| B05-Q2 | A | B05-Q2-2c08cddfb1 | 优先把王后理解为题目里较成熟的女性。 |
+| B06-Q1 | A | B06-Q1-5dc4ee01fc | 把出错的小节多做几遍，先用熟练度弥补问题。 |
+| B07-Q2 | A | B07-Q2-8e6723cbb6 | 先接受对方的要求，避免当场冲突，之后再处理自己的不满。 |
+| B07-R2 | A | B07-R2-cf080a85f4 | 先接下额外工作，等忙不过来时再说明限制。 |
+| B08-Q1 | A | B08-Q1-440645bc97 | 先等对方表态，再决定是否说明自己的本意。 |
+| B08-R1 | A | B08-R1-f7d6772b6a | 分析朋友可能什么时候回复。 |
+| B08-R2 | B | B08-R2-99e9151a14 | 继续追问，让对方尽快给出结论。 |
+| B08-V1 | A | B08-V1-3ee0a6df65 | 先再收集更多备考资料，等准备充分后开始练题。 |
+| I01-Q1 | B | I01-Q1-c004bcb868 | 核心意思要和教材关键词基本一致，才算真正掌握。 |
+| I01-Q2 | A | I01-Q2-cc4576acdd | 先换更好的设备，再开始练习构图。 |
+| I03-R2 | A | I03-R2-c716a293a2 | 从主持者的身份与风格推断活动气氛。 |
+| I03-V1 | B | I03-V1-cdff079806 | 把合作设想写得很动人，让对方自然明白你希望他参加。 |
+| I04-Q1 | A | I04-Q1-7e9d736186 | 练习次数在增加，原来的错误也会逐渐自行消失。 |
+| I05-Q2 | A | I05-Q2-7b2eed8f9b | 是，障碍位会把星币八原本的勤练转成过度练习。 |
+| I06-Q1 | A | I06-Q1-6e0214a99a | 先继续讨论大家理想中的展览，等想法足够一致后再动手。 |
+| I06-Q2 | B | I06-Q2-d1e0bc7efe | 先营造大家一起庆祝的气氛，准备工作可以边做边补。 |
+| A01-V1 | B | A01-V1-3e5c2fd714 | 最好改成感受问题，因为塔罗更适合谈心理状态。 |
+| A02-R1 | A | A02-R1-5802e86bbc | 各自先把自己的安排定死，再看谁愿意迁就。 |
+| A02-V1 | A | A02-V1-4c21425c90 | 先照顾大家的情绪，具体时间和分工可以活动前再定。 |
+| A03-Q1 | B | A03-Q1-ce549902dd | 有学习意愿，也有很多选择；继续同时尝试，之后自然会找到方向。 |
+| A03-R1 | B | A03-R1-df0c7e4fc9 | 愿意学习，项目多说明兴趣广；先轮流都做一点，再看哪个先有成果。 |
+| A03-V1 | B | A03-V1-aa0f925572 | 从收藏的菜谱中每天换一道尝试，用多做几个方向来寻找最适合的。 |
+| A05-R2 | A | A05-R2-82e01be237 | A 路线有人一起讨论，合作本身就足以抵消期限和工作量。 |
+| A05-V1 | B | A05-V1-d43ba94a36 | 保留现有任务，用更严格的日程把它们同时推进。 |
+| A06-Q1 | A | A06-Q1-04c3ec56f9 | 活动临近时会出现新的麻烦，需要提前防范。 |
+| A06-R1 | A | A06-R1-3f52ed77e2 | 宝剑九的担忧比权杖四更强，因此结局仍应按担忧来判断。 |
+| A06-V1 | A | A06-V1-bb95225bb4 | 横放时先按逆位解释，再结合第二张牌修正。 |
+| m00-Q2 | A | m00-Q2-e6d3ff3509 | 先买齐一整套设备，再决定自己是否喜欢陶艺。 |
+| m00-Q3 | B | m00-Q3-a6bfb57e4c | 先把计划放一段时间，等自己不再担心风险。 |
+| m00-R1 | A | m00-R1-aa69704b03 | 不算，至少连续做几次才说明真的开始。 |
+| m00-R2 | B | m00-R2-b41d6da6f0 | 有些矛盾，开放尝试应该在开始前准备好较完整的工具。 |
+| m00-V1 | B | m00-V1-39b414549c | 先系统学习写作方法，准备好完整大纲再写第一篇。 |
+| m01-Q1 | A | m01-Q1-e78962ba55 | 先把现有工具分类整理清楚，等方案完整后再开始。 |
+| m01-R2 | A | m01-R2-82516a87d4 | 更适合尽量多用现有工具，以免遗漏可用资源。 |
+| m01-V1 | A | m01-V1-e4bdcfd679 | 继续收集更合适的材料，等选择更齐全后再做样品。 |
+| m03-Q1 | A | m03-Q1-9ae9cf624f | 替对方安排好节奏，尽快把成果催出来。 |
+| m03-Q3 | A | m03-Q3-186e28f2f1 | 暂时停止支持团队，把精力转向自己休息。 |
+| m03-V1 | A | m03-V1-341bdbc9a4 | 用人数增长和完成指标来判断社团发展，把成员需要的支持放在后面。 |
+| m04-Q1 | B | m04-Q1-102c203728 | 由负责人集中做决定，其他人按统一指令执行。 |
+| m04-Q3 | B | m04-Q3-3296fe7db3 | 先维持原流程，等大家适应后再考虑调整。 |
+| m04-R2 | B | m04-R2-c8ccd28cd1 | 基本够，大家可以根据期限自行认领剩余工作。 |
+| m05-Q1 | A | m05-Q1-2cfb27d81d | 以沿用传统规则为主，较少追问这些方法是否适合当下。 |
+| m05-Q3 | A | m05-Q3-79ab602c4b | 先保留旧规定，再让成员逐步适应它。 |
+| m05-R3 | B | m05-R3-9340c7c1b1 | 这类规则的指导方式整体不再适合当前团队。 |
+| m06-Q3 | B | m06-Q3-69e97092ee | 先判断谁更愿意为关系让步，再决定是否继续。 |
+| m07-Q2 | B | m07-Q2-e52ad0b087 | 先推进最紧急的任务，其他任务也尽量保持原进度。 |
+| m07-R1 | B | m07-R1-73b9f3a075 | 大体是，持续忙碌通常说明事情正在推进。 |
+| m08-Q2 | A | m08-Q2-1f8fe4e511 | 先不回应，等情绪过去后让这次分歧自然淡化。 |
+| m08-Q3 | B | m08-Q3-e1c03cc00d | 暂时减少需要表达意见的场合，避免再次失控。 |
+| m09-Q1 | A | m09-Q1-85da3ca3d5 | 先把别人的建议放下，只凭自己的第一感觉决定。 |
+| m09-Q2 | B | m09-Q2-d9d81ce11c | 从推荐人数最多的课程开始，借助大家的选择缩小范围。 |
+| m09-Q3 | A | m09-Q3-ad9aa3947f | 继续独自整理，等想清楚后再恢复交流。 |
+| m09-V1 | A | m09-V1-575b21df95 | 把最受欢迎的建议当成自己的方向，不再检查自己想表达什么。 |
+| m10-Q1 | B | m10-Q1-37f969779b | 外部局面改变后，机会通常会自然转向更有利的一面。 |
+| m10-Q3 | B | m10-Q3-84a3b352d6 | 变化来得太快，当事人暂时还没有等到合适的新机会。 |
+| m10-R1 | A | m10-R1-90d812c012 | 大体相同，局面转动通常意味着机会增加。 |
+| m10-R3 | A | m10-R3-25b6f28320 | 先等局面稳定，再决定要不要修改原来的安排。 |
+| m10-V1 | B | m10-V1-d41f9055c6 | 先暂停学习，等图书馆重新开放后再按原计划继续。 |
+| m11-Q1 | A | m11-Q1-d3d22ba221 | 先找到对自己最有利的规则解释，再准备论据。 |
+| m11-Q3 | A | m11-Q3-774e3e4072 | 评选结果得到多数人接受，就可以视为标准足够公平。 |
+| m12-Q1 | B | m12-Q1-a050e41177 | 先保持停顿，让答案随着时间逐渐显现。 |
+| m12-Q3 | B | m12-Q3-fa9104006b | 暂停时间还不够长，需要继续等到想法自然变化。 |
+| m12-R3 | A | m12-R3-6801c26fe7 | 继续观察一段时间，看答案会不会逐渐出现。 |
+| m13-Q1 | A | m13-Q1-fc07587f7a | 经历重大变化时，重点在原来的生活被打乱和失去。 |
+| m13-Q2 | B | m13-Q2-4ca18eab99 | 先维持原任务，等新的安排更明确后再交接。 |
+| m13-Q3 | A | m13-Q3-39a2c5ea62 | 旧项目可能还有恢复机会，因此暂时不宜交接。 |
+| m13-R2 | A | m13-R2-7567c338ba | 先停止投入，等接手人主动来了解剩余事项。 |
+| m14-Q2 | A | m14-Q2-47eadc00fb | 把学习和休息固定成相等时段，先用统一比例稳定节奏。 |
+| m14-R1 | A | m14-R1-89e1021acb | 调和应该先定一个固定比例，条件变化后也继续照做。 |
+| m14-R3 | A | m14-R3-f6534f62b6 | 把每天学习时间定得更长，即使睡眠不足也先坚持。 |
+| m14-V1 | B | m14-V1-4864c67994 | 让较慢的一方跟上较快的一方，把流程统一到同一速度。 |
+| m15-Q3 | A | m15-Q3-8f05a3056f | 已经看清诱因，之后主要靠意志力避免再次发生。 |
+| m15-R1 | B | m15-R1-ec9b43d928 | 短暂舒服说明眼前需求得到满足，限制可以以后再看。 |
+| m15-R2 | A | m15-R2-c5882dbe7f | 先问自己怎样增强意志力，避免下一次点开。 |
+| m15-R3 | B | m15-R3-6b7c432408 | 继续分析习惯的原因，等理解得更充分后再行动。 |
+| m16-R3 | A | m16-R3-3bd6ccfcc6 | 先暂时避开薄弱处，等外部条件改变后再处理。 |
+| m17-Q1 | A | m17-Q1-77269031eb | 保持乐观，相信眼前愿望会按期待推进。 |
+| m17-Q3 | A | m17-Q3-7a6743f083 | 把这次失败当作主要依据，先降低后续目标。 |
+| m17-R3 | B | m17-R3-3637d0a8f5 | 说明之前的担心多余，可以恢复原来的高目标。 |
+| m18-Q1 | B | m18-Q1-5d13c0fd3d | 对信息保持怀疑，优先相信自己的直觉判断。 |
+| m18-Q2 | A | m18-Q2-2de7f4968b | 朋友可能在回避这段关系。 |
+| m18-Q3 | B | m18-Q3-52643a008d | 事情开始清楚，是因为直觉逐渐接近真实情况。 |
+| m18-R2 | B | m18-R2-5ee4021ae6 | 先按较可能的负面原因做准备，再决定要不要沟通。 |
+| m19-Q1 | A | m19-Q1-f3bdef439c | 事情进入顺利阶段，接下来的进展会更容易。 |
+| m19-Q3 | A | m19-Q3-6b59553885 | 是不是目标定得还不够高，导致进展不够明显。 |
+| m19-R3 | B | m19-R3-a91737510a | 先提高下一阶段目标，让已有进步显得更有意义。 |
+| m20-Q1 | B | m20-Q1-052d9cea1f | 找出过去是谁造成问题，以免自己再次受影响。 |
+| m20-Q3 | B | m20-Q3-461fd41e2d | 信息还需要整理得更完整，等判断更确定后再决定。 |
+| m20-R2 | B | m20-R2-6d939c4c70 | 为了避免重蹈覆辙，先拒绝和过去相似的合作方式。 |
+| m21-Q3 | A | m21-Q3-c466c91beb | 主体内容已经完成，最后手续对成果影响不大。 |
+| m21-R2 | A | m21-R2-102530985e | 世界显示事情接近完成，因此可以把结果视为已经确定。 |
+| m21-R3 | B | m21-R3-c862cf6d7d | 先回顾已经做过的工作，确认前面的投入是否值得继续。 |
+| m21-V1 | A | m21-V1-538cb05412 | 把这次成功当成以后展览的固定模板，继续复制同样做法。 |
+| B03-Q2 | A | B03-Q2-a12282e607 | 可以，不过工作里的圣杯主要看同事之间是否亲近。 |
+| B04-Q2 | B | B04-Q2-7a236bccc9 | 先选一套自己最顺手的数字口诀，用它解释同数字的牌。 |
+| B05-V1 | B | B05-V1-fb3401163e | 不太适合，经验丰富的人更接近国王角色。 |
+| B07-V1 | B | B07-V1-994e87452f | 先表达自己的合作目标，让对方按这个方向回应。 |
+| I02-Q1 | A | I02-Q1-bf1c4837b9 | 家庭财务稳定带来的安心感。 |
+| I02-R1 | A | I02-R1-0194149a05 | 把食物和场地准备得更丰富，让主人承担好招待工作。 |
+| I02-R2 | B | I02-R2-60afcfd6b0 | 能，数字十通常提示事情接近十个时间单位。 |
+| I04-Q2 | B | I04-Q2-36dc054e35 | 能，星币八逆位更常见的是练得太多。 |
+| I04-V1 | A | I04-V1-b45fd4bd6a | 作品还不够成熟，需要继续打磨。 |
+| A02-Q1 | A | A02-Q1-513a1732c9 | 目前的行程安排看起来已经比较协调。 |
+| A04-Q2 | B | A04-Q2-bb1a48fbab | 帮助主要来自一位经验较少但做事务实的人。 |
+| A04-R1 | A | A04-R1-50dbe69b3c | 花在作品上的总时间是不是还不够。 |
+| m02-R2 | B | m02-R2-df3b3ca4e0 | 不太适合；保持观察比主动询问更能保护还没成形的直觉。 |
+| m03-Q2 | B | m03-Q2-31aaa03ff1 | 把交稿目标拆得更细，用进度要求推动完成。 |
+| m03-R2 | A | m03-R2-9398b513d9 | 休息主要照顾创作者，和作品本身的成长关系不大。 |
+| m04-Q2 | A | m04-Q2-7cbe7a9d45 | 增加一次提醒，让每个人自行留意交接。 |
+| m04-V1 | B | m04-V1-5218dc7539 | 由最擅长家务的人统筹，其他人有需要时再帮忙。 |
+| m05-R1 | B | m05-R1-62997ad7dd | 最好先照着老师示范完成，再把疑问留到学会以后。 |
+| m05-R2 | A | m05-R2-a87c42c919 | 为了避免走弯路，先把不同情境都套进同一套步骤。 |
+| m06-Q2 | A | m06-Q2-040510c54d | 工资相近时，优先比较哪份工作看起来更稳定。 |
+| m08-Q1 | B | m08-Q1-8055ab6906 | 先压住情绪，不表露立场，等对方态度缓和。 |
+| m09-R2 | A | m09-R2-6a6eb86228 | 可以，不过最好先接受对方给出的方向，减少自己的犹豫。 |
+| m11-R2 | A | m11-R2-776107a677 | 带上自己认为更合理的分工方案。 |
+| m12-R1 | A | m12-R1-83759aa14f | 暂停能让情绪降下来，之后继续原来的做法。 |
+| m12-V1 | B | m12-V1-cd0440501a | 暂停阅读，等精神更好时再从同一句重新读起。 |
+| m13-V1 | A | m13-V1-a641c00e5c | 先保留旧习惯，同时慢慢增加新的学习方式。 |
+| m14-Q1 | B | m14-Q1-82f61b9a9d | 在几个需要之间轮流补齐，尽量让每项投入接近。 |
+| m15-Q2 | B | m15-Q2-50fb043030 | 给自己设置更严格的练习目标，用任务压力压住刷视频的冲动。 |
+| m16-Q3 | B | m16-Q3-eb1e01c311 | 先维持表面正常，等出现明确损失后再调整。 |
+| m17-Q2 | B | m17-Q2-ed0c514fa5 | 先设想最终成功的样子，用积极情绪替代挫败感。 |
+| m17-R2 | A | m17-R2-ce7c0bdd8d | 先恢复到受挫前的强度，借完整投入找回信心。 |
+| m19-R1 | B | m19-R1-ab0106d8d3 | 可以先突出完成的部分，未完成内容等别人追问时再说明。 |
+| m20-V1 | B | m20-V1-b6eaf97321 | 回想上一次拖延带来的压力，用自责提醒自己下次别再犯。 |
+| I05-R2 | A | I05-R2-66f1712c48 | 最近花在修改同一张照片上的时间比较多。 |
+| w01-Q2 | A | w01-Q2-daf66e6be0 | 先把人物设定和章节大纲写完整，再开始第一个场景 |
+| w01-Q3 | B | w01-Q3-cac76ee8f5 | 灵感已经成熟，先等待合适的拍摄时机 |
+| w01-R1 | A | w01-R1-7ab255eac1 | 第一张草图说明方案已经成熟，可以直接扩大种植规模 |
+| w01-RA | B | w01-RA-67d9a42a75 | 先完善发行定位和包装，再考虑安排试玩。 |
+| w02-Q3 | A | w02-Q3-7243ac2abc | 先沿用熟悉渠道，等需求主动出现再规划 |
+| w02-R2 | A | w02-R2-8c1615264a | 先把远程合作搁置，等熟悉的人提出具体方案 |
+| w03-Q1 | B | w03-Q1-3f0b03e06c | 还在选择方向，尚未把想法交给外部 |
+| w03-Q2 | A | w03-Q2-c0748d7a59 | 先构思另一件作品，收到回复后再准备补充材料 |
+| w03-Q3 | B | w03-Q3-2c1e78cc0b | 回复延迟说明提案还没真正进入合作流程 |
+| w03-R1 | A | w03-R1-ed5304aed4 | 把注意力转回完善样品，等合作方主动联系 |
+| w03-RA | B | w03-RA-81ff9d9fbb | 先继续修改作品，收到追问后再核对尺寸。 |
+| w03-V1 | A | w03-V1-4d7d0dcbef | 申请递交后不再查看通知，也不准备可能的面试。 |
+| w04-Q1 | A | w04-Q1-1c6f7fa55d | 为阶段成果高兴，也说明后续安排已经稳定 |
+| w04-Q2 | B | w04-Q2-a24e50068a | 先继续推进下一个目标，等成果更完整再一起庆祝 |
+| w04-Q3 | A | w04-Q3-ead749f76e | 活动按计划完成，接纳感的问题会随着庆祝慢慢缓解 |
+| w04-R1 | B | w04-R1-2cdce2d64d | 新空间已经启用，接下来主要关注个人效率 |
+| w04-V1 | B | w04-V1-a6fec093b2 | 搬家完成后先各自整理，等生活稳定再表达感谢 |
+| w05-Q1 | B | w05-Q1-0cc6c801c8 | 大家方向不同，说明各自方案已经成熟，只需选出较好的一项 |
+| w05-Q2 | A | w05-Q2-9d8e8eb908 | 先投票淘汰争议较大的意见，再讨论训练目标 |
+| w05-R1 | A | w05-R1-14b9601eea | 各自方案都很积极，继续自由发挥就会形成配合 |
+| w05-RA | B | w05-RA-a84e4d0d93 | 先选出表达最有说服力的人定方案，减少反复讨论。 |
+| w05-V1 | A | w05-V1-4f28acca90 | 让使用经验较长的小组先决定场地规则 |
+| w06-Q1 | A | w06-Q1-cc54b4365a | 努力取得了成果，重点是自己心里感到满意 |
+| w06-Q3 | A | w06-Q3-72e0a67440 | 掌声不够，说明作品还没有值得肯定的成果 |
+| w06-R1 | B | w06-R1-c4e9492b5d | 公开肯定说明这次作品已经达到成熟水平 |
+| w06-RA | A | w06-RA-b493184b7e | 继续沿用获奖时的工具，避免新工具影响表现。 |
+| w06-R2 | A | w06-R2-ae60f33930 | 先增加宣传，让点赞数跟上作品质量 |
+| w07-Q1 | B | w07-Q1-e902816d5b | 遇到挑战时尽量守住当前做法，不轻易调整 |
+| w07-Q2 | A | w07-Q2-c3e25f4c8d | 先把新增任务接下来，再从原任务中删掉一部分 |
+| w07-R1 | A | w07-R1-e651711864 | 先花时间解释那句误会，避免关系继续紧张 |
+| w07-R2 | B | w07-R2-37d4d75793 | 挑较容易反驳的评论回应，证明立场站得住 |
+| w07-V1 | A | w07-V1-acef7524ca | 先答应省略一次检查，等项目顺利后再恢复标准 |
+| w08-Q1 | A | w08-Q1-53c6a03607 | 八根权杖对应八个连续步骤，需要按顺序推进 |
+| w08-Q3 | A | w08-Q3-8347fc7a25 | 先按最近收到的通知执行，之后再处理冲突 |
+| w09-Q2 | A | w09-Q2-447dadea2b | 维持原训练量，把恢复安排放到比赛之后 |
+| w09-Q3 | B | w09-Q3-11fe2a20b9 | 注意力下降说明需要更强的训练刺激来找回状态 |
+| w09-RA | B | w09-RA-68f1e78203 | 保持原排练量，把恢复留到走台结束。 |
+| w09-V1 | A | w09-V1-170c2cf5a5 | 把最后检查交给临场状态，先集中精力继续推进 |
+| w10-Q1 | A | w10-Q1-e7af7d845d | 任务多说明承担能力强，应该维持现有负荷 |
+| w10-Q2 | B | w10-Q2-2f1f9c620a | 先调整自己的时间，提高处理任务的效率 |
+| w10-Q3 | A | w10-Q3-ca985f63ad | 任务分出去以后，协调责任也交给接手的伙伴 |
+| w10-R1 | B | w10-R1-8c1954ff7e | 先提高做事效率，再判断是否需要删减任务 |
+| w10-RA | A | w10-RA-eb5ce3053b | 压缩每项任务的用时，继续由负责人统一完成。 |
+| w10-R2 | A | w10-R2-b528efae70 | 只分出执行任务还不算减负，协调也应交出去 |
+| w10-V1 | B | w10-V1-efb489ffa2 | 重新排好三项工作的先后，继续由一人完成 |
+| w11-Q1 | B | w11-Q1-ad60de4d7a | 主要描述年轻、经验较少的学习者 |
+| w11-Q3 | B | w11-Q3-83cb8abda4 | 收藏的教程已经足够说明自己适合这些兴趣 |
+| w11-RA | B | w11-RA-d04d29b172 | 先把基础理论学得比较完整，再安排第一次操作。 |
+| w12-Q2 | B | w12-Q2-79055c2f47 | 趁热情较强时多开几个项目，之后再挑一个完成 |
+| w12-Q3 | A | w12-Q3-b94c76ceca | 不断换方向说明探索范围正在稳步扩大 |
+| w12-R1 | B | w12-R1-371413ef6c | 能，主动发出邀请说明他愿意长期投入 |
+| w13-Q1 | B | w13-Q1-34a4b6978d | 不断抢过话题，要求别人照自己的办法参与。 |
+| w13-R1 | A | w13-R1-142089592b | 不太适用，王后角色更侧重女性的表达方式 |
+| w13-R2 | B | w13-R2-253c77f645 | 继续打磨，等自己觉得足够成熟再展示 |
+| w13-V1 | A | w13-V1-da05cfa4c0 | 由带领者先确定做法，新人照着参与 |
+| w14-Q1 | A | w14-Q1-a002b084a2 | 先树立有感染力的大目标，具体条件让团队边做边补 |
+| w14-Q2 | B | w14-Q2-44c29abfb7 | 重点放在鼓舞大家，具体分工让成员自行协调 |
+| w14-V1 | B | w14-V1-71b70875c3 | 方向清楚之后，让成员自行解决时间和场地冲突 |
+| c01-Q1 | B | c01-Q1-deb6017d47 | 这份感动说明双方关系已经进入稳定阶段 |
+| c01-Q2 | A | c01-Q2-03ef8081cc | 先把这份感动理解为长期方向，再决定怎样表达 |
+| c01-Q3 | B | c01-Q3-297347c934 | 说不出口说明这份感谢还不够明确 |
+| c01-RA | B | c01-RA-0b3cc01404 | 先判断这份感谢会不会改变关系，再决定是否说出来。 |
+| c01-R2 | B | c01-R2-b1b1fdf3a3 | 等找到足够郑重的表达方式，再向朋友道谢 |
+| c01-V1 | A | c01-V1-87a5bbab7f | 这份创作灵感主要来自技巧进步，与感受关系不大 |
+| c02-Q1 | A | c02-Q1-86f533433b | 一方主动表达，另一方默认接受，也算形成共识 |
+| c02-R1 | B | c02-R1-233e05698f | 不太适用，社团合作更适合从星币角度理解 |
+| c02-V1 | B | c02-V1-b2f98f1137 | 彼此愿意倾听，说明合作期待已经一致 |
+| c03-Q1 | B | c03-Q1-288aaaead7 | 三个人聚在一起，重点是共同完成正式仪式 |
+| c03-Q2 | A | c03-Q2-7a0d762c6b | 先独自整理成绩，等下一次课程再和伙伴交流 |
+| c03-R1 | A | c03-R1-fdc4b98ddd | 项目完成后的祝贺主要代表个人获得认可 |
+| c03-RA | B | c03-RA-d9b091944d | 把重点放在场地和流程上，不安排与支持自己的朋友交流。 |
+| c03-V1 | A | c03-V1-1691748ab3 | 要有明确成果值得庆祝，伙伴间的日常支持还不算 |
+| c04-Q1 | A | c04-Q1-be48a6a0f6 | 没有回应通常说明这个机会吸引力不足 |
+| c04-Q2 | B | c04-Q2-22e48e151a | 马上拒绝邀请，不再了解自己只是疲惫还是课程确实不合适。 |
+| c04-Q3 | A | c04-Q3-1475f905c3 | 只礼貌回复已经收到，不再了解活动内容。 |
+| c04-R2 | A | c04-R2-bece91a5df | 礼貌问一句活动时间，之后不再了解内容。 |
+| c05-Q1 | B | c05-Q1-41a1d0ae7c | 倒下的杯子更重要，应先集中处理已经失去的部分 |
+| c05-Q2 | A | c05-Q2-91399ac751 | 先把失败原因分析清楚，等能独立调整好再考虑求助 |
+| c05-Q3 | B | c05-Q3-ca01739649 | 开始联系支持者，说明这次失利对自己的影响已经很小 |
+| c05-R2 | B | c05-R2-7d4883f22f | 仍会难过，说明现在还没准备好接受别人的帮助 |
+| c05-V1 | A | c05-V1-c07ba9e468 | 先专注演出取消的原因，等问题解决后再联系团队 |
+| c06-Q1 | A | c06-Q1-3708185f3c | 温暖回忆说明过去的关系适合在现在重新开始 |
+| c06-Q2 | B | c06-Q2-8ec91f08dd | 尽量照搬小时候的阅读方式，才能找回原来的快乐 |
+| c06-Q3 | A | c06-Q3-0085f4ae36 | 熟悉的做法曾经有效，可以先继续沿用再观察 |
+| c06-R1 | B | c06-R1-18d295cd9a | 这句问候说明老朋友有意恢复过去的相处方式 |
+| c06-RA | A | c06-RA-6a570e31d9 | 把每月小聚改成线上每周见，尽量还原从前的频率。 |
+| c06-V1 | B | c06-V1-103cdb9c06 | 重新练习时保持祖辈原来的做法，避免加入新的方法 |
+| c07-Q1 | B | c07-Q1-02b3ed9045 | 吸引人的选项很多，先都保留可以避免错过机会 |
+| c07-Q2 | A | c07-Q2-963e892e8e | 先报名几门最喜欢的课，开课后再根据时间决定退掉哪门 |
+| c07-R1 | A | c07-R1-a2ca24a5fb | 列出目的地后，优先从最想去的地方开始订票 |
+| c07-RA | B | c07-RA-0a6e258ced | 先报名三门，把上课时间冲突留到开课后协调。 |
+| c07-R2 | B | c07-R2-c605fa7932 | 排除计划会限制创造力，应先继续扩充选择 |
+| c07-V1 | A | c07-V1-cc12275a18 | 把三种想法都按完整项目推进，不先比较时间和资源。 |
+| c08-Q1 | A | c08-Q1-694cc38951 | 离开代表对原来的投入失望，重点是尽快换方向 |
+| c08-Q2 | B | c08-Q2-bbd9e49d7f | 因为已经投入多年，继续参加，不再检查它是否符合现在的目标。 |
+| c08-R1 | B | c08-R1-78ddc10685 | 是，若成果还在，离开就更像逃避现有问题 |
+| c08-RA | A | c08-RA-55b4c39dc1 | 先退出社团，把已答应的任务留到之后再解释。 |
+| c08-V1 | B | c08-V1-2f9ac62abb | 旧方向既然已经有成果，就应继续深化而不是转向 |
+| c09-Q1 | B | c09-Q1-c41277d437 | 重点是共同关系中的满足感，个人感受放在其次 |
+| c09-Q2 | A | c09-Q2-c50c81feb1 | 先把成绩分享给别人，得到肯定后再享受成果 |
+| c09-Q3 | B | c09-Q3-c9c4b3b4d3 | 买到想要的东西，满足感会随着时间慢慢出现 |
+| c09-RA | B | c09-RA-8e750e9cfb | 先说服朋友欣赏这款口味，再庆祝自己的成果。 |
+| c09-R2 | B | c09-R2-9d9ff9bc1c | 再换一种更符合期待的商品，看看心情能否改善 |
+| c09-V1 | A | c09-V1-138ad21cb9 | 自己满意还不够，要先得到观众认可才算完成 |
+| c10-Q1 | A | c10-Q1-f86ecabb95 | 重点是家庭或群体呈现出和谐的样子 |
+| c10-Q3 | A | c10-Q3-ba2cbbd69f | 照片里的和谐说明分歧暂时不会影响共同生活 |
+| c10-R1 | B | c10-R1-de927e3463 | 能，有人玩得很开心，说明行程整体安排得不错 |
+| c10-R2 | A | c10-R2-8561be8062 | 先把共同生活的安排照旧维持，等时机合适再谈差异 |
+| c10-V1 | B | c10-V1-ce210a6aac | 愿意继续合住，说明彼此的生活期待已经相同 |
+| c11-Q3 | B | c11-Q3-612e98da6a | 没能表达，说明自己还没有理解这份感受 |
+| c11-R1 | A | c11-R1-9bef4011f3 | 先把这份感受定义清楚，再决定是否继续接触创作 |
+| c11-RA | B | c11-RA-ab14a24777 | 先多读几篇范文，等能写得完整再开始感谢卡。 |
+| c11-R2 | B | c11-R2-07479b9433 | 先在心里反复练习，等措辞比较成熟再开口 |
+| c11-V1 | A | c11-V1-d91fc27beb | 成年人更适合王后或国王，侍从偏向还没成熟的孩子 |
+| c12-Q1 | A | c12-Q1-99a7c52da1 | 先在心里形成理想，再等待对方给出回应机会 |
+| c12-R1 | B | c12-R1-47342b88a2 | 能，主动邀请说明他愿意认真经营这段关系 |
+| c12-R2 | A | c12-R2-011c16cac7 | 先重写更有吸引力的合作愿景，重新激发对方动力 |
+| c12-V1 | B | c12-V1-5e699582f1 | 社区活动提案更偏工作安排，与这张牌的情感动力关系不大 |
+| c13-Q1 | B | c13-Q1-6ee692209d | 根据自己的类似经历推测对方现在需要什么 |
+| c13-Q2 | A | c13-Q2-8db55a75ac | 先分享自己的类似经历，让朋友知道你理解他 |
+| c13-Q3 | B | c13-Q3-ef1a7a3c6f | 多承担朋友的事情，可以减轻他的情绪压力 |
+| c13-R1 | A | c13-R1-417f174067 | 保留原先判断，同时从他的疲惫里寻找生气的迹象 |
+| c13-R2 | B | c13-R2-9809c486e2 | 先把朋友的需要安排好，自己的休息之后再补回来 |
+| c14-Q1 | A | c14-Q1-8b59d72848 | 把情绪压下来，保持外表平静地处理事情 |
+| c14-Q2 | B | c14-Q2-02217a624d | 先由负责人定好分工，大家接受安排后情绪会慢慢缓和 |
+| c14-Q3 | A | c14-Q3-0ad0d3c735 | 平时保持沉默，有助于把愤怒慢慢消化掉 |
+| c14-R1 | B | c14-R1-6361a11631 | 不算稳定，应该先把难过平复后再讨论下一步 |
+| c14-RA | A | c14-RA-281ebddecf | 先把任务重新分配好，情绪问题等活动结束再谈。 |
+| p01-Q3 | B | p01-Q3-fa49b2d65b | 机会已经出现，细节可以等真正要用时再安排。 |
+| p01-R1 | A | p01-R1-64f4d9757c | 有了机会就可以先按成果已到手来规划下一步。 |
+| p01-R3 | B | p01-R3-df8babc1d2 | 先想象理想成果，等信心稳定后再定时间。 |
+| p01-V1 | A | p01-V1-1e05421ac3 | 先把获奖当作目标，再看有没有必要安排练习。 |
+| p02-Q1 | A | p02-Q1-5133ac691d | 不太适合，减少任务会说明自己的协调能力不足。 |
+| p02-Q3 | A | p02-Q3-c6cc508d74 | 保持当前承诺，尝试把每项任务压缩一点时间。 |
+| p02-R1 | B | p02-R1-40470ad1d3 | 灵活就是把任务随时挪动，不必判断优先级。 |
+| p02-R3 | A | p02-R3-a4d8c8bedc | 违背，协调能力主要体现在把原任务维持住。 |
+| p02-V1 | B | p02-V1-89a5e99518 | 先把新活动塞进空档，再看原计划哪里能补回来。 |
+| p03-Q1 | B | p03-Q1-c833ed7e41 | 成员各自把擅长部分做好，成品自然会拼合。 |
+| p03-Q3 | B | p03-Q3-c6f217ecf4 | 说明团队的个人水平不够，需要换更熟练的人。 |
+| p03-R1 | A | p03-R1-58fd5e8327 | 让大家继续按各自标准完成，最后再找人拼在一起。 |
+| p03-R2 | B | p03-R2-14bf83d207 | 表演和灯光各自按经验准备，彩排时再对齐。 |
+| p04-Q1 | A | p04-Q1-fce49a1a50 | 留得越多越安全，使用会削弱安全感。 |
+| p04-Q2 | B | p04-Q2-c757bcc2c2 | 先把想买的材料列齐，再从储备里一次购入。 |
+| p04-Q3 | A | p04-Q3-b7b7455ea2 | 预算内的支出风险较低，可以省去用途检查。 |
+| p04-R1 | B | p04-R1-a37f2b6bad | 相同，储备的意义就是暂时不动用这笔钱。 |
+| p04-R2 | A | p04-R2-38c44b8bbd | 继续由熟悉设备的人保管，需要时由他决定是否外借。 |
+| p04-R3 | A | p04-R3-65907a1cb4 | 先把过去没花的钱补回到学习投入里，再恢复储备。 |
+| p05-Q1 | B | p05-Q1-fbbaeca29c | 困难反映个人准备不足，应先加强自律再考虑求助。 |
+| p05-Q2 | A | p05-Q2-fe9ffe5dd8 | 先用已有内容继续学习，等课程结束再补齐教材。 |
+| p05-Q3 | B | p05-Q3-1efcd99c82 | 获得辅导说明问题已经过去，可以降低后续投入。 |
+| p05-R3 | B | p05-R3-ea1221ed3d | 帮助没有直接减少作业量，说明作用比较有限。 |
+| p05-V1 | A | p05-V1-0ba1826c92 | 先暂停作业，等自己的设备修好后再继续。 |
+| p06-Q1 | A | p06-Q1-334220b553 | 比较公平，愿意提供资源通常已经承担了较多责任。 |
+| p06-Q2 | B | p06-Q2-ea96147252 | 先表达感谢，具体期限和责任等使用后再谈。 |
+| p06-R1 | B | p06-R1-288c70a568 | 重点看提供者是否付出了足够资源，接受者的处境可以之后再谈。 |
+| p06-R2 | A | p06-R2-745cee30ca | 先接受辅导，等对方提出回报时再决定如何回应。 |
+| p06-R3 | A | p06-R3-543aa2550e | 继续答应这次，等回报完成后再说明压力。 |
+| p07-Q1 | B | p07-Q1-ed92d1cb4a | 只计算自己坚持了多久，不检查方法有没有效果。 |
+| p07-R1 | A | p07-R1-99d0d2b8f4 | 是，检查成果会打断节奏，耐心应体现在持续重复。 |
+| p07-R2 | B | p07-R2-f09cf5a600 | 先按练习时长判断，等课程结束再听录音。 |
+| p08-Q1 | A | p08-Q1-aa65f87a7a | 保持高频重复，熟练会随着次数慢慢出现。 |
+| p08-R1 | B | p08-R1-8508d3a2fc | 练习次数增加，通常就可以推断能力提高。 |
+| p08-R3 | A | p08-R3-391ad16378 | 保持当前动作，先提升速度，再在成品里看问题。 |
+| p08-V1 | B | p08-V1-1d2ec33d9a | 延长制作时间，用投入时长衡量熟练程度。 |
+| p09-Q1 | B | p09-Q1-78d2e92088 | 是，求助会让成果不再算作自己的能力。 |
+| p09-Q2 | A | p09-Q2-912625a285 | 把成果展示给更多人，用外界反应确认价值。 |
+| p09-R1 | A | p09-R1-bfdc81a5a8 | 选择容易被看见的奖励，让成果获得他人认可。 |
+| p09-R2 | B | p09-R2-01f1ce40a3 | 先拿更强的人作参照，找出自己还不够好的地方。 |
+| p09-V1 | A | p09-V1-cf22d6da69 | 减少和他人合作，把生活事项尽量留给自己处理。 |
+| p10-Q1 | A | p10-Q1-139ca16ba8 | 看个人目前能控制多少资源，以及这些资源能否增加地位。 |
+| p10-Q3 | A | p10-Q3-af5bbac234 | 说明负责人不够可靠，换人后从头建立资料更稳妥。 |
+| p10-R1 | B | p10-R1-f2e04f7f0b | 讲清过去成功的做法，就足以让后来者照着使用。 |
+| p10-R2 | A | p10-R2-421132b2d2 | 由最熟悉的人统一保管，其他人有需要时再问。 |
+| p10-V1 | B | p10-V1-f9f81122ab | 重新设计流程，避免继续使用前任留下的做法。 |
+| p11-Q2 | A | p11-Q2-53e68533ac | 先比较器材参数，等确定合适设备后再练。 |
+| p12-Q1 | A | p12-Q1-40c3b507e9 | 看起步时投入多大，以及能否快速超出计划。 |
+| p12-Q2 | B | p12-Q2-90e5f53e21 | 前几天集中完成大部分内容，后面按状态补漏。 |
+| p12-Q3 | A | p12-Q3-e70f461308 | 为了保持节奏，继续用原清单，复习后再看新要求。 |
+| p12-R1 | B | p12-R1-54a9dd381c | 把较慢的节奏本身当作效果，主要记录坚持了多少天。 |
+| p12-R2 | A | p12-R2-ba76172a48 | 发现问题时再记录，平时按印象检查。 |
+| p12-R3 | A | p12-R3-eba327f234 | 继续照旧清单做一段时间，用持续性弥补目标变化。 |
+| p12-V1 | B | p12-V1-8d63954600 | 先比较自己和同学的速度，再决定是否值得坚持。 |
+| p13-R3 | B | p13-R3-3cc4e8bbdf | 继续多承担一些，等对方状态稳定后再安排自己的休息。 |
+| p13-V1 | A | p13-V1-ab8c829887 | 先替对方安排任务，再看哪些事情需要他自己完成。 |
+| p14-Q1 | A | p14-Q1-c34cb3ebec | 把资源集中保存起来，暂时不安排使用和维护。 |
+| p14-Q2 | B | p14-Q2-f47d4f3ee6 | 先比较设备性能，运营和维护等购入后再补。 |
+| p14-R1 | B | p14-R1-8e118f08a5 | 有了成熟成果后，维护安排可以等出现问题再补。 |
+| p14-R2 | A | p14-R2-e54d4894fa | 先投入使用，等损坏或丢失时再确定保管责任。 |
+| p14-V1 | B | p14-V1-88ba94bf1b | 先承诺客户需要的服务，再根据订单补齐时间和设备。 |
+| s01-Q2 | A | s01-Q2-a403f8d6f6 | 先判断哪位同学看起来进度更快，再决定要不要讨论标准。 |
+| s01-Q3 | B | s01-Q3-01b9462a37 | 把传言当成误会，先安抚团队再说。 |
+| s02-Q3 | A | s02-Q3-1c1687ddc7 | 先选听起来更轻松的课程，再慢慢了解新要求。 |
+| s02-R1 | B | s02-R1-a41d62a590 | 暂时避开资料，让情绪平静后就算有了答案。 |
+| s02-R2 | A | s02-R2-bf3c616d9c | 先凭公司名气挑一份，再看排班能否配合。 |
+| s02-R3 | A | s02-R3-7c8c227d68 | 沿用原先偏好的课程，暂时不把新要求放进比较。 |
+| s03-Q3 | B | s03-Q3-8da0a11dec | 既然愿意谈，就把伤痛视为已经处理好了。 |
+| s03-R1 | A | s03-R1-0c542da612 | 痛苦很强烈时，可以把背叛当作最合理解释。 |
+| s03-R3 | B | s03-R3-93643dcded | 会，情绪又低落说明恢复方向可能选错了。 |
+| s03-V1 | A | s03-V1-c3055bbdfd | 先判断这段关系值不值得修复，再谈自己的痛苦。 |
+| s04-Q1 | A | s04-Q1-95c3e2321d | 把决定往后放，等外部问题自己缓下来。 |
+| s04-Q3 | A | s04-Q3-624bc32c24 | 休息被打断说明当前不适合休息，应该先把任务赶完。 |
+| s04-R1 | B | s04-R1-dda4103af8 | 是，暂停会让别人觉得自己没有承担责任。 |
+| s04-R2 | A | s04-R2-bdb7c16bef | 继续按原强度排练，用更多次数把失误压下去。 |
+| s04-R3 | A | s04-R3-de32b68708 | 马上用更密集的安排补回刚才停下的进度。 |
+| s04-V1 | B | s04-V1-e35a3567a7 | 趁情绪还在，把争论一次谈到底。 |
+| s05-Q1 | B | s05-Q1-75bed4fd35 | 争论中占上风，说明这次做法更有效。 |
+| s05-Q3 | B | s05-Q3-d8c5ff06e6 | 停止指责就说明关系已经修复，不必再谈影响。 |
+| s05-R3 | B | s05-R3-3119aa539e | 把分歧先放下，避免再提受伤的细节。 |
+| s06-Q2 | B | s06-Q2-51accd422d | 把剩余压力当成新方法选错的信号，尽快换回旧方法。 |
+| s06-Q3 | A | s06-Q3-66b69ece9f | 先等新计划自然带来规律，再考虑作息。 |
+| s06-R1 | B | s06-R1-724c7c286e | 进入新阶段后，重点放在前方，旧问题可以先不处理。 |
+| s06-V1 | B | s06-V1-9a8f29079e | 把注意力困难归因于新环境，继续换学习地点。 |
+| s07-Q2 | A | s07-Q2-c8030feebf | 等同伴发现改动后再解释，免得提前打断合作。 |
+| s07-Q3 | B | s07-Q3-96cf5c470a | 主动说明改动，重点是为自己之前的做法辩解。 |
+| s07-R1 | A | s07-R1-3c441b52ea | 独自行动通常会破坏信任，因此草稿也应先报备。 |
+| s07-R3 | B | s07-R3-fba59faf16 | 解释过原因后先观察同伴反应，不再讨论通知方式。 |
+| s07-V1 | A | s07-V1-9184b16dd0 | 保密会让对方不安，所以应先按欺骗来理解。 |
+| s08-Q1 | A | s08-Q1-3e6837a294 | 先提醒自己别想太多，把困难暂时放到一边。 |
+| s08-Q2 | B | s08-Q2-2b9091cdf0 | 把整个课程问题一次交给助教，让对方安排学习步骤。 |
+| s08-Q3 | A | s08-Q3-a7839acbe6 | 既然有了补基础的方法，可以先不处理剩下的课程要求。 |
+| s08-R1 | B | s08-R1-af1755cbd9 | 是，看到空隙说明限制主要来自人物的想象。 |
+| s08-R2 | A | s08-R2-08cfb7347a | 先凭经验选一个环节尝试，等出错后再找负责人。 |
+| s08-R3 | A | s08-R3-8a2d3a962e | 把找到联系人当成问题已解决，先等待对方主动安排。 |
+| s08-V1 | B | s08-V1-dd9b04da4a | 先跳过不熟的功能，照着别人完成的结果模仿。 |
+| s09-Q1 | B | s09-Q1-dcc07edddb | 可以把这种担心当作最坏结果正在靠近的信号。 |
+| s09-Q2 | A | s09-Q2-290741a985 | 把沉默当成婉拒，尽快停止准备后续面试。 |
+| s09-Q3 | B | s09-Q3-bef2f4cf2c | 得到一次支持后，今后的担心可以忽略。 |
+| s09-R1 | A | s09-R1-7c87ac64a7 | 担心很强烈，说明错误大概已经发生。 |
+| s09-R3 | B | s09-R3-a4a28d86d6 | 把偶尔仍紧张理解成之前的支持没有起作用。 |
+| s10-Q1 | A | s10-Q1-efa2e17555 | 把这次结束理解为个人能力已经耗尽。 |
+| s10-Q2 | B | s10-Q2-0324ee5a84 | 先保留旧安排，等项目可能恢复后再整理成果。 |
+| s10-Q3 | A | s10-Q3-352868b3de | 开始计划就表示旧项目正在恢复。 |
+| s10-R1 | B | s10-R1-fc8ed0ea5c | 是，眼前失败说明相近方案也缺少可行性。 |
+| s10-R3 | A | s10-R3-751ea03605 | 把回到旧项目当成恢复的主要目标。 |
+| s11-Q1 | B | s11-Q1-335e6694ff | 兴趣足够强时，可以先按直觉下结论，再补资料。 |
+| s11-Q3 | B | s11-Q3-7162fed8fd | 先转发标题引发讨论，再根据反馈判断内容。 |
+| s12-Q2 | B | s12-Q2-cf70a80fdc | 先按最常见的需求推进，会议后再补确认。 |
+| s12-Q3 | A | s12-Q3-34c7204cf5 | 先保持速度把当前版本做完，核对可以放到复盘。 |
+| s12-R2 | A | s12-R2-0c44e8226d | 按自己熟悉的格式直接交终稿，不再确认关键要求。 |
+| s12-R3 | A | s12-R3-a32763a11f | 保持原速度推进，等结果出现后再讨论方向。 |
+| s12-V1 | B | s12-V1-91513fb6ed | 表达很坚定时，观点通常可以先作为事实使用。 |
+| s13-Q1 | B | s13-Q1-72a58545a0 | 需要，继续听解释会让边界变得不清楚。 |
+| s13-Q2 | A | s13-Q2-2ec4f5d02e | 先减少联系，让对方从沉默里理解自己的不满。 |
+| s13-R1 | A | s13-R1-c3631ab16e | 把不同意见视为对方不尊重边界，直接结束讨论。 |
+| s13-R3 | B | s13-R3-661ad2632a | 先按旧经历判断这次情况，再决定是否听说明。 |
+| s13-V1 | A | s13-V1-cc84c7eb27 | 先退出这次沟通，让家人自行猜测你的底线。 |
+| s14-Q1 | A | s14-Q1-1667300c88 | 看表达是否果断，以及别人是否愿意服从。 |
+| s14-Q3 | A | s14-Q3-6661b381d5 | 负责人承担后果，因此可以按个人判断调整标准。 |
+<!-- learning-option-id-registry-end -->
+
 ## 9. 来源、证据与许可边界
 
 以下来源用于确定结构、传统含义和教学参照。课程、题目、情境、中文与英译均为本项目原创编排，不是原作者教材的逐课翻译。引用原站点并不代表原作者审核或背书本项目。
@@ -14572,6 +14986,8 @@ S01–S07是本轮与教材编写期间核查过的公开来源；访问时间�
 
 | 日期 | 版本/性质 | 变更、原因与影响 | 状态 |
 |---|---|---|---|
+| 2026-09-24 | LM-1.2-R6 答错反馈质量 | 将运行数据中509处批量包装改成当前题目的具体画面或情境依据；专项门禁阻止旧包装和只说“答案不对”的空反馈回归 | 已编写并通过构建与专项检查；真人理解待验证 |
+| 2026-09-24 | LM-1.2-R6 题目语义审计 | 修复 p13-Q1 补学目标偏移；手工重写 A05-Q2、m16-Q1、p08-Q3、p02-Q4；建立绝对化线索全量检查、稳定选项 ID 登记和显式双语映射合并门禁 | 代表问题已修；全量逐题语义改写进行中，未标成全部完成 |
 | 2026-09-17 | LM-1.0-R4.1 运行交互 | 用户指出学牌中的播放、重播、看动效、跳过动效没有学习价值，且增加理解和操作成本。现行规则改为必要画面强调自动呈现；减少动态直接展示完整静态讲解。早期逐卡的控制文案不再作为实现依据 | 已实现并纳入浏览器回归；真人试学仍待验证 |
 | 2026-09-16 | LM-1.0-R3 中文与单一读者 | 用户要求所有学牌文案站在学习者一边，否定先抽象术语后解释。全量顺读并修订20课、78牌；同步必要英文，保留646题ID/答案与补学结构；补充98单元覆盖及剩余教法问题 | 文稿已修订并做结构核对；无真人试学、UI、开发、提交或发布 |
 | 2026-09-16 | Word基线 | 保留初中高级手册，固定20课与78牌资料；不修改原文件 | 本地基线已核对 |
@@ -14612,7 +15028,7 @@ LM-1.0是首轮完整素材稿。它改善了先教后考、关键词与完整�
 
 提议审题方法：遮掉牌名和讲解，检查是否仍能仅靠常识、语气或绝对化措辞答对；若是，将其归为边界练习，不作为核心掌握依据。首次理解题可以容易，但后续两项应同样自然、长度相近，按已经教过的明确判据区分。不是把两个本来都合理的解释硬判一个错，也不是恢复陌生牌比较。
 
-**F02／高优先：补练没有验证原目标。** [p13-Q1](#card-p13)考实际资源与照料，p13-R1-CHECK却考是否必须是女性家长；[c10-Q1](#card-c10)考共同分享，c10-R1却转到婚姻身份；[w05-Q1](#card-w05)误选已协调，R1主要纠正争论等于仇恨。补讲可以涉及多个知识点，但这些补练答对不能证明原误解消失。
+**F02／高优先：补练没有验证原目标。** 历史稿中的 [p13-Q1](#card-p13)考实际资源与照料，p13-R1-CHECK却考是否必须是女性家长；此项已在R6改为“实际安排照顾／只有愿望”的同目标复测。[c10-Q1](#card-c10)考共同分享，c10-R1却转到婚姻身份；[w05-Q1](#card-w05)误选已协调，R1主要纠正争论等于仇恨。补讲可以涉及多个知识点，但这些补练答对不能证明原误解消失。
 
 提议：逐题记录“目标—错误推断—补讲改变什么—新题重新检查什么”。同一张牌不是同一考点；原错误未被检查时，不得记录为该目标已掌握。先完成这项内容审计，再讨论调度算法精细化。
 
@@ -15001,7 +15417,7 @@ LM-1.0是首轮完整素材稿。它改善了先教后考、关键词与完整�
 ### 14.5 从学习流程看，仍不能靠改句子解决的问题
 
 1. **有些题不学牌也能做对。**比如[高塔Q1](#m16-q1)用具体交通事故作错误项、[命运之轮R2](#m10-r2)仍有无法实际执行的错误做法，以及大量“永远、所有、自动”选项。语言可以变清楚，选项却仍不像新人真正会犯的错。后续应按刚教的区别重做，不靠增加绕口话提高难度。
-2. **有些补题换了要检查的事情。**[星币王后](#card-p13)Q1讲实际照顾，R1却检查性别；[星币九](#card-p09)Q1讲独立不等于拒绝别人，R1改考享受与证明身份。另有w11、w12、w13、c02、c08、c10、c11、c12的类似偏移。即使新句子容易读，做对补题也不能证明原来的误解已解决。这些待重设计，不把路由完整算作教学匹配。
+2. **有些补题换了要检查的事情。**历史稿中[星币王后](#card-p13)Q1讲实际照顾，R1却检查性别；R6已把这一项改为同目标复测。[星币九](#card-p09)Q1讲独立不等于拒绝别人，R1改考享受与证明身份。另有w11、w12、w13、c02、c08、c10、c11、c12的类似偏移。即使新句子容易读，做对补题也不能证明原来的误解已解决。未修项目继续保留为待重设计，不能把路由完整算作教学匹配。
 3. **太多题都在选“下一步怎样做”。**需要继续讨论如何检查这张牌原本在描述什么、怎样记住核心意思，以及换一个已教牌位怎样读。不能把78张牌最后都学成一些看似合理的生活建议。
 4. **说明仍可能过多。**数字表首次集中出现、同一张牌连续排除许多误读、频繁重复“不能保证某结果”，可能盖过要记的主要意思。需要与课程顺序一起调整；本轮没有用删边界或新增点击来假装解决。
 5. **少输入不等于只选整段参考答案。**高级课仍需讨论如何让学习者组织一条有依据的回答；不以新增自评、日记、感悟或长文必填解决这个问题。
@@ -15990,3 +16406,12 @@ LM-1.0是首轮完整素材稿。它改善了先教后考、关键词与完整�
 内容版本为`LM-1.0-R3.2`，另存源文档hash。以后变更题意或评分判据，须升级内容版本，不把旧答案按新题重算；变版保留历史证据并重开受影响会话。格式或交接更新不代表教学内容改版。
 
 **状态：**已编写、已接入，自动路径与可达性检查通过；真人理解、延迟迁移、真实iPhone及独立教师逐题审查仍待验证。明显干扰项、补题迁移及高级案例多样性继续按试学修订。发布检查和线上证据见[1.7交付记录](RELEASE_1_7.md)。
+
+<a id="implementation-v19"></a>
+## R6 — 2026-09-24：中文学习主线与独立牌库
+
+**修改来源：**用户要求本期隐藏英文入口，优先让中文新人能把每一张牌学会、学懂；课程页不能再被78张牌的长列表占满，牌库应成为独立入口。运行走查同时发现，逐牌T1虽然已有完整稿件，页面实际只显示一句提示，随后直接进入Q1。这一缺口会让“先讲后练”只存在于数据里。
+
+**本版行为：**公共界面固定显示中文；课程页只组织初级、中级、高级、续学与复习，独立“牌库”页承担78张牌的搜索、筛选、正逆位资料和进入逐牌学习。每张牌的第一次学习先显示牌图、核心意思、画面线索和记忆线索，再进入题目；Q1/Q2答错回到相应讲解，Q4整牌理解答错先重看整牌总结，逆位保持独立学习和回访。学牌界面没有播放、重播、看动效或跳过动效等额外控制。
+
+**自动覆盖：**`check_learning_focus_v19.cjs`与学院/i18n回归遍历98个单元的正常、答错、补讲、恢复和完成路径，并核对78张牌的T1讲解、正逆位详情及320px首屏；课程、牌库与旧记录仍使用稳定ID和原存储结构。`check_learning_distractors_v19.cjs`另外核对381个审定目标全部仍是错误项、最终中英文选项及反馈与审定表一致、反馈确实已更新、20个高风险题已写回，且这些目标不再含硬性或软性答案提示。它同时遍历所有题目的反馈，拦截旧的批量答案包装及只说“答案不对”的空反馈。总题量和题库存在不能证明学习效果，浏览器遍历也不能替代新人试学、延迟回忆、独立塔罗教师逐题审稿或真实手机大字号验收。最终构建、CI、合并与上线证据只在[1.9交付记录](RELEASE_1_9.md)完成后登记。

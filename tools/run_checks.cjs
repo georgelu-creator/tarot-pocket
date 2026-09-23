@@ -8,9 +8,11 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
 (async()=>{
   await run(process.env.PYTHON||'python3',['tools/build_academy.py']);
   await run(process.execPath,['tools/check_ai_server.cjs']);
+  await run(process.execPath,['tools/check_reading_safety_v19.cjs']);
   await run(process.execPath,['tools/check_telemetry.cjs']);
   await run(process.execPath,['tools/check_entry_redirect.cjs']);
   await run(process.execPath,['tools/check_reading_scenes_v2.cjs']);
+  await run(process.execPath,['tools/check_offline_reading.cjs']);
   await run(process.execPath,['tools/check_cloud_functions.cjs']);
   await run(process.env.PYTHON||'python3',['tools/verify_assets.py']);
   await run(process.execPath,['tools/check_locales.cjs']);
@@ -23,6 +25,6 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const env={...process.env,DEMO_URL:`http://127.0.0.1:${server.address().port}/tarot-demo.html`};
-  try{for(const file of ['check_academy_v2.cjs','check_reading_v2.cjs','check_experience_v16.cjs','check_daily_almanac.cjs','check_home_alignment.cjs','check_shuffle_v152.cjs','check_swipe_v152.cjs','check_ai_wait_v152.cjs','check_reading_v12.cjs','check_demo.cjs','check_learning.cjs','check_reading.cjs','check_ritual_ui.cjs','check_ui_v11.cjs','check_i18n.cjs','check_design.cjs','check_curriculum.cjs','check_journey.cjs','check_learning_v13.cjs','check_ritual_v13.cjs','check_dossier_v13.cjs','check_reveal_webkit.cjs','check_reading_connect_v14.cjs','check_access_failover.cjs','check_guided_v14.cjs','check_offline.cjs'])await run(process.execPath,[`tools/${file}`],env);}
+  try{for(const file of ['check_academy_v2.cjs','check_learning_focus_v19.cjs','check_learning_mastery_v19.cjs','check_learning_distractors_v19.cjs','check_mobile_zh_v19.cjs','check_spread_layout_mobile_v19.cjs','check_reading_conflict_guard.cjs','check_reading_v2.cjs','check_experience_v16.cjs','check_daily_almanac.cjs','check_home_alignment.cjs','check_shuffle_v152.cjs','check_swipe_v152.cjs','check_ai_wait_v152.cjs','check_reading_v12.cjs','check_demo.cjs','check_learning.cjs','check_reading.cjs','check_ritual_ui.cjs','check_ui_v11.cjs','check_i18n.cjs','check_design.cjs','check_curriculum.cjs','check_journey.cjs','check_learning_v13.cjs','check_ritual_v13.cjs','check_dossier_v13.cjs','check_reveal_webkit.cjs','check_reading_connect_v14.cjs','check_access_failover.cjs','check_guided_v14.cjs','check_offline.cjs'])await run(process.execPath,[`tools/${file}`],env);}
   finally{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 })().catch(e=>{console.error(e.message);process.exitCode=1;});

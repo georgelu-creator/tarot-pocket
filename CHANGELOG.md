@@ -1,5 +1,13 @@
 # Changelog · 版本记录
 
+## 1.9.0 — Chinese learning and reading repair / 中文学习与解读修复
+
+- Make the public product Chinese-only for this release. Old English query links fall back to Chinese while stable IDs, storage and prior records remain compatible. / 本期公共产品只显示中文；旧英文参数回落中文，稳定ID、本地存储与旧记录保持兼容。
+- Separate the 78-card library from the staged course page and restore the missing three-part explanation before every card's first assessment. / 78张牌库从三阶段课程页独立出来，并恢复每张牌首次答题前实际缺失的三段讲解。
+- Correct local Yes/No, choice and open-three readings so they use the question, card meanings, spread roles and orientations instead of orientation voting or hidden positions. / 修复本地Yes/No、选择题和自由三张，结合问题、牌义、牌位与正逆位，不再按方向投票或暗设牌位。
+- Constrain RP-1.2.0 to the spread's actual evidence and improve routing for negated and natural questions. / RP-1.2.0只在牌阵实际支持范围内作答，并改善否定句与自然问法路由。
+- Repair narrow-screen learning, category discovery, card-fan framing, selection copy, loading placeholders, card dossiers and touch targets. / 修复窄屏学习首屏、分类发现、牌扇构图、选牌文案、加载占位、牌义详情与点击区域。
+
 ## 1.8.0 — Public, local-first reading / 公开进入与本地牌阵解读
 
 - Remove the invitation gate. Learning, drawing and spread-aware local readings open directly; AI is requested only after an explicit confirmation. / 移除邀请码入口；学牌、抽牌与按真实牌阵生成的本地解读直接可用，只有明确确认后才请求 AI。

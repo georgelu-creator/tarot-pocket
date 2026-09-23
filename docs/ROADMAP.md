@@ -2,7 +2,11 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.8.0 · 当前版本
+## Implemented in v1.9.0 · 当前版本
+
+The public interface is Chinese-only for this release. Courses and the separate 78-card library now form two clear learning paths, and every card displays its authored explanation before assessment. Local Yes/No, choice and open-three readings use the actual question, meanings, positions and orientations; RP-1.2.0 stays within what the selected spread can support. Mobile acceptance covers the audited narrow-screen layout issues, while physical-phone use and long-term learning transfer remain separate evidence. / 本期公共界面只显示中文；课程与独立78张牌库形成两条清楚路径，每张牌先显示已编写的讲解再答题。默认Yes/No、选择题和自由三张结合实际问题、牌义、牌位与正逆位，RP-1.2.0不超出牌阵支持范围。移动端自动验收覆盖本次审计问题，真实手机与长期学习迁移仍须另验。
+
+## Previous v1.8.0 · 前版记录
 
 The public site opens without an invitation, gives a complete position-aware offline reading first and requests online AI only after explicit confirmation. The mobile home and 78-card fan are denser; every card has a whole-card question and an optional expanded guide. Privacy-limited first-party metrics cover the product funnel and AI health without collecting questions, cards, answers or learning records. [Release evidence](HANDOFF.md) records CI, HTTPS production, the verified offline pack and the remaining physical-phone check. / 公开站点无需邀请码；先按牌阵和牌位给出完整离线解读，用户明确确认后才调用在线AI。手机首页和78张牌扇更紧凑，每张牌有整牌理解题与可选详细资料。第一方匿名统计只记录产品漏斗与AI健康，不收集问题、牌面、答案或学习记录。[交接记录](HANDOFF.md)列有CI、HTTPS生产、离线包与仍待完成的实机验收。
 

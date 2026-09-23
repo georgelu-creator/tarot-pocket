@@ -7,6 +7,17 @@ import re, json, hashlib
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'docs/LEARNING_MASTER.md'
 src=SOURCE.read_text()
+option_id_override_rows=re.findall(
+    r'^\| ([BIA]\d\d|[mwcsp]\d\d)-(Q[1-4]|R[1-3A]|V1) \| ([ABC]) \| ([BIA]\d\d|[mwcsp]\d\d)-(?:Q[1-4]|R[1-3A]|V1)-([0-9a-f]{10}) \| ([^|]+?) \|$',
+    src,re.M)
+option_id_overrides={}
+for unit_id,step,letter,oid_unit,oid_hash,current_zh in option_id_override_rows:
+    qid=unit_id+'-'+step;oid=oid_unit+'-'+step+'-'+oid_hash
+    assert oid.startswith(qid+'-'),'Stable option id must belong to its question: '+oid
+    key=(qid,letter)
+    assert key not in option_id_overrides,'Duplicate stable option id override: '+str(key)
+    option_id_overrides[key]=(oid,current_zh.strip())
+used_option_id_overrides=set()
 def assigned_json(path):
     """Read a generated ``window.NAME = {...};`` data file without executing it."""
     raw=path.read_text()
@@ -35,6 +46,7 @@ def extract(s,start,end=None):
     return s[i:s.index(end,i)] if end else s[i:]
 def firstpara(s):
     return next(x for x in re.split(r'\n\s*\n',s.strip()) if x and not x.startswith('<'))
+
 def question(qid,prompt,options,correct):
     out={'id':qid,'prompt':prompt,'options':[]}
     assert len(options)>=2 and correct in options,(qid,options,correct)
@@ -54,7 +66,13 @@ def question(qid,prompt,options,correct):
                     reason=tail.lstrip(' 。.!！')
             if reason:feedback[lang]=reason
         # Semantic identity travels with option text, never with its display order.
-        oid=qid+'-'+hashlib.sha256(text['zh'].encode()).hexdigest()[:10]
+        override=option_id_overrides.get((qid,letter))
+        if override:
+            oid,expected_zh=override
+            assert text['zh']==expected_zh,'Stale stable option id text for '+qid+' '+letter
+            used_option_id_overrides.add((qid,letter))
+        else:
+            oid=qid+'-'+hashlib.sha256(text['zh'].encode()).hexdigest()[:10]
         out['options'].append({'id':oid,'text':text,'feedback':feedback})
         if letter==correct:out['correct']=oid
     return out
@@ -178,6 +196,96 @@ for ix,m in enumerate(headers):
         'boundary':{'zh':card_notes[uid],'en':card_notes_english[card_notes[uid]]}
     }
     cards.append({'id':uid,'kind':'card','level':'I','title':title,'teachings':teachings,'application':t2,'reversal':t3,'visual':visual,'details':details,'questions':qs,'remediation':rem,'revisit':visit,'summary':summary,'cards':[uid]})
+
+# Q4 keeps stable option ids from the older guided data, but its effective
+# learner copy is authored in the master document. Each row names the exact old
+# bilingual text so a stale or duplicated override fails closed.
+q4_copy_start=src.index('| 题目 ID | 选项 ID | 原中文 | 原英文 |')
+q4_copy_end=src.index('<!-- learning-q4-copy-overrides-end -->',q4_copy_start)
+override_rows=re.findall(
+    r'^\| ([mwcsp]\d\d-Q4) \| ([mwcsp]\d\d-Q4-[0-9a-f]{10}) \| ([^|]+?) \| ([^|]+?) \| ([^|]+?) \| ([^|]+?) \|$',
+    src[q4_copy_start:q4_copy_end],re.M)
+assert len(override_rows)==len({(row[0],row[1]) for row in override_rows}),'Duplicate Q4 copy override key'
+for qid,oid,old_zh,old_en,new_zh,new_en in override_rows:
+    card=next((card for card in cards if card['id']==qid.split('-')[0]),None)
+    assert card,'Q4 override references unknown card: '+qid
+    q=card['questions'].get('Q4')
+    assert q and q['id']==qid,'Q4 override references unknown question: '+qid
+    matches=[option for option in q['options'] if option['id']==oid]
+    assert len(matches)==1,'Q4 override option must match once: '+oid
+    option=matches[0]
+    assert option['id']!=q['correct'],'Q4 override may not replace the correct option: '+oid
+    assert option['text']=={'zh':old_zh.strip(),'en':old_en.strip()},'Stale Q4 override source text: '+oid
+    option['text']={'zh':new_zh.strip(),'en':new_en.strip()}
+# Q4 feedback must be reviewed together with any rewritten distractor. Keep a
+# separate explicit table so the compiler can fail closed on stale source copy
+# without changing the historical guided-card files.
+q4_feedback_start=src.index('| 题目 ID | 选项 ID | 原中文反馈 |')
+q4_feedback_end=src.index('<!-- learning-q4-feedback-overrides-end -->',q4_feedback_start)
+feedback_override_rows=re.findall(
+    r'^\| ([mwcsp]\d\d-Q4) \| ([mwcsp]\d\d-Q4-[0-9a-f]{10}) \| ([^|]+?) \| ([^|]+?) \| ([^|]+?) \| ([^|]+?) \|$',
+    src[q4_feedback_start:q4_feedback_end],re.M)
+assert len(feedback_override_rows)==len({(row[0],row[1]) for row in feedback_override_rows}),'Duplicate Q4 feedback override key'
+for qid,oid,old_zh,old_en,new_zh,new_en in feedback_override_rows:
+    card=next((card for card in cards if card['id']==qid.split('-')[0]),None)
+    assert card,'Q4 feedback override references unknown card: '+qid
+    q=card['questions'].get('Q4')
+    assert q and q['id']==qid,'Q4 feedback override references unknown question: '+qid
+    matches=[option for option in q['options'] if option['id']==oid]
+    assert len(matches)==1,'Q4 feedback override option must match once: '+oid
+    option=matches[0]
+    assert option['id']!=q['correct'],'Q4 feedback override may not change the correct option: '+oid
+    assert option['feedback']=={'zh':old_zh.strip(),'en':old_en.strip()},'Stale Q4 feedback override source: '+oid
+    option['feedback']={'zh':new_zh.strip(),'en':new_en.strip()}
+
+# The historical guided-card source reused one answer-reveal sentence for both
+# distractors ("look again ... so the closer answer is ...").  That wording
+# reads like an authoring template and makes a learner hunt through two quoted
+# answers.  The supported option already carries a card-specific explanation
+# grounded in the pictured details, so use that concise explanation as the
+# corrective feedback whenever the legacy wrapper survives.  Bespoke
+# distractor feedback is preserved.
+legacy_feedback_markers=(
+    '所以本题更贴近',
+    '这项说法把重点放在',
+    '缺少本题要辨认的',
+    'The best fit here is',
+    'This statement focuses on',
+    'misses what the question asks',
+)
+def whole_card_correction(option,supported):
+    """Turn a legacy Q4 reveal into feedback for the selected distractor."""
+    wrong_zh=option['text']['zh'].rstrip(' 。！？!?')
+    wrong_en=option['text']['en'].rstrip(' .!?')
+    evidence_zh=supported['feedback']['zh']
+    evidence_en=supported['feedback']['en']
+    variant=int(hashlib.sha256(option['id'].encode()).hexdigest()[:4],16)%6
+    zh_frames=(
+        f'“{wrong_zh}”和画面里的关键线索对不上。{evidence_zh}',
+        f'{evidence_zh}这些线索没有在说“{wrong_zh}”。',
+        f'如果把它理解成“{wrong_zh}”，就会漏掉画面中的主要信息。{evidence_zh}',
+        f'先别按“{wrong_zh}”来记这张牌。{evidence_zh}',
+        f'画面给出的方向与“{wrong_zh}”不同：{evidence_zh}',
+        f'{evidence_zh}因而这里不把它读成“{wrong_zh}”。',
+    )
+    en_frames=(
+        f'“{wrong_en}” does not fit the key picture cues. {evidence_en}',
+        f'{evidence_en} Those cues do not describe “{wrong_en}.”',
+        f'Reading this as “{wrong_en}” would miss the main picture evidence. {evidence_en}',
+        f'Do not use “{wrong_en}” as the memory cue for this card. {evidence_en}',
+        f'The picture points away from “{wrong_en}”: {evidence_en}',
+        f'{evidence_en} That is why this card is not read here as “{wrong_en}.”',
+    )
+    return {'zh':zh_frames[variant],'en':en_frames[variant]}
+for card in cards:
+    q4=card['questions']['Q4']
+    supported=next(option for option in q4['options'] if option['id']==q4['correct'])
+    for option in q4['options']:
+        if option['id']==q4['correct']:
+            continue
+        feedback_text=option['feedback']['zh']+' '+option['feedback']['en']
+        if any(marker in feedback_text for marker in legacy_feedback_markers):
+            option['feedback']=whole_card_correction(option,supported)
 for u in lessons:
     for k,q in u['questions'].items():q['support']='R'+k[1]
 # Fixed image examples for method lessons, taught explicitly by the source scripts.
@@ -187,6 +295,7 @@ learner_titles=[('认识这 78 张牌','Meet the 78 cards'),('从洗牌到解读
 for u,(zh,en) in zip(lessons,learner_titles):
     u['title']={'zh':zh,'en':en}
 assert len(lessons)==20 and len(cards)==78,(len(lessons),len(cards))
+assert used_option_id_overrides==set(option_id_overrides),'Unused stable option id override rows: '+str(set(option_id_overrides)-used_option_id_overrides)
 for u in lessons+cards:
     assert len(u['teachings'])>=3,u['id']
     assert len(u['questions'])==(2 if u['kind']=='lesson' else 4),u['id']
@@ -196,7 +305,7 @@ for u in lessons+cards:
         assert len({o['text']['zh'] for o in q['options']})==len(q['options']),q['id']
     for x in u['teachings']:
         assert not re.search(r'已教依据|补学路由|内容ID|本稿|验收|编写者|触发与范围',x['zh']),u['id']
-data={'version':'LM-1.1-R5','source':'docs/LEARNING_MASTER.md','sourceHash':hashlib.sha256(src.encode()).hexdigest(),'lessons':lessons,'cards':cards}
+data={'version':'LM-1.2-R6','source':'docs/LEARNING_MASTER.md','sourceHash':hashlib.sha256(src.encode()).hexdigest(),'lessons':lessons,'cards':cards}
 (ROOT/'academy-content.js').write_text('/* Generated by tools/build_academy.py. Learner copy only; edit the source script. */\nwindow.TAROT_ACADEMY_CONTENT='+json.dumps(data,ensure_ascii=False,separators=(',',':'))+';\n')
 # Mirror source-authored translations into the existing locale workflow.
 pairs={}
