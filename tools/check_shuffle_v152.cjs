@@ -9,7 +9,7 @@ const key='tarot-reading-v3';
  const browser=await engine.launch();
  try{for(const width of [320,390,1280]){
  const ctx=await h.context(browser,{viewport:{width,height:900},hasTouch:true}),p=await ctx.newPage(),errors=[];
- p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();
+ p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();await p.evaluate(()=>{const b=document.createElement('button');b.dataset.reading='motion-pause';document.body.append(b);b.click();b.remove();});
  const pool=await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key);
  const stage=p.locator('[data-motion-stage=shuffling]'),cards=p.locator('.ritual-pack>.reading-back');assert.equal(await cards.count(),18);
  const sample=async fraction=>{
@@ -29,7 +29,7 @@ const key='tarot-reading-v3';
  const crossed=await sample(.59);assert(mix.rects.filter((r,i)=>Math.hypot(r.cx-crossed.rects[i].cx,r.cy-crossed.rects[i].cy)>40).length>=12,'most cards visibly cross to new positions');
  const gathered=await sample(.97);assert(gathered.width<105&&gathered.height<mix.height*.86,'cards gather back into one compact deck');
  assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'animation never rerolls cards');
- await p.locator('[data-reading=cut][data-index="0"]').waitFor();assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'automatic shuffle preserves the randomized pool');assert(await p.locator('[data-reading=cut][data-index="0"]').isVisible());assert.deepEqual(errors,[]);await ctx.close();
+ await p.evaluate(()=>{const b=document.createElement('button');b.dataset.reading='skip-animation';document.body.append(b);b.click();b.remove();});await p.locator('[data-reading=cut][data-index="0"]').waitFor();assert.deepEqual(await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key),pool,'completing shuffle preserves the randomized pool');assert(await p.locator('[data-reading=cut][data-index="0"]').isVisible());assert.deepEqual(errors,[]);await ctx.close();
  }
  const ctx=await h.context(browser,{viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage();await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();await p.locator('[data-reading=cut][data-index="0"]').waitFor();assert.equal(await p.locator('[data-reading=motion-continue]').count(),0);assert.equal((await h.state(p)).draft.phase,'cut','reduced motion naturally reaches the next interaction');await ctx.close();
  }finally{await browser.close();}

@@ -88,6 +88,12 @@ web_html=web_html.replace('<script src="content.js"></script>','<script src="ass
 for name in css_names+script_names+['assets/provenance.js']:
     web_html=web_html.replace('"'+name+'"','"'+name+'?v='+revision+'"')
 (web/'index.html').write_text(web_html)
+for name in ['admin.html','admin.css','admin.js']:
+    content=(ROOT/name).read_text()
+    if name=='admin.html':
+        for asset in ['admin.css','entry-redirect.js','ai-config.js','admin.js']:
+            content=content.replace('"'+asset+'"','"'+asset+'?v='+revision+'"')
+    (web/name).write_text(content)
 update_html=(ROOT/'update.html').read_text().replace('TAROT_BUILD_REVISION',revision)
 update_script=re.search(r'<script>(.*?)</script>',update_html,re.S).group(1)
 update_hash=base64.b64encode(hashlib.sha256(update_script.encode()).digest()).decode()

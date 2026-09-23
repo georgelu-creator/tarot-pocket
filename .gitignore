@@ -22,3 +22,8 @@ tarot-pocket-demo-*.json
 tarot-pocket-records-*.json
 tarot-learning-*.json
 server/invite-code.txt
+server/admin-token.txt
+server/data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

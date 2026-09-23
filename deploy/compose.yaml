@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    env_file:
+      - ../server/.env
+    restart: unless-stopped
+    volumes:
+      - tarot-data:/app/data
+
+  web:
+    image: caddy:2.10-alpine
+    depends_on:
+      - api
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../dist:/srv:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  tarot-data:
+  caddy-data:
+  caddy-config:

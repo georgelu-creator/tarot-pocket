@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://tarot.georgelu.cn; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Tarot Pocket · 使用概览</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main>
+    <header><div><small>TAROT POCKET</small><h1>使用概览</h1><p>近 30 天匿名产品事件，不含问题正文、牌面组合或学习记录。</p></div><button data-refresh hidden>刷新</button></header>
+    <form data-login><label>管理口令<input type="password" autocomplete="current-password" required></label><button type="submit">查看数据</button><p data-error role="alert"></p></form>
+    <section data-dashboard hidden>
+      <div class="kpis" data-kpis></div>
+      <section><h2>访问趋势</h2><div class="trend" data-trend></div></section>
+      <section><h2>抽牌转化</h2><div class="funnel" data-funnel></div></section>
+      <section><h2>功能事件</h2><table><thead><tr><th>事件</th><th>次数</th><th>用户</th></tr></thead><tbody data-events></tbody></table></section>
+      <section><h2>AI 服务</h2><div data-ai></div></section>
+      <p class="foot" data-generated></p>
+    </section>
+  </main>
+  <script src="entry-redirect.js"></script>
+  <script src="ai-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

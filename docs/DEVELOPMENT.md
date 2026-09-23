@@ -39,6 +39,9 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | `app.js` | Navigation, academy bridge, card library, backup integration / 导航、学院整合、牌库与备份整合 |
 | `learning.js` | Lesson interactions, scoring, recall, progress / 单元交互、评分、回忆与进度 |
 | `reading.js` | Spread selection, shuffle, draw, position guidance, history / 选阵、洗牌、抽牌、牌位引导与历史 |
+| `offline-reading.js` | Pure spread-aware local interpretation; no DOM or network / 纯函数牌阵本地解读，不依赖DOM或网络 |
+| `access.js`, `reading-ai.js` | Public entry, lazy anonymous AI session, explicit deep reading / 公开入口、按需匿名会话与显式深度解读 |
+| `analytics.js`, `server/telemetry.cjs`, `admin.*` | Privacy-limited product events and protected aggregate dashboard / 隐私受限事件与受保护聚合后台 |
 | `content.js` | Original teaching-card metadata and 24 quick questions / 原有教学牌资料与 24 道快练 |
 | `learning-content.js` | Four original units: 32 steps / 四个原有单元，共 32 步 |
 | `daily-content.js` / `locales/en-daily.json` | 312 bilingual card-specific upright/reversed daily prompts / 78 张牌正逆位宜忌共 312 条双语提醒 |
@@ -59,6 +62,7 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | `tools/check_card_back.cjs` | Card-back palette, half-turn geometry and small-size rendering checks / 牌背配色、半周旋转几何与小尺寸渲染检查 |
 | `tools/check_design.cjs` | Design, focus, skip, reduced-motion and saved-result checks / 设计、专注、跳过、减少动态与结果保留检查 |
 | `tools/capture_gallery.cjs` | Isolated screenshots and hero image from the built demo / 从构建 Demo 生成隔离截图与展示封面 |
+| `deploy/` | Same-origin Caddy + Node production deployment / Caddy与Node同源生产部署 |
 
 Edit the source files, then rebuild. Do not hand-edit the generated `demo/tarot-demo.html`; a later build will replace it. Keep both languages aligned when changing interface text, lessons, feedback, or accessibility labels. Follow the actual localization files loaded by `index.html`.
 
@@ -164,9 +168,9 @@ The upgrade regression builds the actual `v1.0.0` tag. Fetch tags/history before
 
 ## Optional AI / 可选 AI
 
-See [AI_SERVICE.md](AI_SERVICE.md). `server/reading-service.cjs` holds provider integration; `reading-ai.js` handles explicit requests, cancellation, safe text rendering and saved replies. Configure the public HTTPS endpoint with `node tools/configure_ai.cjs https://your-service.example/api/reading [https://backup.example/api/reading]`, then rebuild; this updates the exact CSP origins. Only configure a backup that serves the same project, invitation secret and session validation. Never put credentials in `ai-config.js`. Standalone files disable new API calls and retain saved answers.
+See [AI_SERVICE.md](AI_SERVICE.md), [analytics](ANALYTICS.md), [cross-platform plan](CROSS_PLATFORM.md) and [server deployment](SERVER_DEPLOY.md). `server/reading-service.cjs` holds provider integration; `reading-ai.js` always renders the local reading first and contacts AI only after an explicit user action. Never put credentials in `ai-config.js`. Standalone files disable API calls and keep local readings.
 
-服务端保存供应商密钥，客户端只持有公开接口地址；访问码仅当前打开期间使用，不导出。可配置同一服务的备用公开地址，配置脚本同步更新 CSP；成功验证后会话与后续解读使用同一条线路。独立离线文件禁止新 API 请求，但保留已保存解读。
+服务端保存供应商密钥，客户端只持有公开接口地址和当前标签页短期会话；没有入口邀请码。可配置同一服务的备用公开地址；成功建立会话后，后续解读使用同一条线路。独立离线文件禁止新 API 请求。
 
 Daily calendar regression: `node tools/check_daily_almanac.cjs` (also in `npm test`). It uses isolated synthetic saved days in Chromium/WebKit. Set `CAPTURE_DAILY=1` to refresh the two README screenshots after building; no real invitation or progress is read. / 日签专项已纳入全量测试；构建后设置 `CAPTURE_DAILY=1` 可刷新双语截图，使用隔离演示数据。
 

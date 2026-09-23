@@ -1,15 +1,15 @@
 /* Real source UI with a local mock endpoint: no production service or credentials. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),KEY='tarot-reading-v3';
-const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
+const sessionToken='tp1.'+'s'.repeat(80);
 (async()=>{
- const requests=[],invites=[],held=[];let mode='success';
+ const requests=[],sessions=[],held=[];let mode='success';
  const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost');
   if(url.pathname==='/api/session'){
-   let body='';for await(const chunk of req)body+=chunk;const parsed=JSON.parse(body);invites.push(parsed);
+   let body='';for await(const chunk of req)body+=chunk;const parsed=JSON.parse(body);sessions.push(parsed);
    res.setHeader('Content-Type','application/json');
-   if(parsed.inviteCode!==inviteCode){res.statusCode=401;res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
+   if(Object.keys(parsed).length){res.statusCode=400;res.end(JSON.stringify({error:'INVALID_REQUEST'}));return;}
    res.end(JSON.stringify({token:sessionToken,expiresAt:Date.now()+3600000}));return;
   }
   if(url.pathname==='/api/reading'){
@@ -35,17 +35,10 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',isMobile:true,hasTouch:true,serviceWorkers:'block'}),p=await ctx.newPage(),errors=[];
   p.on('pageerror',e=>errors.push(e.message));const origin=`http://127.0.0.1:${server.address().port}`;
   await p.goto(origin+'/?lang=zh');
-  const invite=p.getByLabel('邀请码',{exact:true});assert(await invite.isVisible(),'the app opens at one invitation gate');
-  await p.screenshot({path:'/tmp/tarot-v15-invite.png',fullPage:false});
-  assert.equal(await p.locator('#app').getAttribute('inert'),'','the app is inert before invitation validation');
-  assert.equal(await p.locator('.bottomnav').count(),1,'the app can prepare behind the gate without becoming interactive');
-  await invite.fill('BAD23456');await invite.press('Enter');await p.getByText('邀请码不正确，请检查后重试。').waitFor();assert.equal(invites.length,1);
-  await p.locator('[data-language-toggle]').click();await p.waitForTimeout(30);assert(!/[\u3400-\u9fff]/.test(await p.locator('.access-card').innerText()),'the invitation gate is bilingual');await p.locator('[data-language-toggle]').click();
-  assert.equal(await invite.getAttribute('maxlength'),'8');
-  await invite.fill(inviteCode);await invite.press('Enter');await p.locator('.access-screen').waitFor({state:'detached'});assert.equal(invites.length,2);
-  assert.equal(await p.locator('#app').getAttribute('aria-hidden'),'false');
-  assert(!await p.evaluate(inviteCode=>JSON.stringify(localStorage).includes(inviteCode),inviteCode),'the invitation is never stored');
-  assert(await p.evaluate(sessionToken=>sessionStorage.getItem('tarot-pocket-session-v1').includes(sessionToken),sessionToken),'only the scoped app session is kept for this tab');
+  assert.equal(await p.locator('.access-screen').count(),0,'the public app has no invitation gate');
+  assert.equal(await p.locator('#app').getAttribute('aria-hidden'),null,'the public app is interactive immediately');
+  assert.equal(await p.locator('.bottomnav').count(),1,'the main navigation is immediately available');
+  assert.equal(sessions.length,0,'opening or browsing never creates a billable AI session');
   await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
   const scenes=await p.evaluate(()=>window.TAROT_READING_SCENARIOS);
@@ -80,10 +73,12 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   assert.equal(await p.locator('[data-ai-access],.ai-connection').count(),0,'the reading page never asks for a code or provider key');
   assert((await p.locator('.reading-result-question p').innerText()).includes('How can I compare two study schedules?'),'the user question is visibly the reading focus');
   await p.locator('[data-reading-ai]').scrollIntoViewIfNeeded();await p.screenshot({path:'/tmp/tarot-v15-auto-ai.png',fullPage:false});
-  await requestReading(p);await p.locator('.ai-answer').waitFor();assert.equal(requests.length,1);assert.equal(requests[0].auth,'Bearer '+sessionToken);assert.equal(requests[0].body.spreadId,'decision-five');assert.equal(requests[0].body.question,'How can I compare two study schedules?');assert.equal(requests[0].body.optionA,'Weekend classes');assert.equal(requests[0].body.optionB,'Weekday self-study');assert.equal(requests[0].body.cards.length,5);assert.equal(requests[0].body.cards[1].reversed,true);
+  assert.equal(await p.locator('.reading-offline').count(),1,'a spread-aware local reading is available before AI');
+  assert.equal(requests.length,0);assert.equal(sessions.length,0);
+  await requestReading(p);await p.locator('.ai-answer').waitFor();assert.equal(sessions.length,1);assert.deepEqual(sessions[0],{});assert.equal(requests.length,1);assert.equal(requests[0].auth,'Bearer '+sessionToken);assert.equal(requests[0].body.spreadId,'decision-five');assert.equal(requests[0].body.question,'How can I compare two study schedules?');assert.equal(requests[0].body.optionA,'Weekend classes');assert.equal(requests[0].body.optionB,'Weekday self-study');assert.equal(requests[0].body.cards.length,5);assert.equal(requests[0].body.cards[1].reversed,true);
   assert.equal(await p.evaluate(()=>window.injected),undefined);assert.equal(await p.locator('.ai-answer script').count(),0);
-  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(inviteCode));assert(!JSON.stringify(saved).includes(sessionToken));
-  await p.reload();assert.equal(await p.locator('.access-screen').count(),0,'reload in the same tab does not ask for the invitation again');await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible');assert.equal(await p.locator('[data-reading=ai-request]').count(),0,'a successful reading has no redundant request button');assert.equal(requests.length,1);
+  const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(sessionToken));
+  await p.reload();assert.equal(await p.locator('.access-screen').count(),0,'reload remains public');await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible');assert.equal(await p.locator('[data-reading=ai-request]').count(),0,'a successful reading has no redundant request button');assert.equal(requests.length,1);
   await p.locator('[data-language-toggle]').click();assert.equal(await p.locator('.ai-answer').count(),0);assert.equal(await p.locator('[data-ai-access],.ai-connection').count(),0);
   mode='hold';await requestReading(p);await p.locator('[data-reading=ai-cancel]').click();await p.waitForTimeout(30);assert.equal(await p.locator('.ai-answer').count(),0);assert.equal((await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY)).draft.ai.length,1,'cancel preserves the other-language saved answer');for(const res of held)res.end('{}');held.length=0;
   mode='error';await requestReading(p);await p.locator('.ai-error').waitFor();assert.match(await p.locator('.ai-error').innerText(),/complete reading/);assert.equal(await p.locator('.ai-answer').count(),0);
@@ -94,7 +89,8 @@ const inviteCode='ABCD2345',sessionToken='tp1.'+'s'.repeat(80);
   const edited=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft,KEY);
   assert.equal(edited.userQuestion,'Which schedule fits a weekday evening course?');assert.deepEqual({pool:edited.pool,picked:edited.picked},originalDraw,'editing a question never redraws cards');
   assert.equal(edited.ai?.length||0,0,'the old answer is not reused for a changed question');assert(edited.answerHistory.some(h=>h.ai?.some(a=>a.text.includes('Synthetic whole-spread'))),'previous answer remains available');
-  await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await requestReading(p);await p.locator('.access-screen').waitFor();assert.equal(await p.locator('[data-invite-code]').count(),1,'expired server session returns to the single entrance gate');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);
-  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['single bilingual invitation gate','wrong invitation stays locked','valid invitation issues a tab-scoped session','reload does not ask again','reading page has no code or key field','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','saved reading survives reload, errors, cancellation and offline use','401 returns to entrance gate'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
+  const requestCount=requests.length;await p.waitForTimeout(20);assert.equal(requests.length,requestCount,'saving an edited question does not contact AI');
+  await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await requestReading(p);await p.locator('.ai-error').waitFor();assert.equal(await p.locator('.access-screen').count(),0,'an expired AI session never locks the public app');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);assert.equal(await p.locator('.reading-offline').count(),1,'the local reading remains available after an AI auth failure');
+  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['public entry has no invitation gate','browsing and local readings do not create an AI session','spread-aware local reading appears before AI','explicit AI action creates a tab-scoped anonymous session','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','saved reading survives reload, errors, cancellation and offline use','question edits never redraw or auto-send','401 keeps the public app and local reading usable'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
  }finally{for(const res of held)res.end('{}');await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

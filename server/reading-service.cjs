@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const {createHash, createHmac, randomBytes, timingSafeEqual} = require('node:crypto');
+const {createTelemetry} = require('./telemetry.cjs');
 
 const PROMPTS = require('./reading-prompts.cjs');
 const ROOT = path.resolve(__dirname, '..');
@@ -359,10 +360,15 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
         if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type'] || '') || req.headers['content-encoding']) fail('INVALID_REQUEST');
         if (Number(req.headers['content-length']) > LIMITS.body) fail('PAYLOAD_TOO_LARGE');
         const body = await req.readBody(controller.signal);
-        if (!exactKeys(body, ['inviteCode'])) fail('INVALID_REQUEST');
-        const inviteCode = textField(body.inviteCode, LIMITS.invite, true);
-        const normalizedInvite = inviteCode.toUpperCase();
-        if (!/^[A-HJ-NP-Z2-9]{8}$/.test(normalizedInvite) || !secretEquals(normalizedInvite, config.inviteCode)) fail('AUTH_REQUIRED');
+        // The public client sends an empty object only after the user explicitly
+        // asks for AI depth. A valid legacy invitation remains accepted during
+        // the rollout so already-open older builds do not break abruptly.
+        if (!exactKeys(body, []) && !exactKeys(body, ['inviteCode'])) fail('INVALID_REQUEST');
+        if (Object.hasOwn(body, 'inviteCode')) {
+          const inviteCode = textField(body.inviteCode, LIMITS.invite, true);
+          const normalizedInvite = inviteCode.toUpperCase();
+          if (!/^[A-HJ-NP-Z2-9]{8}$/.test(normalizedInvite) || !secretEquals(normalizedInvite, config.inviteCode)) fail('AUTH_REQUIRED');
+        }
         const session = createSessionToken(config, stamp);
         return send(200, session);
       }
@@ -408,14 +414,54 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
 function createReadingServer(options = {}) {
   const config = options.config || loadConfig();
   const handle = createReadingHandler({...options, config});
+  const telemetry = options.telemetry === undefined ? createTelemetry({
+    file: process.env.TAROT_TELEMETRY_ENABLED === '1' ? (process.env.TAROT_TELEMETRY_DB || path.join(ROOT, 'data', 'telemetry.sqlite')) : '',
+    secret: process.env.TAROT_TELEMETRY_SECRET || config.accessToken,
+    adminToken: process.env.TAROT_ADMIN_TOKEN || ''
+  }) : options.telemetry;
   const server = http.createServer(async (req, res) => {
     const controller = new AbortController();
     const disconnected = () => { if (!res.writableEnded) controller.abort(); };
     res.on('close', disconnected);
     try {
+      const url = new URL(req.url, 'http://localhost');
+      const origin = req.headers.origin;
+      const allowedOrigin = origin && config.origins.has(origin) ? origin : '';
+      if (origin && !allowedOrigin && ['/api/events','/api/admin/metrics'].includes(url.pathname)) {
+        res.writeHead(403, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify({error:'ORIGIN_NOT_ALLOWED'}));return;
+      }
+      if (url.pathname === '/api/events') {
+        const common={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...(allowedOrigin?{'Access-Control-Allow-Origin':allowedOrigin,Vary:'Origin'}:{})};
+        if(req.method==='OPTIONS'){
+          res.writeHead(204,{...common,'Access-Control-Allow-Methods':'POST','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600'});res.end();return;
+        }
+        if(req.method!=='POST'){res.writeHead(405,common);res.end();return;}
+        if(!telemetry){res.writeHead(204,common);res.end();return;}
+        if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type']||'')){res.writeHead(400,common);res.end();return;}
+        try{
+          const body=await readBody(req,controller.signal),events=Array.isArray(body?.events)?body.events:[];
+          if(!plain(body)||!exactKeys(body,['events'])||events.length<1||events.length>20||events.some(event=>!telemetry.record(event)))fail('INVALID_REQUEST');
+          res.writeHead(204,common);res.end();return;
+        }catch(_){res.writeHead(400,{...common,'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({error:'INVALID_REQUEST'}));return;}
+      }
+      if (url.pathname === '/api/admin/metrics') {
+        const common={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...(allowedOrigin?{'Access-Control-Allow-Origin':allowedOrigin,Vary:'Origin'}:{})};
+        if(req.method==='OPTIONS'){
+          res.writeHead(204,{...common,'Access-Control-Allow-Methods':'GET','Access-Control-Allow-Headers':'Authorization','Access-Control-Max-Age':'600'});res.end();return;
+        }
+        if(req.method!=='GET'){res.writeHead(405,common);res.end(JSON.stringify({error:'METHOD_NOT_ALLOWED'}));return;}
+        const auth=String(req.headers.authorization||'');
+        if(!telemetry){res.writeHead(503,common);res.end(JSON.stringify({error:'NOT_CONFIGURED'}));return;}
+        if(!auth.startsWith('Bearer ')||!telemetry.authorize(auth.slice(7))){res.writeHead(401,common);res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
+        res.writeHead(200,common);res.end(JSON.stringify(telemetry.summary(30)));return;
+      }
+      const started=Date.now();
       const result = await handle({method: req.method, url: req.url, headers: req.headers,
         clientIp: req.socket.remoteAddress, signal: controller.signal,
         readBody: signal => readBody(req, signal)});
+      if(url.pathname==='/api/reading'&&req.method==='POST'&&telemetry){
+        telemetry.recordServer(result.status===200?'ai_backend_success':'ai_backend_failure',{status:String(result.status),duration:String(Math.min(Date.now()-started,180000))});
+      }
       if (!res.destroyed && !res.writableEnded) {
         res.writeHead(result.status, result.headers);
         res.end(result.body);
@@ -426,6 +472,7 @@ function createReadingServer(options = {}) {
   server.headersTimeout = Math.min(config.timeoutMs, 15000);
   server.keepAliveTimeout = 5000;
   server.maxHeadersCount = 40;
+  server.on('close',()=>telemetry?.close());
   return server;
 }
 

@@ -23,7 +23,7 @@ async function run() {
   const output = path.join(fixture, 'server/invite-code.txt');
   try {
     for (const dir of ['tools', 'server']) fs.mkdirSync(path.join(fixture, dir));
-    for (const file of ['tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs']) fs.copyFileSync(path.resolve(__dirname, '..', file), path.join(fixture, file));
+    for (const file of ['tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs', 'server/telemetry.cjs']) fs.copyFileSync(path.resolve(__dirname, '..', file), path.join(fixture, file));
     fs.writeFileSync(output, 'preserve-existing-invitation', {mode: 0o600});
     const invoke = signing => spawnSync(process.execPath, [path.join(fixture, 'tools/write_invite_code.cjs')], {env: {...env, TAROT_AI_ACCESS_TOKEN: signing}, encoding: 'utf8'});
     const missing = invoke('');
@@ -35,7 +35,7 @@ async function run() {
     assert.equal(fs.statSync(output).mode & 0o777, 0o600);
     for (const result of [missing, valid]) for (const secret of [key, token, inviteCode]) assert.ok(!(result.stdout + result.stderr).includes(secret), 'invitation writer never logs credentials');
   } finally {
-    for (const file of ['server/invite-code.txt', 'tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs']) if (fs.existsSync(path.join(fixture, file))) fs.unlinkSync(path.join(fixture, file));
+    for (const file of ['server/invite-code.txt', 'tools/write_invite_code.cjs', 'server/reading-service.cjs', 'server/reading-prompts.cjs', 'server/telemetry.cjs']) if (fs.existsSync(path.join(fixture, file))) fs.unlinkSync(path.join(fixture, file));
     for (const dir of ['tools', 'server']) fs.rmdirSync(path.join(fixture, dir));
     fs.rmdirSync(fixture);
   }
