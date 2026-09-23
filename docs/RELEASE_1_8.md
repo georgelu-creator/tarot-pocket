@@ -30,10 +30,19 @@
 ## 发布验收
 
 - [x] 完整本地 `npm test`（2026-09-23；构建 `1.8.0-d6aa2d0598f17ed3`；Chromium/WebKit、中英文、320/390px、真实v1.0升级、121项离线资源）
-- [ ] 分支PR、CI、合并与主分支部署
-- [ ] `tarot.georgelu.cn` HTTPS、公开首页、本地解读、按需会话与管理后台
-- [ ] GitHub Pages旧链接跳转并保留语言参数
+- [x] [PR #23](https://github.com/georgelu-creator/tarot-pocket/pull/23) 合并为 `82441b7f8fb08f0c095c8f142305b2c535aba9af`；PR检查与[主分支完整检查及Pages部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35858627557)成功
+- [x] `tarot.georgelu.cn` HTTPS、公开首页、本地解读、按需会话与管理后台；服务器当前版本 `/opt/tarot-pocket/releases/82441b7`
+- [x] GitHub Pages主页及 `update.html` 跳转到正式域名，保留语言和片段参数并移除旧版本参数
 - [ ] 真实iPhone Safari与微信内置浏览器试用
-- [ ] 固定虚构问题的真实AI质量复测
+- [x] 一组固定虚构问题的真实DeepSeek复测；回答先给倾向再说明牌位依据，约17秒完成。该单例不代表全部场景或长期质量
+
+## 线上证据（2026-09-23）
+
+- 正式入口：<https://tarot.georgelu.cn/?lang=zh>；HTTPS首页与 `/api/health` 返回200，构建指纹为 `1.8.0-d6aa2d0598f17ed3`。
+- 生产服务只在 `127.0.0.1:8787` 监听，由Caddy同源代理；公开会话返回200，合法匿名事件返回204，未授权管理请求返回401。管理员令牌未写入仓库或输出。
+- 390×844 Chromium公网流程完成Yes/No牌阵、78张可达、离线整组解读与可选AI入口；没有浏览器错误。这是手机尺寸自动化检查，不是实机验收。
+- 一个不含个人信息的虚构问题完成真实DeepSeek调用；生产统计随后为AI总数1、成功率100%、平均5872毫秒。样本量只有1，不能外推整体准确性。
+- [v1.8.0发布页](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.8.0)包含独立离线HTML与SHA-256校验文件；重新下载后校验通过。
+- 旧GitHub Pages与新域名是不同来源，浏览器不能自动搬运旧域名的本地进度；需要时使用JSON导出与导入。
 
 自动浏览器检查不能替代真实手机、真人学习效果或长期模型质量。上线后在本节记录真实提交、Actions、域名响应与仍未验证项。

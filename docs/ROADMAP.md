@@ -2,9 +2,13 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.7.3 · 当前版本
+## Implemented in v1.8.0 · 当前版本
 
-Spread positions now carry through selection, reveal and results. The web reveal action starts the authorized online reading automatically; the offline edition remains offline. Learning shows the explanation and practice directly, without playback controls. The v1.7.2 reading catalog, denser fan, larger slots and question follow-up are included. [Release evidence](HANDOFF.md) records CI, Pages and the offline pack; physical-phone acceptance is still open. / 选牌、揭牌和结果沿用所选牌阵的位置；网页揭牌后自动发起已授权的在线解读，离线版仍保持离线。学牌直接呈现讲解与练习，不再出现播放控件。同时包含1.7.2的分类目录、密集扇形、较大牌位与补问链路。[交接记录](HANDOFF.md)列有CI、Pages和离线包证据；实机验收仍待完成。
+The public site opens without an invitation, gives a complete position-aware offline reading first and requests online AI only after explicit confirmation. The mobile home and 78-card fan are denser; every card has a whole-card question and an optional expanded guide. Privacy-limited first-party metrics cover the product funnel and AI health without collecting questions, cards, answers or learning records. [Release evidence](HANDOFF.md) records CI, HTTPS production, the verified offline pack and the remaining physical-phone check. / 公开站点无需邀请码；先按牌阵和牌位给出完整离线解读，用户明确确认后才调用在线AI。手机首页和78张牌扇更紧凑，每张牌有整牌理解题与可选详细资料。第一方匿名统计只记录产品漏斗与AI健康，不收集问题、牌面、答案或学习记录。[交接记录](HANDOFF.md)列有CI、HTTPS生产、离线包与仍待完成的实机验收。
+
+## Previous v1.7.3 · 前版记录
+
+Spread positions carry through selection, reveal and results. Learning shows the explanation and practice directly without playback controls. The v1.7.2 catalog, denser fan, larger slots and question follow-up are included. / 选牌、揭牌和结果沿用所选牌阵的位置；学牌直接呈现讲解与练习，不再出现播放控件；同时包含1.7.2的分类目录、密集扇形、较大牌位与补问链路。
 
 ## Previous v1.7.1 · 前版记录
 
