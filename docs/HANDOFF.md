@@ -1,11 +1,14 @@
 # Continue on another computer · 跨电脑接力
 
-## 1.9.0 Chinese-only release candidate / 中文学习与解读修复候选（2026-09-24）
+## 1.9.0 Chinese-only learning and reading release / 中文学习与解读修复版（2026-09-24）
 
 - 公共界面固定中文并隐藏英文入口；20课、78张独立牌库、98个学习单元和724题均已接入。逐牌学习先讲后练，正位、整牌理解、逆位和两次间隔回访分别记录；381条已审查错误反馈不再复制正确项。/ The public product is Chinese-only; the maintained bilingual source does not expose an English switch. Learning now separates courses from the 78-card library and tracks upright, whole-card, reversed and delayed review stages.
 - 抽牌问题可空，默认先给按牌阵、本次问题与正逆位生成的本地解读；AI只在用户明确点击后联网。自由三张不暗设牌位，Yes/No不按正逆位投票，二择一比较同一维度，问题冲突先说明。/ Readings are local-first and spread-aware. Optional AI remains an explicit second action, with free-three, Yes/No and decision-specific constraints.
-- 320–1280px、Chromium/WebKit、78张牌扇、牌阵几何、补充问题、升级与离线包已完成本地检查；72个高风险表达和20个安全近似句的离线及服务端边界通过，未调用真实供应商。/ Local browser, reading, safety, upgrade and offline checks pass without a live provider call.
-- 当前是本地发布候选。PR、CI、合并、服务器切换、公网页面和生产虚构AI案例必须在完成后补到 [RELEASE_1_9](RELEASE_1_9.md)，不能提前写成上线。真实 iPhone、微信 WebView、长期学习效果与教师审稿仍未验证。/ Git and production evidence remain separate until completed.
+- 320–1280px、Chromium/WebKit、78张牌扇、牌阵几何、补充问题、升级与离线包通过；72个高风险表达和20个安全近似句的离线及服务端边界通过。/ Browser, reading, safety, upgrade and offline checks pass.
+- [PR #25](https://github.com/georgelu-creator/tarot-pocket/pull/25) 合并为 `9d8faa2ec5613ff1c295aeec389846c60aff5d56`；PR CI 与[主分支完整检查及 Pages 部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35925099944)成功。生产服务器链接到 `/opt/tarot-pocket/releases/9d8faa2`，正式入口为 <https://tarot.georgelu.cn/>。/ The release is merged, checked, deployed and served from the production domain.
+- 公网健康检查为 `RP-1.2.0`／25场景。无需邀请码的公开会话、匿名事件、受保护后台、旧 Pages 跳转及两组固定虚构 DeepSeek 解读通过；人工审读确认先回答所问、牌位正确、比较维度一致且语言具体。/ Public session, telemetry, protected admin, legacy redirect and two synthetic live-AI readings passed.
+- 390×844 与 320×568 的独立生产验收未见溢出、穿模或不对称；首页主入口、78张牌库、牌扇全可达、实际牌阵形状、本地优先解读、补充问题和滚动恢复通过。[v1.9.0 发布页](https://github.com/georgelu-creator/tarot-pocket/releases/tag/v1.9.0)附件重新下载后通过 SHA-256 校验。/ Independent production mobile checks and the checksum-verified release asset passed.
+- 完整证据见 [RELEASE_1_9](RELEASE_1_9.md)。真实 iPhone、微信 WebView、大字号、长期学习效果、教师审稿和长期模型质量仍未验证。/ Physical devices, accessibility, learning effectiveness and long-term model quality remain separate acceptance work.
 
 ## 1.8.0 public local-first reading / 公开进入与本地优先（2026-09-23）
 
