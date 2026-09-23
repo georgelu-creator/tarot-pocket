@@ -1,0 +1,25 @@
+[Unit]
+Description=Tarot Pocket API and first-party metrics
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/tarot-pocket/current
+EnvironmentFile=/opt/tarot-pocket/current/server/.env
+ExecStart=/usr/bin/env TAROT_AI_HOST=127.0.0.1 /usr/local/bin/node server/reading-service.cjs
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/tarot-pocket
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

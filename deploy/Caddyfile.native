@@ -2,11 +2,11 @@ tarot.georgelu.cn {
 	encode zstd gzip
 
 	handle /api/* {
-		reverse_proxy api:8787
+		reverse_proxy 127.0.0.1:8787
 	}
 
 	handle {
-		root * /srv
+		root * /opt/tarot-pocket/current/dist
 		try_files {path} /index.html
 		file_server
 	}
