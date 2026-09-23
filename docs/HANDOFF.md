@@ -1,5 +1,12 @@
 # Continue on another computer · 跨电脑接力
 
+## 1.9.0 Chinese-only release candidate / 中文学习与解读修复候选（2026-09-24）
+
+- 公共界面固定中文并隐藏英文入口；20课、78张独立牌库、98个学习单元和724题均已接入。逐牌学习先讲后练，正位、整牌理解、逆位和两次间隔回访分别记录；381条已审查错误反馈不再复制正确项。/ The public product is Chinese-only; the maintained bilingual source does not expose an English switch. Learning now separates courses from the 78-card library and tracks upright, whole-card, reversed and delayed review stages.
+- 抽牌问题可空，默认先给按牌阵、本次问题与正逆位生成的本地解读；AI只在用户明确点击后联网。自由三张不暗设牌位，Yes/No不按正逆位投票，二择一比较同一维度，问题冲突先说明。/ Readings are local-first and spread-aware. Optional AI remains an explicit second action, with free-three, Yes/No and decision-specific constraints.
+- 320–1280px、Chromium/WebKit、78张牌扇、牌阵几何、补充问题、升级与离线包已完成本地检查；72个高风险表达和20个安全近似句的离线及服务端边界通过，未调用真实供应商。/ Local browser, reading, safety, upgrade and offline checks pass without a live provider call.
+- 当前是本地发布候选。PR、CI、合并、服务器切换、公网页面和生产虚构AI案例必须在完成后补到 [RELEASE_1_9](RELEASE_1_9.md)，不能提前写成上线。真实 iPhone、微信 WebView、长期学习效果与教师审稿仍未验证。/ Git and production evidence remain separate until completed.
+
 ## 1.8.0 public local-first reading / 公开进入与本地优先（2026-09-23）
 
 - [PR #23](https://github.com/georgelu-creator/tarot-pocket/pull/23) 已合并为 `82441b7f8fb08f0c095c8f142305b2c535aba9af`；PR检查与[主分支完整检查及Pages部署](https://github.com/georgelu-creator/tarot-pocket/actions/runs/35858627557)成功。正式入口为 <https://tarot.georgelu.cn/?lang=zh>，生产服务器当前链接到 `/opt/tarot-pocket/releases/82441b7`。/ PR #23 is merged, the full main workflow passed, and the production domain serves the merged release.

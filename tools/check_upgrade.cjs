@@ -47,7 +47,7 @@ async function upgradeCheck(web=path.join(root,'dist')){
  serveOld=false;
  await page.reload();assert.equal(await page.locator('meta[name=tarot-build]').getAttribute('content'),oldRelease.revision,'an old ?v= URL remains in v1.0 cache before explicit recovery');
  // The old page remains open throughout installation and activation.
- const updatePage=await context.newPage();updatePage.on('pageerror',e=>errors.push(e.message));await updatePage.goto(origin+'/tarot-pocket/update.html?lang=zh');
+ const updatePage=await context.newPage();updatePage.on('pageerror',e=>errors.push(e.message));await updatePage.goto(origin+'/tarot-pocket/update.html?lang=en');assert.equal(await updatePage.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await updatePage.locator('#language,[data-language-toggle]').count(),0,'recovery page has no public language switch');
  await updatePage.waitForFunction(()=>window.TarotUpdate);assert.equal(await updatePage.evaluate(()=>window.TarotUpdate.state.revision),release.revision,'network recovery entry escapes the old worker');
  broken=true;await updatePage.locator('#download').click();await updatePage.waitForFunction(()=>window.TarotUpdate.state.phase==='failed',{},{timeout:120000});
  assert.deepEqual(await page.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'interrupted update cannot alter progress');
@@ -56,7 +56,7 @@ async function upgradeCheck(web=path.join(root,'dist')){
  broken=false;await updatePage.locator('#download').click();await updatePage.waitForFunction(()=>window.TarotUpdate.state.phase==='ready',{},{timeout:120000});
  assert.equal(await page.locator('meta[name=tarot-build]').getAttribute('content'),oldRelease.revision,'download never refreshes the older lesson tab');
  const waiting=await updatePage.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();return {waiting:!!r.waiting,active:!!r.active};});assert(waiting.waiting&&waiting.active);
- await updatePage.locator('#language').click();assert.equal(await updatePage.locator('#continue').innerText(),'Keep my records and open update');await updatePage.locator('#language').click();
+ assert.equal(await updatePage.locator('#continue').innerText(),'保留记录，进入新版','?lang=en keeps the recovery flow in Chinese');
  await updatePage.locator('#continue').click();await updatePage.waitForURL(u=>u.pathname==='/tarot-pocket/'&&u.searchParams.get('v')===release.revision).catch(async error=>{console.error('Activation diagnostic',JSON.stringify(await updatePage.evaluate(async()=>({url:location.href,state:window.TarotUpdate?.state,reg:await navigator.serviceWorker.getRegistration().then(r=>({active:r.active?.state,waiting:r.waiting?.state,installing:r.installing?.state}))}))));throw error;});await updatePage.waitForFunction(()=>window.TarotOffline?.state.ready);
  assert.equal(await updatePage.locator('meta[name=tarot-build]').getAttribute('content'),release.revision);
  retained(await updatePage.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'every legacy record field survives explicit update');
@@ -72,7 +72,7 @@ async function upgradeCheck(web=path.join(root,'dist')){
  const restored=await updatePage.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.session);assert.deepEqual(restored,oldSession,'unfinished card resumes with the same question and answer');
  await updatePage.evaluate(async()=>{const image=new Image();image.src='assets/cards/p14.webp';await image.decode();});
  assert.deepEqual(errors,[]);await context.close();
- return {status:'PASS',from:oldRelease.revision,to:release.revision,checks:['actual v1.0 cached query URL reproduced','independent recovery page bypasses old cache','matching CSP hash','versioned runtime resources','interrupted update keeps previous package','explicit activation only','no other-tab reload','old-version asset isolation','three records and unfinished lesson preserved exactly','complete SHA256 cache inventory','offline reopen and unfamiliar card','unrelated caches preserved']};
+ return {status:'PASS',from:oldRelease.revision,to:release.revision,checks:['actual v1.0 cached query URL reproduced','independent recovery page bypasses old cache','?lang=en recovery remains zh-CN with no language toggle','matching CSP hash','versioned runtime resources','interrupted update keeps previous package','explicit activation only','no other-tab reload','old-version asset isolation','three records and unfinished lesson preserved exactly','complete SHA256 cache inventory','offline reopen and unfamiliar card','unrelated caches preserved']};
  }finally{await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 }
 module.exports=upgradeCheck;

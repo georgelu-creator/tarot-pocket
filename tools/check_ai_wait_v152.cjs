@@ -56,7 +56,11 @@ async function fixture(page){
    await page.clock.fastForward(6100);
    await until(async()=>await tip.innerText()!==first,'tip changes after six seconds');
    const second=await tip.innerText();assert.notEqual(second,first);
-   if(language==='en')assert(!/[\u3400-\u9fff]/.test(await page.locator('.ai-waiting').innerText()),'English waiting tip translates after timer updates');
+   if(language==='en'){
+    assert.equal(await page.locator('html').getAttribute('lang'),'zh-CN','the legacy English URL falls back to Chinese');
+    assert.equal(await page.locator('[data-language-toggle]').count(),0,'the Chinese-only release has no language entry');
+    assert(/[\u3400-\u9fff]/.test(await page.locator('.ai-waiting').innerText()),'waiting guidance remains Chinese after timer updates');
+   }
    await page.clock.fastForward(20000);await until(()=>long.isVisible(),'25-second long-wait message becomes visible');
    assert.equal(requests.length,before+1,'tip rotation never requests another AI reading');
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${language} ${width}: no horizontal overflow`);
@@ -115,6 +119,6 @@ async function fixture(page){
    assert.equal(guard,0,'request snapshot guard rejects a changed question even without cancellation');
    assert.deepEqual(errors,[]);await context.close();
   }
-  console.log(JSON.stringify({status:'PASS',checks:['Chinese and English at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and requires explicit confirmation before saving its new AI reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
+  console.log(JSON.stringify({status:'PASS',checks:['Chinese UI, including legacy lang=en URLs, at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and requires explicit confirmation before saving its new AI reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
  }finally{for(const res of held.splice(0))reply(res);await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

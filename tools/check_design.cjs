@@ -11,19 +11,16 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  try{
  const ctx=await h.context(browser,{viewport:{width:390,height:844}}),p=await ctx.newPage();
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(url);
+ await p.goto(url+'?lang=en');assert.equal(await p.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await p.locator('[data-language-toggle]').count(),0);
  const design=await p.evaluate(()=>{const c=getComputedStyle(document.documentElement),n=getComputedStyle(document.querySelector('.bottomnav'));return {bg:c.backgroundColor,ink:c.color,accent:c.getPropertyValue('--accent').trim(),muted:c.getPropertyValue('--muted').trim(),font:getComputedStyle(document.querySelector('h1')).fontFamily,glass:n.backgroundColor}});
  assert.equal(design.bg,'rgb(246, 241, 233)');assert.equal(design.accent,'#60465C');assert(design.font.includes('Serif')||design.font.includes('Songti'));
  assert(contrast(design.ink,design.bg)>=4.5);
  assert(contrast('rgb(115,107,115)',design.bg)>=4.5);
  assert(contrast('rgb(246,241,233)','rgb(96,70,92)')>=4.5);
- for(const lang of ['zh','en']){
-   if(lang==='en')await p.locator('[data-language-toggle]').click();
-   for(const w of [320,390,430,1280]){
+ for(const w of [320,390,430,1280]){
      await p.setViewportSize({width:w,height:844});
      assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
      if(w===390)assert.equal(await p.locator('[data-home-choice]').count(),2,'home keeps only the two primary choices');
-   }
  }
  await p.setViewportSize({width:390,height:844});
  await p.locator('.bottomnav [data-page=reading]').click();
@@ -41,7 +38,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  const cutPool=(await state(p)).draft.pool;assert.deepEqual(cutPool,[...before.pool.slice(26),...before.pool.slice(0,26)],'cut rotates the existing pool');
  const styles=await p.locator('.reading-fan-card:not(:disabled) .reading-back').evaluateAll(els=>[...new Set(els.map(e=>getComputedStyle(e).backgroundImage))]);
  assert.equal(styles.length,1);const standalone=await p.evaluate(()=>!!window.TAROT_STANDALONE);if(standalone)assert(styles[0].includes('data:image/svg+xml;base64,'),'standalone card-back must be embedded');else assert(styles[0].includes('/assets/design/card-back.svg'),'web edition uses the bundled local card back');assert(await p.locator('.reading-fan-card .reading-back').first().evaluate(async e=>{const url=getComputedStyle(e).backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1];const i=new Image();i.src=url;await i.decode();return i.naturalWidth>0;}),'actual shared card-back image decodes');
- await p.locator('[data-language-toggle]').click();assert.deepEqual((await state(p)).draft.pool,cutPool);
+ await p.evaluate(()=>TAROT_I18N.setLocale('en'));assert.equal(await p.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await p.locator('[data-language-toggle]').count(),0);assert.deepEqual((await state(p)).draft.pool,cutPool);
  for(let i=0;i<3;i++)await h.pick(p,i);await p.locator("[data-reading=reveal]").waitFor();
  await p.locator('[data-reading=reveal]').evaluate(b=>{b.click();b.click();b.click()});
  assert.deepEqual((await state(p)).draft.revealed,[0,1,2],'rapid group reveal cannot create duplicate outcomes');
@@ -62,6 +59,6 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  await p.locator('[data-reading=pause]').first().click();
  assert.equal(await p.locator('.bottomnav').evaluate(e=>getComputedStyle(e).backdropFilter),'none');
  assert.deepEqual(errors,[]);
- console.log(JSON.stringify({status:'PASS',design:'Moonlit',checks:['palette and text contrast','Chinese and English responsive home','decoded bundled or embedded shared card back','focused draw with exit','skip retains shuffled pool','rapid reveal is unique','language and reload preserve draw','reduced motion and offline reveal','200 percent reading text','opaque contrast fallback']}));
+ console.log(JSON.stringify({status:'PASS',design:'Moonlit',checks:['palette and text contrast','Chinese-only responsive home','?lang=en and compatibility locale call keep zh-CN with no toggle','decoded bundled or embedded shared card back','focused draw with exit','skip retains shuffled pool','rapid reveal is unique','locale call and reload preserve draw','reduced motion and offline reveal','200 percent reading text','opaque contrast fallback']}));
  }finally{await browser.close();await server.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -18,10 +18,12 @@ const url=process.env.DEMO_URL||'file://'+path.resolve(__dirname,'../demo/tarot-
  await p.locator('[data-action=dossier-jump][data-value=scene]').click();await p.locator('[data-action=dossier-lens][data-value="1"]').click();assert((await p.locator('[data-dossier-lens-copy]').innerText()).length>20);
  await p.locator('[data-action=face][data-value=reversed]').click();assert(await p.locator('.dossier-cover img').evaluate(e=>e.classList.contains('reversed-img')));
  await p.locator('[data-action=face][data-value=upright]').click();
- await p.locator('[data-action=detail-language]').click();
- const missing=await p.evaluate(()=>{const w=document.createTreeWalker(document.querySelector('.sheet'),NodeFilter.SHOW_TEXT),a=[];for(let n=w.nextNode();n;n=w.nextNode())if(!n.parentElement.closest('[data-i18n-ignore]')&&/[\u3400-\u9fff]/.test(n.textContent))a.push(n.textContent);return a;});assert.deepEqual(missing,[]);
+ const beforeLocale=await p.locator('.sheet').innerText();assert(/[\u3400-\u9fff]/.test(beforeLocale),'Card guide is authored in Chinese');
+ assert.equal(await p.locator('[data-action=detail-language],[data-language-toggle]').count(),0,'Chinese-only card guide has no English entry');
+ await p.evaluate(()=>TAROT_I18N.setLocale('en'));
+ assert.equal(await p.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await p.locator('.sheet').innerText(),beforeLocale,'Compatibility locale call keeps the open guide and its Chinese copy');
  for(const width of [320,390,430,1280]){await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Page overflow '+width);assert(await sheet.evaluate(e=>e.scrollWidth<=e.clientWidth+1),'Guide overflow '+width);}
- await p.setViewportSize({width:390,height:844});await p.locator('[data-action=detail-language]').click();await sheet.evaluate(e=>{e.scrollTop=0;});
+ await p.setViewportSize({width:390,height:844});await sheet.evaluate(e=>{e.scrollTop=0;});
  await p.screenshot({path:process.env.DOSSIER_SCREENSHOT||'/tmp/tarot-v13-dossier.png'});assert.deepEqual(errors,[]);
- console.log('PASS: all 78 authored guides, real images, card-specific application, no forced comparison, scroll-preserving interaction, bilingual content and responsive layout.');
+ console.log('PASS: all 78 authored guides, real images, card-specific application, no forced comparison, Chinese-only compatibility and responsive layout.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

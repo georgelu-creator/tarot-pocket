@@ -56,8 +56,8 @@ async function browserCheck(type,name,updates){
     assert.equal((await page.evaluate(()=>window.TarotOffline.state)).cards,78);
     assert.equal(await page.evaluate(()=>navigator.serviceWorker.controller!==null),true);
     await showPanel(page);await page.getByText('离线内容已检查',{exact:true}).waitFor();
-    await page.evaluate(()=>window.TAROT_I18N.setLocale('en'));await page.getByText('Offline content verified',{exact:true}).waitFor();
-    assert(!/[\u3400-\u9fff]/.test(await page.locator('[data-offline-panel]').innerText()),'offline panel is completely bilingual');
+    const localeStateBefore=await page.evaluate(()=>({...localStorage}));await page.evaluate(()=>window.TAROT_I18N.setLocale('en'));await page.getByText('离线内容已检查',{exact:true}).waitFor();
+    assert.equal(await page.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await page.locator('[data-language-toggle]').count(),0);assert.deepEqual(await page.evaluate(()=>({...localStorage})),localeStateBefore,'compatibility locale call preserves records');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'offline panel fits 390px');
     const localBefore=await page.evaluate(()=>({...localStorage}));
     // Playwright WebKit's setOffline + SW navigation also fails for a minimal
@@ -152,7 +152,7 @@ async function browserCheck(type,name,updates){
     assert.equal((await failedPage.evaluate(()=>window.TarotOffline.state)).ready,false);
     assert.deepEqual(await failedPage.evaluate(async p=>(await caches.keys()).filter(k=>k.startsWith(p)),prefix),[]);
     mode='healthy';await failedPage.evaluate(()=>window.TarotOffline.prepare());await ready(failedPage);await failed.close();
-    return {browser:name,status:'PASS',networkMethod:name==='webkit'?'all requests to the application origin disconnected; Playwright offline-emulation navigation fails in a minimal control app':'browser offline emulation',checks:['subdirectory scope','explicit download','complete 78-card cache','no external runtime requests','bilingual status','offline reload and reopen','cache eviction detected and repaired','interrupted installation retried',...(updates?['mixed-revision update rejected','native background reinstallation observed and rejected','cache assertion waits for native installation cleanup','active lesson preserved','new release activated after closing pages','unrelated caches preserved']:[])]};
+    return {browser:name,status:'PASS',networkMethod:name==='webkit'?'all requests to the application origin disconnected; Playwright offline-emulation navigation fails in a minimal control app':'browser offline emulation',checks:['subdirectory scope','explicit download','complete 78-card cache','no external runtime requests','Chinese-only ?lang/setLocale fallback with no toggle','offline reload and reopen','cache eviction detected and repaired','interrupted installation retried',...(updates?['mixed-revision update rejected','native background reinstallation observed and rejected','cache assertion waits for native installation cleanup','active lesson preserved','new release activated after closing pages','unrelated caches preserved']:[])]};
   }finally{mode='healthy';update=null;holdMismatch=null;await browser.close();}
 }
 (async()=>{

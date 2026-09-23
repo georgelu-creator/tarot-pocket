@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Tarot Pocket · 塔罗随身学",
-  "short_name": "Tarot Pocket",
-  "description": "Learn, recall and read tarot, with the full deck available offline.",
+  "name": "塔罗随身学",
+  "short_name": "塔罗随身学",
+  "description": "从零开始学懂78张塔罗牌，也可以带着问题抽牌和解牌。",
   "start_url": "./?source=homescreen",
   "scope": "./",
   "display": "standalone",

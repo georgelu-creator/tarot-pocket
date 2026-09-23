@@ -8,14 +8,14 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://tarot.georgelu.cn https://tarot-ai.georgelu.cn; worker-src 'self'; manifest-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Tarot Pocket">
+  <meta name="apple-mobile-web-app-title" content="塔罗随身学">
   <meta name="tarot-build" content="development">
-  <meta name="description" content="Tarot Pocket: learn 78 historical RWS cards through visual memory games, explore spreads by life situation, and make room for a daily card ritual. Offline, in English and Chinese. 中英双语塔罗随身学。">
-  <meta property="og:title" content="Tarot Pocket · 塔罗随身学">
-  <meta property="og:description" content="Learn the picture. Remember the meaning. Read the spread. Offline, in English and Chinese.">
+  <meta name="description" content="从零开始学会 78 张伟特系塔罗牌，按生活情境认识牌阵，也可以随时抽牌、解牌。学习与抽牌记录保存在本机。">
+  <meta property="og:title" content="塔罗随身学">
+  <meta property="og:description" content="看懂每一张牌，学会把牌放进问题与牌位，也可以随时为自己的问题抽一组牌。">
   <meta property="og:image" content="https://tarot.georgelu.cn/social-preview.png">
   <link rel="canonical" href="https://tarot.georgelu.cn/">
-  <title>Tarot Pocket · 塔罗随身学</title>
+  <title>塔罗随身学</title>
   <link rel="icon" href="assets/icons/icon-192.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
@@ -31,13 +31,12 @@
   <link rel="stylesheet" href="access.css">
 </head>
 <body>
-  <button class="language-toggle" data-language-toggle data-i18n-ignore aria-label="Switch to English">EN</button>
   <div id="access-gate"></div>
   <div id="app"><p class="startup">正在准备你的牌桌…</p></div>
   <div id="overlay"></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <input id="import-file" type="file" accept="application/json,.json" hidden>
-  <noscript>请启用 JavaScript，开始学牌或抽牌。Enable JavaScript to learn and read.</noscript>
+  <noscript>请启用 JavaScript，开始学牌或抽牌。</noscript>
   <script src="entry-redirect.js"></script>
   <script src="content.js"></script>
   <script src="learning-content.js"></script>

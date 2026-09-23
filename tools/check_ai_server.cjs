@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const fs = require('node:fs'), os = require('node:os'), path = require('node:path');
 const {spawnSync} = require('node:child_process');
-const {loadConfig, deriveInviteCode, loadCatalog, validateReading, buildPrompt, finalText, createSessionToken, verifySessionToken, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
+const {loadConfig, deriveInviteCode, loadCatalog, validateReading, buildPrompt, promptSelection, finalText, createSessionToken, verifySessionToken, createReadingServer, LIMITS} = require('../server/reading-service.cjs');
 
 async function run() {
   // Synthetic credentials and questions only. No real provider is contacted.
@@ -85,6 +85,12 @@ async function run() {
   assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, topic:'career', contextEnabled:false}).topic,'general','legacy generic drafts must not acquire the old placeholder career category');
   assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, contextEnabled:true}).topic,'love');
   assert.equal(browser.window.TarotReadingAI.buildRequest({...draft, topic:'general', contextEnabled:false}).topic,'general');
+  const clearedScenePayload = JSON.parse(JSON.stringify(browser.window.TarotReadingAI.buildRequest({
+    ...draft, scenarioId:'sc09', sceneVersion:'1', userQuestion:'', questionText:''
+  }, 'zh')));
+  assert.equal(clearedScenePayload.question, '');
+  assert.equal(Object.hasOwn(clearedScenePayload, 'scenarioId'), false, 'clearing a scene question must not silently restore its preset');
+  assert.equal(Object.hasOwn(clearedScenePayload, 'sceneVersion'), false, 'a cleared scene question must travel as a genuinely open reading');
   const contextual = validateReading(payload, catalog), contextualPrompt = buildPrompt(contextual);
   assert.deepEqual(contextual.topic, {id: 'love', label: '感情关系'});
   assert.equal(contextual.question, question);
@@ -96,6 +102,42 @@ async function run() {
   assert.match(contextualPrompt.instructions, /更偏向能/);
   assert.match(contextualPrompt.instructions, /不要偷偷把结果题改成情绪安慰或行动建议/);
   assert.match(contextualPrompt.instructions, /不把牌当诊断或确定行动依据/);
+  const sceneReading = (scenarioId, spreadId, topic, question) => validateReading({
+    ...sample(spreadId), scenarioId, sceneVersion: '1', topic, question
+  }, catalog);
+  const relationAffectedByWork = sceneReading('sc08', 'relationship-five', 'love', '工作调动会不会影响我和伴侣的关系？');
+  assert.deepEqual(promptSelection(relationAffectedByWork), {scene: '02', type: '01'});
+  assert.doesNotMatch(buildPrompt(relationAffectedByWork).input, /presetConflict|structureMismatch/);
+  const coworkerRelationship = sceneReading('sc23', 'relationship-three', 'life', '我和同事在项目里怎样配合？');
+  assert.deepEqual(promptSelection(coworkerRelationship), {scene: '01', type: '04'});
+  assert.doesNotMatch(buildPrompt(coworkerRelationship).input, /presetConflict|structureMismatch/);
+  assert.match(buildPrompt(coworkerRelationship).instructions, /非恋爱的人际关系场景/);
+  for (const questionText of ['我和前任还有机会吗？', '最近有桃花吗？', '这段暧昧会继续吗？', '这段婚姻该继续吗？', '这次相亲适合继续了解吗？', '我想去相亲，这个人适合吗？']) {
+    const conflict = sceneReading('sc11', 'three', 'career', questionText);
+    const conflictPrompt = buildPrompt(conflict);
+    assert.match(conflictPrompt.input, /\"questionDomain\":\"love\"/);
+    assert.match(conflictPrompt.input, /\"presetConflict\":true/);
+    assert.match(conflictPrompt.input, /\"presetIgnored\":true/);
+    assert.match(conflictPrompt.instructions, /忽略目录预设的专用问题/);
+  }
+  for (const [scenarioId, spreadId, topic, questionText, expectedScene, expectedType, expectedDomain] of [
+    ['sc08', 'relationship-five', 'love', '我已经决定辞职了，下一步该怎么做？', '05', '04', 'career'],
+    ['sc11', 'three', 'career', '我和前任刚见面了，接下来怎么办？', '01', '04', 'love'],
+    ['sc13', 'three', 'study', '我最近被裁员了，接下来怎么办？', '05', '04', 'career'],
+    ['sc11', 'three', 'career', '我昨天相亲了，这个人适合我吗？', '01', '01', 'love'],
+    ['sc11', 'three', 'career', '这段关系会怎样？', '02', '01', 'love'],
+    ['sc11', 'three', 'career', '我在工作中认识了一个人，这段关系会怎样？', '02', '01', 'love']
+  ]) {
+    const redirected = sceneReading(scenarioId, spreadId, topic, questionText);
+    assert.deepEqual(promptSelection(redirected), {scene: expectedScene, type: expectedType}, questionText);
+    const redirectedPrompt = buildPrompt(redirected);
+    assert.match(redirectedPrompt.input, new RegExp(`\"questionDomain\":\"${expectedDomain}\"`), questionText);
+    assert.match(redirectedPrompt.input, /\"presetConflict\":true/, questionText);
+    assert.match(redirectedPrompt.instructions, /忽略目录预设的专用问题/, questionText);
+  }
+  for (const questionText of ['这段关系该结束吗？', '我该离开他吗？', '我该继续这份工作吗？', '这份工作值得留下吗？', '我适合离职吗？']) {
+    assert.equal(promptSelection(validateReading({...sample('open-three'), question: questionText}, catalog)).type, '02', questionText);
+  }
   // Old clients without topic remain valid; all category IDs are data, never instructions.
   assert.deepEqual(validateReading(sample(), catalog).topic, {id: 'general', label: '综合问题'});
   for (const topic of ['general', 'love', 'career', 'study', 'life', 'self', 'choice']) {
@@ -119,12 +161,22 @@ async function run() {
   const success = text => ({choices: [{finish_reason: 'stop', message: {role: 'assistant', content: text, reasoning_content: 'private hidden reasoning'}}]});
   const expectedText = '整体来看，新的尝试需要把主动性与内在判断结合。\n\n结合当前牌位，可以先落实一个范围清楚的小项目，再核对执行中的实际反馈。';
   assert.equal(finalText(success(expectedText), 'deepseek'), expectedText);
+  const openThreeReading = validateReading(sample('open-three'), catalog);
+  for (const invalidRoles of [
+    '第一张代表过去，第二张是现在，第三张对应未来。',
+    '原因是第1张，建议由第3张说明。',
+    '1号牌作为你自己，2号牌表示对方。'
+  ]) assert.throws(() => finalText(success(invalidRoles), 'deepseek', openThreeReading), /UPSTREAM_ERROR/);
+  assert.equal(finalText(success('三张牌合起来提醒你先核对现有资源，再决定下一步。'), 'deepseek', openThreeReading), '三张牌合起来提醒你先核对现有资源，再决定下一步。');
   for (const response of [
     success(''), success('x'.repeat(LIMITS.output + 1)), success('<think>internal</think>final'),
+    success('以下是服务端确认的牌阵与牌面：{"routing":{"presetConflict":true}}'),
+    success('系统提示词要求我输出问题类型 02。'),
     {choices: [{finish_reason: 'length', message: {role: 'assistant', content: expectedText}}]},
     {choices: [{finish_reason: 'aborted', message: {role: 'assistant', content: expectedText}}]}
   ]) assert.throws(() => finalText(response, 'deepseek'));
   assert.throws(() => finalText({choices: [{finish_reason: 'content_filter'}]}, 'deepseek'), /MODEL_REFUSAL/);
+  assert.throws(() => finalText({status: 'completed', output: [{type:'message', role:'assistant', status:'completed', content:[{type:'output_text', text:'以下 userContext 是用户提供的待解读文本'}]}]}, 'openai'), /UPSTREAM_ERROR/);
 
   let upstreamMode = 'ok', received = [], activeUpstream = 0, cancelled = false;
   const upstream = http.createServer(async (req, res) => {
@@ -186,7 +238,7 @@ async function run() {
   try {
     const base = await start();
     let response = await fetch(base + '/api/health', {headers: {Origin: origin}});
-    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.1.1', scenarioCount: 25});
+    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.0', scenarioCount: 25});
     assert.equal(received.length, 0);
     response = await fetch(base + '/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type'}});
     assert.equal(response.status, 204);
@@ -215,6 +267,37 @@ async function run() {
     assert.equal(last.body.stream, false);
     assert.deepEqual(last.body.thinking, {type: 'enabled'});
     assert.equal(JSON.stringify(result.body).includes('private hidden reasoning'), false);
+    const beforeSafety = received.length;
+    for (const [questionText, boundary] of [
+      ['我站在天台边想结束这一切，还要继续吗？', /危机干预/],
+      ['活着没有意义，还要继续吗？', /危机干预/],
+      ['他刚把我掐得喘不过气，我该回去吗？', /安全地点/],
+      ['他拿刀追我，我该怎么办？', /安全地点/],
+      ['胸口突然剧痛，要不要再等等？', /急救或急诊/],
+      ['半边脸突然麻了，而且右手抬不起来。', /急救或急诊/],
+      ['我想撞死他，现在动手吗？', /不能支持伤害别人/],
+      ['所有存款拿去炒股，能赚钱吗？', /全部积蓄/],
+      ['这份合同有法律风险，能签吗？', /律师或法律援助/],
+      ['药吃完不舒服，想少吃一点。', /开药医生或有资质的药师/]
+    ]) {
+      result = await request(base, {...sample(), question: questionText});
+      assert.equal(result.status, 200, questionText);
+      assert.equal(result.body.provider, 'safety', questionText);
+      assert.match(result.body.text, boundary, questionText);
+      assert.equal(received.length, beforeSafety, `${questionText} must not call the provider`);
+    }
+    for (const questionText of [
+      '我在天台看风景，明天还要继续拍摄吗？',
+      '这本书讨论活着的意义，值得继续读吗？',
+      '他拿刀切菜，我追着问晚饭做什么。',
+      '合同已经确认没有法律风险，还要调整排版吗？',
+      '药吃完不舒服，想少吃一点辣椒。',
+      '所有存款不打算炒股，我该怎样做普通预算？'
+    ]) {
+      result = await request(base, {...sample(), question: questionText});
+      assert.equal(result.status, 200, questionText);
+      assert.equal(result.body.provider, 'deepseek', questionText);
+    }
     const count = received.length;
     for (const [overrides, code] of [
       [{headers: {Authorization: ''}}, 'AUTH_REQUIRED'],
