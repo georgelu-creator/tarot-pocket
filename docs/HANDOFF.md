@@ -1,5 +1,12 @@
 # Continue on another computer · 跨电脑接力
 
+## Legacy GitHub Pages cache migration / 旧入口缓存迁移（2026-09-24）
+
+- 用户提供的 `?v=1.7.3-…` 地址从网络读取时已经是 1.9 页面，但装过旧离线包的浏览器仍会由 1.7.3 Service Worker 返回缓存的邀请页，导致网络版 `entry-redirect.js` 无法执行。这不是正式域名回退，也不能用改 `v` 参数破缓存。/ A cached 1.7.3 worker could answer the root navigation before the current redirect script loaded.
+- [PR #27](https://github.com/georgelu-creator/tarot-pocket/pull/27) 让退役的 GitHub Pages 主机使用专门迁移路径：新 Worker 跳过整包下载和等待状态，完成激活后才重导航受控页面，再由 fetch 返回正式域名；`tarot.georgelu.cn` 的离线安装与显式升级逻辑不变。/ The migration is host-scoped and does not change the production domain's offline lifecycle.
+- 本地完整 `npm test` 通过；新增真实 Chromium 回归先安装并控制模拟 1.7 Worker，再升级迁移 Worker，确认不会卡在 `activating`，最终保留 `lang` 与片段进入正式域名。旧来源的 LocalStorage 与缓存不会在强制迁移时删除；需要导出旧来源记录时可临时使用 `?legacy=export`。/ A browser-level upgrade regression covers the lifecycle deadlock that a VM-only check cannot detect.
+- 正式入口始终是 <https://tarot.georgelu.cn/>。PR 合并、主分支 Pages 部署和受影响浏览器画像的公网复测仍应分别确认，不能用本地通过代替。/ Merge, Pages deployment and affected-profile public acceptance remain separate evidence.
+
 ## 1.9.0 Chinese-only learning and reading release / 中文学习与解读修复版（2026-09-24）
 
 - 公共界面固定中文并隐藏英文入口；20课、78张独立牌库、98个学习单元和724题均已接入。逐牌学习先讲后练，正位、整牌理解、逆位和两次间隔回访分别记录；381条已审查错误反馈不再复制正确项。/ The public product is Chinese-only; the maintained bilingual source does not expose an English switch. Learning now separates courses from the 78-card library and tracks upright, whole-card, reversed and delayed review stages.
