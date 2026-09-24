@@ -71,7 +71,7 @@ async function run() {
 
   let response = await send(undefined, {path: '/api/health', method: 'GET'});
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.1', scenarioCount: 25});
+  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.2', scenarioCount: 25});
   assert.equal(received.length, 0);
   response = await send(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type, authorization'}});
   assert.equal(response.status, 204);

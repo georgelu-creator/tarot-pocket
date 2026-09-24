@@ -357,7 +357,8 @@ function buildPrompt(reading) {
   if (selected.mismatch === 'career') additions.push('本次真实牌位只用于当前职业路径的初衷、动力、职责、环境、收获与发展，和实际问题不适配。开头必须说明结构限制，不得改名牌位，也不得据此给出面试录用、离职跳槽、另一份工作或其他领域的结论；建议重新选择相符牌阵。');
   const instructions = [PROMPTS.base, PROMPTS.spreadScope, PROMPTS.scenes[selected.scene], ...(selected.type ? [PROMPTS.types[selected.type]] : []), ...additions,
     '场景规则仅适用于用户实际询问的事；若实际问题与场景不同，按主规则恢复，不强套场景。',
-    `本次正文语言必须为${reading.language === 'en' ? 'English（英语）' : '简体中文'}。`, PROMPTS.riskBoundary].join('\n\n');
+    `本次正文语言必须为${reading.language === 'en' ? 'English（英语）' : '简体中文'}。`,
+    '交付前的措辞约束：没有输入的个人状态和安排，不能写成事实，包括不能称其“尚未落实”。比如只知道作品和场地确定，就不能断言布展、运输或人员未落实。没有问题时，把话落在牌的象征上：说“这张牌提示分配失衡”，不说“你要兼顾的太多”。若已经回答了倾向与依据就结束，不再追加条件清单或重复结论；不向用户提及“参考义”“参考资料”“输入”等编写过程。', PROMPTS.riskBoundary].join('\n\n');
   const effectiveTopicId = ({love:'love',career:'career',study:'study',life:'life'}[selected.domain]) || 'general';
   const trusted = {
     topic: selected.conflict ? {id: effectiveTopicId, label: TOPICS[effectiveTopicId], source: 'question'} : reading.topic,
