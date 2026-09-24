@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   if(location.hostname!=='georgelu-creator.github.io'||!location.pathname.startsWith('/tarot-pocket'))return;
+  if(new URLSearchParams(location.search).get('legacy')==='export')return;
   const target=new URL('https://tarot.georgelu.cn/');
   if(location.pathname.endsWith('/admin.html'))target.pathname='/admin.html';
   target.search=location.search;

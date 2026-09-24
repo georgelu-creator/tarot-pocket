@@ -11,6 +11,7 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   await run(process.execPath,['tools/check_reading_safety_v19.cjs']);
   await run(process.execPath,['tools/check_telemetry.cjs']);
   await run(process.execPath,['tools/check_entry_redirect.cjs']);
+  await run(process.execPath,['tools/check_legacy_redirect_browser.cjs']);
   await run(process.execPath,['tools/check_reading_scenes_v2.cjs']);
   await run(process.execPath,['tools/check_offline_reading.cjs']);
   await run(process.execPath,['tools/check_cloud_functions.cjs']);

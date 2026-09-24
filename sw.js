@@ -3,6 +3,25 @@ const RELEASE = /* TAROT_RELEASE */ null;
 const PREFIX = 'tarot-pocket-offline-' + encodeURIComponent(new URL(self.registration.scope).pathname) + '-';
 const CACHE = RELEASE ? PREFIX + RELEASE.revision : PREFIX + 'unbuilt';
 const absolute = path => new URL(path, self.registration.scope).href;
+const WORKER_SCOPE = new URL(self.registration.scope);
+const LEGACY_PAGES = WORKER_SCOPE.hostname === 'georgelu-creator.github.io' && WORKER_SCOPE.pathname.startsWith('/tarot-pocket/');
+const LEGACY_MOVE = '__tarot_move';
+const LEGACY_HASH = '__tarot_hash';
+const primaryUrl = value => {
+  const source=new URL(value),target=new URL('https://tarot.georgelu.cn/');
+  if(source.pathname.endsWith('/admin.html'))target.pathname='/admin.html';
+  target.search=source.search;
+  const hash=target.searchParams.get(LEGACY_HASH);
+  target.searchParams.delete('v');target.searchParams.delete(LEGACY_MOVE);target.searchParams.delete(LEGACY_HASH);
+  if(hash)target.hash=hash;
+  return target.href;
+};
+const migrationUrl = value => {
+  const target=new URL(value),hash=target.hash.slice(1);
+  target.hash='';target.searchParams.set(LEGACY_MOVE,'1');
+  if(hash)target.searchParams.set(LEGACY_HASH,hash);
+  return target.href;
+};
 const entries = () => RELEASE.assets.map(asset => ({...asset, url:absolute(asset.path)}));
 const digest = async buffer => [...new Uint8Array(await crypto.subtle.digest('SHA-256',buffer))].map(x=>x.toString(16).padStart(2,'0')).join('');
 async function notify(payload) {
@@ -52,6 +71,7 @@ async function repair(installing=false) {
   return repairing;
 }
 self.addEventListener('install',event=>{
+  if(LEGACY_PAGES){event.waitUntil(self.skipWaiting());return;}
   event.waitUntil((async()=>{
     if(!RELEASE)throw Error('Release build required');
     try{await repair(true);}
@@ -60,6 +80,20 @@ self.addEventListener('install',event=>{
   })());
 });
 self.addEventListener('activate',event=>{
+  if(LEGACY_PAGES){
+    event.waitUntil((async()=>{
+      await self.clients.claim();
+      // WindowClient.navigate cannot finish while this worker is still
+      // activating. Queue it outside waitUntil so the redirect fetch is handled
+      // by this worker after it becomes active, rather than by the old worker.
+      setTimeout(()=>self.clients.matchAll({includeUncontrolled:true,type:'window'}).then(clients=>{
+        for(const client of clients.filter(item=>item.url.startsWith(self.registration.scope)&&new URL(item.url).searchParams.get('legacy')!=='export')){
+          if(typeof client.navigate==='function')client.navigate(migrationUrl(client.url)).catch(()=>{});
+        }
+      }).catch(()=>{}),0);
+    })());
+    return;
+  }
   event.waitUntil((async()=>{
     const result=await inventory();if(!result.ready)throw Error('Incomplete offline release');
     // An explicit update can leave an older lesson tab open. Keep its versioned
@@ -82,6 +116,9 @@ self.addEventListener('message',event=>{
   event.waitUntil((event.data.type==='TAROT_OFFLINE_REPAIR'?repair():inventory()).then(reply,error=>reply({phase:'error',ready:false,error:error.message,revision:RELEASE.revision})));
 });
 self.addEventListener('fetch',event=>{
+  if(LEGACY_PAGES && event.request.method==='GET' && event.request.mode==='navigate' && new URL(event.request.url).searchParams.get('legacy')!=='export'){
+    event.respondWith(Promise.resolve(Response.redirect(primaryUrl(event.request.url),302)));return;
+  }
   if(!RELEASE || event.request.method!=='GET')return;
   const url=new URL(event.request.url),scope=new URL(self.registration.scope);
   if(url.origin!==scope.origin || !url.pathname.startsWith(scope.pathname))return;
