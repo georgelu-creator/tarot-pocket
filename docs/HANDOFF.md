@@ -1,5 +1,12 @@
 # Continue on another computer · 跨电脑接力
 
+## 1.9.1 修订进行中（2026-09-24）
+
+- 依据用户真实 iPhone 截图修复目录缩略图越界与牌扇偏斜；保留 Yes/No 名称，空问题显示各牌位暗语与解读，避免重复缺少问题提示。
+- 独立牌库扩充 78 张正逆位资料、图像线索、场景与牌位解释，并供本地解读复用；课程保持重点讲解与练习。资料为原创编辑解释，不是竞品逐字转载。
+- RP-1.2.1 同步无问题与 Yes/No 行为；AI 输出标题与强调安全渲染。学习完成状态不再称“已掌握”。
+- 当前为工作区修改，尚未完成整合回归、PR CI、生产部署与公网验收。旧入口缓存迁移最后一起验收；不能把 1.9.0 的通过记录当作本版证据。
+
 ## Legacy GitHub Pages cache migration / 旧入口缓存迁移（2026-09-24）
 
 - 用户提供的 `?v=1.7.3-…` 地址从网络读取时已经是 1.9 页面，但装过旧离线包的浏览器仍会由 1.7.3 Service Worker 返回缓存的邀请页，导致网络版 `entry-redirect.js` 无法执行。这不是正式域名回退，也不能用改 `v` 参数破缓存。/ A cached 1.7.3 worker could answer the root navigation before the current redirect script loaded.

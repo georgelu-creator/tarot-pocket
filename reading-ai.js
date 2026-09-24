@@ -4,7 +4,19 @@ window.TarotReadingAI = (() => {
   let pending=null,error='',lastReading='';const trackedOffline=new Set();
   const locale=()=>document.documentElement.lang==='en'?'en':'zh';
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const format=text=>text.split(/\n\s*\n/).map(block=>{const safe=esc(block).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');const heading=safe.match(/^#{1,3} +([^\n]+)$/);return heading?'<h3>'+heading[1]+'</h3>':'<p>'+safe+'</p>';}).join('');
+  // Parse only headings and emphasis; escape every model-authored character first.
+  const format=text=>{
+    const blocks=[],paragraph=[];
+    const inline=line=>esc(line).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+    const flush=()=>{if(paragraph.length)blocks.push('<p>'+paragraph.splice(0).join('\n')+'</p>');};
+    for(const line of text.replace(/\r\n?/g,'\n').split('\n')){
+      const heading=line.match(/^#{1,3} +(.+)$/);
+      if(heading){flush();blocks.push('<h3>'+inline(heading[1])+'</h3>');}
+      else if(!line.trim())flush();
+      else paragraph.push(inline(line));
+    }
+    flush();return blocks.join('');
+  };
   const endpoint=()=>window.TAROT_STANDALONE?'':window.TarotAccess?.readingEndpoint?.()||'';
   const clean=raw=>{
     if(raw===undefined)return undefined;
@@ -15,14 +27,14 @@ window.TarotReadingAI = (() => {
   const effectiveQuestion=s=>s.userQuestion?.trim()||s.questionText?.trim()||'';
   const buildRequest=(s,language=locale())=>{const clearedScenario=Object.hasOwn(s,'userQuestion')&&!s.userQuestion?.trim()&&!s.questionText?.trim();return {spreadId:s.spreadId,topic:s.scenarioId?(window.TAROT_READING_SCENARIOS?.find(x=>x.id===s.scenarioId)?.topic||s.topic||'general'):s.contextEnabled===false?'general':s.topic||'general',question:effectiveQuestion(s),language,cards:s.picked.map(i=>({id:s.pool[i].id,reversed:s.pool[i].reversed})),...(s.optionA?{optionA:s.optionA}:{}),...(s.optionB?{optionB:s.optionB}:{}),...(s.optionC?{optionC:s.optionC}:{}),...(!clearedScenario&&s.scenarioId?{scenarioId:s.scenarioId,sceneVersion:s.sceneVersion||'1'}:{}),...(s.timeframe?{timeframe:s.timeframe}:{})};};
   const waitingTips=[
-    '正在把每张牌放回它的牌位，连起这组牌的主线。',
-    '正在对照正逆位与问题，确认回答真正落到你关心的事上。',
+    '一张牌是一条线索，放在一起，才是这次牌阵的完整提示。',
+    '等待时，可以先看看牌面：哪一处细节最让你留意？',
     '牌阵已经保留。你可以继续看牌，也可以取消等待。',
     '完整解读回来后，会和这组牌一起保存在本机。'
   ];
   function waiting(s){
     const elapsed=Date.now()-pending.startedAt,index=Math.floor(elapsed/6000)%waitingTips.length;
-    return `<div class="ai-waiting" aria-busy="true"><div class="ai-waiting-orbit" aria-hidden="true"><span class="reading-back"></span><span class="reading-back"></span><span class="reading-back"></span><i>✦</i></div><p class="ai-status" role="status">正在细读这组牌…</p><div class="ai-waiting-tip"><small>深度解读</small><p data-ai-wait-tip>${esc(waitingTips[index])}</p></div><p class="ai-waiting-long" data-ai-wait-long ${elapsed<25000?'hidden':''}>这次解读还在继续。取消等待不会改变已经抽到的牌。</p><button class="secondary" data-reading="ai-cancel">取消等待</button></div>`;
+    return `<div class="ai-waiting" aria-busy="true"><div class="ai-waiting-orbit" aria-hidden="true"><span class="reading-back"></span><span class="reading-back"></span><span class="reading-back"></span><i>✦</i></div><p class="ai-status" role="status">正在细读这组牌…</p><div class="ai-waiting-tip"><small>深度解读</small><p data-ai-wait-tip>${esc(waitingTips[index])}</p></div><p class="ai-waiting-long" data-ai-wait-long ${elapsed<25000?'hidden':''}>解读还没有返回。可以再等一会儿，也可以取消，已经抽到的牌会保留。</p><button class="secondary" data-reading="ai-cancel">取消等待</button></div>`;
   }
   function updateWaiting(job){
     if(pending!==job||job.current()?.id!==job.id)return;
@@ -31,12 +43,14 @@ window.TarotReadingAI = (() => {
     if(long)long.hidden=elapsed<25000;
   }
   function offline(s){
-    try{return window.TarotOfflineReading.interpret(buildRequest(s,locale()));}
+    try{const request=buildRequest(s,locale());if(Object.hasOwn(s,'userQuestion')&&!s.userQuestion.trim())request.question='';return window.TarotOfflineReading.interpret(request);}
     catch(_){return null;}
   }
   function offlineHtml(s,result=offline(s)){
     if(!result)return '<section class="reading-offline"><h2>先看这组牌</h2><p>本地解读暂时无法生成，可以先点开每张牌查看牌义。</p></section>';
     if(!trackedOffline.has(s.id)){trackedOffline.add(s.id);queueMicrotask(()=>window.TarotAnalytics?.track('offline_reading_view',{spread:s.spreadId,source:'local'},'reading-result'));}
+    if(result.display==='positions')return `<section class="reading-offline"><h2>牌阵里的提示</h2>${result.positions.map(position=>`<article class="offline-position"><h3>${esc(position.positionLabel)} · ${esc(position.cardName)} · ${position.orientation==='reversed'?'逆位':'正位'}</h3><p><strong>暗语</strong> · ${esc(position.message)}</p><p>${esc(position.reading)}</p></article>`).join('')}</section>`;
+    if(!result.basis.question && result.spread.branch==='yes-no' && !result.safety)return `<section class="reading-offline"><h2>${esc(result.overview.text.split(' · ')[0])}</h2><p>${esc(result.overview.text.includes(' · ')?result.overview.text.split(' · ').slice(1).join(' · '):result.overview.text)}</p>${result.positions.map(position=>`<p><strong>暗语</strong> · ${esc(position.message)}</p>`).join('')}</section>`;
     const positionDetails=result.positions.map(position=>`<article><h4>${esc(position.positionLabel)} · ${esc(position.cardName)}</h4><p>${esc(position.reading)}</p></article>`).join('');
     const sections=result.sections.map(section=>`<section><h3>${esc(section.title)}</h3><p>${esc(section.text)}</p></section>`).join('');
     return `<section class="reading-offline"><div class="eyebrow">本地牌阵解读</div><h2>${esc(result.overview.title)}</h2><p>${esc(result.overview.text)}</p>${sections}<section class="offline-closing"><h3>${esc(result.closing.title)}</h3><p>${esc(result.closing.text)}</p><p class="muted">${esc(result.closing.realityCheck)}</p></section><details><summary>${result.language==='en'?'How each card supports this reading':'每张牌怎样支持这个判断'}</summary>${positionDetails}</details><p class="reading-boundary">${esc(result.boundaries[0])}</p></section>`;
@@ -49,7 +63,7 @@ window.TarotReadingAI = (() => {
       : saved
       ? saved.provider==='safety'
         ? `<section class="reading-ai reading-safety" data-reading-ai><div class="eyebrow">安全边界提示</div><h2>这类问题不交给 AI 判断</h2><div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>未调用 AI</span><span> · 已随牌阵保存</span></p></section>`
-        : `<section class="reading-ai" data-reading-ai><div class="eyebrow">AI 深度解读</div><h2>AI 深度解读</h2><div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p></section>`
+        : `<section class="reading-ai" data-reading-ai><h2>AI 深度解读</h2><div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p></section>`
       : `<section class="reading-ai" data-reading-ai><div class="eyebrow">可选深度解读</div><h2>${working?'正在细读这组牌':'还想看得更深一点？'}</h2>${working?waiting(s):`<p class="ai-status">${window.TAROT_STANDALONE?'离线文件保留本地解读；联网版可以按你的问题生成更深入的整组分析。':'本地解读已经完成。需要更贴合具体问题时，可以再请 AI 深度解析；只有点击下面按钮才会联网。'}</p>${!navigator.onLine?'<p class="ai-status">当前离线，本地解读仍可完整阅读。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p><button class="secondary" data-reading="ai-request">再试一次 AI 深度解析</button>`:!window.TAROT_STANDALONE&&navigator.onLine?'<button class="primary" data-reading="ai-request">请 AI 深度解析</button>':''}`}</section>`;
     return offlineHtml(s,local)+onlineSection;
   }

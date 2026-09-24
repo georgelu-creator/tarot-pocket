@@ -8,7 +8,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const context = {window: {}};
 vm.createContext(context);
-for (const file of ['reading-deck.js', 'spread-content.js']) {
+for (const file of ['reading-deck.js', 'spread-content.js', 'card-reference.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
 // `locales/en.js` is a generated, ignored browser bundle. Build the same
@@ -39,7 +39,7 @@ const input = (spreadId, additions = {}) => {
   };
 };
 
-assert.equal(api.VERSION, 'OR-1.2.0');
+assert.equal(api.VERSION, 'OR-1.3.0');
 const offlineSource = fs.readFileSync(path.join(root, 'offline-reading.js'), 'utf8');
 assert.doesNotMatch(offlineSource, /SIGNAL_WORDS|countSignals|semanticScore|propositionScore/, 'result tendencies must not scan or repeatedly score natural-language substrings');
 for (const spread of spreads) {
@@ -226,8 +226,8 @@ for (const [question, id, reversed, phrase] of negatedPredicates) {
 }
 
 const noQuestion = api.interpret(input('yes-no', {cards: [{id: 'm19', reversed: false}]}));
-assert.equal(noQuestion.overview.tendency, 'general-guidance');
-assert.match(noQuestion.overview.text, /不能替一件未知的事回答“能”或“不能”/);
+assert.equal(noQuestion.overview.tendency, 'leans-yes');
+assert.match(noQuestion.overview.text, /Yes/);
 assert.doesNotMatch(noQuestion.overview.text, /目前更偏向/);
 
 const open = api.interpret(input('open-three', {
@@ -241,7 +241,8 @@ const open = api.interpret(input('open-three', {
 assert.match(open.overview.text, /^对“这个合作这周能推进吗？”/);
 assert.match(open.overview.text, /更支持“继续推进”/);
 for (const evidence of ['魔术师正位', '宝剑四逆位', '星币八正位']) assert.match(open.sections[0].text, new RegExp(evidence));
-assert.match(open.overview.text, /三张牌共同聚焦在/);
+assert.match(open.overview.text, /三张牌分别提示/);
+assert.doesNotMatch(open.overview.text, /共同聚焦/);
 assert.notEqual(open.overview.text, open.sections[0].text, 'free-three overview must not repeat the full card evidence');
 assert.equal(open.closing.title, '怎样回到现实核对');
 assert.doesNotMatch(open.closing.text, /三张牌共同聚焦|魔术师|宝剑四|星币八/);
@@ -456,3 +457,11 @@ for (const invalid of [
 ]) assert.throws(() => api.interpret(invalid), error => error.code === 'INVALID_OFFLINE_READING');
 
 console.log('PASS: deterministic bilingual offline readings cover all spreads, high-risk Yes/No stops, explicit predicate rules, same-dimension choices, non-repeating free-three/timeline/general summaries and relationship scope.');
+
+// Every card and orientation must support the named Yes/No spread without a typed question.
+for (const card of deck) for (const reversed of [false,true]) {
+ const r=api.interpret(input('yes-no',{cards:[{id:card.id,reversed,positionId:bySpread.get('yes-no').positions[0].id}]}));
+ assert.match(r.overview.text,/^(Yes|No) · /,card.id+' '+reversed);
+ assert.ok(r.positions[0].message.length>=4);
+ assert.doesNotMatch(r.overview.text,/没有填写|没有具体问题/);
+}

@@ -175,7 +175,7 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "yes-no",
-    "name": "能不能／会不会",
+    "name": "Yes/No",
     "description": "已经有一件想确认的事，想先知道更偏向“能”还是“不能”，可以选这里。抽一张牌，先看回答，再看原因；例如能不能收到录用、这周适不适合主动联系。",
     "question": "",
     "version": "1"

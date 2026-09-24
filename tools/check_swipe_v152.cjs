@@ -1,7 +1,25 @@
 /* Continuous fan: real touch pan, pinch, one tap, keyboard and stable remaining order. */
 'use strict';
 const assert=require('node:assert/strict'),{chromium,webkit}=require('playwright'),h=require('./reading_ui_harness.cjs');
+async function assertCenteredFan(page,label){
+ const arc=await page.locator('[data-fan-viewport]').evaluate(viewport=>{
+  const bounds=viewport.getBoundingClientRect(),center=viewport.scrollLeft+viewport.clientWidth/2;
+  const cards=[...viewport.querySelectorAll('[data-deck-card]')].filter(card=>{const rect=card.getBoundingClientRect();return rect.right>bounds.left&&rect.left<bounds.right;}).map(card=>{
+   const x=card.offsetLeft+card.offsetWidth/2-center;
+   const match=card.style.transform.match(/translateY\(([-\d.]+)px\) rotate\(([-\d.]+)deg\)/);
+   return {x,y:Number(match?.[1]),angle:Number(match?.[2])};
+  });
+  return cards;
+ });
+ assert(arc.length>=5,`${label} must show a useful section of the fan: ${JSON.stringify(arc)}`);
+ assert(arc.every(card=>Number.isFinite(card.y)&&Number.isFinite(card.angle)),`${label} has an unpainted card: ${JSON.stringify(arc)}`);
+ const left=arc.filter(card=>card.x<0),right=arc.filter(card=>card.x>0),middle=arc.reduce((current,card)=>Math.abs(card.x)<Math.abs(current.x)?card:current);
+ assert(left.some(card=>card.angle<-.5),`${label} lacks the left side of the arc: ${JSON.stringify(arc)}`);
+ assert(right.some(card=>card.angle>.5),`${label} lacks the right side of the arc: ${JSON.stringify(arc)}`);
+ assert(Math.min(...left.map(card=>card.y))>=middle.y-.5&&Math.min(...right.map(card=>card.y))>=middle.y-.5,`${label} must be highest near the viewport center: ${JSON.stringify({left,right,middle})}`);
+}
 (async()=>{const server=await h.server();try{for(const [name,engine]of [['chromium',chromium],['webkit',webkit]]){const browser=await engine.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});try{for(const width of [320,390])for(const reducedMotion of ['no-preference','reduce']){const ctx=await h.context(browser,{viewport:{width,height:844},isMobile:true,reducedMotion}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await h.enter(p,server.url);await h.start(p);await h.toPick(p);const pool=(await h.state(p)).draft.pool;assert.equal(await p.locator('[data-deck-card]').count(),78);assert.equal(await p.locator('[data-reading=pick]:enabled').count(),78);assert.equal(await p.locator('[data-fan-viewport] img,[data-reading=pick-confirm],[data-reading=pick-page]').count(),0);await h.fit(p);
+ await assertCenteredFan(p,`${name} ${width} ${reducedMotion}`);
  // Every numbered card can be centered at a readable 44px+ touch size.
  for(const index of [0,20,39,59,77]){const c=await h.center(p,index);const r=await c.boundingBox(),v=await p.locator('[data-fan-viewport]').boundingBox();assert(r.width>=44&&r.height>=44);assert(r.x>=v.x-1&&r.x+r.width<=v.x+v.width+1);assert(await c.evaluate(e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),'center card not obscured');}
  if(name==='chromium'&&width===390&&reducedMotion==='no-preference'){await h.center(p,30);const b=await p.locator('[data-fan-viewport]').boundingBox(),cdp=await ctx.newCDPSession(p),x=b.x+b.width*.72,y=b.y+100;const before=await p.locator('[data-fan-viewport]').evaluate(e=>e.scrollLeft);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});for(let i=1;i<=9;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-i*15,y}]});await p.waitForTimeout(20);}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(400);assert((await p.locator('[data-fan-viewport]').evaluate(e=>e.scrollLeft))>before+40,'native horizontal finger pan moves fan');assert.deepEqual((await h.state(p)).draft.picked,[]);const zoomBefore=(await h.state(p)).draft.fanZoom;const mid=b.x+b.width/2;await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:mid-35,y},{x:mid+35,y}]});for(let i=1;i<=4;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:mid-35-i*8,y},{x:mid+35+i*8,y}]});await p.waitForTimeout(30);}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(550);assert((await h.state(p)).draft.fanZoom>zoomBefore,'two-finger pinch enlarges fan');assert.deepEqual((await h.state(p)).draft.picked,[],'pinch never selects');await cdp.detach();}

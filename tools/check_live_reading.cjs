@@ -1,8 +1,9 @@
 /* Explicit release probe. Synthetic questions only; session tokens remain in memory.
- * This is deliberately excluded from npm test: --live performs two paid calls. */
+ * This is deliberately excluded from npm test: --live performs three paid calls. */
 'use strict';
 const BASE='https://tarot.georgelu.cn',ORIGIN='https://tarot.georgelu.cn';
 const FIXTURES=[
+ {name:'yes-no-unwritten',body:{spreadId:'yes-no',scenarioId:'sc18',sceneVersion:'1',topic:'general',language:'zh',question:'',cards:[{id:'p02',reversed:true}]}},
  {name:'yes-no',body:{spreadId:'yes-no',scenarioId:'sc18',sceneVersion:'1',topic:'general',language:'zh',question:'虚构练习案例：我正在准备一场社区摄影展，作品和场地已经确定。照目前的准备进度，下个月能顺利办成吗？请先回答倾向，再说明依据。',cards:[{id:'m19',reversed:false}]}},
  {name:'three-options',body:{spreadId:'three-options',scenarioId:'sc21',sceneVersion:'1',topic:'general',language:'zh',question:'虚构练习案例：我想用三个月学会基础摄影，每周有六小时。下面三种学习安排，哪一种更适合持续学下去？请比较后给一个明确倾向。',optionA:'参加每周一次、固定时间的小班课',optionB:'只靠自己有空时看零散视频',optionC:'和朋友每周拍一次，再互相讲评',cards:[{id:'p08',reversed:false},{id:'w10',reversed:true},{id:'p03',reversed:false}]}}
 ];
@@ -26,7 +27,7 @@ async function run({fetchImpl=fetch,log=value=>console.log(JSON.stringify(value)
  }
  for(const path of ['/api/session','/api/reading']){const {response}=await request(path,{method:'OPTIONS',preflight:true});requireThat(response.status===204,'PREFLIGHT_FAILED');emit({endpoint:BASE+path,check:'preflight',status:response.status});}
  const health=await request('/api/health');requireThat(health.response.status===200&&health.result.ok===true&&health.result.configured===true,'HEALTH_NOT_READY');
- requireThat(health.result.promptVersion==='RP-1.2.0'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
+ requireThat(health.result.promptVersion==='RP-1.2.1'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
  emit({endpoint:BASE+'/api/health',status:health.response.status,ok:true,configured:true,...(typeof health.result.promptVersion==='string'?{promptVersion:health.result.promptVersion}:{}),...(Number.isInteger(health.result.scenarioCount)?{scenarioCount:health.result.scenarioCount}:{})});
  const session=await request('/api/session',{method:'POST',body:{}});
  requireThat(session.response.status===200&&typeof session.result.token==='string'&&session.result.token.length>=40&&session.result.token.length<=1024&&Number.isFinite(session.result.expiresAt)&&session.result.expiresAt>Date.now()+30000,'SESSION_NOT_READY');

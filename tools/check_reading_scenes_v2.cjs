@@ -7,14 +7,14 @@ const catalog=loadCatalog(), ids=[...catalog.cards.keys()];
 const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.slice(0,catalog.spreads.get(id).positions.length).map((id,i)=>({id,reversed:i%2===1})),...more});
 (async()=>{
  assert.equal(catalog.scenarios.size,25);assert.equal(catalog.spreads.size,32);
- assert.equal(prompts.version,'RP-1.2.0');
+ assert.equal(prompts.version,'RP-1.2.1');
  // Authored prompt integration only: these checks do not claim that a model obeys it.
  const master=fs.readFileSync('docs/READING_MASTER.md','utf8');
  const pb01=master.slice(master.indexOf('#### RD-PB01 · 系统提示词正文')).match(/```text\n([\s\S]*?)\n```/);
  assert.equal(pb01?.[1],prompts.base,'effective documented PB01 exactly matches runtime');
  for(const language of ['zh','en']){
   const instructions=buildPrompt(validateReading(sample('yes-no',{scenarioId:'sc18',sceneVersion:'1',language,question:language==='en'?'Will the exhibition go ahead next month?':'下个月展览能办成吗？'}),catalog)).instructions;
-  for(const rule of ['不能保证用户养成习惯','选择时确认','不声称用户已经积压教程','单牌问题回答倾向与一条具体依据后','不能支持精确未来判断','不得分别改成过去、现在、未来','同一比较维度','不按正位/逆位直接计票','timeline有真实trend位置','抑郁症','恶性肿瘤','停药','合同或行为是否违法','全部积蓄','cannot guarantee attendance','check whether','without inventing a backlog','without repeating the conclusion'])assert.ok(instructions.includes(rule),language+' includes RP-1.2.0 rule '+rule);
+  for(const rule of ['不能保证用户养成习惯','选择时确认','不声称用户已经积压教程','单牌问题回答倾向与一条具体依据后','不能支持精确未来判断','不得分别改成过去、现在、未来','同一比较维度','不按正位/逆位直接计票','timeline有真实trend位置','抑郁症','恶性肿瘤','停药','合同或行为是否违法','全部积蓄','cannot guarantee attendance','check whether','without inventing a backlog','without repeating the conclusion'])assert.ok(instructions.includes(rule),language+' includes RP-1.2.1 rule '+rule);
   assert.ok(instructions.includes(language==='en'?'English（英语）':'简体中文'),'requested response language retained');
   assert.ok(instructions.endsWith(prompts.riskBoundary),'high-risk boundary is the final instruction layer');
  }
@@ -31,7 +31,7 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
  const cfg=loadConfig(env),session=createSessionToken(cfg),seen=[];
  const handler=createCloudReadingHandler({catalog,processEnv:env,fetchImpl:async(url,init)=>{const body=JSON.parse(init.body);seen.push(body);return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{role:'assistant',content:'Synthetic complete answer for this fixture.'}}]}),{headers:{'Content-Type':'application/json'}});}});
  const health=await handler({request:new Request(origin+'/api/health',{headers:{Origin:origin}}),env:{},clientIp:'192.0.2.10'});
- assert.equal(health.status,200);assert.equal((await health.json()).promptVersion,'RP-1.2.0');
+ assert.equal(health.status,200);assert.equal((await health.json()).promptVersion,'RP-1.2.1');
  let i=0;
  for(const scene of catalog.scenarios.values()){
   for(const field of ['name','description','question'])if(scene[field]){const key=scene[field]==='能不能／会不会'?'能不能／会不会 · Yes/No':scene[field];assert.ok(translations[key],scene.id+' English '+field);}
@@ -79,7 +79,7 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
  assert.match(buildPrompt(futureRelation).instructions,/开头先用该趋势位给有条件的方向/);
  const timelineOutcome=validateReading(sample('timeline',{topic:'study',question:'这次考试会通过吗？'}),catalog);
  assert.match(buildPrompt(timelineOutcome).instructions,/开头先用trend位置回答所问结果/);
- const blankYesNo=buildPrompt(validateReading(sample('yes-no'),catalog)).instructions;assert.match(blankYesNo,/只给一般状态提示，不自造事件/);assert.doesNotMatch(blankYesNo,/请补一句问题/);
+ const blankYesNo=buildPrompt(validateReading(sample('yes-no'),catalog)).instructions;assert.match(blankYesNo,/仍先给Yes或No的牌面倾向/);assert.doesNotMatch(blankYesNo,/请补一句问题/);
 
  // The actual question deterministically overrides a conflicting preset. The
  // stale scene module/topic is removed before the model sees trusted context.
@@ -126,7 +126,7 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
  const expiredReply=await handler({request:new Request('https://test.example/api/reading',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+expired,'Content-Type':'application/json'},body:JSON.stringify(tri)}),env:{},clientIp:'192.0.2.13'});
  assert.equal(expiredReply.status,401);assert.equal(seen.length,before);
  await clientChecks();
- console.log('PASS: RP-1.2.0 health, final-layer risk boundary, 25 scene routes, sc09/resign + work/love + study/medical conflict handling, spread scope, natural question routing, schemas, auth and client retry/save. Mock only.');
+ console.log('PASS: RP-1.2.1 health, final-layer risk boundary, 25 scene routes, sc09/resign + work/love + study/medical conflict handling, spread scope, natural question routing, schemas, auth and client retry/save. Mock only.');
 })();
 async function clientChecks(){
  let fetches=[],cleared=0,saved=[],current;
