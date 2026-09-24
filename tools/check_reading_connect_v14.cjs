@@ -18,7 +18,7 @@ const sessionToken='tp1.'+'s'.repeat(80);
    if(mode==='hold'){held.push(res);return;}
    if(mode==='auth'){res.statusCode=401;res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
    if(mode==='error'){res.statusCode=502;res.end(JSON.stringify({error:'UPSTREAM_ERROR'}));return;}
-   res.end(JSON.stringify({text:'Synthetic whole-spread reading.\n\n<script>window.injected=true</script>',model:'fixture',provider:'deepseek'}));return;
+   res.end(JSON.stringify({text:'### 本次回答\nSynthetic whole-spread reading.\n\n### 牌面依据\n**保留原牌**，结合问题阅读。\n\n<script>window.injected=true</script>',model:'fixture',provider:'deepseek'}));return;
   }
   if(url.pathname==='/ai-config.js'){res.setHeader('Content-Type','text/javascript');res.end('window.TAROT_AI_CONFIG={endpoint:"/api/reading",sessionEndpoint:"/api/session"};');return;}
   if(url.pathname==='/locales/en.js'){
@@ -75,6 +75,7 @@ const sessionToken='tp1.'+'s'.repeat(80);
   assert.equal(await p.locator('.reading-offline').count(),1,'a spread-aware local reading is available before AI');
   assert.equal(requests.length,0);assert.equal(sessions.length,0);
   await requestReading(p);await p.locator('.ai-answer').waitFor();assert.equal(sessions.length,1);assert.deepEqual(sessions[0],{});assert.equal(requests.length,1);assert.equal(requests[0].auth,'Bearer '+sessionToken);assert.equal(requests[0].body.spreadId,'decision-five');assert.equal(requests[0].body.question,'How can I compare two study schedules?');assert.equal(requests[0].body.optionA,'Weekend classes');assert.equal(requests[0].body.optionB,'Weekday self-study');assert.equal(requests[0].body.cards.length,5);assert.equal(requests[0].body.cards[1].reversed,true);
+  assert.deepEqual(await p.locator('.ai-answer h3').allTextContents(),['本次回答','牌面依据'],'headings render even when followed by a single newline');assert.equal(await p.locator('.ai-answer strong').innerText(),'保留原牌');assert.doesNotMatch(await p.locator('.ai-answer').innerText(),/###/);
   assert.equal(await p.evaluate(()=>window.injected),undefined);assert.equal(await p.locator('.ai-answer script').count(),0);
   const saved=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.draft.ai.length,1);assert(!JSON.stringify(saved).includes(sessionToken));
   await p.reload();assert.equal(await p.locator('.access-screen').count(),0,'reload remains public');await p.locator('.bottomnav [data-page=reading]').click();assert.equal(await p.locator('.ai-answer').count(),1,'saved answer remains visible');assert.equal(await p.locator('[data-reading=ai-request]').count(),0,'a successful reading has no redundant request button');assert.equal(requests.length,1);

@@ -44,7 +44,10 @@ function checkModel(){
     assert.equal(reviews.progress.m00.targets.V1.streak,round,`spaced revisit ${round} grows the streak once`);
     if(round===1)assert.notEqual(api.masteryState(reviews.progress.m00,time).key,'mastered','one revisit is not mastery');
   }
-  assert.equal(api.masteryState(reviews.progress.m00,32*DAY).key,'mastered','upright, reversal and two spaced independent revisits form the mastery gate');
+  const reinforced=api.masteryState(reviews.progress.m00,32*DAY);
+  assert.equal(reinforced.key,'mastered','the stable internal key remains compatible after two spaced independent revisits');
+  assert.equal(reinforced.label,'已巩固','two repetitions are presented as reinforcement, not complete mastery');
+  assert.equal(reinforced.detail,'已完成正逆位学习和两次回访','card status stays concise while the evidence boundary remains in the learning master');
   assert.equal(api.masteryState({...reviews.progress.m00,reverseAt:0},32*DAY).key,'initial','two revisits without reversal are not mastery');
   assert.equal(api.masteryState({...reviews.progress.m00,nextVisitAt:31*DAY},32*DAY).key,'due','a mastered card returns to due when its next reinforcement is due');
 
@@ -76,11 +79,12 @@ async function checkUI(){
     // Keep the seeding page alive: unloading it would persist its stale in-memory
     // copy over the fixture. A second page in the same context reads the fixture.
     const page=await context.newPage();page.setDefaultTimeout(15000);await page.goto(url+'?lang=en');
+    const productHome=await page.locator('.home-simple').innerText();assert.match(productHome,/先看讲解/);assert.match(productHome,/已巩固/);assert.doesNotMatch(productHome,/先听讲解|已掌握/);
     await page.locator('[data-action=nav][data-page=courses]').first().click();
-    const home=await page.locator('.academy-home').innerText();assert.match(home,/按顺序学下一张/);assert.match(home,/已掌握/);assert.doesNotMatch(home,/随机学一张/);
+    const home=await page.locator('.academy-home').innerText();assert.match(home,/按顺序学下一张/);assert.match(home,/已巩固/);assert.doesNotMatch(home,/已掌握|随机学一张/);
     await page.locator('.academy-card-library [data-action=nav][data-page=library]').click();
-    for(const label of ['未学','初学','已学逆位','待复习','已掌握'])assert.equal(await page.locator(`[data-action=filter][data-value="${label}"]`).count(),1,label+' filter');
-    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已掌握']])assert.match(await page.locator(`.library-card[data-id="${id}"] .library-learning-state`).innerText(),new RegExp(label));
+    for(const label of ['未学','初学','已学逆位','待复习','已巩固'])assert.equal(await page.locator(`[data-action=filter][data-value="${label}"]`).count(),1,label+' filter');
+    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']])assert.match(await page.locator(`.library-card[data-id="${id}"] .library-learning-state`).innerText(),new RegExp(label));
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px library has no horizontal overflow');
     await page.locator('.library-card[data-id="m01"]').click();assert.match(await page.locator('#overlay').innerText(),/初学[\s\S]*下一步：学习逆位/);assert.equal(await page.locator('#overlay [data-academy=reverse][data-id=m01]').count(),1);
     await page.locator('#overlay [data-action=close]').click();await page.locator('.library-card[data-id="m03"]').click();assert.equal(await page.locator('#overlay [data-academy=start-review][data-id=m03]').count(),1);
@@ -89,4 +93,4 @@ async function checkUI(){
   }finally{await browser.close();}
 }
 
-(async()=>{const model=checkModel(),ui=await checkUI();console.log(JSON.stringify({status:'PASS',model,ui,checks:['targeted Q4 repair plus equivalent retest','two spaced independent revisits before mastery','upright and reversal kept separate','stable major-number-court recommendation path','legacy record compatibility','five learner-facing states at 320px','Chinese-only UI']},null,2));})().catch(error=>{console.error(error);process.exitCode=1;});
+(async()=>{const model=checkModel(),ui=await checkUI();console.log(JSON.stringify({status:'PASS',model,ui,checks:['targeted Q4 repair plus equivalent retest','two spaced independent revisits display an accurate reinforced state','upright and reversal kept separate','stable major-number-court recommendation path','legacy record compatibility','five learner-facing states at 320px','Chinese-only UI']},null,2));})().catch(error=>{console.error(error);process.exitCode=1;});

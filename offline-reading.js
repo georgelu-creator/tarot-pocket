@@ -21,7 +21,7 @@
 })(typeof window === 'object' ? window : globalThis, function (root) {
   'use strict';
 
-  const VERSION = 'OR-1.2.0';
+  const VERSION = 'OR-1.3.0';
   const LANGUAGES = new Set(['zh', 'en']);
   const TOPICS = new Set(['general', 'love', 'career', 'study', 'life', 'self', 'choice']);
   const ROLE_CONTEXT = {state: 'state', tension: 'tension', advice: 'advice', trend: 'state', outcome: 'state'};
@@ -627,6 +627,12 @@
     const contextual = naturalMeaning(tr(topicContext(item.card, topic, item.position.role)));
     const situatedMeaning = cardMeaning(item, topic, tr);
     const role = item.position.role;
+    const reference = root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed?'reversed':'upright'];
+    if(language==='zh' && reference?.roles?.[role]) {
+      const details=reference.contexts?.[topic];
+      const context=Array.isArray(details)?details.join(' '):details;
+      return reference.roles[role]+(context && topic!=='general' ? ' '+context : '');
+    }
     if (language === 'en') {
       if (role === 'tension') return `${name} is ${item.reversed ? 'reversed' : 'upright'} in “${label}”. The main obstacle to check is: ${situatedMeaning}`;
       if (role === 'advice') return `${name} is ${item.reversed ? 'reversed' : 'upright'} in “${label}”. It suggests: ${situatedMeaning}`;
@@ -671,13 +677,11 @@
     const label = tr(item.position.label);
     if (risk) return highRiskReading(item, input, language, risk);
     if (!question) {
-      const answer = en
-        ? `No event was entered, so this card cannot answer yes or no for an unknown outcome. As a general status prompt, ${name} (${orientation}) points to: ${meaning}`
-        : `没有填写要判断的具体事情，因此不能替一件未知的事回答“能”或“不能”。作为一般状态提示，${name}${orientation}指出：${meaning}`;
-      const reason = en
-        ? `The position is “${label}”, but an outcome tendency needs an event to refer to. The card's core meaning is “${core}”.`
-        : `牌位是“${label}”，但结果倾向必须有具体事件才能成立。这张牌的核心意思是“${withoutFinalPunctuation(core)}”。`;
-      return {tendency: 'general-guidance', overview: answer, sections: [section('basis', en ? 'What this can say' : '这张牌能说明什么', reason, [item])]};
+      const reference = root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed?'reversed':'upright'];
+      const tendency = reference?.yesNo ? (reference.yesNo==='yes'?'leans-yes':'leans-no') : propositionTendency([item], {kind:'action'});
+      const label = tendency==='leans-yes' ? 'Yes' : tendency==='leans-no' ? 'No' : 'Not yet';
+      const answer = en ? `${label} — ${meaning}` : `${label} · ${tendency==='leans-yes'?'偏向可以':tendency==='leans-no'?'偏向不宜':'暂缓，条件还没齐'}。${reference?.yesNoReason || meaning}`;
+      return {tendency, overview: answer, sections: [section('basis', en ? 'Card message' : '牌面暗语', core, [item])]};
     }
     const predicate = questionPredicate(question, language);
     const tendency = propositionTendency([item], predicate);
@@ -873,8 +877,8 @@
         const lead = resultLead(items, input, language, false, en ? 'the three cards together' : '三张牌合起来', tr);
         const directAnswer = openThreeDirectAnswer(items, input, language, tr);
         const overview = input.question
-          ? (directAnswer || (en ? `${lead ? lead + ' ' : `For “${input.question}”, `}the shared focus is: ${coreSummary}. The position evidence is below.` : `${lead || `对“${input.question}”，`}三张牌共同聚焦在：${coreSummary}。具体牌面依据见下方。`))
-          : (en ? `No specific question was entered. The three cards share this general focus: ${coreSummary}.` : `没有填写具体问题，因此这里只给一般提示：三张牌共同聚焦在${coreSummary}。`);
+          ? (directAnswer || (en ? `${lead ? lead + ' ' : `For “${input.question}”, `}the three cards offer these clues: ${coreSummary}.` : `${lead || `对“${input.question}”，`}三张牌分别提示：${coreSummary}。`))
+          : (en ? `The three cards offer these clues: ${coreSummary}.` : `三张牌分别提示：${coreSummary}。`);
         return {overview, sections: [section('throughline', en ? 'What the three cards say together' : '这三张合起来在说什么', throughline, items)]};
       }
       if (items.some(item => item.position.role === 'state') && items.some(item => item.position.role === 'tension') && items.some(item => item.position.role === 'advice')) {
@@ -995,6 +999,7 @@
       cardId: item.card.id,
       cardName: cardName(item, language),
       orientation: item.reversed ? 'reversed' : 'upright',
+      message: language==='zh' ? (root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed?'reversed':'upright']?.message || naturalMeaning(tr(item.card.core))) : naturalMeaning(tr(item.card.core)),
       coreMeaning: naturalMeaning(tr(item.card.core)),
       orientationMeaning: naturalMeaning(tr(item.reversed ? item.card.reversed : item.card.upright)),
       reading: risk
@@ -1004,11 +1009,13 @@
     const basisText = question || tr(spread.summary || spread.bestFor || spread.name);
     const heading = question
       ? (en ? 'Answer to this question' : '这组牌怎样回答')
-      : (en ? 'General reading without a question' : '没有具体问题时的一般提示');
+      : (branch === 'yes-no' ? 'Yes/No' : (en ? 'Messages from your spread' : '牌阵里的提示'));
     const branchResult = buildSections(branch, cards, spread, language, tr, parsed, risk);
+    const individual = !question && branch !== 'yes-no' && !risk;
     return {
       version: VERSION,
       source: 'offline',
+      display: individual ? 'positions' : 'summary',
       isAI: false,
       language,
       topic,

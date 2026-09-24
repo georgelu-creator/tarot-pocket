@@ -40,3 +40,10 @@
 - 浏览器视口检查不能替代真实 iPhone、微信 WebView、大字号和屏幕阅读器验收。
 - 自动检查与内容覆盖不能证明每位使用者一定学会 78 张牌；仍需新人试学、延迟回忆和独立塔罗教师审稿。
 - 固定合成问题通过不能证明模型每次输出都正确，生产监控仍需持续观察拒答、超时和错误牌位输出。
+
+## 发布后旧入口修复
+
+- 用户再次打开 `https://georgelu-creator.github.io/tarot-pocket/?lang=zh&v=1.7.3-…` 时看到旧邀请页。公网 HTML 已是 1.9；实际拦截者是浏览器里仍然控制 `/tarot-pocket/` 的 1.7.3 Service Worker，它会忽略导航 URL 的 `v` 参数并直接返回旧缓存首页。
+- [PR #27](https://github.com/georgelu-creator/tarot-pocket/pull/27) 增加仅作用于旧 GitHub Pages 主机的迁移 Worker。它完成激活后再让旧页面重新导航，避免在 `activate.waitUntil()` 中等待 `WindowClient.navigate()` 造成新 Worker 永久停在 `activating`。
+- 真实 Chromium 回归覆盖“安装旧 Worker—缓存旧首页—发布新 Worker—跳过等待—激活—重导航—跨域跳转”的完整链路；最终 URL 删除旧 `v`，保留其他查询参数和片段。正式域名原有离线生命周期和无关缓存不受影响。
+- 强制迁移不删除旧来源 LocalStorage 或项目缓存。若旧来源仍有需要导出的记录，可用 `https://georgelu-creator.github.io/tarot-pocket/?legacy=export` 临时停留在旧来源完成 JSON 导出，再到正式域名导入。

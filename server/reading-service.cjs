@@ -344,7 +344,7 @@ function promptSelection(reading) {
 function buildPrompt(reading) {
   const selected = routingSelection(reading);
   const additions = [];
-  if (reading.spread.id === 'yes-no') additions.push('这次是独立Yes/No单牌，唯一位置是结果倾向，不是one的建议位。针对明确事件先答更偏向能或不能，再说明依据和必要条件；没有具体事件时只给一般状态提示，不自造事件，也不假装回答了“能”或“不能”。');
+  if (reading.spread.id === 'yes-no') additions.push('这次是独立Yes/No单牌，唯一位置是结果倾向，不是one的建议位。针对明确事件先答更偏向能或不能，再说明依据和必要条件；没有填写具体问题时，仍先给Yes或No的牌面倾向，再用一两句说明正逆位的依据；这是针对使用者心中问题的象征提示，不猜测具体事件、不补造经历、不保证结果。不要用缺少问题的说明代替解读。');
   if (reading.scenario?.id === 'sc23' && !selected.conflict) additions.push('这是非恋爱的人际关系场景。未知身份只称对方，不默认恋人。');
   if (selected.conflict) {
     additions.push(selected.presetDomain && selected.domain && selected.presetDomain !== selected.domain

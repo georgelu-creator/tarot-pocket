@@ -134,13 +134,10 @@
   "当前离线，本地解读仍可完整阅读。": "You are offline. The complete local reading remains available.",
   "再试一次 AI 深度解析": "Try AI in-depth reading again",
   "请 AI 深度解析": "Ask AI for an in-depth reading",
-  "正在把每张牌放回它的牌位，连起这组牌的主线。": "Placing each card in its position and tracing the spread’s main thread.",
-  "正在对照正逆位与问题，确认回答真正落到你关心的事上。": "Comparing orientations with your question so the answer stays focused on what you care about.",
   "牌阵已经保留。你可以继续看牌，也可以取消等待。": "Your spread is saved. You can keep reading the cards or cancel the wait.",
   "完整解读回来后，会和这组牌一起保存在本机。": "When the full reading returns, it will be saved on this device with the spread.",
   "正在细读这组牌…": "Reading this spread closely…",
   "深度解读": "In-depth reading",
-  "这次解读还在继续。取消等待不会改变已经抽到的牌。": "The reading is still in progress. Cancelling the wait will not change the cards you drew.",
   "这次连接已失效，请重新尝试 AI 深度解析。": "This connection has expired. Please request the AI reading again.",
   "今天的 AI 深度解析使用较多，请稍后再试。本地解读仍可继续看。": "AI readings have reached their current limit. Try again later; your local reading remains available.",
   "AI 深度解析尚未配置完成。本地解读仍可使用。": "AI in-depth reading is not configured yet. Your local reading remains available.",
@@ -150,5 +147,8 @@
   "当前地址尚未获准连接 AI 服务。": "This site is not currently allowed to connect to the AI service.",
   "补充这件事的情况，再用原来的牌查看本地解读。之前的 AI 回答会保留。": "Add context, then use the same cards for an updated local reading. Earlier AI answers will be kept.",
   "这次的问题（可选）": "Question for this reading (optional)",
-  "保存问题并返回解读": "Save question and return to the reading"
+  "保存问题并返回解读": "Save question and return to the reading",
+  "一张牌是一条线索，放在一起，才是这次牌阵的完整提示。": "Each card offers a clue; together, they form the message of this spread.",
+  "等待时，可以先看看牌面：哪一处细节最让你留意？": "While you wait, look at the cards: which detail catches your attention?",
+  "解读还没有返回。可以再等一会儿，也可以取消，已经抽到的牌会保留。": "The reading has not arrived yet. You can wait a little longer or cancel; your cards will be kept."
 }

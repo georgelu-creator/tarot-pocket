@@ -8,15 +8,23 @@ const url=process.env.DEMO_URL||'file://'+path.resolve(__dirname,'../demo/tarot-
  const ids=await p.locator('.library-card').evaluateAll(xs=>xs.map(x=>x.dataset.id));assert.equal(ids.length,78);
  for(const id of ids){
   await p.locator(`.library-card[data-id="${id}"]`).click();
-  assert((await p.locator('.dossier-editorial').innerText()).length>45,'Each card has substantive editorial context: '+id);
+  assert((await p.locator('.reference-core').innerText()).length>45,'Each card has substantive editorial context: '+id);
   assert.equal(await p.locator('.dossier-pair img').count(),0,'No forced unfamiliar-card comparison');
-  assert((await p.locator('[data-dossier-section=use]').innerText()).length>35,'Authored card-specific application example');
+  await p.locator('[data-reference-section=contexts]>summary').click();
+  assert.equal(await p.locator('.reference-context').count(),4,'Four authored application domains: '+id);
+  assert((await p.locator('[data-reference-section=contexts]').innerText()).length>120,'Substantive card-specific applications: '+id);
+  await p.locator('[data-reference-section=roles]>summary').click();
+  assert.equal(await p.locator('[data-reference-section=roles] dt').count(),9,'Complete named position references: '+id);
+  assert.equal(await p.locator('.dossier-lenses,.dossier-reversal-guide').count(),0,'No duplicated lesson controls or generic reversal reminders');
   assert(await p.locator('.dossier-cover img').evaluate(im=>im.complete&&im.naturalWidth>100));
   await p.locator('#overlay [data-action=close]').first().click();
  }
  await p.locator('.library-card[data-id="m16"]').click();const sheet=await p.locator('.sheet').elementHandle();
- await p.locator('[data-action=dossier-jump][data-value=scene]').click();await p.locator('[data-action=dossier-lens][data-value="1"]').click();assert((await p.locator('[data-dossier-lens-copy]').innerText()).length>20);
+ await p.locator('[data-dossier-section=scene]>summary').click();assert((await p.locator('[data-dossier-section=scene]').innerText()).length>40);
+ await p.locator('[data-reference-section=contexts]>summary').click();const uprightText=await p.locator('[data-reference-body]').innerText();
  await p.locator('[data-action=face][data-value=reversed]').click();assert(await p.locator('.dossier-cover img').evaluate(e=>e.classList.contains('reversed-img')));
+ assert.notEqual(await p.locator('[data-reference-body]').innerText(),uprightText,'Reversal changes substantive meaning and application');
+ assert(await p.locator('[data-reference-section=contexts]').evaluate(e=>e.open),'Changing direction preserves expanded reference chapters');
  await p.locator('[data-action=face][data-value=upright]').click();
  const beforeLocale=await p.locator('.sheet').innerText();assert(/[\u3400-\u9fff]/.test(beforeLocale),'Card guide is authored in Chinese');
  assert.equal(await p.locator('[data-action=detail-language],[data-language-toggle]').count(),0,'Chinese-only card guide has no English entry');

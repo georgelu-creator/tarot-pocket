@@ -1270,7 +1270,7 @@ window.TAROT_SPREAD_CONTENT = {
 window.TAROT_SPREAD_CONTENT.spreads.push(...[
   {
     "id": "yes-no",
-    "name": "能不能／会不会",
+    "name": "Yes/No",
     "layout": "one",
     "category": "all",
     "categories": [

@@ -21,6 +21,23 @@ async function minimumTarget(page,selector,label){
   for(const box of boxes)assert(box.width>=43.5&&box.height>=43.5,`${label} target is smaller than 44 px: ${JSON.stringify(box)}`);
   return boxes;
 }
+async function assertThumbnailContainment(page,label){
+  const rows=await page.locator('.reading-spread-choice').evaluateAll(nodes=>nodes.map(row=>{
+    const thumb=row.querySelector('.spread-thumb').getBoundingClientRect();
+    const copy=row.querySelector('.spread-choice-copy').getBoundingClientRect();
+    const cards=[...row.querySelectorAll('.spread-thumb i')].map(card=>{const rect=card.getBoundingClientRect();return {left:rect.left,right:rect.right,top:rect.top,bottom:rect.bottom,width:rect.width,height:rect.height};});
+    return {thumb:{left:thumb.left,right:thumb.right,top:thumb.top,bottom:thumb.bottom},copy:{left:copy.left},cards};
+  }));
+  assert(rows.length,`${label} has no spread choices`);
+  for(const [rowIndex,row] of rows.entries()){
+    assert(row.thumb.right<=row.copy.left+.5,`${label} thumbnail ${rowIndex+1} enters its copy column: ${JSON.stringify(row)}`);
+    for(const [cardIndex,card] of row.cards.entries()){
+      assert(card.width>0&&card.height>0,`${label} thumbnail ${rowIndex+1} card ${cardIndex+1} is not visible`);
+      assert(card.left>=row.thumb.left-.5&&card.right<=row.thumb.right+.5&&card.top>=row.thumb.top-.5&&card.bottom<=row.thumb.bottom+.5,`${label} thumbnail ${rowIndex+1} card ${cardIndex+1} escapes its container: ${JSON.stringify({thumb:row.thumb,card})}`);
+      assert(card.right<=row.copy.left+.5,`${label} thumbnail ${rowIndex+1} card ${cardIndex+1} enters its copy column: ${JSON.stringify({copy:row.copy,card})}`);
+    }
+  }
+}
 async function assertChineseShell(page){
   const shell=await page.evaluate(()=>({
     lang:document.documentElement.lang,
@@ -76,6 +93,12 @@ async function assertChineseShell(page){
     assert.equal(directory.summary.text,'不分配固定牌位，把三张牌放在一起回答同一个问题。');
     assert.equal(directory.summary.lineClamp,'none');
     assert(directory.summary.scrollHeight<=directory.summary.clientHeight+1,'directory summary must be fully visible');
+    for(const category of ['all','love','work','study','life']){
+      await page.locator(`[data-reading="category"][data-value="${category}"]`).click();
+      await page.locator(`#reading-theme-${category}`).waitFor();
+      await assertThumbnailContainment(page,`320 px ${category} directory`);
+    }
+    await page.locator('[data-reading="category"][data-value="all"]').click();
     await page.screenshot({path:screenshotDirectory,fullPage:true});
 
     await page.locator('[data-scenario="sc02"]').click();
@@ -121,7 +144,9 @@ async function assertChineseShell(page){
     },null,{timeout:10000});
     await page.locator('.reading-result-card img').evaluateAll(images=>Promise.all(images.map(image=>image.decode?.().catch(()=>{})||Promise.resolve())));
     await assertChineseShell(page);
-    assert.equal((await page.locator('.reading-offline .eyebrow').innerText()).trim(),'本地牌阵解读');
+    assert.equal((await page.locator('.reading-offline h2').innerText()).trim(),'牌阵里的提示');
+    assert.equal(await page.locator('.reading-offline .offline-position').count(),3,'Unwritten question gives each selected card its own position message');
+    assert.equal(await page.locator('.reading-result-question').count(),0,'A preset is not presented as a question the user wrote');
     assert.equal((await page.locator('.reading-ai .eyebrow').innerText()).trim(),'可选深度解读');
     await noHorizontalOverflow(page,'reading result');
     await page.screenshot({path:screenshotResult,fullPage:true});
@@ -150,7 +175,7 @@ async function assertChineseShell(page){
       const hero=document.querySelector('.dossier-hero'),cover=hero.querySelector('.dossier-cover'),copy=hero.querySelector(':scope>div'),hr=hero.getBoundingClientRect(),br=cover.getBoundingClientRect(),cr=copy.getBoundingClientRect(),sheet=document.querySelector('#overlay .sheet');
       return {columns:getComputedStyle(hero).gridTemplateColumns,hero:{left:hr.left,right:hr.right},cover:{left:br.left,right:br.right,bottom:br.bottom},copy:{left:cr.left,right:cr.right,top:cr.top},sheet:{clientWidth:sheet.clientWidth,scrollWidth:sheet.scrollWidth},eyebrow:hero.querySelector('.eyebrow').textContent.trim(),languageToggles:document.querySelectorAll('[data-language-toggle]').length};
     });
-    assert.equal(cardDetail.eyebrow,'牌面详解');
+    assert.equal(cardDetail.eyebrow,'牌库 · 完整参考');
     assert.equal(cardDetail.languageToggles,0);
     assert(cardDetail.cover.bottom<=cardDetail.copy.top+1,`320 px dossier must stack image over text: ${JSON.stringify(cardDetail)}`);
     assert(cardDetail.sheet.scrollWidth<=cardDetail.sheet.clientWidth+1,'dossier must not overflow horizontally');
