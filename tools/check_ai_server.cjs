@@ -238,7 +238,7 @@ async function run() {
   try {
     const base = await start();
     let response = await fetch(base + '/api/health', {headers: {Origin: origin}});
-    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.1', scenarioCount: 25});
+    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.2', scenarioCount: 25});
     assert.equal(received.length, 0);
     response = await fetch(base + '/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type'}});
     assert.equal(response.status, 204);

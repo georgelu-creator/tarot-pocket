@@ -27,7 +27,7 @@ async function run({fetchImpl=fetch,log=value=>console.log(JSON.stringify(value)
  }
  for(const path of ['/api/session','/api/reading']){const {response}=await request(path,{method:'OPTIONS',preflight:true});requireThat(response.status===204,'PREFLIGHT_FAILED');emit({endpoint:BASE+path,check:'preflight',status:response.status});}
  const health=await request('/api/health');requireThat(health.response.status===200&&health.result.ok===true&&health.result.configured===true,'HEALTH_NOT_READY');
- requireThat(health.result.promptVersion==='RP-1.2.1'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
+ requireThat(health.result.promptVersion==='RP-1.2.2'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
  emit({endpoint:BASE+'/api/health',status:health.response.status,ok:true,configured:true,...(typeof health.result.promptVersion==='string'?{promptVersion:health.result.promptVersion}:{}),...(Number.isInteger(health.result.scenarioCount)?{scenarioCount:health.result.scenarioCount}:{})});
  const session=await request('/api/session',{method:'POST',body:{}});
  requireThat(session.response.status===200&&typeof session.result.token==='string'&&session.result.token.length>=40&&session.result.token.length<=1024&&Number.isFinite(session.result.expiresAt)&&session.result.expiresAt>Date.now()+30000,'SESSION_NOT_READY');
@@ -39,7 +39,7 @@ async function run({fetchImpl=fetch,log=value=>console.log(JSON.stringify(value)
   requireThat(safe(result.text)&&safe(result.model),'RESPONSE_SAFETY_CHECK_FAILED');
   emit({endpoint:BASE+'/api/reading',fixture:fixture.name,status:response.status,shape:{nonempty:true,characters:result.text.length,provider:result.provider,model:result.model},syntheticAnswer:result.text});
  }
- emit({status:'PASS',liveModelCalls:2,fixturesOnly:true,limitation:'Request/auth/schema checks passed; the printed synthetic answers still require human quality review.'});
+ emit({status:'PASS',liveModelCalls:FIXTURES.length,fixturesOnly:true,limitation:'Request/auth/schema checks passed; the printed synthetic answers still require human quality review.'});
 }
-if(require.main===module){if(process.argv.length!==3||process.argv[2]!=='--live'){console.error('Not run. Explicit --live is required; this probe makes two paid synthetic production readings.');process.exitCode=1;}else run().catch(error=>{console.error(JSON.stringify({status:'FAIL',code:error instanceof ProbeError?error.code:'UNEXPECTED_PROBE_FAILURE'}));process.exitCode=1;});}
+if(require.main===module){if(process.argv.length!==3||process.argv[2]!=='--live'){console.error('Not run. Explicit --live is required; this probe makes three paid synthetic production readings.');process.exitCode=1;}else run().catch(error=>{console.error(JSON.stringify({status:'FAIL',code:error instanceof ProbeError?error.code:'UNEXPECTED_PROBE_FAILURE'}));process.exitCode=1;});}
 module.exports={run,FIXTURES};
