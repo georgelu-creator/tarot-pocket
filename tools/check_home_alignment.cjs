@@ -1,3 +1,4 @@
+const courseUI=require('./course_ui_helpers.cjs');
 /* Layout regressions use fresh browser storage and the self-contained demo. */
 'use strict';
 const assert=require('node:assert/strict');
@@ -19,7 +20,7 @@ const near=(a,b,message)=>assert(Math.abs(a-b)<1.1,`${message}: ${a} / ${b}`);
    for(const resumed of [false,true]){
     if(resumed){
      await p.locator('.bottomnav [data-page=courses]').click();
-     await p.locator('[data-academy=guided-card][data-id=p12]').click();
+     await courseUI.open(p,'p12');
      await p.locator('[data-academy=home]').first().click();await p.locator('.bottomnav [data-page=home]').click();
      assert(await p.locator('.continue-resume').isVisible(),'an unfinished lesson is reachable from home');
     }

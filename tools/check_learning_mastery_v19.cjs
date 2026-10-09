@@ -1,3 +1,4 @@
+const courseUI=require('./course_ui_helpers.cjs');
 /* v1.9 mastery gate: targeted whole-card repair, spaced review, path and mobile status UI. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -60,7 +61,7 @@ function checkModel(){
 }
 
 async function checkUI(){
-  const {chromium}=require('playwright'),browser=await chromium.launch(require('./browser_options.cjs'));
+  const {chromium,webkit}=require('playwright'),engine=process.env.TEST_BROWSER==='webkit'?'webkit':'chromium',browser=await (engine==='webkit'?webkit:chromium).launch(engine==='webkit'?{headless:true}:require('./browser_options.cjs'));
   const url=process.env.DEMO_URL||pathToFileURL(path.join(root,'demo/tarot-demo.html')).href;
   try{
     const context=await browser.newContext({viewport:{width:320,height:568},reducedMotion:'reduce'});
@@ -81,17 +82,25 @@ async function checkUI(){
     const page=await context.newPage();page.setDefaultTimeout(15000);await page.goto(url+'?lang=en');
     const productHome=await page.locator('.home-simple').innerText();assert.match(productHome,/先看讲解/);assert.match(productHome,/已巩固/);assert.doesNotMatch(productHome,/先听讲解|已掌握/);
     await page.locator('[data-action=nav][data-page=courses]').first().click();
-    const home=await page.locator('.academy-home').innerText();assert.match(home,/开始下一节/);assert.match(home,/已巩固/);assert.doesNotMatch(home,/已掌握|随机学一张/);
-    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']])assert.match(await page.locator(`[data-academy=guided-card][data-id="${id}"]`).innerText(),new RegExp(label));
+    const home=await page.locator('.academy-home').innerText();assert.match(home,/开始上课|继续上课/);assert.doesNotMatch(home,/已掌握|随机学一张/);
+    await courseUI.catalog(page);
+    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']]){const record=(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress))[id];const actual=await page.evaluate(record=>TarotAcademy.masteryState(record).label,record);assert.equal(actual,label);const button=page.locator(`[data-academy=guided-card][data-id="${id}"]`);assert.match(await button.innerText(),id==='m00'?/看图与练习/:/已完成/,'directory reflects completion for selected beginner stage');}
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px learning route has no horizontal overflow');
-    await page.locator('[data-academy=guided-card][data-id=m01]').click();
+    await courseUI.open(page,'m01','I');
     let session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'application','legacy initial learning continues into application');
     await page.locator('[data-academy=home]').click();
-    await page.locator('[data-academy=guided-card][data-id=m03]').click();
-    session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'practice','due evidence is rehearsed first');
+    // LM-2.0-R8: the main action schedules due review; the directory explicitly
+    // restarts the chosen stage. Preserve both guarantees as separate checks.
+    await page.locator('[data-academy=level][data-value=A]').click();
+    if(await page.locator('.academy-catalog').count())await page.locator('[data-academy=catalog-back]').click();
+    await page.locator('[data-academy=guided]').click();
+    session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.unitId,'m03');assert.equal(session.mode,'practice','legacy due evidence is rehearsed without requiring new integration history');assert.equal(session.practiceKey,'V1');assert.deepEqual((await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress.m03.history)),[],'legacy record must not be promoted to a completed integration stage');
+    await courseUI.open(page,'m03','A');
+    session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'integration','directory explicitly restarts the selected advanced stage without deleting due evidence');
+    assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress.m03.targets.V1.status)),'independent');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px practice has no horizontal overflow');
     return {viewport:'320x568',states:5,language:'zh-CN'};
   }finally{await browser.close();}
 }
 
-(async()=>{const model=checkModel(),ui=await checkUI();console.log(JSON.stringify({status:'PASS',model,ui,checks:['targeted Q4 repair plus equivalent retest','two spaced independent revisits display an accurate reinforced state','upright and reversal kept separate','stable major-number-court recommendation path','legacy record compatibility','five learner-facing states at 320px','Chinese-only UI']},null,2));})().catch(error=>{console.error(error);process.exitCode=1;});
+(async()=>{const model=checkModel(),ui=await checkUI();console.log(JSON.stringify({status:'PASS',model,ui,checks:['targeted Q4 repair plus equivalent retest','two spaced independent revisits display an accurate reinforced state','upright and reversal kept separate','stable major-number-court recommendation path','legacy record compatibility','five legacy states retained with stage-specific directory completion at 320px','main CTA schedules due practice; directory deliberately restarts selected stage','Chinese-only UI']},null,2));})().catch(error=>{console.error(error);process.exitCode=1;});

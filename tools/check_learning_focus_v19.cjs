@@ -1,3 +1,4 @@
+const courseUI=require('./course_ui_helpers.cjs');
 /* Chinese learning focus: separate deck library, compact first lesson, and 78-card flow audit. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -40,8 +41,9 @@ function checkLearningModel(){
   const academy=api.create({esc,img:id=>`<img data-id="${id}">`,icon:()=>'',go(){},toast(){},now:()=>1700000000000,get:()=>stored,set:value=>{stored=value;}});
   const home=academy.home();
   assert.match(home,/data-academy="guided"/,'one primary guided next action');
-  assert.equal((home.match(/data-academy="guided-card"/g)||[]).length,78,'all cards have their own stage route');
-  assert.match(home,/认识画面/);assert.match(home,/正逆位应用/);assert.match(home,/辨析与迁移/);
+  assert.equal((home.match(/data-academy="guided-card"/g)||[]).length,0,'first course screen does not flatten 78 cards');
+  assert.match(home,/data-academy="catalog"/,'complete routes remain in a secondary directory');
+  assert.match(home,/看懂画面/);assert.match(home,/正逆位应用/);assert.match(home,/辨析与解读/);
   assert.doesNotMatch(home,/随机学一张新牌|data-academy-search/);
   assert.doesNotMatch(home,/Learn to read|Course levels|Beginner/,'academy home stays Chinese even with legacy English state');
 
@@ -100,13 +102,13 @@ async function checkLearningUI(){
     await page.goto(url+'?lang=zh');
     await page.locator('[data-action=nav][data-page=courses]').first().click();
     assert.equal(await page.locator('.academy-card-grid,[data-academy-search]').count(),0,'course page has no embedded 78-card grid or search');
-    assert.equal(await page.locator('[data-academy=guided-card]').count(),78,'78 distinct learning routes');
+    assert.equal(await page.locator('[data-academy=guided-card]').count(),0,'first course screen keeps the complete directory secondary');
+    await courseUI.catalog(page);assert.equal(await page.locator('[data-academy=guided-card]').count(),78,'78 distinct routes remain in directory');await page.locator('[data-academy=catalog-back]').click();
     assert.equal(await page.locator('[data-academy=guided]').count(),1,'primary adaptive next step');
     await page.locator('[data-action=nav][data-page=library]').first().click();
     assert.equal(await page.locator('.library-card').count(),78,'independent library contains all 78 cards');
     await page.locator('[data-action=nav][data-page=courses]').first().click();
-    await page.locator('.academy-foundations>summary').click();
-    await page.locator('[data-academy=start][data-id=B01]').click();
+    await page.locator('[data-academy=guided]').click();
     const compact=await page.locator('.academy-image-space').evaluate(element=>element.getBoundingClientRect().height);
     assert(compact<=125,`first lesson image area should be compact at 320x568, got ${compact}`);
     const next=page.locator('[data-academy=next]');
@@ -116,10 +118,9 @@ async function checkLearningUI(){
     assert(await next.evaluate(element=>{const box=element.getBoundingClientRect();const hit=document.elementFromPoint(box.left+box.width/2,box.top+box.height/2);return hit===element||element.contains(hit);}),`first Continue button must not be covered`);
 
     await page.locator('[data-academy=home]').click();
-    if(await page.locator('.academy-foundations').getAttribute('open')===null)await page.locator('.academy-foundations>summary').click();
     await page.locator('[data-academy=level][data-value=A]').click();
     for(const [id,count,minHeight] of [['A05',5,300],['A06',10,390]]){
-      await page.locator(`[data-academy=start][data-id=${id}]`).click();
+      await courseUI.open(page,id);
       const layout=await page.locator(`.academy-layout-${id}`).evaluate(element=>({display:getComputedStyle(element).display,height:element.getBoundingClientRect().height,count:element.querySelectorAll('figure').length}));
       assert.equal(layout.display,'grid',`${id}: authored spread remains a grid`);
       assert.equal(layout.count,count,`${id}: all spread positions remain visible`);
@@ -128,7 +129,7 @@ async function checkLearningUI(){
       await page.locator('[data-academy=home]').click();
     }
 
-    await page.locator('[data-academy=guided-card][data-id=p08]').click();
+    await courseUI.open(page,'p08');
     assert.equal(await page.locator('.academy-teaching-points section').count(),3,'a card visibly teaches meaning, image cue and memory cue before Q1');
     assert.match(await page.locator('.academy-teaching-points').innerText(),/核心意思[\s\S]*画面线索[\s\S]*记忆线索/);
     await page.locator('[data-academy=next]').click();
