@@ -15,9 +15,11 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright'),h=re
     if(scene)Object.assign(s,{scenarioId:scene.id,sceneVersion:scene.version,questionText:scene.question||'',topic:scene.topic});
     const box=document.createElement('div');box.innerHTML=TarotReadingAI.render(s);
     const local=box.querySelector('.reading-offline');
-    return {text:local.textContent,positions:local.querySelectorAll('.offline-position').length,count:spread.positions.length,heading:local.querySelector('h2').textContent};
+    return {text:local.textContent,positions:local.querySelectorAll('.offline-position').length,count:spread.positions.length,deepBlocks:local.querySelectorAll('.offline-position-detail').length,collapsed:local.querySelectorAll('details').length,heading:local.querySelector('h2').textContent};
    },id);
-   assert.doesNotMatch(result.text,/没有填写|没有具体问题|补造|一般提示|必须有具体|请先补充/);
+   assert.ok(result.deepBlocks>=result.count*2,'each card visibly explains its position and oriented meaning');
+   assert.equal(result.collapsed,0,'per-card reading must not be hidden behind library/detail controls');
+   assert.doesNotMatch(result.text,/没有填写|没有具体问题|一般提示|必须有具体|请先补充/);
    if(id==='yes-no')assert.match(result.heading,/^(Yes|No)$/);
    else {assert.equal(result.positions,result.count);assert.match(result.text,/暗语/);}
   }

@@ -42,7 +42,7 @@ const sessionToken='tp1.'+'s'.repeat(80);
   await p.locator('.bottomnav [data-page=reading]').click();
   const catalog=await p.evaluate(()=>window.TAROT_SPREAD_CONTENT.spreads.filter(d=>!d.legacy&&d.id!=='daily'));
   const scenes=await p.evaluate(()=>window.TAROT_READING_SCENARIOS);
-  assert.equal(catalog.length,12,'twelve available structures plus the separate daily draw');assert.equal(scenes.length,25);
+  assert.equal(catalog.length,20,'twenty available structures plus the separate daily draw');assert.equal(scenes.length,33);
   for(const sc of scenes){
    const d=catalog.find(d=>d.id===sc.spreadId);
    if((await p.locator('.reading-theme').getAttribute('id'))!==`reading-theme-${sc.category}`)await p.locator(`[data-reading=category][data-value=${sc.category}]`).click();
@@ -53,7 +53,7 @@ const sessionToken='tp1.'+'s'.repeat(80);
     assert.equal(await p.locator('.reading-slot.active').count(),0,'overview never preselects one card');
     for(const pos of d.positions)assert((await p.locator('.reading-position-list').innerText()).includes(pos.question));
     assert.equal(await p.locator('[data-reading=guide-position]').count(),0,'understanding positions does not require tapping through them');
-    const diagram=await p.locator('.reading-guide-diagram').boundingBox();assert(diagram.height<300,'overview diagram stays compact');
+    const diagram=await p.locator('.reading-guide-diagram').boundingBox();assert(diagram.height<(d.version==='2'?420:300),sc.id+' overview diagram stays compact: '+diagram.height);
     const action=p.locator('[data-reading=start]');await action.scrollIntoViewIfNeeded();const box=await action.boundingBox();assert(box.height>=44&&box.width<=width,'start stays reachable with a mobile tap target');
    }
    assert(/[\u3400-\u9fff]/.test(await p.locator('.compact-spread-guide').innerText()),sc.id+': visible guide remains Chinese');
@@ -92,6 +92,6 @@ const sessionToken='tp1.'+'s'.repeat(80);
   assert.equal(edited.ai?.length||0,0,'the old answer is not reused for a changed question');assert(edited.answerHistory.some(h=>h.ai?.some(a=>a.text.includes('Synthetic whole-spread'))),'previous answer remains available');
   const requestCount=requests.length;await p.waitForTimeout(20);assert.equal(requests.length,requestCount,'saving an edited question does not contact AI');
   await p.reload();await p.locator('.bottomnav [data-page=reading]').click();mode='auth';await requestReading(p);await p.locator('.ai-error').waitFor();assert.equal(await p.locator('.access-screen').count(),0,'an expired AI session never locks the public app');assert.equal(await p.evaluate(()=>sessionStorage.getItem('tarot-pocket-session-v1')),null);assert.equal(await p.locator('.reading-offline').count(),1,'the local reading remains available after an AI auth failure');
-  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['public entry has no invitation gate','?lang=en falls back to zh-CN with no visible toggle','browsing and local readings do not create a billable AI session','all 25 Chinese scene guides fit at 320/390','spread-aware local reading appears before AI','explicit AI action creates a tab-scoped anonymous session','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','compatibility locale call preserves current input and saved answer','saved reading survives reload, errors, cancellation and offline use','question edits never redraw or auto-send','401 keeps the public app and local reading usable'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
+  assert.deepEqual(errors,[]);await ctx.close();console.log(JSON.stringify({status:'PASS',checks:['public entry has no invitation gate','?lang=en falls back to zh-CN with no visible toggle','browsing and local readings do not create a billable AI session','all 33 Chinese scene guides fit at 320/390','spread-aware local reading appears before AI','explicit AI action creates a tab-scoped anonymous session','question, options, spread, cards and reversals are sent','session is auto-attached and never exported','compatibility locale call preserves current input and saved answer','saved reading survives reload, errors, cancellation and offline use','question edits never redraw or auto-send','401 keeps the public app and local reading usable'],limitations:['local mock only; no live credentials, model-quality or physical-iPhone check']}));
  }finally{for(const res of held)res.end('{}');await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

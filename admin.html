@@ -10,7 +10,7 @@
 </head>
 <body>
   <main>
-    <header><div><small>TAROT POCKET</small><h1>使用概览</h1><p>近 30 天匿名产品事件，不含问题正文、牌面组合或学习记录。</p></div><button data-refresh hidden>刷新</button></header>
+    <header><div><small>TAROT POCKET</small><h1>使用概览</h1><p>近30天产品统计；问题反馈单独征得用户同意，不采集牌面或学习答案。</p></div><button data-refresh hidden>刷新</button></header>
     <form data-login><label>管理口令<input type="password" autocomplete="current-password" required></label><button type="submit">查看数据</button><p data-error role="alert"></p></form>
     <section data-dashboard hidden>
       <div class="kpis" data-kpis></div>
@@ -18,6 +18,11 @@
       <section><h2>抽牌转化</h2><div class="funnel" data-funnel></div></section>
       <section><h2>功能事件</h2><table><thead><tr><th>事件</th><th>次数</th><th>用户</th></tr></thead><tbody data-events></tbody></table></section>
       <section><h2>AI 服务</h2><div data-ai></div></section>
+      <section><h2>用户留存</h2><p>仅统计观察窗口已完整经过的首访用户。</p><div data-retention></div></section>
+      <section><h2>功能点击</h2><table><thead><tr><th>功能</th><th>次数</th></tr></thead><tbody data-features></tbody></table></section>
+      <section><h2>最后访问节点</h2><p>30分钟无新事件后统计，仅表示最后观察到的位置。</p><div data-exits></div></section>
+      <section><h2>最近行为路径</h2><div data-paths></div></section>
+      <section><h2>用户主动提交的问题反馈</h2><p>最多保留30天；用户可撤回。未经同意的问题不会出现在这里。</p><div data-queries></div></section>
       <p class="foot" data-generated></p>
     </section>
   </main>

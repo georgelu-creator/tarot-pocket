@@ -490,3 +490,14 @@ html[lang="zh-CN"] .eyebrow{letter-spacing:0}
 
 /* Leave real scrolling room above mobile browser chrome. */
 .shell{padding-bottom:max(130px,calc(env(safe-area-inset-bottom) + 100px))}.bottomnav{transition:transform 220ms ease-out,opacity 220ms ease-out;background:var(--paper)}body.nav-away .bottomnav:not(:focus-within){transform:translateY(calc(100% + 32px));opacity:0;pointer-events:none}@media(prefers-reduced-motion:reduce){.bottomnav{transition:none}}
+
+/* Four independent destinations; reference pages contain no course progress. */
+.navinner{grid-template-columns:repeat(4,minmax(0,1fr))}
+.library-tabs{margin:12px 0 16px}.library-tabs button{min-width:0;white-space:normal}
+.reference-spreads .practice-row{width:100%;text-align:left;gap:16px}
+.reference-spreads .practice-row>span{min-width:0;flex:1}
+.reference-spreads p{font-size:14px;color:var(--muted);line-height:1.6;margin:5px 0}
+.reference-position-list{padding-left:24px}.reference-position-list li{padding:10px 0}
+.reference-position-list p{line-height:1.8}
+.library-card-copy{min-width:0}.library-card h3{overflow-wrap:anywhere}
+@media(max-width:600px){.library-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.library-card{padding:6px}.library-card-copy{padding:5px 1px}.library-card h3{font-size:14px}.library-card p{font-size:11px;min-height:0;-webkit-line-clamp:2}.library-head{padding:0!important;margin:0!important}.library-tools{margin:10px 0}.library-tabs{margin:10px 0}.library-tools input{min-height:44px}.library-head p{margin-bottom:6px}.library-head~.chips{margin:10px 0 14px}}

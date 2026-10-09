@@ -1,0 +1,23 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {createTelemetry}=require('../server/telemetry.cjs');
+const {createReadingServer,loadConfig}=require('../server/reading-service.cjs');
+(async()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tarot-feedback-')),telemetry=createTelemetry({file:path.join(dir,'db.sqlite'),secret:'only-a-test-secret',adminToken:'admin-test-only'});
+const config=loadConfig({TAROT_AI_PROVIDER:'deepseek',TAROT_AI_MODEL:'deepseek-test',DEEPSEEK_API_KEY:'test-'+'k'.repeat(40),TAROT_AI_ACCESS_TOKEN:'test-'+'t'.repeat(40),TAROT_AI_ALLOWED_ORIGINS:'https://tarot.georgelu.cn'});
+const server=createReadingServer({config,telemetry});await new Promise(r=>server.listen(0,'127.0.0.1',r));const root='http://127.0.0.1:'+server.address().port;
+const post=(body,origin='https://tarot.georgelu.cn',method='POST',headers={})=>fetch(root+'/api/query-feedback',{method,headers:{Origin:origin,'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
+try{
+assert.equal((await post({question:'synthetic'},'https://evil.example')).status,403);
+assert.equal((await post({question:'synthetic',consent:false,consentVersion:'query-feedback-1'})).status,400);
+let response=await post({question:'虚构提问：如何开始画画？',consent:true,consentVersion:'query-feedback-1'});assert.equal(response.status,201);const receipt=await response.json();
+assert.equal((await fetch(root+'/api/admin/metrics')).status,401);
+response=await fetch(root+'/api/admin/metrics',{headers:{Authorization:'Bearer admin-test-only'}});let metrics=await response.json();assert.equal(metrics.feedback.length,1);assert(!JSON.stringify(metrics).includes(receipt.deletionToken));
+assert.equal((await post({id:receipt.id,deletionToken:'bad'},undefined,'DELETE')).status,400);
+assert.equal((await post(receipt,undefined,'DELETE')).status,200);assert.equal(telemetry.summary().feedback.length,0);
+for(let i=0;i<3;i++)await post({question:'rate test',consent:true,consentVersion:'query-feedback-1'});
+assert.equal((await post({question:'rate test',consent:true,consentVersion:'query-feedback-1'})).status,429);
+const limited={question:'proxy test',consent:true,consentVersion:'query-feedback-1'};
+assert.equal((await post(limited,undefined,'POST',{'X-Forwarded-For':'203.0.113.1'})).status,429,'untrusted forwarding header does not evade the limit');
+assert.equal((await post(limited,undefined,'POST',{'X-Tarot-Client-IP':'203.0.113.1'})).status,201);
+assert.equal((await post(limited,undefined,'POST',{'X-Tarot-Client-IP':'203.0.113.2'})).status,201,'separate clients behind Caddy have separate limits');
+console.log('PASS: feedback API consent, origin, admin auth, revocation and submission rate limit');
+}finally{await new Promise(r=>server.close(r));fs.rmSync(dir,{recursive:true,force:true});}})().catch(e=>{console.error(e);process.exitCode=1});

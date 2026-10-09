@@ -81,14 +81,15 @@ async function checkUI(){
     const page=await context.newPage();page.setDefaultTimeout(15000);await page.goto(url+'?lang=en');
     const productHome=await page.locator('.home-simple').innerText();assert.match(productHome,/先看讲解/);assert.match(productHome,/已巩固/);assert.doesNotMatch(productHome,/先听讲解|已掌握/);
     await page.locator('[data-action=nav][data-page=courses]').first().click();
-    const home=await page.locator('.academy-home').innerText();assert.match(home,/按顺序学下一张/);assert.match(home,/已巩固/);assert.doesNotMatch(home,/已掌握|随机学一张/);
-    await page.locator('.academy-card-library [data-action=nav][data-page=library]').click();
-    for(const label of ['未学','初学','已学逆位','待复习','已巩固'])assert.equal(await page.locator(`[data-action=filter][data-value="${label}"]`).count(),1,label+' filter');
-    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']])assert.match(await page.locator(`.library-card[data-id="${id}"] .library-learning-state`).innerText(),new RegExp(label));
-    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px library has no horizontal overflow');
-    await page.locator('.library-card[data-id="m01"]').click();assert.match(await page.locator('#overlay').innerText(),/初学[\s\S]*下一步：学习逆位/);assert.equal(await page.locator('#overlay [data-academy=reverse][data-id=m01]').count(),1);
-    await page.locator('#overlay [data-action=close]').click();await page.locator('.library-card[data-id="m03"]').click();assert.equal(await page.locator('#overlay [data-academy=start-review][data-id=m03]').count(),1);
-    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px detail has no horizontal overflow');
+    const home=await page.locator('.academy-home').innerText();assert.match(home,/开始下一节/);assert.match(home,/已巩固/);assert.doesNotMatch(home,/已掌握|随机学一张/);
+    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']])assert.match(await page.locator(`[data-academy=guided-card][data-id="${id}"]`).innerText(),new RegExp(label));
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px learning route has no horizontal overflow');
+    await page.locator('[data-academy=guided-card][data-id=m01]').click();
+    let session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'application','legacy initial learning continues into application');
+    await page.locator('[data-academy=home]').click();
+    await page.locator('[data-academy=guided-card][data-id=m03]').click();
+    session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'practice','due evidence is rehearsed first');
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px practice has no horizontal overflow');
     return {viewport:'320x568',states:5,language:'zh-CN'};
   }finally{await browser.close();}
 }

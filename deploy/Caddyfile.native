@@ -2,7 +2,9 @@ tarot.georgelu.cn {
 	encode zstd gzip
 
 	handle /api/* {
-		reverse_proxy 127.0.0.1:8787
+		reverse_proxy 127.0.0.1:8787 {
+			header_up X-Tarot-Client-IP {client_ip}
+		}
 	}
 
 	handle {

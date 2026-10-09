@@ -47,7 +47,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  const saved=(await state(p)).draft;
  await p.locator('[data-reading=pause]').first().click();await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
  assert.deepEqual((await state(p)).draft.pool,saved.pool);assert.deepEqual((await state(p)).draft.revealed,[0,1,2]);
- await p.locator('[data-reading=resume]').click();await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
+	 const resume=p.locator('[data-reading=resume]');if(await resume.count())await resume.click();else{await p.locator('#reading-history summary').first().click();await p.locator(`[data-reading=history][data-value="${saved.id}"]`).click();}await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
  assert.equal((await state(p)).draft.phase,'read');assert.equal(await p.locator('.bottomnav').count(),0);
  assert.equal(await p.locator('.reading-result-card img').count(),3,'all faces survive an interrupted group animation');
  for(const w of [320,390,1280]){await p.setViewportSize({width:w,height:900});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}

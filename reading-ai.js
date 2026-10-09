@@ -49,12 +49,14 @@ window.TarotReadingAI = (() => {
   function offlineHtml(s,result=offline(s)){
     if(!result)return '<section class="reading-offline"><h2>先看这组牌</h2><p>本地解读暂时无法生成，可以先点开每张牌查看牌义。</p></section>';
     if(!trackedOffline.has(s.id)){trackedOffline.add(s.id);queueMicrotask(()=>window.TarotAnalytics?.track('offline_reading_view',{spread:s.spreadId,source:'local'},'reading-result'));}
-    if(result.display==='positions')return `<section class="reading-offline"><h2>牌阵里的提示</h2>${result.positions.map(position=>`<article class="offline-position"><h3>${esc(position.positionLabel)} · ${esc(position.cardName)} · ${position.orientation==='reversed'?'逆位':'正位'}</h3><p><strong>暗语</strong> · ${esc(position.message)}</p><p>${esc(position.reading)}</p></article>`).join('')}</section>`;
-    if(!result.basis.question && result.spread.branch==='yes-no' && !result.safety)return `<section class="reading-offline"><h2>${esc(result.overview.text.split(' · ')[0])}</h2><p>${esc(result.overview.text.includes(' · ')?result.overview.text.split(' · ').slice(1).join(' · '):result.overview.text)}</p>${result.positions.map(position=>`<p><strong>暗语</strong> · ${esc(position.message)}</p>`).join('')}</section>`;
-    const positionDetails=result.positions.map(position=>`<article><h4>${esc(position.positionLabel)} · ${esc(position.cardName)}</h4><p>${esc(position.reading)}</p></article>`).join('');
-    const sections=result.sections.map(section=>`<section><h3>${esc(section.title)}</h3><p>${esc(section.text)}</p></section>`).join('');
-    return `<section class="reading-offline"><div class="eyebrow">本地牌阵解读</div><h2>${esc(result.overview.title)}</h2><p>${esc(result.overview.text)}</p>${sections}<section class="offline-closing"><h3>${esc(result.closing.title)}</h3><p>${esc(result.closing.text)}</p><p class="muted">${esc(result.closing.realityCheck)}</p></section><details><summary>${result.language==='en'?'How each card supports this reading':'每张牌怎样支持这个判断'}</summary>${positionDetails}</details><p class="reading-boundary">${esc(result.boundaries[0])}</p></section>`;
+    const positionDetails=result.positions.map(position=>`<article class="offline-position"><h3>${esc(position.positionLabel)} · ${esc(position.cardName)} · ${position.orientation==='reversed'?'逆位':'正位'}</h3><p><strong>暗语</strong> · ${esc(position.message)}</p>${position.details?.length?position.details.map(block=>`<section class="offline-position-detail"><h4>${esc(block.title)}</h4>${block.paragraphs.map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section>`).join(''):`<p>${esc(position.reading)}</p>`}</article>`).join('');
+    if(result.display==='positions')return `<section class="reading-offline"><h2>牌阵里的提示</h2>${positionDetails}</section>`;
+    if(!result.basis.question && result.spread.branch==='yes-no' && !result.safety)return `<section class="reading-offline"><h2>${esc(result.overview.text.split(' · ')[0])}</h2><p>${esc(result.overview.text.includes(' · ')?result.overview.text.split(' · ').slice(1).join(' · '):result.overview.text)}</p>${positionDetails}</section>`;
+    const sections=result.sections.filter(section=>section.text!==result.overview.text).map(section=>`<section><h3>${esc(section.title)}</h3><p>${esc(section.text)}</p></section>`).join('');
+    if(result.safety)return `<section class="reading-offline"><h2>${esc(result.overview.title)}</h2><p>${esc(result.overview.text)}</p>${sections}</section>`;
+    return `<section class="reading-offline"><h2>${esc(result.overview.title)}</h2><p>${esc(result.overview.text)}</p>${sections}<section><h2>逐张细读</h2>${positionDetails}</section></section>`;
   }
+
   function render(s){
     if(lastReading!==s.id){lastReading=s.id;error='';}
     const local=offline(s),blocked=!!local?.safety,saved=s.ai?.find(x=>x.language===locale()),working=pending?.id===s.id;

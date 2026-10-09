@@ -1481,3 +1481,771 @@ window.TAROT_SPREAD_CONTENT.spreads.push(...[
     }
   }
 ]);
+
+// Reference catalog additions, source-checked 2026-10-09. Existing IDs remain unchanged.
+window.TAROT_SPREAD_CONTENT.spreads.push(...[
+  {
+    "id": "sacred-triangle",
+    "name": "圣三角",
+    "layout": "sacred-triangle",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 2
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "从缘起、眼下和后续走向理解同一件事。",
+    "description": "适合已经有一件事，想理解它为什么发展到现在。没有写下问题时，也可以分别阅读三个位置的象征主题。",
+    "bestFor": "适合已经有一件事，想理解它为什么发展到现在。没有写下问题时，也可以分别阅读三个位置的象征主题。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "先看第一张所呈现的形成因素，再看第二张怎样承接它，最后阅读第三张的发展方向。原因位不是另一个现状位；结果位也不负责给行动建议。",
+    "variant": "原因—现况—结果版；另有过去—现在—未来版，两者不能混用。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "原因",
+        "role": "past",
+        "question": "原因呈现怎样的主题？",
+        "description": "这个位置回看形成影响的线索，需要结合已经发生的经历理解。"
+      },
+      {
+        "id": "position-2",
+        "label": "现况",
+        "role": "state",
+        "question": "现况呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-3",
+        "label": "结果",
+        "role": "outcome",
+        "question": "结果呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 圣三角",
+      "url": "https://www.tarotchina.net/paizhen2/",
+      "note": "原因—现况—结果版；另有过去—现在—未来版，两者不能混用。"
+    }
+  },
+  {
+    "id": "diamond",
+    "name": "钻石展开法",
+    "layout": "diamond",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 0.5
+      },
+      {
+        "x": 1,
+        "y": 0.5
+      },
+      {
+        "x": 0.5,
+        "y": 0
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 3
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "看清现况、两股挑战与后续方向。",
+    "description": "适合知道事情正在推进，但想进一步辨认阻力来自哪些方面。两张问题牌需要联系各自的牌义，避免把同一种担忧重复两遍。",
+    "bestFor": "适合知道事情正在推进，但想进一步辨认阻力来自哪些方面。两张问题牌需要联系各自的牌义，避免把同一种担忧重复两遍。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "第一张是共同出发点，第二与第三张分开解释两个问题，再看它们怎样影响第四张。两个问题不需要彼此对立，也不额外指定成内因与外因。",
+    "variant": "四牌现在—双问题—结果版。保留原角色，不采用正位一律过量、逆位一律不足的机械规则。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "现在",
+        "role": "state",
+        "question": "现在呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-2",
+        "label": "即将面对的问题一",
+        "role": "tension",
+        "question": "即将面对的问题一呈现怎样的主题？",
+        "description": "这个位置关注牌义中可能构成限制、摩擦或需要处理的部分。"
+      },
+      {
+        "id": "position-3",
+        "label": "即将面对的问题二",
+        "role": "tension",
+        "question": "即将面对的问题二呈现怎样的主题？",
+        "description": "这个位置关注牌义中可能构成限制、摩擦或需要处理的部分。"
+      },
+      {
+        "id": "position-4",
+        "label": "结果",
+        "role": "outcome",
+        "question": "结果呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 钻石展开法",
+      "url": "https://www.tarotchina.net/paizhen3/",
+      "note": "四牌现在—双问题—结果版。保留原角色，不采用正位一律过量、逆位一律不足的机械规则。"
+    }
+  },
+  {
+    "id": "lovers-pyramid",
+    "name": "恋人金字塔",
+    "layout": "lovers-pyramid",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0.5,
+        "y": 0
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 2
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "把双方期待与关系现状放在一起看。",
+    "description": "适合已有互动的两个人，观察彼此期待是否容易协调，以及关系怎样从现在向后发展。它不是寻找陌生对象的相遇预测。",
+    "bestFor": "适合已有互动的两个人，观察彼此期待是否容易协调，以及关系怎样从现在向后发展。它不是寻找陌生对象的相遇预测。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "先分别理解第一与第二张的期待主题，再比较第三张的互动现状与第四张的发展。对方期望位呈现的是待沟通的可能主题，不能证明未说出口的真实想法。",
+    "variant": "四牌版，顶部第4张；底部从左到右为2、1、3。不是七牌爱情金字塔。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "你的期望",
+        "role": "state",
+        "question": "你的期望呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-2",
+        "label": "对方的期望",
+        "role": "unknown",
+        "question": "对方的期望呈现怎样的主题？",
+        "description": "这个位置提供尚待了解的可能主题，不把联想视为已经确认的信息。"
+      },
+      {
+        "id": "position-3",
+        "label": "目前的关系",
+        "role": "state",
+        "question": "目前的关系呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-4",
+        "label": "未来的关系",
+        "role": "trend",
+        "question": "未来的关系呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 恋人金字塔",
+      "url": "https://www.tarotchina.net/paizhen4/",
+      "note": "四牌版，顶部第4张；底部从左到右为2、1、3。不是七牌爱情金字塔。"
+    }
+  },
+  {
+    "id": "self-exploration",
+    "name": "自我探索",
+    "layout": "self-exploration",
+    "layoutPositions": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 2
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "从处境、表现与内在需要认识自己。",
+    "description": "适合整理一段说不清的感受，或观察自己为何总在类似情境中采取同样反应。潜意识位作为自我联想线索，不作为心理诊断。",
+    "bestFor": "适合整理一段说不清的感受，或观察自己为何总在类似情境中采取同样反应。潜意识位作为自我联想线索，不作为心理诊断。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "四个位置分别看体验、行为、明确想法和不容易察觉的需要。内在与外在不一致时，可先辨认差异，不急着判断哪一个才是真实自己。",
+    "variant": "四位含义采用公开版本；本应用采用便于阅读的2×2布局，不宣称来源图的空间顺序。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "所处状态",
+        "role": "state",
+        "question": "所处状态呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-2",
+        "label": "外在表现",
+        "role": "state",
+        "question": "外在表现呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-3",
+        "label": "内在想法",
+        "role": "state",
+        "question": "内在想法呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-4",
+        "label": "潜意识",
+        "role": "unknown",
+        "question": "潜意识呈现怎样的主题？",
+        "description": "这个位置提供尚待了解的可能主题，不把联想视为已经确认的信息。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 自我探索",
+      "url": "https://www.tarotchina.net/paizhen5/",
+      "note": "四位含义采用公开版本；本应用采用便于阅读的2×2布局，不宣称来源图的空间顺序。"
+    }
+  },
+  {
+    "id": "gypsy-cross",
+    "name": "吉普赛十字",
+    "layout": "gypsy-cross",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 0.5
+      },
+      {
+        "x": 1,
+        "y": 0.5
+      },
+      {
+        "x": 0.5,
+        "y": 0.5
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 3
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "同时看双方、相处问题和现实环境。",
+    "description": "适合一段已有的关系，尤其是沟通之外还涉及家庭、时间、距离或共同生活安排时。对方想法需要现实沟通核对。",
+    "bestFor": "适合一段已有的关系，尤其是沟通之外还涉及家庭、时间、距离或共同生活安排时。对方想法需要现实沟通核对。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "第一与第二张并列理解双方的看法主题，第三张看互动中需要处理的部分，第四张看周围条件，第五张收束关系走向。环境不等同于第三者，也不能仅凭某张牌认定出现背叛。",
+    "variant": "五牌十字版；名称沿用流传用法，不据此主张其民族起源或唯一传统。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "对方的想法",
+        "role": "unknown",
+        "question": "对方的想法呈现怎样的主题？",
+        "description": "这个位置提供尚待了解的可能主题，不把联想视为已经确认的信息。"
+      },
+      {
+        "id": "position-2",
+        "label": "你的想法",
+        "role": "state",
+        "question": "你的想法呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-3",
+        "label": "相处中的问题",
+        "role": "tension",
+        "question": "相处中的问题呈现怎样的主题？",
+        "description": "这个位置关注牌义中可能构成限制、摩擦或需要处理的部分。"
+      },
+      {
+        "id": "position-4",
+        "label": "两人的环境",
+        "role": "state",
+        "question": "两人的环境呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-5",
+        "label": "关系发展的结果",
+        "role": "outcome",
+        "question": "关系发展的结果呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 吉普赛十字",
+      "url": "https://www.tarotchina.net/paizhen6/",
+      "note": "五牌十字版；名称沿用流传用法，不据此主张其民族起源或唯一传统。"
+    }
+  },
+  {
+    "id": "hexagram",
+    "name": "六芒星",
+    "layout": "hexagram",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0.25
+      },
+      {
+        "x": 0,
+        "y": 0.75
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 0.75
+      },
+      {
+        "x": 1,
+        "y": 0.25
+      },
+      {
+        "x": 0.5,
+        "y": 0.5
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 5
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "联系时间线、行动指引和周围条件。",
+    "description": "适合因素较多的工作或生活问题。七张提供不同观察角度，不意味着张数越多结论就越确定；没有明确背景时可按位置逐张理解。",
+    "bestFor": "适合因素较多的工作或生活问题。七张提供不同观察角度，不意味着张数越多结论就越确定；没有明确背景时可按位置逐张理解。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "先依次阅读前三张的时间线，再看第四张的调整方向、第五张的外部条件和第六张的愿望或担忧，最后回到中心第七张。未来位看近期延续，结果位看整体走向，两者需要分开。",
+    "variant": "七牌版；顶端1，左上2，左下3，底端4，右下5，右上6，中央7。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "过去",
+        "role": "past",
+        "question": "过去呈现怎样的主题？",
+        "description": "这个位置回看形成影响的线索，需要结合已经发生的经历理解。"
+      },
+      {
+        "id": "position-2",
+        "label": "现况",
+        "role": "state",
+        "question": "现况呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-3",
+        "label": "未来",
+        "role": "trend",
+        "question": "未来呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      },
+      {
+        "id": "position-4",
+        "label": "指引",
+        "role": "advice",
+        "question": "指引呈现怎样的主题？",
+        "description": "这个位置关注可采用的回应方式，需要结合其他位置理解。"
+      },
+      {
+        "id": "position-5",
+        "label": "环境",
+        "role": "state",
+        "question": "环境呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-6",
+        "label": "期望",
+        "role": "state",
+        "question": "期望呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-7",
+        "label": "结果",
+        "role": "outcome",
+        "question": "结果呈现怎样的主题？",
+        "description": "这个位置观察当前模式继续时的方向，和已经发生的事实分开阅读。"
+      }
+    ],
+    "source": {
+      "title": "塔罗中国 · 六芒星",
+      "url": "https://www.tarotchina.net/paizhen9/",
+      "note": "七牌版；顶端1，左上2，左下3，底端4，右下5，右上6，中央7。"
+    }
+  },
+  {
+    "id": "mind-body-spirit",
+    "name": "身心灵",
+    "layout": "sacred-triangle",
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 2
+    },
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "看思考、生活节奏与内在追求是否协调。",
+    "description": "适合日常自我观察和整理生活重心。身体位置不用于疾病判断，日常体验与休息节奏比猜测健康结果更贴合此版本。",
+    "bestFor": "适合日常自我观察和整理生活重心。身体位置不用于疾病判断，日常体验与休息节奏比猜测健康结果更贴合此版本。",
+    "avoid": "把牌面联想当成未经核对的个人事实。",
+    "readingTip": "三个位置平等比较，不按先后时间解释。思想看关注与判断，身体与日常看体验及节奏，内在价值看意义感与重视的方向；相互之间有差异时，先辨认被忽略的需要。",
+    "variant": "采用 Mind / Body / Spirit 三角色；中文将 Spirit 释为内在价值，不加入宗教身份或健康诊断。",
+    "positions": [
+      {
+        "id": "position-1",
+        "label": "思想",
+        "role": "state",
+        "question": "思想呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-2",
+        "label": "身体与日常",
+        "role": "state",
+        "question": "身体与日常呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      },
+      {
+        "id": "position-3",
+        "label": "内在价值",
+        "role": "state",
+        "question": "内在价值呈现怎样的主题？",
+        "description": "这个位置描述对应领域的状态与关注点，不额外增加时间或事件。"
+      }
+    ],
+    "source": {
+      "title": "Tina Gong · Three Card Tarot Spreads",
+      "url": "https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/3-card-tarot-spreads-simple-tarot-spreads-organized-by-layout",
+      "note": "采用 Mind / Body / Spirit 三角色；中文将 Spirit 释为内在价值，不加入宗教身份或健康诊断。"
+    }
+  },
+  {
+    "id": "open-five",
+    "name": "无牌阵五张",
+    "layout": "row",
+    "category": "all",
+    "categories": [
+      "love",
+      "work",
+      "study",
+      "life"
+    ],
+    "topic": "general",
+    "topics": [
+      "general",
+      "love",
+      "career",
+      "study",
+      "life"
+    ],
+    "contextEnabled": true,
+    "legacy": false,
+    "version": "2",
+    "summary": "五张共同回应一个主题，不预设固定牌位。",
+    "description": "适合希望得到更多象征线索的人。五张都围绕同一主题，编号仅记录抽取顺序，没有预设的原因、阻碍或结果。",
+    "bestFor": "自由观察多张牌之间的相似、反差和互补。",
+    "avoid": "按顺序偷换成过去、现在、未来或五个固定角色。",
+    "readingTip": "先分别理解五张，再观察重复主题与明显差异；不人为赋予固定牌位。",
+    "positions": [
+      {
+        "id": "card-1",
+        "label": "第1张",
+        "question": "这张牌为同一主题提供怎样的线索？",
+        "role": "free",
+        "description": "抽取顺序，不附加固定角色。"
+      },
+      {
+        "id": "card-2",
+        "label": "第2张",
+        "question": "这张牌为同一主题提供怎样的线索？",
+        "role": "free",
+        "description": "抽取顺序，不附加固定角色。"
+      },
+      {
+        "id": "card-3",
+        "label": "第3张",
+        "question": "这张牌为同一主题提供怎样的线索？",
+        "role": "free",
+        "description": "抽取顺序，不附加固定角色。"
+      },
+      {
+        "id": "card-4",
+        "label": "第4张",
+        "question": "这张牌为同一主题提供怎样的线索？",
+        "role": "free",
+        "description": "抽取顺序，不附加固定角色。"
+      },
+      {
+        "id": "card-5",
+        "label": "第5张",
+        "question": "这张牌为同一主题提供怎样的线索？",
+        "role": "free",
+        "description": "抽取顺序，不附加固定角色。"
+      }
+    ],
+    "source": {
+      "title": "Tarot Pocket · 自由抽牌",
+      "url": "",
+      "note": "用户要求的应用模式，不宣称传统牌阵。"
+    }
+  }
+]);
+
+// Each position explains its own task; these notes belong to the spread reference.
+(() => {
+  const notes = {
+    'sacred-triangle': [
+      '回看这件事形成的原因或持续影响。它可以是一个早先选择、习惯或条件，但不能凭牌补造未发生的经历。与第二张比较，观察这种影响如今仍在延续，还是已经发生变化。',
+      '描述当下最突出的状态，承接第一张的形成因素。这里先理解事情正在怎样运作，不急着把牌当建议；若它与原因位反差很大，可留意中间哪些条件已经改变。',
+      '观察前两张所呈现的模式继续时，可能形成的结果方向。它不是独立于原因与现况的命令，也不提供确定日期。若结果令人不满意，可回看现况中哪些部分仍能调整。'
+    ],
+    diamond: [
+      '作为整组牌的出发点，说明当前局面最需要被看见的主题。第二、第三张的问题都应与这个主题发生联系，不能各自扩展成完全无关的故事。',
+      '揭示接下来可能需要处理的一项问题。阅读牌义中怎样形成阻力的部分，并与现状位连接；它不固定代表内因，也不因为正位就一定是好事。',
+      '提供另一项可能的挑战，与第二张平等比较。两者可能互相加强，也可能来自不同条件；不要把相同含义简单重复，要注意各自触及的行为、资源或关系差异。',
+      '在当前局面与两项挑战的共同作用下，观察后续可能的走向。结果位应回应前面三张，而非只依据自身牌名判断吉凶；变化取决于挑战怎样被处理。'
+    ],
+    'lovers-pyramid': [
+      '观察自己希望从关系中获得什么，以及自己倾向怎样靠近。它与第三张实际互动不一定一致；差异可以提示尚未表达的需要，而不是自动证明关系不好。',
+      '从象征角度探索对方可能重视的关系主题。它不能替对方发言，也不能证明其内心事实。可以把理解转成一个愿意询问的问题，再与真实回应对照。',
+      '描述双方现在怎样互动，是理解第一、第二张期待能否协调的实际背景。不要把一方愿望直接当成共同状态；这里关注两个人之间已经形成的模式。',
+      '观察目前互动与双方期待继续作用时，关系可能怎样发展。与第三张比较变化方向，并回看两张期待牌是否支持这种发展；不凭这一张确定复合、结婚或分开。'
+    ],
+    'self-exploration': [
+      '描述眼下整体体验，例如紧绷、开放、迟疑或正在过渡。它是后面三个角度的背景，不是对人格的永久定义；同一个人可以在不同处境中呈现不同状态。',
+      '关注别人可能实际看见的行为与表达方式。与内在想法位比较，可以发现哪些需要没有说出，或哪些行动并未代表真实意愿；不要把外在表现简单判为虚假。',
+      '探索自己已经能够意识到的想法、期待与判断。它可以与行为不同，这种差异值得理解而非责备；需要观察想法如何影响选择，以及哪些还没有进入行动。',
+      '借牌面联想不容易察觉的需要、担心或惯性。它是自我探索的提问，不是对潜意识的客观检测。只有与个人经验产生真实联系的部分，才值得继续思考。'
+    ],
+    'gypsy-cross': [
+      '从对方立场的象征主题开始观察关系，但保留尚未核实的性质。可与第二张比较双方可能关注什么不同内容，再通过交流确认，不能把这里当成读心证据。',
+      '辨认自己怎样理解关系、期待什么，以及可能带着哪些担忧。与第一张平等阅读，不把自己的想法当成双方共同结论；这有助于发现真正需要谈清的差异。',
+      '关注相处中容易产生摩擦的行为或模式。正位也可能表现某种倾向使用过度，逆位也不必全盘否定；需要看具体牌义怎样进入互动，而不是只按方向判好坏。',
+      '观察关系周围的现实条件，如时间、距离、工作与家庭安排。这里不自动代表第三者，也不替代已知事实；重点是环境怎样支持或限制双方，而非猜测幕后人物。',
+      '综合双方看法、互动问题与外部环境，观察关系后续的可能方向。它应与其余四张一起理解；若想改变走向，可回到问题位与环境位寻找可讨论、可调整的部分。'
+    ],
+    hexagram: [
+      '回顾仍对眼下局面产生影响的过去因素。需要与已知经历核对，不因一张牌就补造历史。它与现况位的连续或反差，有助于理解事情怎样走到现在。',
+      '呈现当前正在起作用的状态。它是过去与未来之间的连接点，也是指引位需要回应的对象；先说明现状，再考虑行动，避免把描述与建议混在一起。',
+      '观察当下模式较近一步的延续，属于过程中的发展。它与第七张整体结果不同，不必把两者解释成同一个终点；可以留意从这里到结果之间还涉及哪些条件。',
+      '提供可以考虑的回应方式。需要结合现况、环境和期望阅读，避免把任何牌都说成加油或等待。建议应当说明如何使用这张牌的特质，而不是只重复关键词。',
+      '观察个人之外的条件，包括组织、合作关系、时间或可用资源。环境既可能支持也可能限制，不能把所有阻力都归为个人态度；仍需与现实资料相互核对。',
+      '辨认想要发生或担心发生的主题。愿望和恐惧可能改变对现况的理解，因此要与第二张区分；这里描述主观关注，不把期待直接当成未来将发生的事实。',
+      '收束时间线、指引、环境与期望的共同作用，观察整体方向。中心位置强调综合，不表示它可以覆盖其他六张。结果仍以当前条件为背景，不提供保证或精确时间。'
+    ],
+    'mind-body-spirit': [
+      '观察自己正在关注、判断与反复思考什么。与身体日常位和内在价值位比较，看看思考是否支持实际生活；它不是对智力高低的评价。',
+      '关注日常节奏、行动体验与休息安排如何被感受。这里不诊断疾病，也不从牌面推断身体事实；可用来观察生活方式与思想、价值之间是否协调。',
+      '探索什么使生活有意义、自己愿意为何投入。它与一时情绪不同，也不要求宗教信仰。与另外两张比较，可以发现重要价值是否得到日常行动的支持。'
+    ]
+  };
+  for (const [id, descriptions] of Object.entries(notes)) {
+    const spread = window.TAROT_SPREAD_CONTENT.spreads.find(item => item.id === id);
+    spread.positions.forEach((position, index) => { position.description = descriptions[index]; });
+  }
+})();
+
+// Semantic scopes keep distinct positions distinct even when they share a broad engine role.
+(() => {
+  const scopes = {
+    'lovers-pyramid': ['expectation', 'other-expectation', 'relationship-state', 'relationship-trend'],
+    'gypsy-cross': ['other-perspective', 'own-perspective', 'relationship-tension', 'environment', 'relationship-outcome'],
+    hexagram: ['past', 'state', 'near-trend', 'advice', 'environment', 'expectation', 'outcome'],
+    'self-exploration': ['state', 'expression', 'thought', 'unconscious'],
+    'mind-body-spirit': ['thought', 'daily-body', 'values']
+  };
+  for (const [id, values] of Object.entries(scopes)) {
+    const spread = window.TAROT_SPREAD_CONTENT.spreads.find(item => item.id === id);
+    spread.positions.forEach((position, index) => { position.scope = values[index]; });
+    if (['lovers-pyramid','gypsy-cross'].includes(id)) { spread.topic = 'love'; spread.topics = ['love']; }
+  }
+})();
