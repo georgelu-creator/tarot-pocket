@@ -39,12 +39,10 @@ function checkLearningModel(){
   const esc=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
   const academy=api.create({esc,img:id=>`<img data-id="${id}">`,icon:()=>'',go(){},toast(){},now:()=>1700000000000,get:()=>stored,set:value=>{stored=value;}});
   const home=academy.home();
-  assert.match(home,/data-action="nav" data-page="library"/,'course home links to the independent library');
-  assert.doesNotMatch(home,/data-academy-search|academy-card-grid/,'course home does not embed all 78 cards');
-  assert.match(home,/按顺序学下一张/);
-  assert.doesNotMatch(home,/随机学一张新牌/);
-  assert.match(home,/到期复习/);
-  assert.match(home,/\/ 78 张完成正位初学/);
+  assert.match(home,/data-academy="guided"/,'one primary guided next action');
+  assert.equal((home.match(/data-academy="guided-card"/g)||[]).length,78,'all cards have their own stage route');
+  assert.match(home,/认识画面/);assert.match(home,/正逆位应用/);assert.match(home,/辨析与迁移/);
+  assert.doesNotMatch(home,/随机学一张新牌|data-academy-search/);
   assert.doesNotMatch(home,/Learn to read|Course levels|Beginner/,'academy home stays Chinese even with legacy English state');
 
   for(const card of source.cards){
@@ -102,14 +100,12 @@ async function checkLearningUI(){
     await page.goto(url+'?lang=zh');
     await page.locator('[data-action=nav][data-page=courses]').first().click();
     assert.equal(await page.locator('.academy-card-grid,[data-academy-search]').count(),0,'course page has no embedded 78-card grid or search');
-    const libraryEntry=page.locator('.academy-card-library [data-action=nav][data-page=library]');
-    assert.equal(await libraryEntry.count(),1,'one clear independent library entry');
-    assert.equal(await page.locator('[data-academy=new]').count(),1,'random card remains on course page');
-    assert.equal(await page.locator('[data-academy=review]').count(),1,'due review remains on course page even when the count is zero');
-    await libraryEntry.click();
+    assert.equal(await page.locator('[data-academy=guided-card]').count(),78,'78 distinct learning routes');
+    assert.equal(await page.locator('[data-academy=guided]').count(),1,'primary adaptive next step');
+    await page.locator('[data-action=nav][data-page=library]').first().click();
     assert.equal(await page.locator('.library-card').count(),78,'independent library contains all 78 cards');
-
     await page.locator('[data-action=nav][data-page=courses]').first().click();
+    await page.locator('.academy-foundations>summary').click();
     await page.locator('[data-academy=start][data-id=B01]').click();
     const compact=await page.locator('.academy-image-space').evaluate(element=>element.getBoundingClientRect().height);
     assert(compact<=125,`first lesson image area should be compact at 320x568, got ${compact}`);
@@ -120,6 +116,7 @@ async function checkLearningUI(){
     assert(await next.evaluate(element=>{const box=element.getBoundingClientRect();const hit=document.elementFromPoint(box.left+box.width/2,box.top+box.height/2);return hit===element||element.contains(hit);}),`first Continue button must not be covered`);
 
     await page.locator('[data-academy=home]').click();
+    if(await page.locator('.academy-foundations').getAttribute('open')===null)await page.locator('.academy-foundations>summary').click();
     await page.locator('[data-academy=level][data-value=A]').click();
     for(const [id,count,minHeight] of [['A05',5,300],['A06',10,390]]){
       await page.locator(`[data-academy=start][data-id=${id}]`).click();
@@ -131,9 +128,7 @@ async function checkLearningUI(){
       await page.locator('[data-academy=home]').click();
     }
 
-    await page.locator('.academy-card-library [data-action=nav][data-page=library]').click();
-    await page.locator('.library-card[data-id=p08]').click();
-    await page.locator('[data-academy=start][data-id=p08]').click();
+    await page.locator('[data-academy=guided-card][data-id=p08]').click();
     assert.equal(await page.locator('.academy-teaching-points section').count(),3,'a card visibly teaches meaning, image cue and memory cue before Q1');
     assert.match(await page.locator('.academy-teaching-points').innerText(),/核心意思[\s\S]*画面线索[\s\S]*记忆线索/);
     await page.locator('[data-academy=next]').click();

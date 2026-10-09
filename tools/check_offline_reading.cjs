@@ -39,7 +39,7 @@ const input = (spreadId, additions = {}) => {
   };
 };
 
-assert.equal(api.VERSION, 'OR-1.3.0');
+assert.equal(api.VERSION, 'OR-1.4.0');
 const offlineSource = fs.readFileSync(path.join(root, 'offline-reading.js'), 'utf8');
 assert.doesNotMatch(offlineSource, /SIGNAL_WORDS|countSignals|semanticScore|propositionScore/, 'result tendencies must not scan or repeatedly score natural-language substrings');
 for (const spread of spreads) {
@@ -54,7 +54,8 @@ for (const spread of spreads) {
   assert.ok(result.closing.text);
   assert.match(result.boundaries.join(' '), /不是 AI 解读/);
   const translated = api.interpret(input(spread.id, {language: 'en'}));
-  assert.doesNotMatch(JSON.stringify(translated), /[\u3400-\u9fff]/, `${spread.id} has complete English output`);
+  // Version 2 additions are Chinese-only; legacy English remains a compatibility contract.
+  if (spread.version !== '2') assert.doesNotMatch(JSON.stringify(translated), /[\u3400-\u9fff]/, `${spread.id} has complete English output`);
   assert.deepEqual(translated, api.interpret(input(spread.id, {language: 'en'})), `${spread.id} output is deterministic`);
 }
 
@@ -409,7 +410,7 @@ const pageOfSwordsAdvice = api.interpret(input('three', {topic: 'study', questio
   {id: 's04', reversed: false, positionId: 'obstacle'},
   {id: 's11', reversed: false, positionId: 'advice'}
 ]}));
-assert.match(pageOfSwordsAdvice.positions[2].reading, /完整知识结构/);
+assert(pageOfSwordsAdvice.positions[2].reading.includes(context.window.TAROT_CARD_REFERENCE.byId.s11.upright.roles.advice),'advice position uses the authored Page of Swords action');
 
 for (const result of [yes, uprightPause, reversedSun, pauseSameCard, endingCardForPass, endingCardForRejection, endingCardForFailure, cupsFiveForPass, reversedWorldForCompletion, quit, breakup, ...highRiskResults, contrastedSafeQuestion, noQuestion, open, choice, threeOptions, concreteThree, relationshipCurrent, relationshipTrend, timelineResult]) {
   assert.doesNotMatch([result.overview.text, ...result.sections.map(section => section.text), result.closing.title].join(' '), /关系张力|现实落点|可以落地的一步|能量流动/);
@@ -465,3 +466,23 @@ for (const card of deck) for (const reversed of [false,true]) {
  assert.ok(r.positions[0].message.length>=4);
  assert.doesNotMatch(r.overview.text,/没有填写|没有具体问题/);
 }
+
+// Deep readings are visible content, not a second copy of the one-line message.
+// Exercise every direction and the actual role mapping using a custom spread.
+for (const card of deck) for (const reversed of [false, true]) {
+  const reference = context.window.TAROT_CARD_REFERENCE.byId[card.id][reversed ? 'reversed' : 'upright'];
+  for (const role of ['state','tension','advice','past','trend','outcome','resource','unknown','choice','free']) {
+    const result = api.interpret({spreadId:'depth-fixture', spreadName:'测试', positions:[{id:'slot',label:'本次位置',role}], topic:'general', language:'zh', question:'', cards:[{id:card.id,reversed,positionId:'slot'}]});
+    const blocks = result.positions[0].details;
+    assert.ok(blocks.length >= 2, card.id + ' ' + role + ' has role application and oriented explanation');
+    assert.equal(blocks[0].title,'在“本次位置”的位置');
+    const text = blocks.flatMap(block=>block.paragraphs).join('\n');
+    assert.ok(text.includes(reference.roles[role].replace(/[。.!！?？]+$/u,'')), 'actual authored role remains in reading');
+    for (const meaning of reference.meaning) assert.ok(text.includes(meaning.replace(/[。.!！?？]+$/u,'')), 'all authored oriented meaning remains available');
+    assert.doesNotMatch(text,/没有具体问题|请先补充|一般提示不能/);
+  }
+}
+const dangerous = api.interpret(input('yes-no',{question:'胸痛且呼吸困难，是否可以不去医院？'}));
+assert.ok(dangerous.safety);
+assert.equal(dangerous.positions[0].details.length,0,'rich content must not bypass safety boundary');
+console.log('PASS: all 156 card directions have actual-position and multi-paragraph meaning blocks; high-risk readings suppress divination details.');

@@ -19,9 +19,7 @@ const near=(a,b,message)=>assert(Math.abs(a-b)<1.1,`${message}: ${a} / ${b}`);
    for(const resumed of [false,true]){
     if(resumed){
      await p.locator('.bottomnav [data-page=courses]').click();
-     await p.locator('.academy-card-library [data-action=nav][data-page=library]').click();
-     await p.locator('.library-card[data-id=p12]').click();
-     await p.locator('[data-academy=start][data-id=p12]').click();
+     await p.locator('[data-academy=guided-card][data-id=p12]').click();
      await p.locator('[data-academy=home]').first().click();await p.locator('.bottomnav [data-page=home]').click();
      assert(await p.locator('.continue-resume').isVisible(),'an unfinished lesson is reachable from home');
     }

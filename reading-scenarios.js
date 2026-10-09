@@ -1,12 +1,12 @@
-// Scene wording authored in Chinese; structure and sources live in spread-content.js.
+// Chinese catalog names match the adopted spread definitions.
 window.TAROT_READING_SCENARIOS = [
   {
     "id": "sc01",
     "category": "all",
     "topic": "general",
     "spreadId": "one",
-    "name": "单牌提醒",
-    "description": "只抽一张，看看这件事里最值得留意或尝试的一点。适合问题已经清楚、想得到一个简单提醒的时候。",
+    "name": "单牌聚焦",
+    "description": "把一个清楚的问题，落到一个值得关注的角度。",
     "question": "这件事里，我现在最值得留意或尝试什么？",
     "version": "1"
   },
@@ -16,7 +16,7 @@ window.TAROT_READING_SCENARIOS = [
     "topic": "general",
     "spreadId": "open-three",
     "name": "无牌阵三张",
-    "description": "不分配固定牌位，把三张牌放在一起回答同一个问题。适合直接问一件事；没有具体问题时，会给出整组牌的一般提示。",
+    "description": "不预设牌位，围绕同一个问题，把三张牌连起来解读。",
     "question": "三张牌的整体提示",
     "version": "1"
   },
@@ -25,8 +25,8 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "three",
-    "name": "看清卡在哪里",
-    "description": "事情推进不顺时，分别看现在的情况、主要阻碍和下一步做法。适合找出卡在哪里，而不是只问最后会不会成功。",
+    "name": "现状 · 阻碍 · 建议",
+    "description": "看清当前状态，找出卡点，再考虑下一步。",
     "question": "这件事为什么推进不顺，我可以做什么？",
     "version": "1"
   },
@@ -35,8 +35,8 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "timeline",
-    "name": "看接下来的发展",
-    "description": "联系过去的影响、现在的情况和接下来的趋势。适合已经持续一段时间的事情；后续方向以目前条件为基础。",
+    "name": "过去 · 现在 · 趋势",
+    "description": "把已经发生、正在持续和可能延续的线索连起来。",
     "question": "这件事照目前的情况继续，可能怎样发展？",
     "version": "1"
   },
@@ -45,8 +45,8 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "decision-five",
-    "name": "两个选择怎么选",
-    "description": "已经有两个明确选择时，看共同现状，以及A、B各自的发展和结果。可以补充两种选择是什么、你最在意什么，再在同一个目标下比较。",
+    "name": "二择一 · 五牌 V 形",
+    "description": "从同一个起点，看 A 与 B 各自的发展和结果趋势。",
     "question": "A、B各自可能怎样发展，哪一个更适合这次的目标？",
     "version": "1"
   },
@@ -55,8 +55,8 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "celtic",
-    "name": "把复杂的事看完整",
-    "description": "背景复杂、牵涉多方条件时，用十张牌看清主要影响和后续方向。牌位同时涉及处境、过去、目标、内外影响与结果，不必为了张数多而选它。",
+    "name": "凯尔特十字",
+    "description": "用十个位置拆开复杂背景、内外条件与发展倾向。",
     "question": "这件事有哪些关键影响，接下来可能怎样发展？",
     "version": "1"
   },
@@ -205,7 +205,7 @@ window.TAROT_READING_SCENARIOS = [
     "category": "all",
     "topic": "general",
     "spreadId": "three-options",
-    "name": "三个选择怎么选",
+    "name": "三选一 · 三牌",
     "description": "有三个具体选项，想放在一起比较，可以用这个牌阵。每个选项对应一张牌，围绕同一个目标看它们的差别；例如三个机会中，哪一个更符合自己的安排。",
     "question": "A、B、C分别怎样，哪一个更适合我这次的需要？",
     "version": "1"
@@ -248,6 +248,86 @@ window.TAROT_READING_SCENARIOS = [
     "name": "身心状态与休息",
     "description": "最近事情多、休息被打乱，想整理一下生活节奏，可以从这里看。三张牌分别看现在的状况、让你难以放松的地方，以及可以尝试的一项调整。",
     "question": "最近的生活里，什么最占用我的精力，我可以怎样调整安排和休息？",
+    "version": "1"
+  },
+  {
+    "id": "sc26",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "sacred-triangle",
+    "name": "圣三角",
+    "description": "从缘起、眼下和后续走向理解同一件事。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc27",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "diamond",
+    "name": "钻石展开法",
+    "description": "看清现况、两股挑战与后续方向。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc28",
+    "category": "all",
+    "topic": "love",
+    "spreadId": "lovers-pyramid",
+    "name": "恋人金字塔",
+    "description": "把双方期待与关系现状放在一起看。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc29",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "self-exploration",
+    "name": "自我探索",
+    "description": "从处境、表现与内在需要认识自己。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc30",
+    "category": "all",
+    "topic": "love",
+    "spreadId": "gypsy-cross",
+    "name": "吉普赛十字",
+    "description": "同时看双方、相处问题和现实环境。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc31",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "hexagram",
+    "name": "六芒星",
+    "description": "联系时间线、行动指引和周围条件。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc32",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "mind-body-spirit",
+    "name": "身心灵",
+    "description": "看思考、生活节奏与内在追求是否协调。",
+    "question": "",
+    "version": "1"
+  },
+  {
+    "id": "sc33",
+    "category": "all",
+    "topic": "general",
+    "spreadId": "open-five",
+    "name": "无牌阵五张",
+    "description": "五张共同回应一个主题，不预设固定牌位。",
+    "question": "",
     "version": "1"
   }
 ];

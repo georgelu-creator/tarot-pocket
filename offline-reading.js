@@ -21,7 +21,7 @@
 })(typeof window === 'object' ? window : globalThis, function (root) {
   'use strict';
 
-  const VERSION = 'OR-1.3.0';
+  const VERSION = 'OR-1.4.0';
   const LANGUAGES = new Set(['zh', 'en']);
   const TOPICS = new Set(['general', 'love', 'career', 'study', 'life', 'self', 'choice']);
   const ROLE_CONTEXT = {state: 'state', tension: 'tension', advice: 'advice', trend: 'state', outcome: 'state'};
@@ -629,6 +629,8 @@
     const role = item.position.role;
     const reference = root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed?'reversed':'upright'];
     if(language==='zh' && reference?.roles?.[role]) {
+      const scoped = scopedPositionReading(item,reference,language);
+      if(scoped) return scoped.join(' ');
       const details=reference.contexts?.[topic];
       const context=Array.isArray(details)?details.join(' '):details;
       return reference.roles[role]+(context && topic!=='general' ? ' '+context : '');
@@ -641,7 +643,7 @@
       if (role === 'unknown') return `${name} offers “${core}” as something to verify in “${label}”. It cannot establish another person's private thoughts or facts that have not been observed.`;
       if (role === 'resource') return `${name} makes “${core}” a possible resource in “${label}”. ${situatedMeaning}`;
       if (role === 'choice') return `${name} is ${item.reversed ? 'reversed' : 'upright'} for “${label}”. Under the same comparison goal: ${situatedMeaning}`;
-      if (role === 'free') return `${name} is ${item.reversed ? 'reversed' : 'upright'} and contributes this meaning to the three-card group: ${situatedMeaning}`;
+      if (role === 'free') return `${name} is ${item.reversed ? 'reversed' : 'upright'} and contributes this meaning to the group: ${situatedMeaning}`;
       return `${name} in “${label}” centers on “${core}”. ${situatedMeaning}`;
     }
     if (role === 'tension') return `${name}${item.reversed ? '逆位' : '正位'}落在“${label}”，主要需要检查的是：${situatedMeaning}`;
@@ -651,8 +653,60 @@
     if (role === 'unknown') return `${name}在“${label}”提供了“${core}”这条待核对线索；它不能证明他人的内心或尚未观察到的事实。`;
     if (role === 'resource') return `${name}让“${core}”成为“${label}”里可以利用的支持或条件。${situatedMeaning}`;
     if (role === 'choice') return `${name}${item.reversed ? '逆位' : '正位'}对应“${label}”。按同一个目标比较时，它指出：${situatedMeaning}`;
-    if (role === 'free') return `${name}${item.reversed ? '逆位' : '正位'}让这三张牌多了一层意思：${situatedMeaning}`;
+    if (role === 'free') return `${name}${item.reversed ? '逆位' : '正位'}为这组牌提供的含义是：${situatedMeaning}`;
     return `${name}落在“${label}”，核心是“${core}”。${situatedMeaning}`;
+  }
+
+  // Keep the short reading field for saved/older consumers. The visible reading
+  // uses authored paragraphs, scoped to this orientation and actual position.
+  // No inferred user history or implicit roles are added to free draws.
+  function scopedPositionReading(item, direction, language) {
+    if (language !== 'zh') return null;
+    const scope = item.position.scope;
+    const themes = item.reversed ? direction.roles.unknown : (item.card.keywords || []).join('、');
+    const name = item.card.name + (item.reversed ? '逆位' : '正位');
+    const lenses = {
+      expectation: `这里看的是你想得到或担心失去的东西。${name}把“${themes}”带入期望：留意自己为何重视这些主题，以及它们是否影响了对现况的判断。期望和已经具备的条件要分开看。`,
+      'other-expectation': `这里借${name}的“${themes}”探索对方可能看重的关系主题。可以把这条线索用于理解双方期待的差异，再通过交流确认；它不代表对方已经表达了这样的期待。`,
+      environment: `这里看个人之外的条件。${name}的“${themes}”用于观察周围的沟通方式、支持或限制，而不是要求你表现成这张牌。可与现况比较：哪些条件来自环境，哪些仍由自己决定。`,
+      expression: `这里关注可以被别人看见的行为。${name}的“${themes}”提示一种表达方式；再与内在想法比较，观察外在表现是否准确传达了真实需要。`,
+      thought: `这里关注已经能意识到的想法。${name}的“${themes}”是一条理解判断与注意力的线索，重点在你怎样看待事情，而非事情客观上已经怎样。`,
+      unconscious: `这里用${name}的“${themes}”探索尚不容易察觉的需要或惯性。若某个联想与自己的经验有联系，可以继续观察；没有联系的部分不必强行套用。`,
+      'other-perspective': `这里从对方立场作象征性的观察。${name}的“${themes}”提供一种可能的理解角度，适合与对方实际表达相互对照，而不是代替对方发言。`,
+      'own-perspective': `这里看你怎样理解这段关系。${name}的“${themes}”可帮助辨认自己的关注、期待与判断；再与对方立场比较，不把个人看法自动当成双方共识。`,
+      'daily-body': `这里看日常节奏与实际体验。${name}的“${themes}”可用于观察行动、休息和生活安排怎样被感受，不从牌面判断疾病或身体检查结果。`,
+      values: `这里看让你觉得值得投入的东西。${name}的“${themes}”帮助探索意义感与优先级；再看思想与日常安排是否给这些重视的东西留下了空间。`
+    };
+    const text = lenses[scope];
+    if (!text) return null;
+    return [text];
+  }
+
+  function positionDetails(item, topic, language, tr) {
+    const full = root.TAROT_CARD_REFERENCE?.byId?.[item.card.id];
+    const direction = full?.[item.reversed ? 'reversed' : 'upright'];
+    const reading = positionInterpretation(item, topic, language, tr);
+    if (language !== 'zh' || !direction) return [{title: tr(item.position.label), paragraphs: [reading]}];
+    const seen = new Set();
+    const paragraphs = values => (Array.isArray(values) ? values : [values]).filter(value => {
+      if (typeof value !== 'string' || !value.trim()) return false;
+      const key = value.replace(/[\s。！？；，、,.!?;:：]/gu, '');
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    }).map(finishText);
+    const role = item.position.role;
+    const blocks = [];
+    const add = (title, values) => { const body = paragraphs(values); if (body.length) blocks.push({title, paragraphs: body}); };
+    add('在“' + tr(item.position.label) + '”的位置', scopedPositionReading(item,direction,language) || direction.readingRoles?.[role] || direction.roles?.[role] || reading);
+    if(item.position.description) add('这个牌位与整组牌的联系', item.position.description);
+    add(item.reversed ? '牌义背景 · 逆位' : '牌义背景 · 正位', direction.meaning || []);
+    const topicNames = {love:'感情与相处', career:'工作与发展', study:'学习与准备', life:'日常生活'};
+    if (topicNames[topic]) {
+      const scoped = Boolean(scopedPositionReading(item,direction,language));
+      if(role==='tension') add('这张牌在'+topicNames[topic]+'中怎样成为阻力', item.card.contexts?.[topic]?.tension || direction.roles.tension);
+      else if(!scoped) add('领域背景 · '+topicNames[topic], direction.contexts?.[topic] || []);
+    }
+    return blocks;
   }
 
   function choiceKey(position) {
@@ -1002,6 +1056,7 @@
       message: language==='zh' ? (root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed?'reversed':'upright']?.message || naturalMeaning(tr(item.card.core))) : naturalMeaning(tr(item.card.core)),
       coreMeaning: naturalMeaning(tr(item.card.core)),
       orientationMeaning: naturalMeaning(tr(item.reversed ? item.card.reversed : item.card.upright)),
+      details: risk ? [] : positionDetails(item, topic, language, tr),
       reading: risk
         ? (en ? 'This card remains in the reading record, but it is not used to make this high-risk judgment or decision.' : '这张牌保留为本次抽牌记录，但不用于作出这项高风险判断或决定。')
         : positionInterpretation(item, topic, language, tr)

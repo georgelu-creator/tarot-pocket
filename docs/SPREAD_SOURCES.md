@@ -44,3 +44,24 @@ Current source metadata lives in `spread-content.js`; scenario purposes and pres
 ## Open three cards / 无牌阵三张
 
 `open-three` is an application open-draw mode requested by users, not a named traditional spread. All three cards address one question. Numbers 1–3 record draw order only; neither the offline guide nor the AI may impose past/present/future or another fixed role. It appears separately alongside the seven sourced structures and daily tarot. / `open-three` 是用户要求的自由抽牌方式，不宣称传统牌阵来源。三张共同回应同一个问题，编号仅表示抽取顺序，不能擅自赋予过去、现在、未来或其他固定角色；七种已有出处结构和日签保持不变。
+
+## 2026-10-09 · 独立牌阵资料目录扩充
+
+用户提供的 `https://xn--omsu12g.xn--fiqs8s/paizhen/` 本次访问超时，未假称已读取。改从实际可访问的[塔罗中国牌阵目录](https://www.tarotchina.net/paizhenbook/)找到逐项说明；下列五个几何布局还逐张查看了该站的公开编号示意图。只采用牌位结构事实并重新编写说明，不下载图库进入本项目，也不复制长篇解释。
+
+| 新 ID | 采用结构 | 来源及边界 |
+|---|---|---|
+| `sacred-triangle` | 原因、现况、结果；1 上，2 左下，3 右下 | [圣三角](https://www.tarotchina.net/paizhen2/)。不是时间线版。|
+| `diamond` | 现在、问题一、问题二、结果；4 上，2/3 中，1 下 | [钻石展开法](https://www.tarotchina.net/paizhen3/)。不采用正位必为过度、逆位必为不足的统一断法。|
+| `lovers-pyramid` | 自己期望、对方期望、当前关系、后续关系；4 上，2/1/3 下 | [恋人金字塔](https://www.tarotchina.net/paizhen4/)。四牌版，不混入七牌版。|
+| `gypsy-cross` | 对方想法、自己想法、相处问题、环境、关系结果；1 上，3/5/4 中，2 下 | [吉普赛十字](https://www.tarotchina.net/paizhen6/)。名称沿用公开版本，不据此断言民族来源；他人想法只作待核对的象征线索。|
+| `hexagram` | 过去、现况、未来、指引、环境、期望、结果 | [六芒星](https://www.tarotchina.net/paizhen9/)。六个外点顺序为上1、左上2、左下3、下4、右下5、右上6，中央7。|
+| `self-exploration` | 状态、外在表现、内在想法、潜意识 | [自我探索](https://www.tarotchina.net/paizhen5/)。角色保持，本应用另采用2×2阅读布局，明确不是原图复刻。|
+| `mind-body-spirit` | 思想、身体与日常、内在价值 | [Tina Gong 三牌组合](https://labyrinthos.co/blogs/learn-tarot-with-labyrinthos-academy/3-card-tarot-spreads-simple-tarot-spreads-organized-by-layout)。采用 Mind/Body/Spirit；不做疾病诊断，不强加宗教。|
+| `open-five` | 五张共同回应主题，顺序无固定角色 | 用户要求的自由模式，应用原创；不是传统命名牌阵。|
+
+新增八项后共有 40 个定义（21 个非 legacy，其中包含独立日运；19 个兼容历史定义）。新抽牌目录应按张数排序；不能因为新增资料而重解释旧记录的角色。已有基础场景名称改为其对应牌阵名称，不再用“看清卡在哪里”等产品文案替代正式名称。
+
+`layoutPositions` 按抽取顺序提供 `{x,y}` 的 0–1 归一化**中心坐标**；渲染层须为牌本体与文字预留边距。`layoutGrid` 提供建议列/行数，不得在不认识新布局时退回横排。
+
+新增牌位另有 `scope`，用于区分同属 `state` 的现况、环境、期望、内在想法与外在表现。离线解释采用真实 scope 与逐位说明，牌义背景与本位应用分开；恋人金字塔、吉普赛十字仍列基础目录，但解读领域为感情。专项检查 `tools/check_position_semantics_v2.cjs` 验证同一张太阳在不同位置不再输出同一句，并验证阻碍应用不会混入正向行动建议。

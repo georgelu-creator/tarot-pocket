@@ -90,7 +90,7 @@ async function assertChineseShell(page){
     assert.deepEqual(directory.buttons.map(x=>x.text),['基础牌阵','感情','工作','学业','生活']);
     assert(directory.nav.scrollWidth<=directory.nav.clientWidth+1,'category row must not hide an entry');
     for(const button of directory.buttons){assert(button.left>=directory.nav.left-.5&&button.right<=directory.nav.right+.5,`category is clipped: ${JSON.stringify(button)}`);assert(button.width>=43.5&&button.height>=43.5,`category target is too small: ${JSON.stringify(button)}`);}
-    assert.equal(directory.summary.text,'不分配固定牌位，把三张牌放在一起回答同一个问题。');
+    assert.equal(directory.summary.text,'不预设牌位，围绕同一个问题，把三张牌连起来解读。');
     assert.equal(directory.summary.lineClamp,'none');
     assert(directory.summary.scrollHeight<=directory.summary.clientHeight+1,'directory summary must be fully visible');
     for(const category of ['all','love','work','study','life']){
@@ -104,7 +104,7 @@ async function assertChineseShell(page){
     await page.locator('[data-scenario="sc02"]').click();
     await page.locator('.reading-purpose').waitFor();
     const fullDescription=await page.locator('.reading-purpose').innerText();
-    assert(fullDescription.includes('适合直接问一件事；没有具体问题时'),'spread detail must keep the complete description');
+    assert.equal(fullDescription.trim(),await page.evaluate(()=>TAROT_READING_SCENARIOS.find(s=>s.id==='sc02').description),'spread detail must keep the complete authored description');
     await noHorizontalOverflow(page,'spread guide');
     await h.click(page,'start');
     await h.toPick(page);

@@ -13,11 +13,11 @@ async function run() {
   const bundled = require('../.edgeone-ai/catalog.cjs');
   const catalog = catalogFromData(bundled), source = loadCatalog();
   assert.equal(catalog.cards.size, 78);
-  assert.equal(catalog.spreads.size, 32);
+  assert.equal(catalog.spreads.size, source.spreads.size);
   assert.equal([...catalog.spreads.values()].filter(s => s.legacy).length, 19);
   assert.deepEqual([...catalog.cards], [...source.cards]);
   assert.deepEqual([...catalog.spreads], [...source.spreads]);
-  assert.equal(catalog.scenarios.size, 25);
+  assert.equal(catalog.scenarios.size, 33);
   assert.deepEqual([...catalog.scenarios], [...source.scenarios]);
   assert.deepEqual(fs.readdirSync(path.join(root, '.edgeone-ai/public')), ['index.html']);
   assert.throws(() => catalogFromData({...bundled, cards: bundled.cards.slice(1)}), /NOT_CONFIGURED/);
@@ -71,7 +71,7 @@ async function run() {
 
   let response = await send(undefined, {path: '/api/health', method: 'GET'});
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.2', scenarioCount: 25});
+  assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.3.0', scenarioCount: 33});
   assert.equal(received.length, 0);
   response = await send(undefined, {method: 'OPTIONS', headers: {'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type, authorization'}});
   assert.equal(response.status, 204);
@@ -104,8 +104,8 @@ async function run() {
   assert.equal(await code({...sample(), topic: '__proto__'}), 'INVALID_REQUEST');
   assert.equal(received.length, 0);
 
-  for (const spread of catalog.spreads.values()) {
-    response = await send(sample(spread.id));
+  for (const [index,spread] of [...catalog.spreads.values()].entries()) {
+    response = await send(sample(spread.id), {clientIp: `198.51.100.${index+1}`});
     assert.equal(response.status, 200, spread.id);
     assert.deepEqual(await response.json(), {text: answer, model: 'deepseek-flash', provider: 'deepseek'});
     assert.equal(response.headers.get('cache-control'), 'no-store');
@@ -196,7 +196,7 @@ async function run() {
   response = await reading({request: request(undefined, {headers: {Authorization: ''}}), env});
   assert.equal((await response.json()).error, 'AUTH_REQUIRED');
   if (process.argv.includes('--bundle')) await checkBundle(root, env, token, origin, sample());
-  process.stdout.write('Cloud Functions checks passed: invitation sessions, shared API, 78 cards/32 spreads/25 scenarios, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
+  process.stdout.write('Cloud Functions checks passed: invitation sessions, shared API, 78 cards/all authored spreads/33 scenarios, exact origins, auth, body limits, warm-instance limits, cancellation, safe errors and route imports; no real provider calls.\n');
 }
 
 async function checkBundle(root, env, token, origin, sample) {

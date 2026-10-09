@@ -59,6 +59,11 @@ async function run() {
     const parsed = validateReading(sample(spread.id), catalog);
     assert.equal(parsed.cards.length, spread.positions.length);
     assert.equal(parsed.cards[0].positionLabel, spread.positions[0].label);
+    parsed.cards.forEach(card => {
+      const authored = catalog.cards.get(card.cardId).reference;
+      assert.deepEqual(card.detailedReference.meaning, authored[card.reversed ? 'reversed' : 'upright'].meaning);
+      assert.equal(card.detailedReference.positionMeaning, card.positionScope ? undefined : authored[card.reversed ? 'reversed' : 'upright'].roles[card.positionRole]);
+    });
   }
   assert.equal(catalog.cards.size, 78);
   // All current and preserved legacy spread IDs retain their own position schema.
@@ -238,7 +243,7 @@ async function run() {
   try {
     const base = await start();
     let response = await fetch(base + '/api/health', {headers: {Origin: origin}});
-    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.2.2', scenarioCount: 25});
+    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.3.0', scenarioCount: catalog.scenarios.size});
     assert.equal(received.length, 0);
     response = await fetch(base + '/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type'}});
     assert.equal(response.status, 204);

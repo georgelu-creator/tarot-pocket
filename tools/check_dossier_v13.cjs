@@ -4,7 +4,7 @@ const {chromium}=require('playwright');
 const url=process.env.DEMO_URL||'file://'+path.resolve(__dirname,'../demo/tarot-demo.html');
 (async()=>{const browser=await chromium.launch(require('./browser_options.cjs'));try{
  const p=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(url);
- await p.locator('[data-action=choose-cards]').click();
+ await p.locator('.bottomnav [data-page=library]').click();
  const ids=await p.locator('.library-card').evaluateAll(xs=>xs.map(x=>x.dataset.id));assert.equal(ids.length,78);
  for(const id of ids){
   await p.locator(`.library-card[data-id="${id}"]`).click();
@@ -13,8 +13,9 @@ const url=process.env.DEMO_URL||'file://'+path.resolve(__dirname,'../demo/tarot-
   await p.locator('[data-reference-section=contexts]>summary').click();
   assert.equal(await p.locator('.reference-context').count(),4,'Four authored application domains: '+id);
   assert((await p.locator('[data-reference-section=contexts]').innerText()).length>120,'Substantive card-specific applications: '+id);
-  await p.locator('[data-reference-section=roles]>summary').click();
-  assert.equal(await p.locator('[data-reference-section=roles] dt').count(),9,'Complete named position references: '+id);
+  assert.equal(await p.locator('#overlay [data-academy],[data-reference-section=roles],[data-reference-section=yesno]').count(),0,'Reference stays independent from lessons and reading roles: '+id);
+  assert.doesNotMatch(await p.locator('.sheet').innerText(),/Yes\s*\/?\s*No|开始学习这张牌/);
+  assert((await p.locator('[data-reference-section=meaning]').innerText()).length>100,'Detailed authored direction: '+id);
   assert.equal(await p.locator('.dossier-lenses,.dossier-reversal-guide').count(),0,'No duplicated lesson controls or generic reversal reminders');
   assert(await p.locator('.dossier-cover img').evaluate(im=>im.complete&&im.naturalWidth>100));
   await p.locator('#overlay [data-action=close]').first().click();

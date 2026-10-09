@@ -27,7 +27,7 @@ async function run({fetchImpl=fetch,log=value=>console.log(JSON.stringify(value)
  }
  for(const path of ['/api/session','/api/reading']){const {response}=await request(path,{method:'OPTIONS',preflight:true});requireThat(response.status===204,'PREFLIGHT_FAILED');emit({endpoint:BASE+path,check:'preflight',status:response.status});}
  const health=await request('/api/health');requireThat(health.response.status===200&&health.result.ok===true&&health.result.configured===true,'HEALTH_NOT_READY');
- requireThat(health.result.promptVersion==='RP-1.2.2'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
+ requireThat(health.result.promptVersion==='RP-1.3.0'&&health.result.scenarioCount===25,'PRODUCTION_REVISION_NOT_READY');
  emit({endpoint:BASE+'/api/health',status:health.response.status,ok:true,configured:true,...(typeof health.result.promptVersion==='string'?{promptVersion:health.result.promptVersion}:{}),...(Number.isInteger(health.result.scenarioCount)?{scenarioCount:health.result.scenarioCount}:{})});
  const session=await request('/api/session',{method:'POST',body:{}});
  requireThat(session.response.status===200&&typeof session.result.token==='string'&&session.result.token.length>=40&&session.result.token.length<=1024&&Number.isFinite(session.result.expiresAt)&&session.result.expiresAt>Date.now()+30000,'SESSION_NOT_READY');
