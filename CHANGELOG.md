@@ -1,5 +1,9 @@
 # Changelog · 版本记录
 
+## 2.0.1 — 直接进入课堂
+
+初级、中级、高级从入口分层；每阶段围绕78张牌推进，20节方法课穿插到课程中。首页只保留当前课堂、下两课与二级目录，继续上课可恢复跨阶段暂停内容和到期复习。
+
 ## 1.9.0 — Chinese learning and reading repair / 中文学习与解读修复
 
 - Make the public product Chinese-only for this release. Old English query links fall back to Chinese while stable IDs, storage and prior records remain compatible. / 本期公共产品只显示中文；旧英文参数回落中文，稳定ID、本地存储与旧记录保持兼容。

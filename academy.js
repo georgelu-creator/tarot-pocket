@@ -13,7 +13,7 @@
     const ordered=ids.filter(id=>byId.has(id));
     return [...ordered,...source.cards.map(card=>card.id).filter(id=>!ordered.includes(id))];
   })();
-  const blank=()=>({version:1,contentVersion:version,progress:{},session:null,paused:{},pendingReverse:null});
+  const blank=()=>({version:1,contentVersion:version,progress:{},session:null,paused:{},pendingReverse:null,courseLevel:'B'});
   const number=(n,f=0)=>Number.isFinite(n)&&n>=0&&n<1e14?n:f;
   function masteryState(record,at=Date.now()){
     if(!record?.uprightAt)return {key:'unlearned',label:'未学',detail:'下一步：完成正位初学',reviewStreak:0};
@@ -53,6 +53,45 @@
     const reviewRun=recent.length===3&&recent.every(r=>r.mode==='practice'&&at-r.at<DAY);
     return items.sort((a,b)=>(reviewRun&&a.priority===0?3:a.priority)-(reviewRun&&b.priority===0?3:b.priority)||(a.due||0)-(b.due||0)||CARD_PATH.indexOf(a.id)-CARD_PATH.indexOf(b.id));
   }
+  const COURSE_STAGES={B:'foundation',I:'application',A:'integration'};
+  // Methods appear where the learner can immediately use them in the card path.
+  // Existing lesson IDs and completion evidence remain the source of truth.
+  const COURSE_METHODS={
+    B:{m00:['B01'],m01:['B02'],m08:['B07'],w01:['B03'],w02:['B04'],c02:['B08'],p08:['B06'],w11:['B05']},
+    I:{m00:['I01'],m01:['I04'],p08:['I05'],c10:['I02'],w11:['I03'],p14:['I06']},
+    A:{m00:['A01'],m01:['A02'],c07:['A03'],p08:['A04'],w11:['A05'],p14:['A06']}
+  };
+  const cardChapter=id=>/^m/.test(id)?'大阿卡纳':Number(id.slice(1))<=10?'数字牌':'宫廷牌';
+  function courseRoute(data,level='B',at=Date.now()){
+    const selected=COURSE_STAGES[level]?level:'B',mode=COURSE_STAGES[selected],progress=data?.progress||{};
+    return CARD_PATH.flatMap(id=>{
+      const chapter=cardChapter(id),methods=(COURSE_METHODS[selected][id]||[]).map(method=>({id:method,mode:'learn',done:!!progress[method]?.completedAt,chapter,title:units[method].title.zh}));
+      return [...methods,{id,mode,done:skillState(progress[id])[mode],chapter,title:units[id].title.zh}];
+    });
+  }
+  function stageNext(data,level='B',at=Date.now()){
+    const selected=COURSE_STAGES[level]?level:'B',mode=COURSE_STAGES[selected],progress=data?.progress||{},route=courseRoute(data,selected,at);
+    const next=route.find(item=>!item.done),keys={B:['Q1'],I:['Q2','Q3'],A:['Q4','V1']}[selected],reviews=[];
+    for(const item of route){
+      const p=progress[item.id];
+      if(!p)continue;
+      if(item.mode==='learn'){
+        if(item.done&&p.nextVisitAt&&p.nextVisitAt<=at)reviews.push({...item,mode:'review',due:p.nextVisitAt,label:'复习学过的方法'});
+      }else{
+        if(!skillState(p).foundation)continue;
+        const due=keys.map(key=>[key,p.targets?.[key]]).filter(([,target])=>target&&target.due<=at).sort((a,b)=>(a[1].status==='pending'?0:1)-(b[1].status==='pending'?0:1)||a[1].due-b[1].due);
+        if(due.length)reviews.push({...item,mode:'practice',key:due[0][0],due:due[0][1].due,label:due[0][1].status==='pending'?'再练一次':'复习学过的牌'});
+      }
+    }
+    const recent=Object.values(progress).flatMap(p=>p.history||[]).filter(round=>round.at<=at).sort((a,b)=>b.at-a.at).slice(0,3);
+    const reviewRun=recent.length===3&&recent.every(round=>['practice','review'].includes(round.mode)&&at-round.at<DAY);
+    if(reviews.length&&(!next||!reviewRun))return reviews.sort((a,b)=>a.due-b.due)[0];
+    if(!next)return null;
+    if(next.mode==='learn')return {...next,label:'本节课程'};
+    const skills=skillState(progress[next.id]),required=Object.values(COURSE_STAGES).slice(0,Object.values(COURSE_STAGES).indexOf(mode));
+    const prerequisite=required.find(stage=>!skills[stage]);
+    return {...next,mode:prerequisite||mode,prerequisite:!!prerequisite,label:SKILL_LABELS[prerequisite||mode]};
+  }
   function practiceVariants(u,key){
     const base=key==='V1'?u.revisit:u.questions[key],questions=[base];
     const alternate=u.remediation[base.support]?.question;if(alternate)questions.push(alternate);
@@ -85,6 +124,7 @@
     if(mode.startsWith('reverse')&&u.kind!=='card')return null;
     const plan=planFor(u,mode,s), index=Number.isInteger(s.index)?Math.max(0,Math.min(s.index,plan.length)):0;
     const out={unitId:u.id,mode,index,startedAt:number(s.startedAt),seed:number(s.seed,1),contentVersion:version,answers:{},support:null,hint:!!s.hint,complete:!!s.complete&&index===plan.length,lang:s.lang==='en'?'en':'zh',animation:{frame:0,static:true,paused:true},scroll:number(s.scroll)};
+    if(['B','I','A'].includes(s.courseLevel))out.courseLevel=s.courseLevel;
     out.practiceKey=['Q1','Q2','Q3','Q4','V1'].includes(s.practiceKey)?s.practiceKey:'V1';out.variant=Math.floor(number(s.variant));
     const allowed=new Map([...Object.values(u.questions),u.revisit,...Object.values(u.remediation).map(r=>r.question),...(u.kind==='card'?['Q1','Q2','Q3','Q4','V1'].flatMap(key=>practiceVariants(u,key)):[])].map(q=>[q.id,q]));
     for(const [qid,a]of Object.entries(s.answers||{})){
@@ -108,6 +148,8 @@
     if(!raw)return blank();
     if(raw.version!==1||!raw.progress||typeof raw.progress!=='object'||Array.isArray(raw.progress))throw Error('学习记录格式不正确');
     const out=blank();
+    out.courseLevel=['B','I','A'].includes(raw.courseLevel)?raw.courseLevel:(raw.session?.courseLevel||units[raw.session?.unitId]?.level||({application:'I',integration:'A'}[raw.session?.mode])||'B');
+    if(!['B','I','A'].includes(out.courseLevel))out.courseLevel='B';
     if(units[raw.pendingReverse]?.kind==='card')out.pendingReverse=raw.pendingReverse;
     for(const [id,p]of Object.entries(raw.progress)){
       if(!units[id]||!p||typeof p!=='object')continue;
@@ -183,7 +225,7 @@
   function currentStep(s){return rawStep(s);}
   function create(bridge){
     const {esc,img,icon,go,toast,now,get,set}=bridge;
-    let level='B',foundationsOpen=false;
+    let catalogOpen=false;
     // This release has one learner-facing language. Keep bilingual authored data
     // and saved-session fields compatible, but render the academy in Chinese.
     const lang=()=> 'zh';
@@ -210,16 +252,17 @@
       const d=data(),u=units[id];
       if(mode==='reverse'&&!status('I04')?.completedAt){d.pendingReverse=id;id='I04';mode='learn';}
       else if(mode==='reverse')d.pendingReverse=null;
-      if(active()&&current().unitId===id&&current().mode===mode&&(mode!=='practice'||current().practiceKey===(options.key||'V1'))){go('academy');return;}
+      if(active()&&current().unitId===id&&current().mode===mode&&(mode!=='practice'||current().practiceKey===(options.key||'V1'))){if(options.courseLevel){d.session.courseLevel=options.courseLevel;save(d);}go('academy');return;}
       if(active())d.paused[current().unitId+':'+current().mode+(current().mode==='practice'?':'+current().practiceKey:'')]=structuredClone(current());
       const practiceKey=mode==='practice'?(options.key||'V1'):null,key=id+':'+mode+(practiceKey?':'+practiceKey:'');
       const resumed=d.paused[key];
       d.session=resumed||{unitId:id,mode,index:0,startedAt:now(),seed:Math.floor(Math.random()*1e9)+1,contentVersion:version,answers:{},support:null,hint:false,complete:false,lang:lang(),animation:{frame:0,static:true,paused:true},scroll:0};
+      if(options.courseLevel)d.session.courseLevel=options.courseLevel;
       if(mode==='practice'&&!resumed){d.session.practiceKey=practiceKey;d.session.variant=(status(id)?.history||[]).flatMap(r=>r.answers||[]).filter(a=>practiceVariants(units[id],practiceKey).some(q=>q.id===a.questionId)).length;}
       delete d.paused[key];save(d);go('academy');
     }
-    function guidedNext(){if(active()){go('academy');return;}const item=guidedQueue(data(),now())[0];if(item)start(item.id,item.mode,item);else{toast('本轮没有到期练习，可以回看学过的牌。');go('courses');}}
-    function guidedSummary(){const states=source.cards.map(u=>skillState(status(u.id)));return {foundation:states.filter(s=>s.foundation).length,application:states.filter(s=>s.application).length,integration:states.filter(s=>s.integration).length,next:guidedQueue(data(),now())[0]||null};}
+    function guidedNext(){const saved=stageSession();if(saved){enterCourse({id:saved.unitId,mode:saved.mode,key:saved.practiceKey});return;}const item=stageNext(data(),courseLevel(),now());if(item)enterCourse(item);else{toast('本阶段已完成，可以选择下一阶段。');go('courses');}}
+    function guidedSummary(){const states=source.cards.map(u=>skillState(status(u.id)));return {foundation:states.filter(s=>s.foundation).length,application:states.filter(s=>s.application).length,integration:states.filter(s=>s.integration).length,next:stageNext(data(),courseLevel(),now())||null};}
     function newCard(){const id=recommendation();if(id)start(id);else{toast(copy('78 张牌都已完成正位初学，可以从牌库选择一张继续巩固。','You have studied all 78 cards. Choose one to revisit.'));go('courses');}}
     function visit(id){if(id&&units[id])start(id,units[id].kind==='card'&&status(id)?.targets.Q3?.status==='pending'?'reverse-review':'review');}
     function review(){const id=due()[0];if(id)visit(id);else{toast(copy('暂时没有需要回访的内容。','Nothing is due for a revisit yet.'));go('courses');}}
@@ -230,13 +273,21 @@
       const state=masteryState({...p,uprightAt:p.completedAt,reverseAt:p.completedAt},now());
       return state.key==='due'?copy('待复习 · 完成到期回访','Due'):state.reviewStreak>=2?copy('已巩固 · 仍可继续复习','Reinforced · keep reviewing'):copy(`完成初学 · 间隔回访 ${Math.min(state.reviewStreak,2)}/2`,'Initial round complete');
     }
+    function courseLevel(){return ['B','I','A'].includes(data().courseLevel)?data().courseLevel:'B';}
+    function sessionLevel(s){return s?.courseLevel||units[s?.unitId]?.level||({foundation:'B',application:'I',integration:'A'}[s?.mode])||courseLevel();}
+    function stageSession(){if(active()&&sessionLevel(current())===courseLevel())return current();return Object.values(data().paused||{}).filter(s=>!s.complete&&sessionLevel(s)===courseLevel()).sort((a,b)=>b.startedAt-a.startedAt)[0]||null;}
+    function selectLevel(value){if(!['B','I','A'].includes(value))return;const d=data();d.courseLevel=value;save(d);}
+    function courseItem(id){return courseRoute(data(),courseLevel(),now()).find(item=>item.id===id);}
+    function enterCourse(item){if(!item)return;start(item.id,item.mode,{...item,courseLevel:courseLevel()});}
     function home(){
-      const titles={B:copy('初级 · 从这里开始','Beginner · start here'),I:copy('中级 · 读懂每张牌','Intermediate · understand each card'),A:copy('高级 · 连成完整解读','Advanced · read the whole spread')};
-      const tabs={B:copy('初级','Beginner'),I:copy('中级','Intermediate'),A:copy('高级','Advanced')};
-      const intros={B:copy('先认识牌组，走一遍抽牌，再学会用一张牌回答问题。','Meet the deck, try the reading process and learn to answer a question with one card.'),I:copy('把画面、牌义和问题联系起来，再学习有具体背景的逆位。','Connect images, meanings and questions, then learn reversals in specific situations.'),A:copy('练习问题、牌位和多张牌的配合，用完整案例解释结果。','Work with questions, positions and several cards in complete worked readings.')};
-      const dueCount=new Set(guidedQueue(data(),now()).filter(item=>item.mode==='practice').map(item=>item.id)).size,completed=completedCards().length,mastered=masteredCards().length;
-      const summary=guidedSummary(),next=summary.next;
-      return `<main class="academy-home" data-i18n-ignore><header class="academy-pagehead"><h1>一张张学会塔罗</h1><p>看图理解，换个情境练习，再隔几天回想。</p></header><section class="academy-guided"><span class="eyebrow">${active()?'继续未完成的一节':next?esc(next.label):'今日学习已完成'}</span><h2>${esc(t(units[active()?current().unitId:next?.id]?.title)||'回顾学过的牌')}</h2><div class="academy-skill-progress">${[['foundation','认识画面'],['application','正逆位应用'],['integration','辨析与迁移']].map(([key,label])=>`<div><strong>${summary[key]}<small> / 78</small></strong><span>${label}</span></div>`).join('')}</div>${button('guided',active()?'接着学习':'开始下一节','','','primary wide')}<p class="tiny muted">${dueCount?`${dueCount} 项待复习 · `:''}进度自动保存，每节只练一个重点。</p></section><section class="academy-card-path"><h2>78 张牌的学习路线</h2><p>每张牌都经过初级认识、中级应用、高级辨析，再安排间隔复习。</p><div class="academy-path-grid">${CARD_PATH.map(id=>{const skills=skillState(status(id)),count=Object.values(skills).filter(Boolean).length;return `<button data-academy="guided-card" data-id="${id}" aria-label="${esc(t(units[id].title))}，完成 ${count} 个阶段"><span>${esc(t(units[id].title))}</span><small>${count}/3 · ${esc(learningState(id).label)}</small></button>`;}).join('')}</div></section><details class="academy-foundations" ${foundationsOpen?'open':''}><summary>塔罗基础与读牌方法 · 20 课</summary><nav class="academy-levels" aria-label="课程阶段">${Object.keys(titles).map(k=>`<button data-academy="level" data-value="${k}" aria-pressed="${level===k}">${esc(tabs[k])}</button>`).join('')}</nav><section class="academy-lessons"><h2>${esc(titles[level])}</h2><p>${esc(intros[level])}</p>${source.lessons.filter(u=>u.level===level).map((u,i)=>`<button class="academy-lesson" data-academy="start" data-id="${u.id}"><span class="academy-number">${i+1}</span><span><strong>${esc(t(u.title))}</strong><small>${esc(statusLabel(u.id))}</small></span>${icon('arrow')}</button>`).join('')}</section></details></main>`;
+      const stage=courseLevel(),labels={B:['初级','看懂画面'],I:['中级','正逆位应用'],A:['高级','辨析与解读']};
+      const route=courseRoute(data(),stage,now()),next=stageNext(data(),stage,now()),saved=stageSession(),resuming=!!saved;
+      const item=resuming?{id:saved.unitId,mode:saved.mode,prerequisite:['foundation','application','integration'].includes(saved.mode)&&saved.mode!==COURSE_STAGES[stage]}:next,u=units[item?.id];
+      const done=route.filter(x=>x.done).length,cardDone=route.filter(x=>x.done&&units[x.id].kind==='card').length;
+      const tabs=`<nav class="academy-levels academy-stage-tabs" aria-label="学习阶段">${Object.entries(labels).map(([key,[name,subtitle]])=>`<button data-academy="level" data-value="${key}" aria-pressed="${stage===key}"><strong>${name}</strong><span>${subtitle}</span></button>`).join('')}</nav>`;
+      if(catalogOpen){const chapters=[...new Set(route.map(x=>x.chapter))],currentChapter=route.find(x=>x.id===item?.id)?.chapter||chapters[0];return `<main class="academy-home academy-catalog" data-i18n-ignore><header class="academy-pagehead">${button('catalog-back','返回上课','','','linkbtn')}<h1>课程目录</h1></header>${tabs}<div class="academy-chapters">${chapters.map((chapter,index)=>{const nodes=route.filter(x=>x.chapter===chapter);return `<details class="academy-chapter" ${chapter===currentChapter?'open':''}><summary><span><small>第 ${index+1} 章</small><strong>${esc(chapter)}</strong></span><small>${nodes.filter(x=>x.done).length} / ${nodes.length}</small></summary><div class="academy-chapter-lessons">${nodes.map(x=>`<button class="academy-lesson" data-academy="${units[x.id].kind==='card'?'guided-card':'start'}" data-id="${x.id}"><span class="academy-number">${x.done?'✓':route.indexOf(x)+1}</span><span><strong>${esc(t(units[x.id].title))}</strong><small>${x.done?'已完成':resuming&&x.id===saved.unitId?'上次学到这里':units[x.id].kind==='lesson'?'方法课':'看图与练习'}</small></span>${icon('arrow')}</button>`).join('')}</div></details>`;}).join('')}</div></main>`;}
+      const preview=route.filter(x=>!x.done&&x.id!==item?.id).slice(0,2),cover=u?.kind==='card'?u.id:u?.cards?.[0]||'m00',nextLevel={B:'I',I:'A'}[stage];
+      return `<main class="academy-home academy-course-home" data-i18n-ignore><header class="academy-pagehead"><h1>今天，继续学一课</h1></header>${tabs}<section class="academy-guided academy-current-course"><div class="academy-current-heading"><span>${labels[stage][0]} · ${item?.mode==='practice'?'温习一课':resuming?'上次学到这里':'当前课程'}</span><small>${cardDone} / 78 张</small></div><progress value="${done}" max="${route.length}" aria-label="${labels[stage][0]}课程进度"></progress><div class="academy-current-body">${img(cover)}<div><span class="eyebrow">${esc(route.find(x=>x.id===item?.id)?.chapter||'本阶段完成')}</span><h2>${esc(u?t(u.title):'这一阶段已学完')}</h2><p>${item?.prerequisite?'先补上这张牌的基础，再继续本课。':item?.mode==='practice'?'换个情境，再试一次。':u?.kind==='card'?labels[stage][1]:u?'在这一课里边看边练。':'随时回来温习学过的内容。'}</p></div></div>${item?button('guided',resuming?'继续上课':'开始上课','','','primary wide'):nextLevel?button('next-level',`进入${labels[nextLevel][0]}`,'',`data-value="${nextLevel}"`,'primary wide'):button('review','温习学过的牌','','','primary wide')}</section>${preview.length?`<section class="academy-up-next"><h2>接下来</h2>${preview.map(x=>`<div><span>${esc(t(units[x.id].title))}</span><small>${units[x.id].kind==='lesson'?'方法课':labels[stage][1]}</small></div>`).join('')}</section>`:''}<button class="academy-catalog-link" data-academy="catalog"><span>查看课程目录</span><small>${done} / ${route.length} 课</small>${icon('arrow')}</button></main>`;
     }
     function cardArea(u,s,step){
       let ids=u.kind==='card'?[u.id]:u.cards;
@@ -305,9 +356,9 @@
     function render(){
       const s=current();if(!s)return home();const u=units[s.unitId],plan=planFor(u,s.mode,s),step=currentStep(s);
       const head=`<header class="academy-top">${button('home','返回课程','Back to courses','','linkbtn')}<span>${esc(t(u.title))}</span><span>${Math.min(s.index+1,plan.length)} / ${plan.length}</span></header><div class="academy-progress" role="progressbar" aria-label="${copy('本节进度','Lesson progress')}" aria-valuemin="0" aria-valuemax="${plan.length}" aria-valuenow="${s.index}"><i style="width:${s.index/plan.length*100}%"></i></div>`;
-      if(s.complete){const p=status(u.id),pending=Object.values(p?.targets||{}).some(x=>x.status==='pending'),state=u.kind==='card'?learningState(u.id):null;const nextLesson=source.lessons[source.lessons.findIndex(x=>x.id===u.id)+1];
+      if(s.complete){const p=status(u.id),pending=Object.values(p?.targets||{}).some(x=>x.status==='pending'),state=u.kind==='card'?learningState(u.id):null;
         const stage=state?`<div class="academy-stage academy-stage-${state.key}"><strong>当前：${esc(state.label)}</strong><span>${esc(GUIDED_MODES.includes(s.mode)?Object.entries(SKILL_LABELS).filter(([key])=>skillState(p)[key]).map(([,label])=>label.split(' · ')[1]).join('、')+'已完成本轮练习':state.detail)}</span></div>`:'';
-        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${stage}${pending?`<p class="academy-support-note">${copy('本轮仍有需要再练的地方，已经安排到期回访；完成初学不会显示为“已巩固”。','The difficult parts have been saved for a later revisit. Completing the initial round does not mark them as reinforced.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${GUIDED_MODES.includes(s.mode)?button('guided','继续下一节','','','primary wide'):u.kind==='lesson'&&nextLesson?button('start','继续下一课','Next lesson',`data-id="${nextLesson.id}"`,'primary wide'):button('new','按顺序学下一张','Learn another new card','','primary wide')}${u.kind==='card'&&!GUIDED_MODES.includes(s.mode)&&!p?.reverseAt?button('reverse',status('I04')?.completedAt?'下一步：学习这张牌的逆位':'下一步：先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${u.kind==='card'&&state?.key==='due'?button('start-review','完成这张牌的到期回访','Complete due review',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
+        return `<main class="academy-shell" data-i18n-ignore>${head}${cardArea(u,s,{})}<section class="academy-complete"><span class="eyebrow">${copy('本轮学习完成','This round is complete')}</span><h1>${esc(t(u.title))}</h1><p>${esc(t(u.summary))}</p>${stage}${pending?`<p class="academy-support-note">${copy('本轮仍有需要再练的地方，已经安排到期回访；完成初学不会显示为“已巩固”。','The difficult parts have been saved for a later revisit. Completing the initial round does not mark them as reinforced.')}</p>`:''}<div class="buttonstack">${u.id==='I04'&&data().pendingReverse?button('reverse','继续刚才那张牌的逆位','Continue the card reversal',`data-id="${data().pendingReverse}"`,'primary wide'):''}${GUIDED_MODES.includes(s.mode)||u.kind==='lesson'?button('guided','继续下一课','','','primary wide'):button('new','按顺序学下一张','Learn another new card','','primary wide')}${u.kind==='card'&&!GUIDED_MODES.includes(s.mode)&&!p?.reverseAt?button('reverse',status('I04')?.completedAt?'下一步：学习这张牌的逆位':'下一步：先学逆位的读法',status('I04')?.completedAt?'Study this card reversed':'Learn how reversals work',`data-id="${u.id}"`):''}${u.kind==='card'&&state?.key==='due'?button('start-review','完成这张牌的到期回访','Complete due review',`data-id="${u.id}"`):''}${button('home','返回课程','Back to courses')}</div></section></main>`;}
       let body='';
       if(step.kind==='teach'||step.kind==='summary'){
         const labels=step.kind==='summary'?copy('把刚才的要点连起来','Reconnect the key point'):step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
@@ -357,16 +408,19 @@
       if(e.target.closest('[data-action="nav"],.bottomnav button'))pauseAnimation();
       const el=e.target.closest('[data-academy]');if(!el||el.disabled)return;
       const action=el.dataset.academy;
-      if(action==='start'){start(el.dataset.id);return;}
+      if(action==='start'){if(catalogOpen)enterCourse(courseItem(el.dataset.id));else start(el.dataset.id);return;}
       if(action==='start-review'){visit(el.dataset.id);return;}
       if(action==='reverse'){start(el.dataset.id,'reverse');return;}
       if(action==='guided'){guidedNext();return;}
-      if(action==='guided-card'){const item=guidedQueue(data(),now()).find(x=>x.id===el.dataset.id);if(item)start(item.id,item.mode,item);else start(el.dataset.id,'practice');return;}
+      if(action==='guided-card'){const node=courseItem(el.dataset.id);if(node){const skills=skillState(status(node.id)),required=['foundation','application','integration'].slice(0,['foundation','application','integration'].indexOf(node.mode));enterCourse({...node,mode:required.find(key=>!skills[key])||node.mode});}return;}
       if(action==='new'){newCard();return;}
       if(action==='review'){review();return;}
       if(action==='continue'){pauseAnimation();const scroll=current()?.scroll||0;go(active()?'academy':'courses');requestAnimationFrame(()=>window.scrollTo(0,scroll));return;}
       if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}go('courses');return;}
-      if(action==='level'){foundationsOpen=true;level=el.dataset.value;refresh();return;}
+      if(action==='level'){selectLevel(el.dataset.value);refresh();return;}
+      if(action==='catalog'){catalogOpen=true;refresh(true);return;}
+      if(action==='catalog-back'){catalogOpen=false;refresh(true);return;}
+      if(action==='next-level'){selectLevel(el.dataset.value);guidedNext();return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
       if(action==='answer'){if(answer(d,el.dataset.value,now())){save(d);refresh();}return;}
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
@@ -385,5 +439,5 @@
     function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 课完成初学 · ${completedCards().length} / 78 张牌完成初学 · ${masteredCards().length} 张已巩固</p><p class="tiny muted">“已巩固”表示学过正位与逆位，并独立完成两次间隔回访；仍可继续复习，不代表陌生情境都会。</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
     return {home,render,start,guidedNext,guidedSummary,newCard,review,current,active,status,completedCards,masteredCards,learningState,due,recommendation,dashboard,pause:pauseAnimation};
   }
-  window.TarotAcademy={practiceVariants,guidedQueue,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
+  window.TarotAcademy={practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
 })();

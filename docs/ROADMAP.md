@@ -1,8 +1,12 @@
 # Roadmap · 后续计划
 
+## Implemented in v2.0.1 · 当前版本
+
+学牌采用阶段分层、单一课堂入口与按章展开的二级目录。20节方法课融入78张牌的阶段课程，保留旧记录和到期复习。当前验证范围见[发布记录](RELEASE_2_0_1.md)，长期教学效果仍须真实学习验证。
+
 [English README](../README.md) · [中文首页](../README.zh-CN.md) · [Product plan / 完整方案](PRODUCT_PLAN.md)
 
-## Implemented in v1.9.0 · 当前版本
+## Previous v1.9.0 · 前版记录
 
 The public interface is Chinese-only for this release. Courses and the separate 78-card library now form two clear learning paths, and every card displays its authored explanation before assessment. Local Yes/No, choice and open-three readings use the actual question, meanings, positions and orientations; RP-1.2.0 stays within what the selected spread can support. Mobile acceptance covers the audited narrow-screen layout issues, while physical-phone use and long-term learning transfer remain separate evidence. / 本期公共界面只显示中文；课程与独立78张牌库形成两条清楚路径，每张牌先显示已编写的讲解再答题。默认Yes/No、选择题和自由三张结合实际问题、牌义、牌位与正逆位，RP-1.2.0不超出牌阵支持范围。移动端自动验收覆盖本次审计问题，真实手机与长期学习迁移仍须另验。
 
