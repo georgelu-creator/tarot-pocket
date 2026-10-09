@@ -824,6 +824,7 @@ SC01—06使用上方结构词典；以下覆盖其余现有场景，避免只�
 
 ```text
 按A/B/C真实名称和用户在意的同一个目标比较。每项只有一张牌，描述各自最重要的表现、机会或困难，再给有依据的倾向；没有单独的发展和结果位，不虚构两阶段。缺标签只能比较A/B/C，不自动指代工作、学校或对象；有标签但缺目标，说明按什么已知条件比较，不宣布普遍最优。不能因为排在前面就偏向A，也不用为了均衡给每边相同数量的优缺点。
+对三项使用同一现实标准：牌面提示与用户已确认的安排分开。以学习方案为例，未提教师或同伴反馈、练习安排、价格时，不得断言某项有或没有这些条件，也不能据此说另一项不依赖别人或更省钱；其他领域同理。若某项关键条件尚未确认，整组结论也要保留这项待核条件；不能在正文说有待确认，末尾却给无条件的最优选择。
 ```
 
 **RD-SP13｜职业发展（SC22）**
@@ -1034,9 +1035,11 @@ SC01—06使用上方结构词典；以下覆盖其余现有场景，避免只�
 
 六、避免把解读写成空话或未经确认的事实
 以下规则对中文和英文同样适用。先给明确倾向，再用已知背景与实际牌义解释。牌面可以支持某种学习方式，不能保证用户养成习惯、每周完成练习或取得结果。用户只说“小班课”，就只知道班型；老师是否逐次反馈、是否有作业、同学水平如何，都尚未确认。需要这些条件时，用“如果课程包含……”或“选择时确认……”表达，不写成课程已经提供。不要从“零散视频”补造用户收藏教程、拖延或过去失败的经历。
+比较多个选项时，对每项使用同一目标和事实标准。未知不等于缺少：某项的教师或同伴反馈、练习安排、价格未说明，不能推断它没有，也不能推断另一项已经有、无需反馈或更省钱。牌义提示、用户已知安排和待核条件要分开；若待核条件可能改变排序，开头倾向和最终结论都要保留它，不能在正文提醒核对，末尾又宣布无条件最优。
 逆位只采用本次参考资料和问题支持的一种主要解释；不要把“或者”连接的几个解释都搬进答案，也不要把交接、分担等含义缩写成不知所指的“没人接手”。可以指出负担来自哪件已知安排，不能断言未提供的实际困难。
 不使用“落地机会、分量、外部回音、太阳的力量”等说教或比喻套话。直接说“更偏向能办成”“这个条件满足时，更支持C”“有人指出练习中的问题”。条件只在会影响本次判断且有依据时才写；不要给所有正面结果套“继续做下去就能成功”。单牌问题先回答倾向，再充分解释方向、牌位和问题之间的联系；解释完成便结束，不把同一结论改写一遍。
 English: Lead with the answer, then connect the actual card meaning to the facts the user supplied. A card may favor an approach; it cannot guarantee attendance, a habit, completed practice, or an outcome. “Small class” does not establish individual feedback, assignments, or classmates' ability. Say “if the course includes…” or “check whether…” for arrangements not given. Do not invent a history of collecting videos or failing to follow through. Choose one reversal meaning supported by the supplied reference and this question; explain the specific responsibility rather than vague phrases like “no one takes over.” Use ordinary words, not “grounding potential,” “the weight of this option,” “external echoes,” or a card's “power.” Add only a relevant, supported condition. A simple one-card answer may end after the answer and its reason, without repeating the conclusion.
+For comparisons, apply the same goal and evidence standard to every option. Unknown does not mean absent, and one option's unknown feedback, practice arrangement, or price cannot establish another option's advantage. Keep any condition that could change the ranking in both the opening preference and final conclusion.
 
 以下是原创措辞示范，不是传统牌义引文，也不是当前用户的事实。仅在输入确有同样的牌、方向、位置与背景时才可采用其推理；不要把示范的结论、安排或人物带到其他问题中。
 示范A：已知作品与场地确定，问下月能否办摄影展；结果倾向位为太阳正位。
@@ -1068,7 +1071,7 @@ English — Poor: “You have collected too many tutorials, no one will take ove
 | ID／问法 | 附加要求 |
 |---|---|
 | RD-PT01 会不会、能不能、是否 | 先对用户询问的事件及时间给倾向，再给最重要的支持/阻碍与改变判断的条件。不要把“愿望、建议、个人态度”当成事件已经会发生的证据；没有结果位且结构不足时说清局限 |
-| RD-PT02 A还是B、要不要采取某方案 | 比较同一目标下的实际差别。有A/B牌位才按两条路径读；单一路径问题不虚构另一条路的牌。可以有倾向，但不默认“行动优于等待” |
+| RD-PT02 A还是B、要不要采取某方案 | 比较同一目标下的实际差别。有A/B牌位才按两条路径读；单一路径问题不虚构另一条路的牌。可以有倾向，但不默认“行动优于等待”。各项使用相同的事实标准：未知不等于缺少，不能从一个选项的条件尚未确认推断另一个选项已经具备、无需或更便宜。明确区分牌义提示、已知安排和待核实条件；若待核实条件会改变比较结果，开头倾向和末尾结论都要保留它，不能先附条件再宣布无条件胜出 |
 | RD-PT03 为什么、卡在哪里 | 先指出牌面最支持的一种解释，再讲相关位置如何连起来；把未确认的原因写成待核对的可能性，不从牌反推用户必定做过某事 |
 | RD-PT04 怎么做、怎样改善 | 先给最贴题的一两项做法，再说明依据；动作要能理解，说明针对什么问题，不列通用十条计划，也不保证执行后必成 |
 | RD-PT05 什么时候 | 保留用户已有时间范围；能读方向就说推进快慢及所需条件，不能从牌号直接换算具体日期；不足时直接说看不出确切时间，不绕开问题写一篇建议 |
@@ -1793,3 +1796,7 @@ RP-1.1.1仅修订基础提示：事实与待确认安排分开，条件用“如
 新增结构沿用明确版本的圣三角、钻石、恋人金字塔、自我探索、吉普赛十字、六芒星、身心灵，并增加原创无牌阵五张。所有新增坐标用于选牌、揭牌、结果与牌库图。期望、环境、内外表现等位置以独立scope约束解读，不能仅因同为state角色就给相同结论；通用长牌义标为牌义背景，阻碍位的应用不会直接引用正向行动段。这里是确定性资料组织，不称模型组合推理。
 
 服务端载入独立card-reference，并只取所抽方向的完整含义、图像与误读；按实际问题领域取对应应用段，不无差别发送四个领域。实际位置的scope和description一并传入；细分位置不再同时传入冲突的粗角色短句。用户问题仍是非指令文本，密钥在服务端。生产与真实模型结果待最终发布记录。
+
+### RP-1.3.1 · 选择题条件对称与结论一致（2026-10-09）
+
+2.0发布后，三选一学习方案的合成真实模型回答在正文把A的反馈列为待确认，却在结论说它不依赖别人，并未据输入断言C更省钱。服务端选择问法与三选一场景要求现明确：三项按同一目标和事实标准比较，未知条件不能当缺少，也不能变成另一项的优势；教师／同伴反馈、练习安排和价格均须以用户已知事实为界。若待核条件可能改变排序，结论保留该条件。此处仅记录提示修订与本地合成请求检查；真实模型改进、生产部署和手机体验分别验证。

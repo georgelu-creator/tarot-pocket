@@ -9,6 +9,22 @@ function solarAt(spreadId,index,topic='general',reversed=false){
 }
 const present=solarAt('hexagram',1),environment=solarAt('hexagram',4),expectation=solarAt('hexagram',5);
 const opening=p=>p.details[0].paragraphs.join(' ');
+function reading(spreadId,topic,ids){return api.interpret({spreadId,topic,question:'怎样推进这个项目？',language:'zh',cards:ids.map(id=>({id,reversed:false}))});}
+const three=reading('three','general',['p08','m19','m01']);
+assert.match(three.overview.text,/主要阻碍是阶段顺利就不再核对细节/,'Short obstacle answer uses the same role as its detail');
+assert.match(opening(three.positions[1]),/因为阶段顺利就不再核对细节/);
+assert.doesNotMatch(three.overview.text,/主要阻碍是认可已有进展|主要阻碍是坦诚表达/,'Positive state guidance is not presented as an obstacle');
+const hexagram=reading('hexagram','career',['m00','p08','m14','m01','p03','m19','m21']);
+const whole=hexagram.sections.find(s=>s.title==='整组怎样回答').text;
+assert.match(whole,/“期望”的太阳正位指出：你可能期待“清晰、活力、喜悦”/);
+assert.match(opening(hexagram.positions[5]),/想得到或担心失去/);
+assert.doesNotMatch(whole,/“期望”的太阳正位指出：明确的成果和直接反馈可以帮助团队看清进展/);
+const pyramid=reading('lovers-pyramid','love',['c02','m02','s03','m14']);
+const pyramidWhole=pyramid.sections.find(s=>s.title==='整组怎样回答').text;
+assert.match(pyramidWhole,/“你的期望”的圣杯二正位指出：你可能期待/);
+assert.match(pyramidWhole,/“对方的期望”的女祭司正位指出：可借.*探索对方可能看重什么，仍需通过交流确认/);
+assert.match(opening(pyramid.positions[1]),/对方可能看重的关系主题/);
+assert.ok(pyramidWhole.length<500,'Whole-spread summary stays concise instead of copying card encyclopedia paragraphs');
 assert.equal(new Set([present,environment,expectation].map(opening)).size,3,'A shared coarse state role must preserve actual position semantics');
 assert.match(opening(environment),/个人之外的条件/);
 assert.match(opening(expectation),/想得到或担心失去/);

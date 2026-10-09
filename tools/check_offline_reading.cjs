@@ -325,7 +325,11 @@ const concreteThree = api.interpret(input('three', {
   ]
 }));
 assert.match(concreteThree.overview.text, /^对“这件事为什么推进不顺，我可以做什么？”/);
-assert.match(concreteThree.overview.text, /现在容易觉得处处受限.*休息不够就急着回到任务.*原来的计划或判断已经有一部分不成立.*最早暴露出来的具体问题/);
+assert.match(concreteThree.overview.text, /现在容易觉得处处受限.*把不停忙碌当成负责.*先确认现实变化/);
+for (const [position, roleText] of concreteThree.positions.map((p, index) => [p, ['受限', '把不停忙碌当成负责', '先确认现实变化'][index]])) {
+  assert.match(concreteThree.overview.text, new RegExp(roleText));
+  assert.match(position.details[0].paragraphs.join(' '), new RegExp(roleText), 'short answer and position detail use the same role');
+}
 const concreteVisible = [concreteThree.overview.text, ...concreteThree.sections.map(section => section.text), concreteThree.closing.text].join(' ');
 assert.equal((concreteVisible.match(/现在容易觉得处处受限/g) || []).length, 1, 'answer is not repeated verbatim in the evidence section');
 assert.doesNotMatch(concreteVisible, /结构|失效|信号|能量|张力|逐牌|牌义拼接/);

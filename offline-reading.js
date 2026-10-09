@@ -190,10 +190,34 @@
   function itemClause(item, topic, language, tr) {
     const name = cardName(item, language);
     const label = tr(item.position.label);
-    const meaning = withoutFinalPunctuation(cardMeaning(item, topic, tr));
+    const meaning = withoutFinalPunctuation(shortPositionMeaning(item, topic, language, tr));
     return language === 'en'
       ? `${name} (${orientationLabel(item, language)}) in “${label}” points to: ${meaning}`
       : `“${label}”的${name}${orientationLabel(item, language)}指出：${meaning}`;
+  }
+
+  function shortPositionMeaning(item, topic, language, tr) {
+    if (language === 'zh') {
+      const direction = root.TAROT_CARD_REFERENCE?.byId?.[item.card.id]?.[item.reversed ? 'reversed' : 'upright'];
+      const themes = item.reversed ? direction?.roles?.unknown : (item.card.keywords || []).join('、');
+      if (themes) {
+        const scoped = {
+          expectation: `你可能期待“${themes}”，还要与已经具备的条件分开看`,
+          'other-expectation': `可借“${themes}”探索对方可能看重什么，仍需通过交流确认`,
+          environment: `周围与“${themes}”有关的条件可能提供支持或形成限制`,
+          expression: `可观察“${themes}”怎样体现在别人看得见的行为中`,
+          thought: `“${themes}”提示你目前的想法与关注点，不等于客观现况`,
+          unconscious: `可留意“${themes}”是否与尚未察觉的需要或惯性有关`,
+          'other-perspective': `可借“${themes}”探索对方可能的角度，仍需与其实际表达核对`,
+          'own-perspective': `“${themes}”提示你怎样理解关系，不等于双方的共识`,
+          'daily-body': `可从“${themes}”观察日常节奏与实际体验，不据此判断健康状况`,
+          values: `“${themes}”提示你觉得值得投入的东西，还需看实际安排`
+        }[item.position.scope];
+        if (scoped) return scoped;
+      }
+      if (topic === 'general' && direction?.roles?.[item.position.role]) return naturalMeaning(direction.roles[item.position.role]);
+    }
+    return cardMeaning(item, topic, tr);
   }
 
   // The offline answer never infers a result by searching prose for positive or
@@ -825,9 +849,9 @@
     const state = items.find(item => item.position.role === 'state') || items[0];
     const obstacle = items.find(item => item.position.role === 'tension') || items[1];
     const advice = items.find(item => item.position.role === 'advice') || items[2];
-    const stateMeaning = withoutFinalPunctuation(cardMeaning(state, input.topic, tr));
-    let obstacleMeaning = withoutFinalPunctuation(cardMeaning(obstacle, input.topic, tr));
-    const adviceMeaning = withoutFinalPunctuation(cardMeaning(advice, input.topic, tr));
+    const stateMeaning = withoutFinalPunctuation(shortPositionMeaning(state, input.topic, language, tr));
+    let obstacleMeaning = withoutFinalPunctuation(shortPositionMeaning(obstacle, input.topic, language, tr));
+    const adviceMeaning = withoutFinalPunctuation(shortPositionMeaning(advice, input.topic, language, tr));
     if (en) {
       obstacleMeaning = obstacleMeaning.replace(/^Check whether\s+/i, '').replace(/, or whether\s+/i, ', or ');
       const scope = input.question && outcomeQuestion(input.question, language)
@@ -839,7 +863,7 @@
       const evidence = items.map(item => `${tr(item.position.label)}: ${cardName(item, language)} (${orientationLabel(item, language)}), centered on “${withoutFinalPunctuation(naturalMeaning(tr(item.card.core)))}”`).join('. ');
       return {overview, sections: [section('evidence', 'Why these cards support the answer', evidence, items)]};
     }
-    obstacleMeaning = obstacleMeaning.replace(/^检查是否/, '').replace(/，或是否/g, '，也可能是').replace(/^检查/, '需要弄清');
+    obstacleMeaning = obstacleMeaning.replace(/^因为/, '').replace(/^检查是否/, '').replace(/，或是否/g, '，也可能是').replace(/^检查/, '需要弄清');
     const current = /^(?:现在|当前)/.test(stateMeaning) ? stateMeaning : `当前最值得先看的是：${stateMeaning}`;
     const scope = input.question && outcomeQuestion(input.question, language)
       ? '这个牌阵没有结果位，不能据此判断所问结果会不会发生；它能帮助你看现状、阻碍和下一步。'

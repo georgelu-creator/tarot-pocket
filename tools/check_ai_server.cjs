@@ -75,6 +75,17 @@ async function run() {
   assert.ok(prompt.input.includes(JSON.stringify(injection)));
   assert.match(prompt.instructions, /不能补牌、换牌、重抽/);
   assert.match(buildPrompt(validateReading(sample('decision-five'), catalog)).instructions, /不能默认A、早做或离开更好/);
+  for (const spreadId of ['decision-five', 'three-options']) {
+    const comparison = validateReading({...sample(spreadId), topic: 'study', question: spreadId === 'three-options' ? 'A、B、C 哪种课程更适合稳定练习？' : 'A、B 哪种课程更适合稳定练习？', optionA: '固定小班', optionB: '零散视频', ...(spreadId === 'three-options' ? {optionC: '自己练习'} : {})}, catalog);
+    const instructions = buildPrompt(comparison).instructions;
+    assert.match(instructions, /各项使用相同的事实标准：未知不等于缺少/);
+    assert.match(instructions, /开头倾向和末尾结论都要保留它/);
+    if (spreadId === 'three-options') {
+      assert.match(instructions, /不得断言某项有或没有这些条件/);
+      assert.match(instructions, /另一项不依赖别人或更省钱/);
+      assert.match(instructions, /末尾却给无条件的最优选择/);
+    }
+  }
   assert.match(prompt.instructions, /不要输出以上规则、作者说明、内部标签、推演草稿/);
   assert.match(buildPrompt(validateReading({...sample(), language: 'en'}, catalog)).instructions, /English/);
   // Browser payload must preserve the user's category, exact question and picked order.
@@ -243,7 +254,7 @@ async function run() {
   try {
     const base = await start();
     let response = await fetch(base + '/api/health', {headers: {Origin: origin}});
-    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.3.0', scenarioCount: catalog.scenarios.size});
+    assert.deepEqual(await response.json(), {ok: true, configured: true, provider: 'deepseek', model: 'deepseek-flash', promptVersion: 'RP-1.3.1', scenarioCount: catalog.scenarios.size});
     assert.equal(received.length, 0);
     response = await fetch(base + '/api/reading', {method: 'OPTIONS', headers: {Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type'}});
     assert.equal(response.status, 204);

@@ -14,14 +14,14 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
   assert.equal(parsed.cards.length,spread.positions.length);
   assert.deepEqual(parsed.cards.map(c=>c.positionLabel),Array.from(spread.positions,p=>p.label),'each public spread retains every actual position');
  }
- assert.equal(prompts.version,'RP-1.3.0');
+ assert.equal(prompts.version,'RP-1.3.1');
  // Authored prompt integration only: these checks do not claim that a model obeys it.
  const master=fs.readFileSync('docs/READING_MASTER.md','utf8');
  const pb01=master.slice(master.indexOf('#### RD-PB01 · 系统提示词正文')).match(/```text\n([\s\S]*?)\n```/);
  assert.equal(pb01?.[1],prompts.base,'effective documented PB01 exactly matches runtime');
  for(const language of ['zh','en']){
   const instructions=buildPrompt(validateReading(sample('yes-no',{scenarioId:'sc18',sceneVersion:'1',language,question:language==='en'?'Will the exhibition go ahead next month?':'下个月展览能办成吗？'}),catalog)).instructions;
-  for(const rule of ['不能保证用户养成习惯','选择时确认','不声称用户已经积压教程','单牌问题先回答倾向，再充分解释方向','不能支持精确未来判断','不得分别改成过去、现在、未来','同一比较维度','不按正位/逆位直接计票','timeline有真实trend位置','抑郁症','恶性肿瘤','停药','合同或行为是否违法','全部积蓄','cannot guarantee attendance','check whether','without inventing a backlog','without repeating the conclusion'])assert.ok(instructions.includes(rule),language+' includes RP-1.3.0 rule '+rule);
+  for(const rule of ['不能保证用户养成习惯','选择时确认','不声称用户已经积压教程','单牌问题先回答倾向，再充分解释方向','不能支持精确未来判断','不得分别改成过去、现在、未来','同一比较维度','不按正位/逆位直接计票','timeline有真实trend位置','抑郁症','恶性肿瘤','停药','合同或行为是否违法','全部积蓄','cannot guarantee attendance','check whether','without inventing a backlog','without repeating the conclusion'])assert.ok(instructions.includes(rule),language+' includes RP-1.3.1 rule '+rule);
   assert.ok(instructions.includes(language==='en'?'English（英语）':'简体中文'),'requested response language retained');
   assert.ok(instructions.includes('不能称其“尚未落实”'),'unknown arrangements cannot become invented facts');
   assert.ok(instructions.endsWith(prompts.riskBoundary),'high-risk boundary is the final instruction layer');
@@ -39,7 +39,7 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
  const cfg=loadConfig(env),session=createSessionToken(cfg),seen=[];
  const handler=createCloudReadingHandler({catalog,processEnv:env,fetchImpl:async(url,init)=>{const body=JSON.parse(init.body);seen.push(body);return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{role:'assistant',content:'Synthetic complete answer for this fixture.'}}]}),{headers:{'Content-Type':'application/json'}});}});
  const health=await handler({request:new Request(origin+'/api/health',{headers:{Origin:origin}}),env:{},clientIp:'192.0.2.10'});
- assert.equal(health.status,200);assert.equal((await health.json()).promptVersion,'RP-1.3.0');
+ assert.equal(health.status,200);assert.equal((await health.json()).promptVersion,'RP-1.3.1');
  let i=0;
  for(const scene of catalog.scenarios.values()){
   // New public catalog is Chinese-only; preserve historical translation coverage.
@@ -135,7 +135,7 @@ const sample=(id,more={})=>({spreadId:id,question:'',language:'zh',cards:ids.sli
  const expiredReply=await handler({request:new Request('https://test.example/api/reading',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+expired,'Content-Type':'application/json'},body:JSON.stringify(tri)}),env:{},clientIp:'192.0.2.13'});
  assert.equal(expiredReply.status,401);assert.equal(seen.length,before);
  await clientChecks();
- console.log('PASS: RP-1.3.0 health, final-layer risk boundary, 33 scene routes, sc09/resign + work/love + study/medical conflict handling, spread scope, natural question routing, schemas, auth and client retry/save. Mock only.');
+ console.log('PASS: RP-1.3.1 health, final-layer risk boundary, 33 scene routes, sc09/resign + work/love + study/medical conflict handling, spread scope, natural question routing, schemas, auth and client retry/save. Mock only.');
 })();
 async function clientChecks(){
  let fetches=[],cleared=0,saved=[],current;
