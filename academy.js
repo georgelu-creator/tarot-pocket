@@ -247,19 +247,24 @@
     function recommendation(){const candidates=CARD_PATH.filter(id=>!status(id)?.uprightAt),seen=new Set([current()?.unitId,...Object.values(data().paused||{}).map(s=>s.unitId)]),fresh=candidates.filter(id=>!seen.has(id));return fresh[0]||candidates[0]||null;}
     function save(d){d.contentVersion=version;set(d);}
     function pauseAnimation(){}
+    function showSession(){
+      const s=current(),scroll=s?.scroll||0;
+      go('academy');
+      window.requestAnimationFrame?.(()=>{if(current()===s&&document.querySelector('.academy-shell'))window.scrollTo(0,scroll);});
+    }
     function start(id,mode='learn',options={}){
       pauseAnimation();if(!units[id])return;
       const d=data(),u=units[id];
       if(mode==='reverse'&&!status('I04')?.completedAt){d.pendingReverse=id;id='I04';mode='learn';}
       else if(mode==='reverse')d.pendingReverse=null;
-      if(active()&&current().unitId===id&&current().mode===mode&&(mode!=='practice'||current().practiceKey===(options.key||'V1'))){if(options.courseLevel){d.session.courseLevel=options.courseLevel;save(d);}go('academy');return;}
+      if(active()&&current().unitId===id&&current().mode===mode&&(mode!=='practice'||current().practiceKey===(options.key||'V1'))){if(options.courseLevel){d.session.courseLevel=options.courseLevel;save(d);}showSession();return;}
       if(active())d.paused[current().unitId+':'+current().mode+(current().mode==='practice'?':'+current().practiceKey:'')]=structuredClone(current());
       const practiceKey=mode==='practice'?(options.key||'V1'):null,key=id+':'+mode+(practiceKey?':'+practiceKey:'');
       const resumed=d.paused[key];
       d.session=resumed||{unitId:id,mode,index:0,startedAt:now(),seed:Math.floor(Math.random()*1e9)+1,contentVersion:version,answers:{},support:null,hint:false,complete:false,lang:lang(),animation:{frame:0,static:true,paused:true},scroll:0};
       if(options.courseLevel)d.session.courseLevel=options.courseLevel;
       if(mode==='practice'&&!resumed){d.session.practiceKey=practiceKey;d.session.variant=(status(id)?.history||[]).flatMap(r=>r.answers||[]).filter(a=>practiceVariants(units[id],practiceKey).some(q=>q.id===a.questionId)).length;}
-      delete d.paused[key];save(d);go('academy');
+      delete d.paused[key];save(d);showSession();
     }
     function guidedNext(){const saved=stageSession();if(saved){enterCourse({id:saved.unitId,mode:saved.mode,key:saved.practiceKey});return;}const item=stageNext(data(),courseLevel(),now());if(item)enterCourse(item);else{toast('本阶段已完成，可以选择下一阶段。');go('courses');}}
     function guidedSummary(){const states=source.cards.map(u=>skillState(status(u.id)));return {foundation:states.filter(s=>s.foundation).length,application:states.filter(s=>s.application).length,integration:states.filter(s=>s.integration).length,next:stageNext(data(),courseLevel(),now())||null};}
@@ -298,7 +303,7 @@
       const shown=ids, special=['A05','A06'].includes(u.id),path='all';
       const roles=u.id==='A05'?[['现状','Situation'],['A 发展','A development'],['B 发展','B development'],['A 趋势','A tendency'],['B 趋势','B tendency']]:u.id==='A06'?[['整体影响','Overall'],['交叉阻碍','Crossing obstacle'],['目标','Goal'],['基础','Foundation'],['渐退影响','Receding'],['将来影响','Approaching'],['自己','Your approach'],['环境','Environment'],['希望或担忧','Hopes or fears'],['结果趋势','Tendency']]:null;
       const group=path==='a'?[0,1,3]:path==='b'?[0,2,4]:path==='work'?[0,1]:path==='movement'?[3,4,5,7]:path==='outcome'?[2,8,9]:ids.map((_,i)=>i);
-      return `<div class="academy-image-space ${shown.length>1?'is-spread':''} ${special?'academy-layout-'+u.id:''}" aria-label="${copy('本节牌图','Cards in this lesson')}">${shown.map((id,i)=>{const c=units[id],reversed=step?.reversed||s.mode?.startsWith('reverse')||u.id==='A04'&&id==='p08'||u.id==='I04'&&step?.key!=='T1';return `<figure data-position="${i+1}" class="${group.includes(i)?'is-emphasized':''}"><button class="academy-card-face ${reversed?'is-reversed':''}" data-action="zoom" data-id="${id}" aria-label="${esc(copy('放大','Enlarge')+' '+t(c?.title))}">${img(id)}</button><figcaption>${shown.length>1?`${i+1} · `:''}${roles?esc(copy(...roles[i])):esc(t(c?.title))}${reversed?' · '+copy('逆位','Reversed'):''}</figcaption></figure>`;}).join('')}</div>`;
+      return `<div class="academy-image-space ${shown.length>1?'is-spread':''} ${special?'academy-layout-'+u.id:''}" aria-label="${copy('本节牌图','Cards in this lesson')}">${shown.map((id,i)=>{const c=units[id],reversed=step?.reversed||s.mode?.startsWith('reverse')||u.id==='A04'&&id==='p08'||u.id==='I04'&&step?.key!=='T1';return `<figure data-position="${i+1}" class="${group.includes(i)?'is-emphasized':''}"><button class="academy-card-face ${reversed?'is-reversed':''}" data-action="zoom" data-id="${id}" data-face="${reversed?'reversed':'upright'}" aria-label="${esc(copy('放大','Enlarge')+' '+t(c?.title))}">${img(id)}</button><figcaption>${shown.length>1?`${i+1} · `:''}${roles?esc(copy(...roles[i])):esc(t(c?.title))}${reversed?' · '+copy('逆位','Reversed'):''}</figcaption></figure>`;}).join('')}</div>`;
     }
     function cardDossier(u){
       const d=u.kind==='card'&&u.details;if(!d)return '';
@@ -422,7 +427,7 @@
       if(action==='catalog-back'){catalogOpen=false;refresh(true);return;}
       if(action==='next-level'){selectLevel(el.dataset.value);guidedNext();return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
-      if(action==='answer'){if(answer(d,el.dataset.value,now())){save(d);refresh();}return;}
+      if(action==='answer'){if(answer(d,el.dataset.value,now())){save(d);refresh();requestAnimationFrame(()=>document.querySelector('.academy-feedback')?.scrollIntoView({block:'start',behavior:'instant'}));}return;}
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
       if(action==='next'){
         pauseAnimation();
@@ -433,7 +438,7 @@
     // Save scrolling without a write for every scroll event. Restoring the unit
     // keeps both its committed evidence and the learner's reading position.
     let scrollSaveTimer=null;
-    window.addEventListener?.('scroll',()=>{if(!document.querySelector('.academy-shell'))return;clearTimeout(scrollSaveTimer);scrollSaveTimer=setTimeout(()=>{const d=data();if(d.session){d.session.scroll=window.scrollY;save(d);}},180);},{passive:true});
+    window.addEventListener?.('scroll',()=>{if(!document.querySelector('.academy-shell'))return;clearTimeout(scrollSaveTimer);const session=current();scrollSaveTimer=setTimeout(()=>{const d=data();if(d.session===session&&document.querySelector('.academy-shell')){d.session.scroll=window.scrollY;save(d);}},180);},{passive:true});
     window.addEventListener?.('pagehide',()=>{if(!document.querySelector('.academy-shell'))return;const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}});
     document.addEventListener('tarot-language-change',()=>{pauseAnimation();const d=data();if(d.session){d.session.lang=lang();d.session.animation.paused=true;save(d);}if(document.querySelector('.academy-shell,.academy-home'))refresh();});
     function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 课完成初学 · ${completedCards().length} / 78 张牌完成初学 · ${masteredCards().length} 张已巩固</p><p class="tiny muted">“已巩固”表示学过正位与逆位，并独立完成两次间隔回访；仍可继续复习，不代表陌生情境都会。</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
