@@ -681,6 +681,8 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 .reading-v2 .reading-fan-table>p{font-size:13px;color:var(--muted);padding:0 18px;margin:8px 0 12px}
 .reading-v2 .ritual-count{font-size:13px;padding:5px 8px;white-space:nowrap}
 .reading-v2 .selection-board{padding:0 14px;margin:18px auto;min-height:112px}
+/* Include the card and both side paddings in the single-position board. */
+.reading-v2 .selection-board.layout-one{max-width:74px}
 .reading-v2 .selection-board .reading-card{width:46px;height:72px;min-height:0;border-radius:7px;aspect-ratio:auto;margin:auto}
 .reading-v2 .selection-board .reading-slot.current .reading-card{box-shadow:0 0 0 2px var(--accent);background:var(--soft)}
 .reading-v2 .selection-board .reading-slot.filled .reading-card{animation:tray-arrival .4s ease both}
@@ -803,7 +805,7 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
  .reading-v2 .reading-fan-table h2{font-size:16px;line-height:1.35}
  .reading-v2 .reading-fan-table>p{padding:0 10px;margin:2px 0 3px;font-size:11px}
  .reading-v2 .selection-board{display:grid!important;gap:3px;width:min(100%,220px);max-width:220px;min-height:0;height:auto;margin:2px auto 3px;padding:2px;overflow:visible}
- .reading-v2 .selection-board.layout-one{display:block!important;width:24px;max-width:24px}
+ .reading-v2 .selection-board.layout-one{display:block!important;width:28px;max-width:28px}
  .reading-v2 .selection-board.layout-grid{max-width:62px}
  .reading-v2 .selection-board.layout-choice{max-width:92px}
  .reading-v2 .selection-board.layout-cross,.reading-v2 .selection-board.layout-decision,.reading-v2 .selection-board.layout-relation-cross{max-width:92px}
