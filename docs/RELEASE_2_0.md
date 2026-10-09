@@ -30,3 +30,5 @@
 ### 发布后 CI 差异
 
 PR #30 首轮 Linux CI 在 WebKit 的第三张牌点选后出现页面进程 crash，而不是牌位断言失败；同版完整本地检查通过。保留所有点击、动效、揭牌及离线检查，并补充进程/阶段日志。另排查到离开选牌页后旧扇形节点仍被引用及78张牌全量常驻合成层提示的问题，按资源生命周期修复；没有把该发现直接当作已证实的崩溃根因。
+
+进一步比对上游定位到动画滤镜的已知Linux WebKit风险：当前Playwright 1.62.1的WebKit r2336早于修复。维护者的[复现与讨论](https://github.com/microsoft/playwright/issues/42637)、[WebKit空滤镜修复](https://github.com/WebKit/WebKit/pull/73621)及[Playwright引入r2364](https://github.com/microsoft/playwright/pull/42748)与本项目filter过渡/brightness动画吻合。应用改用非滤镜高亮，揭牌保留位移、牌背旋转和正面显现；不移除任何交互验收。最终Linux CI结果记录在v2.0.0发布页。
