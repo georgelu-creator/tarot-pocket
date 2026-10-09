@@ -2,24 +2,42 @@
 'use strict';
 const assert=require('node:assert/strict'),{chromium,webkit}=require('playwright'),h=require('./reading_ui_harness.cjs');
 async function assertCenteredFan(page,label){
- const arc=await page.locator('[data-fan-viewport]').evaluate(viewport=>{
+ const geometry=await page.locator('[data-fan-viewport]').evaluate(viewport=>{
   const bounds=viewport.getBoundingClientRect(),center=viewport.scrollLeft+viewport.clientWidth/2;
   const cards=[...viewport.querySelectorAll('[data-deck-card]')].filter(card=>{const rect=card.getBoundingClientRect();return rect.right>bounds.left&&rect.left<bounds.right;}).map(card=>{
    const x=card.offsetLeft+card.offsetWidth/2-center;
    const match=card.style.transform.match(/translateY\(([-\d.]+)px\) rotate\(([-\d.]+)deg\)/);
-   return {x,y:Number(match?.[1]),angle:Number(match?.[2])};
+   const rect=card.getBoundingClientRect();
+   return {x,y:Number(match?.[1]),angle:Number(match?.[2]),left:Math.max(bounds.left,rect.left)-bounds.left,right:Math.min(bounds.right,rect.right)-bounds.left,enabled:!card.disabled};
   });
-  return cards;
+  return {cards,width:viewport.clientWidth,scrollLeft:viewport.scrollLeft};
  });
+ const arc=geometry.cards;
  assert(arc.length>=5,`${label} must show a useful section of the fan: ${JSON.stringify(arc)}`);
  assert(arc.every(card=>Number.isFinite(card.y)&&Number.isFinite(card.angle)),`${label} has an unpainted card: ${JSON.stringify(arc)}`);
  const left=arc.filter(card=>card.x<0),right=arc.filter(card=>card.x>0),middle=arc.reduce((current,card)=>Math.abs(card.x)<Math.abs(current.x)?card:current);
  assert(left.some(card=>card.angle<-.5),`${label} lacks the left side of the arc: ${JSON.stringify(arc)}`);
  assert(right.some(card=>card.angle>.5),`${label} lacks the right side of the arc: ${JSON.stringify(arc)}`);
+ assert(left.some(card=>card.enabled&&card.right-card.left>=8)&&right.some(card=>card.enabled&&card.right-card.left>=8),`${label} must offer selectable cards on both sides`);
+ const occupiedWidth=Math.max(...arc.map(card=>card.right))-Math.min(...arc.map(card=>card.left));
+ assert(occupiedWidth>=geometry.width*.85,`${label} fan must fill at least 85% of its viewport: ${JSON.stringify({occupiedWidth,...geometry})}`);
  assert(Math.min(...left.map(card=>card.y))>=middle.y-.5&&Math.min(...right.map(card=>card.y))>=middle.y-.5,`${label} must be highest near the viewport center: ${JSON.stringify({left,right,middle})}`);
+ assert(left.some(card=>card.y>middle.y+2)&&right.some(card=>card.y>middle.y+2),`${label} center must be higher than both ends: ${JSON.stringify({left,right,middle})}`);
 }
-(async()=>{const server=await h.server();try{for(const [name,engine]of [['chromium',chromium],['webkit',webkit]]){const browser=await engine.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});try{for(const width of [320,390])for(const reducedMotion of ['no-preference','reduce']){const ctx=await h.context(browser,{viewport:{width,height:844},isMobile:true,reducedMotion}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await h.enter(p,server.url);await h.start(p);await h.toPick(p);const pool=(await h.state(p)).draft.pool;assert.equal(await p.locator('[data-deck-card]').count(),78);assert.equal(await p.locator('[data-reading=pick]:enabled').count(),78);assert.equal(await p.locator('[data-fan-viewport] img,[data-reading=pick-confirm],[data-reading=pick-page]').count(),0);await h.fit(p);
- await assertCenteredFan(p,`${name} ${width} ${reducedMotion}`);
+async function assertInitialFan(page,label){
+ assert.equal(await page.locator('[data-fan-viewport]').evaluate(el=>el.scrollLeft),0,`${label} begins without any horizontal scrolling`);
+ await assertCenteredFan(page,label);
+}
+async function resizeFan(page,width,label){
+ await page.setViewportSize({width,height:page.viewportSize().height});
+ await page.locator('[data-fan-viewport]').evaluate(el=>new Promise((resolve,reject)=>{let previous='',stable=0,frames=0;function sample(){const key=[el.clientWidth,el.scrollLeft,...[...el.querySelectorAll('[data-deck-card]')].map(c=>c.style.transform)].join('|');stable=key===previous?stable+1:0;previous=key;if(stable>=5)resolve();else if(++frames>=180)reject(Error('Fan resize did not settle'));else requestAnimationFrame(sample);}requestAnimationFrame(sample);}));
+ await h.fit(page);
+ await assertInitialFan(page,label);
+}
+(async()=>{const server=await h.server();try{for(const [name,engine]of [['chromium',chromium],['webkit',webkit]]){const browser=await engine.launch(name==='chromium'?require('./browser_options.cjs'):{headless:true});try{for(const width of [768,1280,1720]){const ctx=await h.context(browser,{viewport:{width,height:980},isMobile:false,reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));try{await h.enter(p,server.url);await h.start(p);await h.toPick(p);await h.fit(p);await assertInitialFan(p,`${name} initial ${width}`);await resizeFan(p,390,`${name} ${width} resized to 390`);await resizeFan(p,width,`${name} restored to ${width}`);assert.deepEqual((await h.state(p)).draft.picked,[],'initial and resized arcs require no selection or horizontal scrolling');assert.deepEqual(errors,[]);console.log(`PASS initial fan ${name} ${width} with resize`);}finally{await ctx.close();}}for(const width of [320,390])for(const reducedMotion of ['no-preference','reduce']){const ctx=await h.context(browser,{viewport:{width,height:844},isMobile:true,reducedMotion}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await h.enter(p,server.url);await h.start(p);await h.toPick(p);const pool=(await h.state(p)).draft.pool;assert.equal(await p.locator('[data-deck-card]').count(),78);assert.equal(await p.locator('[data-reading=pick]:enabled').count(),78);assert.equal(await p.locator('[data-fan-viewport] img,[data-reading=pick-confirm],[data-reading=pick-page]').count(),0);await h.fit(p);
+ await assertInitialFan(p,`${name} ${width} ${reducedMotion}`);
+ await resizeFan(p,width===320?390:320,`${name} mobile resized ${width} ${reducedMotion}`);
+ await resizeFan(p,width,`${name} mobile restored ${width} ${reducedMotion}`);
  const fanStyle=await p.locator('[data-reading=pick]').first().evaluate(el=>({willChange:getComputedStyle(el).willChange,filter:getComputedStyle(el).filter,transition:getComputedStyle(el).transitionProperty}));
  assert.equal(fanStyle.willChange,'auto','fan cards do not reserve 78 compositor layers');
  assert.equal(fanStyle.filter,'none','fan cards do not apply a WebKit filter');
