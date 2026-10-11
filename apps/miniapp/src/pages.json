@@ -1,0 +1,72 @@
+{
+  "pages": [
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "星纱塔罗"
+      }
+    },
+    {
+      "path": "pages/learn/index",
+      "style": {
+        "navigationBarTitleText": "学牌"
+      }
+    },
+    {
+      "path": "pages/draw/index",
+      "style": {
+        "navigationBarTitleText": "抽牌"
+      }
+    },
+    {
+      "path": "pages/library/index",
+      "style": {
+        "navigationBarTitleText": "牌库"
+      }
+    },
+    {
+      "path": "pages/card/index",
+      "style": {
+        "navigationBarTitleText": "牌义"
+      }
+    },
+    {
+      "path": "pages/records/index",
+      "style": {
+        "navigationBarTitleText": "记录"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#f6f1e8",
+    "backgroundColor": "#f6f1e8"
+  },
+  "tabBar": {
+    "color": "#79717b",
+    "selectedColor": "#63485f",
+    "backgroundColor": "#fffdf8",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/draw/index",
+        "text": "抽牌"
+      },
+      {
+        "pagePath": "pages/learn/index",
+        "text": "学牌"
+      },
+      {
+        "pagePath": "pages/library/index",
+        "text": "牌库"
+      },
+      {
+        "pagePath": "pages/records/index",
+        "text": "记录"
+      }
+    ]
+  }
+}

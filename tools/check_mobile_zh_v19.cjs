@@ -87,13 +87,13 @@ async function assertChineseShell(page){
       const row=document.querySelector('[data-scenario="sc02"]'),summary=row.querySelector('p'),style=getComputedStyle(summary);
       return {nav:{left:navRect.left,right:navRect.right,clientWidth:nav.clientWidth,scrollWidth:nav.scrollWidth},buttons,summary:{text:summary.textContent.trim(),clientHeight:summary.clientHeight,scrollHeight:summary.scrollHeight,lineClamp:style.webkitLineClamp,overflow:style.overflow}};
     });
-    assert.deepEqual(directory.buttons.map(x=>x.text),['基础牌阵','感情','工作','学业','生活']);
+    assert.deepEqual(directory.buttons.map(x=>x.text),['常用牌阵','感情','工作','学业','生活','专业通用']);
     assert(directory.nav.scrollWidth<=directory.nav.clientWidth+1,'category row must not hide an entry');
     for(const button of directory.buttons){assert(button.left>=directory.nav.left-.5&&button.right<=directory.nav.right+.5,`category is clipped: ${JSON.stringify(button)}`);assert(button.width>=43.5&&button.height>=43.5,`category target is too small: ${JSON.stringify(button)}`);}
     assert.equal(directory.summary.text,'不预设牌位，围绕同一个问题，把三张牌连起来解读。');
     assert.equal(directory.summary.lineClamp,'none');
     assert(directory.summary.scrollHeight<=directory.summary.clientHeight+1,'directory summary must be fully visible');
-    for(const category of ['all','love','work','study','life']){
+    for(const category of ['all','love','work','study','life','professional']){
       await page.locator(`[data-reading="category"][data-value="${category}"]`).click();
       await page.locator(`#reading-theme-${category}`).waitFor();
       await assertThumbnailContainment(page,`320 px ${category} directory`);
