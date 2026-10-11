@@ -10,6 +10,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+subprocess.run([sys.executable, str(ROOT/'tools/build_card_knowledge.py')], check=True)
 subprocess.run([sys.executable, str(ROOT/'tools/build_academy.py')], check=True)
 version = json.loads((ROOT/'package.json').read_text())['version']
 translations = {}

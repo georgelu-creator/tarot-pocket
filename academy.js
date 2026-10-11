@@ -3,6 +3,11 @@
   'use strict';
   const source=window.TAROT_ACADEMY_CONTENT, units=Object.fromEntries([...source.lessons,...source.cards].map(u=>[u.id,u]));
   const DAY=86400000, version=source.version;
+  function knowledgeLesson(catalog,id,step){
+    if(!step||step.kind!=='teach'||step.support)return null;
+    const key={T1:'foundation',T2:'application',T3:'reversal',T4:'integration'}[step.key];
+    return catalog?.byId?.[id]?.learning?.[key]||null;
+  }
   const CARD_PATH=(()=>{
     const byId=new Map(source.cards.map(card=>[card.id,card]));
     const ids=[
@@ -380,7 +385,9 @@
         const labels=step.kind==='summary'?copy('把刚才的要点连起来','Reconnect the key point'):step.support?copy('换个例子，继续理解','Another example to help it click'):step.key==='T2'&&u.kind==='card'?copy('看看怎样用','See how to apply it'):step.reversed?copy('在这个例子里读逆位','A reversal in this situation'):copy('先看讲解','Start with an explanation');
         const firstCard=u.kind==='card'&&step.key==='T1'&&!step.support;
         const content=firstCard?`<div class="academy-teaching-points">${step.content.map((p,i)=>`<section><h2>${['核心意思','画面线索','记忆线索'][i]||'先理解这点'}</h2><p>${esc(t(p))}</p></section>`).join('')}</div>`:step.content.map(p=>`<p>${esc(t(p))}</p>`).join('');
-        body=`<section class="academy-copy academy-content-enter"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${content}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
+        const insight=u.kind==='card'?knowledgeLesson(window.TAROT_CARD_KNOWLEDGE,u.id,step):null;
+        const extra=insight?`<aside class="academy-knowledge" data-card-knowledge="${step.key}"><h2>${esc(insight.title)}</h2><p>${esc(insight.text)}</p></aside>`:'';
+        body=`<section class="academy-copy academy-content-enter"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${content}${extra}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
       }else{
         const q=step.question,a=s.answers[q.id],ordered=[...q.options].sort((x,y)=>hash(x.id+s.seed)-hash(y.id+s.seed));
         const hint=step.key==='Q2'&&u.application?[u.application]:step.reversed?[u.reversal]:u.teachings;
@@ -472,5 +479,5 @@
     function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 课完成初学 · ${completedCards().length} / 78 张牌完成初学 · ${masteredCards().length} 张已巩固</p><p class="tiny muted">“已巩固”表示学过正位与逆位，并独立完成两次间隔回访；仍可继续复习，不代表陌生情境都会。</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
     return {home,render,start,guidedNext,guidedSummary,newCard,review,current,active,status,completedCards,masteredCards,learningState,due,recommendation,dashboard,pause:pauseAnimation};
   }
-  window.TarotAcademy={practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
+  window.TarotAcademy={knowledgeLesson,practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
 })();

@@ -1,5 +1,17 @@
 # 78 张牌独立参考资料
 
+## 2026-10-12 · 独立深度资料与课程摘录
+
+新增 `content/card-knowledge/{major,wands-cups,swords-pentacles}.json`，由 `tools/build_card_knowledge.py` 生成 `card-knowledge.js`（knowledge-1）。此层服务牌库与课程讲解；原 `card-reference.js` 保留解读引擎兼容字段与含义，不用更长正文暗中改变抽牌算法。
+
+每张新增：整副牌中的位置、两个含义辨析、三个有条件的逆位分支、感情/工作/金钱资源/学业/生活的正逆位补充、两张近似牌比较、两个原创虚构情境，以及早期RWS出处与现代解释的区别。来源逐牌附在条目，用户可以展开查证；领域解释和例子不冒充原典翻译，也不宣称覆盖所有流派。
+
+本轮检索以 A. E. Waite《The Pictorial Key to the Tarot》独立单牌章节为历史参考：[原著目录](https://sacred-texts.com/book/the-pictorial-key-to-the-tarot)、[Wikisource原书](https://en.wikisource.org/wiki/The_Pictorial_Key_to_the_Tarot)。逐牌 `history.source` 对应 `sources[]` 的具体阅读来源；少数独立章节无法访问时仅采用实际查到的书中对应条目，不把无法访问的页标成已核验。早期原著中的肤色、性别固定映射与确定预言不直接作为现代结论。
+
+另查看[Joan Bunning逆位教学](https://www.learntarot.com/less17.htm)与[塔罗中国星币六资料页](https://www.tarotchina.net/suit-of-pentacles6/)，只参考资料组织与读法差异，不批量复制现代网站文章；不采用其健康、生育或财务结果断语。课程四段摘录按画面→应用→逆位→辨析选择，完整资料仍只在独立牌库。
+
+验收分开记录：数据完整性、网页及uni-app实际渲染、来源与内容抽查、独立审查、线上版本，以及真人教学效果。前几项不能代替最后一项；当前验证结果以HANDOFF本轮记录为准。
+
 本资料对应 `card-reference.js` 的 `reference-1`。中文原创，采用既有稳定牌 ID，作为牌库与本地解读共享的参考。课程保留重点讲解与练习，牌库另提供正逆位解释、场景应用、牌位读法、误读与近似牌区别。本轮为作者编辑与自动覆盖检查，尚不宣称独立塔罗教师审校或真实学习效果验证。
 
 ## 来源与使用边界

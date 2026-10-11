@@ -13,7 +13,7 @@
 <body><main>
 <small>塔罗随身学</small>
 <h1 id="title">带着记录，进入新版</h1>
-<p id="intro">下载并校验新版完整内容，再由你决定何时进入。学习进度、抽牌和日签记录保留在本机。</p>
+<p id="intro">下载并校验新版完整内容，再由你决定何时进入。学习进度、当前牌局和当天塔罗日运保留在本机；旧抽牌历史会按新版设置清理。</p>
 <div id="status" role="status" aria-live="polite"></div>
 <progress id="progress" hidden></progress>
 <button id="download">检查并下载新版</button>
@@ -30,7 +30,7 @@ if(location.hostname==='georgelu-creator.github.io'&&location.pathname.startsWit
 }
 const revision='TAROT_BUILD_REVISION';
 let registration,busy=false,prepared=false,phase='idle',error='',downloaded=0,total=0;
-const copy={idle:'这是独立更新入口，可以从旧离线版本切换到本次发布。',downloading:'正在下载并检查全部应用文件和 78 张牌图…',ready:'新版完整性检查通过。点下方按钮后进入，已有记录不会被清除。',activating:'正在切换到已校验的新版…',failed:'更新未完成。当前版本和已有记录保留，请保持联网后重试。',unsupported:'请在 Safari 或 Chrome 中打开此 HTTPS 页面。'};
+const copy={idle:'这是独立更新入口，可以从旧离线版本切换到本次发布。',downloading:'正在下载并检查全部应用文件和 78 张牌图…',ready:'新版完整性检查通过。进入后保留学习进度、当前牌局和当天日运，清理旧抽牌历史。',activating:'正在切换到已校验的新版…',failed:'更新未完成。当前版本和已有记录保留，请保持联网后重试。',unsupported:'请在 Safari 或 Chrome 中打开此 HTTPS 页面。'};
 const get=id=>document.getElementById(id);
 function render(){document.documentElement.lang='zh-CN';get('back').href='./?lang=zh';get('status').textContent=copy[phase]+(total&&phase==='downloading'?' '+downloaded+' / '+total:'');get('progress').hidden=!total||phase!=='downloading';get('progress').max=total||1;get('progress').value=downloaded;get('download').disabled=busy;get('download').classList.toggle('hidden',prepared);get('continue').classList.toggle('hidden',!prepared);get('continue').disabled=busy;}
 function request(worker,type){return new Promise((resolve,reject)=>{if(!worker){reject(Error('no-worker'));return;}const channel=new MessageChannel(),timer=setTimeout(()=>reject(Error('timeout')),180000);channel.port1.onmessage=e=>{clearTimeout(timer);resolve(e.data);};worker.postMessage({type},[channel.port2]);});}

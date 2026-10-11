@@ -2,3 +2,4 @@ node_modules/
 dist/
 src/core/generated/
 *.local
+src/pages/card/generated/

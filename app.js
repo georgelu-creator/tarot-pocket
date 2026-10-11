@@ -208,11 +208,17 @@
   function dossierLesson(id){return window.TAROT_ACADEMY_CONTENT.cards.find(c=>c.id===id);}
   function dossierLens(c,lesson,lens){const r=window.TAROT_CARD_REFERENCE.byId[c.id];return [r.observation,r.symbols.map(x=>x.meaning).join(' '),r.core][lens]||r.core;}
   function dossierReferenceBody(c,face){
-    const r=window.TAROT_CARD_REFERENCE.byId[c.id],v=r[face],paras=xs=>xs.map(x=>`<p>${esc(x)}</p>`).join('');
-    const roleLabels={state:'现状',tension:'障碍与挑战',advice:'行动建议',past:'过去的影响',trend:'发展与结果',resource:'可用支持',unknown:'尚需留意的因素',choice:'选择后的路径',free:'无固定牌位'};
-    return `<details open class="dossier-chapter" data-reference-section="meaning"><summary>${face==='reversed'?'逆位':'正位'}详解</summary>${paras(v.meaning)}</details>
-      <details class="dossier-chapter" data-reference-section="contexts"><summary>感情、工作、学业与生活</summary>${Object.entries({love:'感情与人际',career:'工作与合作',study:'学业与练习',life:'日常生活'}).map(([key,label])=>`<section class="reference-context"><h4>${label}</h4>${paras(v.contexts[key])}</section>`).join('')}</details>
-`;
+    const r=window.TAROT_CARD_REFERENCE.byId[c.id],v=r[face],k=window.TAROT_CARD_KNOWLEDGE.byId[c.id],paras=xs=>xs.map(x=>`<p>${esc(x)}</p>`).join('');
+    const depth=face==='upright'?paras(k.nuances):k.reversedBranches.map(x=>`<section class="reference-branch"><h4>${esc(x.title)}</h4><p>${esc(x.text)}</p></section>`).join('');
+    return `<details open class="dossier-chapter" data-reference-section="meaning"><summary>${face==='reversed'?'逆位':'正位'}详解</summary>${paras(v.meaning)}${depth}</details>
+      <details class="dossier-chapter" data-reference-section="contexts"><summary>感情、工作、学业与生活</summary>${Object.entries({love:'感情与人际',career:'工作与合作',study:'学业与练习',life:'日常生活'}).map(([key,label])=>`<section class="reference-context"><h4>${label}</h4>${paras(v.contexts[key])}<p>${esc(k.domains[key][face])}</p></section>`).join('')}</details>
+      <details class="dossier-chapter" data-reference-section="money"><summary>金钱与资源</summary><p>${esc(k.domains.money[face])}</p></details>`;
+  }
+  function dossierKnowledge(c){
+    const k=window.TAROT_CARD_KNOWLEDGE.byId[c.id];
+    return `<details class="dossier-chapter" data-knowledge-section="structure"><summary>在整副牌中的位置</summary><p>${esc(k.structure)}</p></details>
+      <details class="dossier-chapter" data-knowledge-section="examples"><summary>情境实例</summary>${k.examples.map(x=>`<section class="reference-example"><h4>${esc(x.title)}</h4><p class="muted">${esc(x.situation)}</p><p>${esc(x.reading)}</p></section>`).join('')}<small class="muted">以上为原创虚构例子。</small></details>
+      <details class="dossier-chapter" data-knowledge-section="history"><summary>传统出处与延伸理解</summary><p>${esc(k.history.text)}</p>${k.sources.map(s=>`<section class="reference-source"><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a><p>${esc(s.scope)}</p></section>`).join('')}</details>`;
   }
   function dossierContext(c,topic){const ctx=c.contexts[topic];return `<p class="dossier-question"><span>带着一个问题看：</span>${esc(c.questions[topic])}</p><table class="dossier-matrix"><caption>同一张牌，三个位置</caption><thead><tr><th scope="col">牌位</th><th scope="col">在这里怎样读</th></tr></thead><tbody>${Object.entries(detailRoles).map(([key,label])=>`<tr data-matrix-role="${key}"><th scope="row">${label}</th><td>${esc(ctx[contextRoles[key]])}</td></tr>`).join('')}</tbody></table>`;}
   function showCard(id,face='upright',position='present'){
@@ -227,7 +233,8 @@
       <section class="dossier-chapter reference-core"><h3>核心含义</h3><p>${esc(reference.core)}</p></section>
       <details class="dossier-chapter" data-dossier-section="scene"><summary>画面与象征</summary><p>${esc(reference.observation)}</p><dl class="reference-roles">${reference.symbols.map(x=>`<div><dt>${esc(x.detail)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl></details>
       <section data-dossier-section="meaning" class="reference-orientation"><div class="segmented" aria-label="牌的方向"><button data-action="face" data-value="upright" aria-pressed="${face==='upright'}">正位</button><button data-action="face" data-value="reversed" aria-pressed="${face==='reversed'}">逆位</button></div><div data-reference-body data-reference-face="${face}">${dossierReferenceBody(c,face)}</div></section>
-      <details class="dossier-chapter" data-dossier-section="use"><summary>常见误读与近似牌区别</summary><p>${esc(reference.misread)}</p><p>${esc(reference.comparison.text)}</p><button class="secondary" data-action="card" data-id="${reference.comparison.id}">查看${esc(cardMap[reference.comparison.id].name)}</button></details>
+      <details class="dossier-chapter" data-dossier-section="use"><summary>常见误读与近似牌区别</summary><p>${esc(reference.misread)}</p>${window.TAROT_CARD_KNOWLEDGE.byId[id].comparisons.map(x=>`<section class="reference-comparison"><p>${esc(x.text)}</p><button class="secondary" data-action="card" data-id="${esc(x.id)}">查看${esc(cardMap[x.id].name)}</button></section>`).join('')}</details>
+      ${dossierKnowledge(c)}
       <footer class="dossier-footer"><button class="linkbtn" data-action="sources">内容与图片来源</button></footer></div>`);
     patchCardDetail();
   }

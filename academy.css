@@ -64,3 +64,6 @@
 .academy-content-enter{animation:academy-content-arrive .26s cubic-bezier(.22,.61,.36,1) both}.academy-complete.academy-content-enter{animation-duration:.42s}.academy-complete>.eyebrow{display:inline-block;border-bottom:1px solid var(--line);padding-bottom:8px}.academy-progress i,.academy-current-course progress{transition:width .3s ease-out}.academy-option{transition:background .18s ease,border-color .18s ease,transform .14s ease}.academy-feedback.is-incorrect{border-left-color:#9c675d}.academy-feedback{scroll-margin-top:24px}
 @keyframes academy-content-arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.academy-content-enter,.academy-zoom-tip{animation:none!important}.academy-progress i,.academy-option{transition:none!important}}
+.academy-knowledge{margin:24px 0;padding:18px 20px;border-left:3px solid var(--primary,#654b65);background:var(--surface,#fffcf7);border-radius:0 12px 12px 0;overflow-wrap:anywhere}
+.academy-knowledge h2{font-size:16px;line-height:1.65;margin:0 0 8px}
+.academy-knowledge p{margin:0;line-height:1.9}
