@@ -98,7 +98,7 @@ fs.rmdirSync(scratch)
   })
   assert.equal(resumed.restored, resumed.snapshot, 'stage switch and onShow preserve answer/index/scroll when resuming')
   assert.equal(resumed.view, 'lesson')
-  await page.evaluate(() => { const l = window.lesson; l.data.value = l.academy.blank(); l.selectLevel('A'); l.start({ id: 'A06', mode: 'learn' }) })
+  await page.evaluate(() => { const l = window.lesson; l.data.value = l.academy.blank(); l.selectLevel('A'); l.start({ id: 'A06', mode: 'learn' }); for(let i=0;i<12;i++)l.nextStep() })
   const layout = await page.evaluate(() => {
    const cards = [...document.querySelectorAll('.cards .card-item')]
    const box = element => { const r = element.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height } }
@@ -116,13 +116,14 @@ fs.rmdirSync(scratch)
   assert.equal(await page.locator('.zoom .zoom-picture.reversed').count(), 0, 'horizontal crossing does not imply reversed zoom')
   await page.locator('.zoom-close').dispatchEvent('tap')
   // Stress the crossing transform with an inverted face; horizontal placement stays separate from semantic orientation.
-  await page.evaluate(() => { window.lesson.session.value.mode = 'reverse' })
+  await page.evaluate(() => { const l = window.lesson; window.originalStepFor = l.academy.stepFor; l.academy.stepFor = s => ({ ...window.originalStepFor(s), reversed: true }); l.data.value.session = { ...l.session.value } })
   assert.equal(await page.locator('.crossing .card-picture.reversed').count(), 1)
   assert.equal(await page.locator('.crossing .card-picture').evaluate(el => getComputedStyle(el).transform), 'matrix(0, -1, 1, 0, 0, 0)')
   await page.locator('.crossing .card-picture').dispatchEvent('tap')
   assert.equal(await page.locator('.zoom .zoom-picture.reversed').count(), 1)
   assert.match(await page.locator('.zoom').innerText(), /逆位/)
   await page.locator('.zoom-close').dispatchEvent('tap')
+  await page.evaluate(() => { const l = window.lesson; l.academy.stepFor = window.originalStepFor; l.data.value.session = { ...l.session.value } })
   const orientations = await page.evaluate(() => {
    const l = window.lesson, cases = []
    for (const mode of ['application', 'practice', 'reverse', 'reverse-review']) {

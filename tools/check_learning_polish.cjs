@@ -46,6 +46,9 @@ try {
   }
   const web = await webPage()
   assert.equal(await web.locator('.academy-zoom-tip').count(), 1)
+  assert.equal(await web.locator('.academy-zoom-tip').isVisible(), false, 'compact first teaching reserves space for its core task')
+  await web.setViewportSize({ width: 390, height: 844 })
+  assert.equal(await web.locator('.academy-zoom-tip').isVisible(), true, 'larger lesson viewport exposes the dismissible guidance')
   const beforeTip = await web.evaluate(() => JSON.stringify(window.learningData))
   await web.locator('[data-academy="dismiss-zoom-tip"]').click()
   assert.equal(await web.locator('.academy-zoom-tip').count(), 0)

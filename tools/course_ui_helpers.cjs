@@ -6,9 +6,10 @@ async function home(page){
 }
 async function catalog(page,level){
   await home(page);
-  if(level)await page.locator(`[data-academy=level][data-value="${level}"]`).click();
   if(!await page.locator('.academy-catalog').count())await page.locator('[data-academy=catalog]').click();
+  if(level)await page.locator(`[data-academy=level][data-value="${level}"]`).click();
 }
+
 async function open(page,id,level){
   await catalog(page,level||(/^[BIA]\d\d$/.test(id)?id[0]:'B'));
   const button=page.locator(`[data-academy=${/^[BIA]\d\d$/.test(id)?'start':'guided-card'}][data-id="${id}"]`);

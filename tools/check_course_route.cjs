@@ -16,7 +16,8 @@ for(const [level,mode]of Object.entries(modes)){
   assert.equal(new Set(route.map(node=>node.id)).size,route.length);
   assert.equal(route.filter(node=>node.mode===mode).length,78);
   assert.deepEqual([...methods.map(node=>node.id)].sort(),Object.keys(api.units).filter(id=>id.startsWith(level)).sort());
-  assert.equal(route[0].mode,'learn');
+  assert.equal(route[0].id,'p08');assert.equal(route[0].mode,mode,'each stage begins with a concrete card');
+  if(level==='B')assert.deepEqual(Array.from(route.slice(0,4).map(n=>n.id)),['p08','m00','m01','B01']);
   assert(route.slice(2,-2).some(node=>node.mode==='learn'),'methods are interleaved, not a separate introductory pile');
   assert.equal(new Set(route.map(node=>node.chapter)).size,3);
   let rounds=0,item;
@@ -64,4 +65,15 @@ assert(['practice','review'].includes(api.stageNext(backlog,'B',later+4).mode),'
 for(const [level,allowed]of [['I',['Q2','Q3']],['A',['Q4','V1']]]){
   const item=api.stageNext(restored,level,later);if(item.mode==='practice')assert(allowed.includes(item.key));
 }
+// Ordinary relationship words and story names are not card-image instructions.
+for(const [id,key,expected] of [['B07','T1',['c02']],['I02','T1',['c10']],['I01','T3',['p08']],['B01','T1',[]],['B01','T3',['p08','c12','m08']]]){
+  const unit=api.units[id],step=api.planFor(unit,'learn',{}).find(s=>s.key===key);
+  assert.deepEqual(Array.from(api.learningVisual(unit,{},step).cards),expected,id+' '+key+' shows only its authored examples');
+}
+for(const id of ['I06','A02','A04']){
+  const unit=api.units[id],session={unitId:id,mode:'review',index:0},step=api.stepFor(session);
+  assert.deepEqual(Array.from(api.learningVisual(unit,session,step).cards),id==='A04'?['p08']:Array.from(unit.cards),id+' revisit retains its referenced case');
+}
+const repaired={unitId:'B01',mode:'learn',index:3,answers:{},support:{key:'R1',phase:'question'}};
+assert.deepEqual(Array.from(api.learningVisual(api.units.B01,repaired,api.stepFor(repaired)).cards),['s11'],'remediation uses its own question example');
 console.log('Course routes: 78 cards × 3 stages, 20 integrated methods, prerequisite teaching, legacy evidence and bounded stage reviews passed');

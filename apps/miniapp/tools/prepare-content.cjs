@@ -34,7 +34,7 @@ const originalAcademy = fs.readFileSync(path.join(root,'academy.js'),'utf8');
 const start = originalAcademy.indexOf('  const DAY=');
 const end = originalAcademy.indexOf('  function create(bridge)');
 if (start < 0 || end < start) throw Error('Shared academy extraction boundaries changed');
-fs.writeFileSync(path.join(out,'academy.mjs'), `// Generated pure engine; source: academy.js\nimport {academyContent as source} from './content.mjs';\nconst units=Object.fromEntries([...source.lessons,...source.cards].map(u=>[u.id,u]));\n${originalAcademy.slice(start,end)}\nexport const academy={knowledgeLesson,practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,version};\n`);
+fs.writeFileSync(path.join(out,'academy.mjs'), `// Generated pure engine; source: academy.js\nimport {academyContent as source} from './content.mjs';\nconst units=Object.fromEntries([...source.lessons,...source.cards].map(u=>[u.id,u]));\n${originalAcademy.slice(start,end)}\nexport const academy={coursePurpose,learningVisual,knowledgeLesson,practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,version};\n`);
 const originalReading=fs.readFileSync(path.join(root,'offline-reading.js'),'utf8');
 const marker="  const VERSION = '";
 const readStart=originalReading.indexOf(marker);

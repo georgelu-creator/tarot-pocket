@@ -25,8 +25,8 @@ async function finish(p){
         await p.setViewportSize({width,height});
         for(const level of ['B','I','A']){
           await course.home(p);if(await p.locator('.academy-catalog').count())await p.locator('[data-academy=catalog-back]').click();
-          await p.locator(`[data-academy=level][data-value=${level}]`).click();await fits(p,`${name} ${width} ${level} home`);
-          await course.catalog(p);await fits(p,`${name} ${width} ${level} catalog`);
+          await course.catalog(p,level);await p.locator('[data-academy=catalog-back]').click();assert.equal(await p.locator('[data-academy=level],.academy-up-next').count(),0,'home keeps one clear learning task');assert.equal(await p.locator('[data-academy=guided]').count(),1);await fits(p,`${name} ${width} ${level} home`);
+          await course.catalog(p,level);await fits(p,`${name} ${width} ${level} catalog`);
           assert.equal(await p.locator('[data-academy=guided-card]').count(),78);
         }
         for(const id of ['m00','B01','I06','A05','A06']){await course.open(p,id);await fits(p,`${name} ${width} ${id} teaching`);}
@@ -44,6 +44,8 @@ async function finish(p){
       // Leave during the 180ms scroll-save debounce, then switch lessons.
       // DOM activation avoids Playwright scrolling the top return button into view.
       await course.open(p,'m01');
+      await p.locator('.academy-memory > summary').click();
+      await p.waitForFunction(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session.disclosures?.memory===true);
       // Entering a lesson restores its saved position on the next animation
       // frame. Finish that render before starting the separate rapid-leave test;
       // otherwise its initial restore can undo our synthetic scroll first.
@@ -52,6 +54,7 @@ async function finish(p){
       assert(rapidScroll>0);assert.equal((await snapshot(p)).session.scroll,rapidScroll,'return saves the latest position synchronously');
       await p.waitForTimeout(220);assert.equal((await snapshot(p)).session.scroll,rapidScroll,'a pending scroll-save cannot replace the paused position with the course page offset');
       await course.open(p,'I01');await course.open(p,'m01');
+      assert.equal(await p.locator('.academy-memory[open]').count(),1,'resume restores the expanded explanation before restoring its reading position');
       await p.waitForFunction(y=>Math.abs(scrollY-y)<2,rapidScroll);
       assert.equal((await snapshot(p)).session.scroll,rapidScroll,'rapid departure position survives another lesson and resume');
       await course.open(p,'I04');await p.locator('[data-academy=next]').click();
@@ -61,7 +64,7 @@ async function finish(p){
       for(const [width,height] of [[320,568],[600,800],[844,390]]){await p.setViewportSize({width,height});await fits(p,'zoom resize');const box=await p.locator('.zoom-backdrop [data-action=close]').boundingBox();assert(box&&box.x>=0&&box.y>=0&&box.x+box.width<=width&&box.y+box.height<=height,'zoom close remains reachable');}
       await p.screenshot({path:`/tmp/tarot-learning-${name}-reverse-zoom-landscape.png`});
       await p.locator('.zoom-backdrop [data-action=close]').click();assert.deepEqual((await snapshot(p)).session.answers,session.answers);assert.equal((await snapshot(p)).session.index,session.index);
-      await p.setViewportSize({width:320,height:568});await course.open(p,'A06');await p.screenshot({path:`/tmp/tarot-learning-${name}-A06-320.png`});
+      await p.setViewportSize({width:320,height:568});await course.open(p,'A06');for(let i=0;i<12;i++)await p.locator('[data-academy=next]').click();assert.equal(await p.locator('.academy-layout-A06 figure').count(),10,'whole-case step retains every authored position');await p.screenshot({path:`/tmp/tarot-learning-${name}-A06-320.png`});
       assert.deepEqual(errors,[]);console.log(`PASS ${name}: six viewports, three stage homes/catalogs, single/multiple-card teaching, visible feedback, reload resume position and answers, repair/completion, reversed zoom and resize`);
     }finally{await browser.close();}
   }
