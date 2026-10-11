@@ -793,6 +793,7 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 
 /* Keep the entire fan in the first 320 × 568 view without reducing its touch targets. */
 @media(max-width:360px) and (max-height:620px){
+ .reading-v2 .reading-fan-table>p{display:none}
  .shell.reading-focus{padding-left:12px;padding-right:12px;padding-bottom:24px}
  .reading-v2 .reading-header{min-height:48px;margin:0 0 3px;gap:8px}
  .reading-v2 .reading-header h1{font-size:21px;line-height:1.2;margin:0}
@@ -848,3 +849,45 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 /* Result artwork keeps a portrait frame instead of a wide square mat. */
 .reading-v2 .reading-result-card .reading-card{width:min(100%,90px);height:auto;aspect-ratio:3/5;margin-inline:auto;background:transparent}
 .reading-v2 .reading-result-cards.layout-celtic .reading-card{width:min(100%,42px);height:auto;aspect-ratio:3/5}
+
+/* Separate ritual stages; preview a back before committing its place. */
+.reading-theme{scroll-margin-top:24px;margin-top:30px}
+.reading-theme-nav{flex-wrap:wrap;overflow:visible;gap:8px}
+.reading-theme-nav .chip{min-height:44px;white-space:normal}
+@media(max-width:600px){.reading-theme-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.reading-theme-nav .chip{width:100%;padding-inline:8px}}
+.reading-theme[id=reading-theme-professional]{padding-top:26px;border-top:1px solid var(--line)}
+.fan-coach{display:flex;align-items:center;gap:12px;margin:14px 16px;padding:14px 12px;background:var(--soft);border:1px solid var(--line);border-radius:14px;color:var(--ink);font-size:13px;line-height:1.6}
+.fan-coach>div{flex:1;min-width:0}.fan-coach strong{font-weight:600}.fan-coach p{margin:3px 0 0!important;font-size:12px!important;color:var(--muted)}
+.fan-coach .iconbtn{flex:0 0 44px;width:44px;height:44px;background:transparent;align-self:flex-start}
+.fan-coach-swipe{position:relative;width:42px;height:24px;flex:0 0 42px;border-bottom:1px solid var(--accent)}
+.fan-coach-swipe::before,.fan-coach-swipe::after{content:'';position:absolute;bottom:-3px;width:6px;height:6px;border-bottom:1px solid var(--accent);transform:rotate(45deg)}
+.fan-coach-swipe::before{left:1px;border-left:1px solid var(--accent);transform:rotate(45deg)}.fan-coach-swipe::after{right:1px;border-right:1px solid var(--accent);transform:rotate(-45deg)}
+.fan-coach-swipe i{position:absolute;width:10px;height:10px;border-radius:50%;left:16px;bottom:6px;background:var(--accent);animation:coach-swipe 2.4s ease-in-out 2}
+@keyframes coach-swipe{0%,100%{transform:translateX(-13px)}50%{transform:translateX(13px)}}
+.fan-toolbar .fan-help-button{font-size:12px;min-height:44px;padding:6px 0;text-align:left}
+.reading-pick-dialog{width:min(390px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;padding:0;border:1px solid var(--line);border-radius:26px;background:var(--paper);color:var(--ink);overflow:auto;box-shadow:0 24px 90px #251b3840}
+.reading-pick-dialog::backdrop{background:#231c2bc2;backdrop-filter:blur(4px)}
+.pick-preview{display:flex;flex-direction:column;align-items:center;padding:24px;animation:pick-preview-arrive .45s cubic-bezier(.2,.7,.2,1) both}
+.pick-preview small{font-size:13px;color:var(--muted);text-align:center}.pick-preview h2{margin:10px 0 20px;font-size:25px;text-align:center}
+.pick-preview .pick-preview-back{display:block;position:relative;inset:auto;width:116px;height:194px;flex-shrink:0;border-radius:12px;box-shadow:0 14px 30px #38273f30;animation:preview-card-rise .65s cubic-bezier(.2,.7,.2,1) both}
+.pick-preview .buttonstack{width:100%;margin-top:24px;gap:8px}.pick-preview .linkbtn{min-height:44px;width:100%;font-size:15px}
+@keyframes pick-preview-arrive{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes preview-card-rise{from{opacity:.5;transform:translateY(22px) rotate(-5deg) scale(.9)}to{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+.reading-v2 .ritual-space::before{content:'';position:absolute;inset:22px;border:1px solid #e7d4d024;border-radius:50%;pointer-events:none;animation:ritual-ring-breathe 5s ease-in-out infinite}
+.reading-v2 .ritual-space::after{content:'';position:absolute;left:50%;top:21px;width:5px;height:5px;border-radius:50%;background:#efdfca;box-shadow:0 calc(100% + 12px) 0 #efdfca55;pointer-events:none;animation:ritual-marker 3s ease-in-out infinite}
+@keyframes ritual-ring-breathe{0%,100%{opacity:.4;transform:scale(.96)}50%{opacity:.9;transform:scale(1)}}
+@keyframes ritual-marker{0%,100%{opacity:.35}50%{opacity:.9}}
+.reading-v2 .cut-pile:not(:disabled):hover,.reading-v2 .cut-pile:not(:disabled):focus-visible{filter:brightness(1.12)}
+.reading-v2 .reveal-group-cards .reading-slot{perspective:900px}
+@media(max-height:620px){.pick-preview{padding:16px 22px}.pick-preview h2{margin:6px 0 12px;font-size:22px}.pick-preview .pick-preview-back{width:92px;height:154px}.pick-preview .buttonstack{margin-top:16px}}
+@media(max-width:360px){.fan-coach{margin:10px 12px;gap:8px;padding:10px}.fan-coach-swipe{display:none}.reading-theme-nav{gap:6px}}
+@media(prefers-reduced-motion:reduce){.fan-coach-swipe i,.pick-preview,.pick-preview-back,.reading-v2 .ritual-space::before,.reading-v2 .ritual-space::after{animation:none!important}.reading-pick-dialog::backdrop{backdrop-filter:none}}
+.reading-v2 .ritual-space.motion-paused::before,.reading-v2 .ritual-space.motion-paused::after{animation-play-state:paused}
+@media(max-width:360px) and (max-height:620px){
+ .fan-coach{gap:8px;margin:0 8px;padding:0 8px;font-size:12px;line-height:1.5}
+ .fan-coach-swipe{width:24px;flex-basis:24px}
+ .fan-coach-swipe i{left:7px}
+ .fan-coach>div{flex:1;min-width:0}
+ .fan-coach p{display:none}
+ .fan-coach .iconbtn{align-self:center}
+}

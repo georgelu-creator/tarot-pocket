@@ -4,6 +4,24 @@
 > 用户最新已授权修复全部已审计问题、Git发布和生产上线，并明确本期公共界面只做中文。当前实现与实际验证见 [1.9交付记录](RELEASE_1_9.md)，不能把实现或固定案例当作真人验收。
 
 <a id="start"></a>
+## 2026-10-11 用户确认：平铺入口与分阶段仪式
+
+最新授权覆盖本轮先前审查中的“缩短仪式动画”建议：保留5秒洗牌、1.2秒切牌合拢和独立选牌／揭牌，不能一次自动完成。33个现有场景直接平铺，常用8项、感情／工作／学业／生活、专业通用依次展示；快捷分类只定位，不过滤隐藏。专业名称与原牌位保留，问题仍在所选牌阵内部。
+
+点牌先展示未揭开的牌背，确定后才保存并入位；换一张／取消不重洗、不改已选身份，首次手势提示可关闭。本轮替代此前“单击直接选定、无二次确认”的交互约定，原因是用户明确要求确认与换牌以减少误触并增加仪式感。网页保留双指及按钮缩放；小程序当前提示只描述已实现的滑动和轻点。
+
+网页与小程序分别实现阶段动画与记录恢复；默认保持动态，仅跟随系统减少动态偏好做可访问性降级。小程序尚未完成微信平台上传与真机验收。自动检查、正式网站部署、微信版本发布分别记录，不相互替代。
+
+## 小程序适配记录（2026-10-11）
+
+**用户纠正的层级：先选牌阵，再进入该牌阵填写可选问题并开始抽牌。网站和小程序均适用：问题输入属于牌阵内部，不得提升为目录前置入口；修复不授权重排这一层级。**
+
+本轮补充：揭牌保存失败可重试，通用牌阵默认通用主题；日运按保存日期归属、同日复用，首页封面显示当天牌，结果展示原创宜忌。核心与实际H5异常路径已有回归。
+
+**有效命名：塔罗日运。**首页、日运牌阵与历史记录统一使用此名称，Web和小程序均适用；不再自行改称今日塔罗或今日一牌。
+
+用户确认小程序优先推荐抽牌，学牌放在后面。首页主入口为开始抽牌／塔罗日运，导航抽牌在学牌之前。新增 uni-app 本地抽牌与记录页，复用既有牌阵和解读引擎，问题可空；首屏牌扇为铺满的弧形，分组与滑块可达78张。此开发阶段未接AI、上传用户记录或发布；编译与真机验收分别记录。
+
 ## 0. 当前状态与接力入口
 
 **2026-10-09 选牌宽屏修订：**初始牌扇在手机、平板与桌面都应覆盖可视区域，两侧围绕视口中心成弧形，不需要先滑动。此前只在600px以下覆盖了左侧半屏padding，宽屏仍错位；现在统一小幅左边距，弧度按牌扇容器宽度计算，并在容器尺寸变化时重绘。保留78张牌的顺序、滚动恢复、缩放与选牌手势。
@@ -324,7 +342,7 @@ AI会话到期、服务未配置、达到额度或网络失败时留在原结果
 | 产品首页两入口 | 学牌／抽牌 | Learn / Draw cards |
 | 抽牌页标题 | 这次想问什么？ | What would you like to ask? |
 | 标签 | 基础／感情／工作／学业／生活 | Basics / Relationships / Work / Study / Everyday life |
-| 日签入口 | 今日塔罗／看看今天的提醒 | Daily tarot / A reminder for today |
+| 日签入口 | 塔罗日运／看看今天的提醒 | Daily tarot / A reminder for today |
 | 未完成入口 | 继续上次抽牌／已选 {picked} 张，还差 {remaining} 张 | Continue your draw / {picked} chosen, {remaining} to go |
 | 历史入口 | 之前的抽牌 | Past readings |
 | 空历史 | 还没有抽牌记录。抽完后会自动保存在这里。 | No readings yet. Completed draws will be saved here automatically. |
@@ -614,7 +632,7 @@ AI会话到期、服务未配置、达到额度或网络失败时留在原结果
 
 | 用途 | 中文 | English |
 |---|---|---|
-| 日签标题 | 今日塔罗 | Daily tarot |
+| 日签标题 | 塔罗日运 | Daily tarot |
 | 日期 | {年}年{月}月{日}日 · {星期} | {Weekday}, {Month} {day}, {year} |
 | 首次动作 | 抽今天的牌 | Draw today’s card |
 | 已抽动作 | 看今天的牌 | View today’s card |
@@ -651,7 +669,7 @@ AI会话到期、服务未配置、达到额度或网络失败时留在原结果
 | `relationship-three` | 关系动态 / Relationship dynamics | 适合想弄清两个人现在怎样相处，例如恋人之间的沟通，或与朋友、同事的配合。三张牌分别看你、对方和彼此的互动，重点是现在的关系，不专门判断未来结果。 / For understanding how two people relate now, whether in a romantic relationship, friendship or working partnership. Three cards explore your part, their part and your interaction, rather than a future outcome. | 我的角色、对方的角色、关系动态 / My role, Their role, Our interaction |
 | `relationship-five` | 关系十字 / Relationship Cross | 适合想了解一段关系接下来会怎样，而不只看现在相处得好不好。五张牌会一起看双方的表现、过去的影响、目前的相处，以及继续下去可能出现的变化。 / For exploring where a relationship may be heading, beyond how things feel right now. Five cards consider both people, past influences, the present relationship and the direction it may take. | 我的角色、对方的角色、过去基础、关系现状、后续方向 / My role, Their role, Past foundation, Present relationship, Future direction |
 | `celtic` | 凯尔特十字 / Celtic Cross | 适合已经有一个具体问题，但觉得影响它的事情很多，想看得更完整。十张牌会分开看当前困难、自己的态度、外界影响、期待和担忧，再联系起来看后续发展。 / For a specific question with several influences that you want to explore more fully. Ten cards examine difficulties, your attitude, outside influences, hopes and fears, then connect these to the possible direction. | 1现状、2交叉阻力、3目标、4基础、5近期过去、6近期趋势、7我的态度、8外部环境、9期待与担忧、10综合趋势 / 1 Situation, 2 Crossing influence, 3 Aim, 4 Foundation, 5 Recent past, 6 Near-future direction, 7 My attitude, 8 Outside influences, 9 Hopes and fears, 10 Overall direction |
-| `daily` | 今日塔罗 / Daily tarot | 没有特别想问的事，也可以抽一张看看今天值得留意什么。这里会保留当天的牌和生活建议，再回来时仍能看到同一张日签。 / You can draw even without a particular question, for something to keep in mind today. Your card and its everyday guidance are saved so you can return to the same daily reading. | 今日提醒 / Today's reminder |
+| `daily` | 塔罗日运 / Daily tarot | 没有特别想问的事，也可以抽一张看看今天值得留意什么。这里会保留当天的牌和生活建议，再回来时仍能看到同一张日签。 / You can draw even without a particular question, for something to keep in mind today. Your card and its everyday guidance are saved so you can return to the same daily reading. | 今日提醒 / Today's reminder |
 
 每个编号下紧邻一句完整说明。这里“牌位”指每张牌在这次抽牌中负责看的方面；首次介绍用“每张牌分别看什么”，无需先背专业名词。单牌为“这件事里，什么值得留意或尝试？ / What is worth noticing or trying in this situation?”；日签为“今天有什么值得留意？ / What is worth noticing today?”；自由三张只标抽取次序，统一说明“三张一起看，不分过去、现在或未来。 / Read these cards together, without assigning past, present or future.”
 

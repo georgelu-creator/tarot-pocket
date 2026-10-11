@@ -1,0 +1,24 @@
+{
+  "name": "星纱塔罗",
+  "appid": "",
+  "description": "抽牌解读、每日一牌、独立牌库与逐牌学习",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "vueVersion": "3",
+  "mp-weixin": {
+    "appid": "wx0824a8b48e0e8b90",
+    "setting": {
+      "urlCheck": true
+    },
+    "usingComponents": true
+  },
+  "uniStatistics": {
+    "enable": false
+  },
+  "h5": {
+    "router": {
+      "mode": "hash"
+    }
+  }
+}
