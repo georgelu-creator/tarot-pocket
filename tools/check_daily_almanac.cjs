@@ -14,6 +14,9 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
   try{
    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[];
    p.on('pageerror',e=>errors.push(e.message));
+   await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();
+   assert.match(await p.locator('[data-reading=daily]').innerText(),/塔罗日运/);
+   assert.doesNotMatch(await p.locator('[data-reading=daily]').innerText(),/今日塔罗|今日一牌/);
    await p.clock.setFixedTime(new Date('2026-09-15T12:00:00'));
    async function open(cardId,reversed=false,date='2026-09-15'){
     await p.addInitScript(({ids,cardId,reversed,date,KEY})=>{
@@ -46,7 +49,7 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
     }
     await p.locator('.daily-reference>summary').click();assert(await p.locator('.daily-provenance').isVisible());
     const before=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).daily,KEY);
-    await p.locator('[data-reading=finish]').click();await p.locator('[data-reading=daily]').click();
+    await p.locator('[data-reading=finish]').click();assert.match(await p.locator('[data-reading=daily]').innerText(),/塔罗日运/);assert.doesNotMatch(await p.locator('[data-reading=daily]').innerText(),/今日塔罗|今日一牌/);await p.locator('[data-reading=daily]').click();
     assert.deepEqual(await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft.pool,KEY),before[0].pool,'same-day revisit preserves cards');
     assert.equal(await p.locator('.daily-almanac').evaluate(e=>getComputedStyle(e).animationName),'none','reduced motion disables arrival');
    }
