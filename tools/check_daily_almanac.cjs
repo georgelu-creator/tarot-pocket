@@ -14,7 +14,7 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
   try{
    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[];
    p.on('pageerror',e=>errors.push(e.message));
-   await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();
+   await p.goto(url);assert.match(await p.locator('.reading-choice small').innerText(),/塔罗日运/);await p.locator('.bottomnav [data-page=reading]').click();
    assert.match(await p.locator('[data-reading=daily]').innerText(),/塔罗日运/);
    assert.doesNotMatch(await p.locator('[data-reading=daily]').innerText(),/今日塔罗|今日一牌/);
    await p.clock.setFixedTime(new Date('2026-09-15T12:00:00'));
@@ -30,7 +30,7 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
     // Fresh page ensures no earlier fixture script can overwrite the current day.
     if(cardId!=='m21'){await p.close();}
     if(cardId!=='m21')break;
-    await open(cardId,reversed,date);const card=cards.find(c=>c.id===cardId);
+    await open(cardId,reversed,date);const card=cards.find(c=>c.id===cardId);assert.equal(await p.locator('#daily-title').innerText(),'塔罗日运');
     assert.equal(await p.locator('.daily-calendar').getAttribute('datetime'),date);
     assert.equal(await p.locator('.daily-calendar strong').innerText(),'15');
     assert.equal(await p.locator('.daily-calendar>span').last().innerText(),'星期二');
@@ -58,6 +58,7 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
     localStorage.setItem(KEY,JSON.stringify({version:1,settings:{topic:'career',spreadId:'daily',questionId:'own',reversals:true},draft,history:[],practice:[],daily:[draft],ui:{view:'table',category:'all',guideId:'three',guideActive:0,question:''}}));
    },{ids:['p12',...cards.map(c=>c.id).filter(id=>id!=='p12')],KEY});
    await q.goto(fallbackUrl);await q.locator('.bottomnav [data-page=reading]').click();assert.equal(await q.locator('html').getAttribute('lang'),'zh-CN');assert.equal(await q.locator('[data-language-toggle]').count(),0);assert.equal(await q.locator('.daily-calendar').getAttribute('datetime'),'2001-02-03');assert.equal(await q.locator('.daily-calendar strong').innerText(),'03');
+   assert.equal(await q.locator('#daily-title').innerText(),'塔罗日运');
    assert.equal(await q.locator('.daily-advice>p').innerText(),cards.find(c=>c.id==='p12').reversed);
    assert.equal(await q.locator('.daily-do>p').innerText(),guides.p12.reversed.do);
    assert.equal(await q.locator('.daily-avoid>p').innerText(),guides.p12.reversed.avoid);
