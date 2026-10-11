@@ -23,12 +23,6 @@
       "style": {
         "navigationBarTitleText": "牌库"
       }
-    },
-    {
-      "path": "pages/card/index",
-      "style": {
-        "navigationBarTitleText": "牌义"
-      }
     }
   ],
   "globalStyle": {
@@ -58,5 +52,18 @@
         "text": "牌库"
       }
     ]
-  }
+  },
+  "subPackages": [
+    {
+      "root": "pages/card",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "牌义"
+          }
+        }
+      ]
+    }
+  ]
 }

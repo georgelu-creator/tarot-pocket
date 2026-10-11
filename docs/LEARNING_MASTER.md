@@ -1,15 +1,34 @@
 # Tarot Pocket 教学主文档与完整脚本
 
-> 当前设计事实源 / Current learning-design source of truth。正文中文；供应用展示的教学、题目、选项和反馈中英对照。设计、实际实现与学习效果分开记录；当前有效学习架构见本节R8和第3、5节；R4–R6保留早期实现史。
+> 当前设计事实源 / Current learning-design source of truth。正文中文；供应用展示的教学、题目、选项和反馈中英对照。设计、实际实现与学习效果分开记录；当前有效学习架构见本节R9和第3、5节；R4–R6保留早期实现史。
 >
-> 文档版本：LM-2.0-R8，2026-10-09。R3为教材内容基线，R4记录首次完整接入，R5补充整牌理解题和可选详细资料，R6修复逐牌讲解实际未显示并把78张牌库从课程长页拆出。用户最新已明确本期公共界面只做中文，并授权修复、Git发布和上线；具体学习效果仍待真人试学。
+> 文档版本：LM-2.0-R9，2026-10-12。R3为教材内容基线，R4记录首次完整接入，R5补充整牌理解题和可选详细资料，R6修复逐牌讲解实际未显示并把78张牌库从课程长页拆出。用户最新已明确本期公共界面只做中文，并授权修复、Git发布和上线；具体学习效果仍待真人试学。
 >
-> 当前实现与证据见 [1.7交付记录](RELEASE_1_7.md)。原Word教材保留不改，自动检查不证明教学效果。
+> 当前实现与证据见 [1.7交付记录](RELEASE_1_7.md)。原Word教材保留不改，另交付第二版；自动检查不证明教学效果。
 
 <a id="start"></a>
+## 2026-10-12 · R9 真人试学后的单任务课程
+
+有效要求：首次默认从星币八的画面和含义学起，再学愚人、魔术师，之后嵌入牌组分类；不先学一堆体系概念或抽牌流程。三个阶段仍各覆盖78张牌，20节方法课在具体牌之后穿插。开始按钮优先恢复未完成课；已学记录、错题补讲、到期复习和最多连续3课复习上限保持。旧的自主新牌推荐路径ID顺序仅用于兼容，不代表首页的课程路线。
+
+首页不再展示阶段标签、下节清单或全牌网格；课程选择页保留分级和可折叠目录，完成一课后也可选择其他课程。每步牌图按显式步骤及补讲映射对应所教实例，普通词语不触发牌名识别；到期回访保留所指牌组与牌位：B01前两段讲分类时无装饰牌图，第三段才显示三张分类实例并标明用途；练习图注不泄露答案。复杂案例先逐牌解释，再显示完整牌组。完整牌库独立；课程中的知识摘录折叠为可选例子，核心讲解与短问答保持直接可读；“看图怎么记”及补充例子的展开状态随课程恢复，阅读本身不计作学习证据。
+
+被替代：R8首页三阶段平铺和“接下来”；方法先于单牌的起步顺序；所有讲解和题目共用同一组装饰牌图；完成文案要求自选／随机新牌。保留：全部稳定课程／题目／选项ID、三阶段能力、先教后测、原学习存储与备份、无自评／信心分／必填感悟。B05-Q2修正重复拼接的问题文字，选项ID和正确答案保持。
+
+交付边界：第二版手册以可核对的课程与78张牌资料编写，完整内容覆盖与真人能否学会分开验收；不把自动测试或独立代码审查称为外部教师认可。UX参考：[Duolingo guided path](https://blog.duolingo.com/new-duolingo-home-screen-design/)、[NN/g progressive disclosure](https://www.nngroup.com/articles/progressive-disclosure/)，仅借鉴默认路径、复习融入与次级选项延后呈现，不复制其品牌或学习成效数据。
+
+
+## 2026-10-12 · 牌库知识融入逐牌课程
+
+用户要求牌库每张牌更全面，并把适合教学的知识结合到学习中。保持R9的初、中、高课程能力、单任务首页和二级目录；不把参考长文平铺到课程首页，不要求学员先读方法清单。
+
+新增独立 `content/card-knowledge/` 中文资料，编译为 `card-knowledge.js`，网页与 uni-app 复用。每张牌的完整参考按序列位置、深层含义、逆位条件分支、五个领域的正逆位、近似牌辨析、原创情境与传统出处组织；其中四段短讲解分别用于该牌 T1 画面线索、T2 正位应用、T3 逆位变化和 T4 综合辨析，呈现在既有讲解页、练习之前。初级不提前塞入完整正逆位与行业对应表。
+
+资料全文留在牌库，课程只取当前步骤适用的解释。新增知识不改变题目正确选项、补学、评分、复习调度或学习存储，不把阅读长文直接计作掌握。原有方法课与每张牌的练习保持有效；资料与四段摘录都应按稳定牌ID一起维护。历史原典与现代原创解释明确区分，不以字数、自动检查或模型审查代替真人学习效果验收。
+
 ## 2026-10-11 用户确认：学习一致性与适度反馈
 
-学习继续以学会78张牌为核心，保持R8三阶段、当前一课、方法融入课程与二级目录，不增加动效课程或播放／重播控件。两端统一暖白／梅紫风格；首次牌图放大提示独立保存，可关闭，不进入学习证据。答题解释及时出现，小程序在实际scroll-view内定位反馈；正文与完成状态适度过渡，仍需用户主动继续。
+学习继续以学会78张牌为核心，保持R9三阶段、当前一课、方法融入课程与二级目录，不增加动效课程或播放／重播控件。两端统一暖白／梅紫风格；首次牌图放大提示独立保存，可关闭，不进入学习证据。答题解释及时出现，小程序在实际scroll-view内定位反馈；正文与完成状态适度过渡，仍需用户主动继续。
 
 本轮不改题库、评分、补学、复习调度与历史记录；网页答题更新保留牌图节点，避免无意义重绘。交互回归与真人教学效果分别验收。
 
@@ -36,7 +55,7 @@
 - [R3全稿中文修订、98单元覆盖与剩余问题](#chinese-walkthrough-20260916)
 - [更新规则与变更记录](#change-log)
 
-**当前有效交互（R8，2026-10-09）：**根据用户对平铺冗余的反馈，学牌首页改为初级／中级／高级阶段切换、当前一课和一个开始／继续按钮。78张牌不再在首页平铺，20节方法课不再单列工具箱，按主题穿插到每阶段课程顺序中。完整课程目录为二级页面，按大阿卡纳、数字牌、宫廷牌折叠查看。方法课完成后继续当前阶段的下一节点，不再单独串行学完20课。
+**当前有效交互（R9，2026-10-12）：**根据真人反馈，学牌首页只显示当前一课、明确学习目标和一个开始／继续主按钮；阶段切换与目录统一放入低强调的“选择其他课程”入口，不再在首页列“接下来”。78张牌不再在首页平铺，20节方法课不再单列工具箱，按主题穿插到每阶段课程顺序中。完整课程目录为二级页面，按大阿卡纳、数字牌、宫廷牌折叠查看。方法课完成后继续当前阶段的下一节点，不再单独串行学完20课。
 
 主按钮优先恢复本阶段未完成的一课，否则按该阶段安排新课及到期复习；连续最多3次到期复习后穿插新课。目录里主动点选某张牌表示重学所选阶段，缺少先修阶段时先补课，不把目录点击当成完成或掌握，也不抹除到期证据。**到期复习仍必须由stageNext及首页主按钮验证；目录重学对应阶段是另一个独立验收，不能用它替换/删除原有复习检查。**切换阶段保留旧课与作答，返回原阶段后可继续；阶段选择可保存，原有课程ID、进度与备份兼容。
 
@@ -321,7 +340,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 
 **B01-V1 延后题**「权杖九的名字由什么组成？/ What makes up the name Nine of Wands?」A「花色＋数字 / Suit + number」→「权杖是花色，九是数字。/ Wands is the suit and Nine the number.」；B「花色＋宫廷角色 / Suit + court role」→「九不是侍从、骑士、王后或国王。/ Nine is not a court role.」答案 A；下一次基础回访使用，检查名称拆分。
 
-**完成**「本课介绍了牌组的分类。接下来学一次抽牌如何开始。/ This lesson introduced the deck’s categories. Next, learn how a reading begins.」正常下一课 B02；自选单牌返回原路线。不将分类答对记成已会牌义。
+**完成**「本课学会了区分大牌、数字牌和宫廷牌。接下来继续跟着课程认识具体的牌。/ This lesson distinguished majors, numbered cards and courts. Next, continue learning individual cards along the course.」下一节点由当前阶段路线与到期复习决定；目录选课不改变已提交证据。不将分类答对记成已会牌义。
 
 <a id="lesson-b02"></a>
 ### B02｜走完流程：一次占卜怎样开始和结束 / Complete the process: from question to reading
@@ -410,7 +429,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 | ID／题干 | 选项与对应反馈 | 答案／依据 |
 |---|---|---|
 | B05-Q1「本课哪种角色提示是‘开始接触新事物、学习基础’？/ Which role cue means initial discovery and learning?」 | A「侍从 / Page」→「侍从在本课代表刚接触一件事、愿意学习的状态。/ This matches the taught cue.」；B「国王 / King」→「本课用国王帮助记住安排事情、承担责任，不是刚开始学基础。/ Here the King's cue is coordination and responsibility.」 | A；T1 |
-| B05-Q2「王后是否优先把王后理解为题目里较成熟的女性。解释成现实中的女性？/ Must a Queen mean a woman in real life?」 | A「优先把王后理解为题目里较成熟的女性。 / Read a Queen primarily as the more mature woman in the situation.」→「这个结论比题目给出的信息多走了一步。任何性别的人，都可能用这种方式做事。 / This conclusion goes beyond the information provided. The role does not fix gender or identity.」；B「不必，可指处事方式 / No, it can describe an approach」→「任何性别的人，都可能用这种方式做事。/ The role does not fix gender or identity.」 | B；T3 |
+| B05-Q2「王后是否一定表示现实中的女性？/ Must a Queen mean a woman in real life?」 | A「优先把王后理解为题目里较成熟的女性。 / Read a Queen primarily as the more mature woman in the situation.」→「这个结论比题目给出的信息多走了一步。任何性别的人，都可能用这种方式做事。 / This conclusion goes beyond the information provided. The role does not fix gender or identity.」；B「不必，可指处事方式 / No, it can describe an approach」→「任何性别的人，都可能用这种方式做事。/ The role does not fix gender or identity.」 | B；T3 |
 
 - **B05-R1 教学**「本课的侍从，先记开始学习；国王，先记安排事情、承担责任。看例子里的人正在做什么，不要按头衔大小猜。/ This lesson uses Page for beginning to discover and learn, and King for coordinating and taking responsibility. Identify the behaviour described rather than guessing by title.」题「新例：小安第一次学习器材操作，正在跟着示范练基础动作。更符合本课哪种角色的做事方式？/ New example: An is learning equipment operation for the first time and follows a demonstration of basic movements. Which taught role cue is direct?」A「侍从的初步学习 / The Page's initial learning」→「题目明确描述接触新技能、练基础。/ The question explicitly describes beginning a skill and practising basics.」；B「国王安排事情、承担责任 / The King's coordination and responsibility」→「例子是在跟着示范学基础，还没有说他在安排别人的工作。/ No team coordination or organizing responsibility is stated; it does not replace the learning cue.」答案 A；T1–T2，回应 Q1 的角色提示混淆。
 - **B05-R2 教学**「本课用王后帮助记住留意别人的需要、给予照顾。看的是怎样做事，不能只凭牌名判断这个人是什么性别。/ Queen is a role used here for understanding and care, not a label establishing someone's gender. Start with behaviour and the question before deciding whether a specific person is relevant.」题「一位男性成员留意到同伴的需要，并主动照顾对方，能用本课王后的角色提示描述这种方式吗？/ A male group member understands companions' needs and provides care. Can this lesson's Queen cue describe that approach?」A「不能，男性不能体现王后角色 / No; a man cannot express a Queen role」→「这仍按头衔固定性别，忽略了本课描述的是行为方式。/ This still fixes gender from a title and ignores the behavioural approach.」；B「能，这里是在说他怎样关心和照顾同伴 / Yes; attend to the understanding and care」→「这里描述的是照顾同伴的方式，不是在判断性别。/ It preserves the role's meaning without making it an identity restriction.」答案 B；T3，回应 Q2 的固定性别误解。
@@ -475,7 +494,7 @@ R分支按目标调用，不按字母猜用途。本轮每张牌均已有核心�
 **教学屏幕**
 - **B08-T1**「读一张建议牌时，依次确认：本题问什么，这张牌本来的含义是什么，怎样把这个含义变成针对问题的做法。解释要符合刚学的牌义，也要回答原来的问题。建议说的是怎样做，不是保证一定会成功。/ For an advice card, identify the question, recall the card's meaning, then turn that meaning into an approach to the issue. Meaning cannot become any answer, and advice is not an outcome guarantee.」
 - **B08-T2**「完整例子：朋友误会了我发的一条消息，这周我能先做什么？这次用圣杯二正位示范，牌位是“我能采取的第一步”。可以这样建议：先问朋友愿不愿意聊聊，说清自己的本意，也听听朋友当时是怎样理解的。如果朋友暂时不想谈，就先别强求。/ Worked example: a message caused a misunderstanding with a friend. How can I start repairing it this week? The upright position is My first step, illustrated by Two of Cups. Its reciprocity theme becomes: sincerely invite a conversation, explain your intention and invite the friend's perspective. If they do not want to talk yet, respect that response.」
-- **B08-T3**「这回答的是你能做什么，并没有确认对方一定原谅你。学完后可以自己选新牌，也可以随机学一张。学过的牌，以后会换个例子再练。/ This answers what you can do; it does not establish that the friend will forgive you. Afterward, choose or randomly receive a new card; learned material returns later in a different context. You do not need to rate your memory: practice responses guide the help.」
+- **B08-T3**「这回答的是你能做什么，并没有确认对方一定原谅你。学完后继续下一课就好。学过的牌，以后会换个例子再练；想换课程时，可以进入课程选择。/ This answers what you can do; it does not establish that the friend will forgive you. Continue with the next lesson. Learned cards return in a different context; use course selection when you want another lesson.」
 
 **分镜 B08-M**：c02 保持原位，问题条→“建议 / Advice”位置标签→具体行动句依次强调，每段 0.4 秒，用户点继续；不把牌移出屏幕。静态同时显示三项对应，文字完整保留，可重播。结束后的新牌选择在课外完成页，不干扰核心步骤。
 

@@ -84,14 +84,14 @@ async function checkUI(){
     await page.locator('[data-action=nav][data-page=courses]').first().click();
     const home=await page.locator('.academy-home').innerText();assert.match(home,/开始上课|继续上课/);assert.doesNotMatch(home,/已掌握|随机学一张/);
     await courseUI.catalog(page);
-    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']]){const record=(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress))[id];const actual=await page.evaluate(record=>TarotAcademy.masteryState(record).label,record);assert.equal(actual,label);const button=page.locator(`[data-academy=guided-card][data-id="${id}"]`);assert.match(await button.innerText(),id==='m00'?/看图与练习/:/已完成/,'directory reflects completion for selected beginner stage');}
+    for(const [id,label] of [['m00','未学'],['m01','初学'],['m02','已学逆位'],['m03','待复习'],['m04','已巩固']]){const record=(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress))[id];const actual=await page.evaluate(record=>TarotAcademy.masteryState(record).label,record);assert.equal(actual,label);const button=page.locator(`[data-academy=guided-card][data-id="${id}"]`),chapter=button.locator('xpath=ancestor::details[1]');if(await chapter.getAttribute('open')===null)await chapter.locator(':scope > summary').click();assert.match(await button.innerText(),id==='m00'?/看图与练习/:/已完成/,'directory reflects completion for selected beginner stage');}
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'320px learning route has no horizontal overflow');
     await courseUI.open(page,'m01','I');
     let session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.mode,'application','legacy initial learning continues into application');
     await page.locator('[data-academy=home]').click();
     // LM-2.0-R8: the main action schedules due review; the directory explicitly
     // restarts the chosen stage. Preserve both guarantees as separate checks.
-    await page.locator('[data-academy=level][data-value=A]').click();
+    await courseUI.catalog(page,'A');
     if(await page.locator('.academy-catalog').count())await page.locator('[data-academy=catalog-back]').click();
     await page.locator('[data-academy=guided]').click();
     session=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.session);assert.equal(session.unitId,'m03');assert.equal(session.mode,'practice','legacy due evidence is rehearsed without requiring new integration history');assert.equal(session.practiceKey,'V1');assert.deepEqual((await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.academy.progress.m03.history)),[],'legacy record must not be promoted to a completed integration stage');

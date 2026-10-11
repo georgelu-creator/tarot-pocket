@@ -47,6 +47,7 @@ localhost 只指运行服务的当前电脑，不能拿这个地址让手机访�
 | `daily-content.js` / `locales/en-daily.json` | 312 bilingual card-specific upright/reversed daily prompts / 78 张牌正逆位宜忌共 312 条双语提醒 |
 | `spread-content.js` | 13 active definitions including daily plus 19 legacy definitions / 含日签13个当前定义及19个旧定义；场景在reading-scenarios.js |
 | `card-notes.js`, `dossier.css` | 78 original guide paragraphs and illustrated reference UI / 78 张专属解说及图文手册样式 |
+| `content/card-knowledge/*.json`, `tools/build_card_knowledge.py`, `card-knowledge.js` | Authored detailed references and four short course excerpts per card; generated once for web and uni-app / 逐牌深度资料与四段课程摘录，构建时共享生成；不覆盖解读算法字段 |
 | `reading-deck.js` | Basic reference content for 78 cards and three topics / 78 张牌与三个主题的基础参考 |
 | `i18n.js` | Display-text and accessibility translation; keeps business IDs and stored values / 显示文字与无障碍翻译，保留业务 ID 和存档值 |
 | `locales/en-deck.json`, `locales/en-lessons.json`, `locales/en-ui.json` | Editable English translations / 可编辑的英文翻译源 |

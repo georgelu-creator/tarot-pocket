@@ -27,3 +27,6 @@ server/data/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# Locally delivered teaching documents (not public source).
+output/

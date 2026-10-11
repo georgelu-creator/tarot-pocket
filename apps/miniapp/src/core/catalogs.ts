@@ -7,6 +7,7 @@ import { academy as engine } from './generated/academy.mjs'
 import { offlineReading as reading } from './generated/reading.mjs'
 export const deck: any = content.deck
 export const reference: any = content.reference
+export const knowledge: any = content.knowledge
 export const spreadContent: any = content.spreadContent
 export const scenarios: any[] = content.scenarios
 export const daily: any = content.daily

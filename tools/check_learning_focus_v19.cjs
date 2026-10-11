@@ -43,7 +43,7 @@ function checkLearningModel(){
   assert.match(home,/data-academy="guided"/,'one primary guided next action');
   assert.equal((home.match(/data-academy="guided-card"/g)||[]).length,0,'first course screen does not flatten 78 cards');
   assert.match(home,/data-academy="catalog"/,'complete routes remain in a secondary directory');
-  assert.match(home,/看懂画面/);assert.match(home,/正逆位应用/);assert.match(home,/辨析与解读/);
+  assert.equal((home.match(/data-academy="guided"/g)||[]).length,1);assert.doesNotMatch(home,/data-academy="level"|academy-up-next/,'stage choices and future lists are deferred');assert.match(home,/星币八/,'first lesson teaches a concrete card');
   assert.doesNotMatch(home,/随机学一张新牌|data-academy-search/);
   assert.doesNotMatch(home,/Learn to read|Course levels|Beginner/,'academy home stays Chinese even with legacy English state');
 
@@ -85,7 +85,7 @@ function checkLearningModel(){
     stored=api.blank();stored.session=makeSession(api,card.id,'learn',0);
     const firstScreen=academy.render();
     assert.match(firstScreen,/academy-teaching-points/,`${card.id}: first screen visibly renders teaching`);
-    for(const teaching of card.teachings)assert(firstScreen.includes(esc(teaching.zh)),`${card.id}: visible T1 includes every authored Chinese teaching point`);
+    for(const teaching of card.teachings)assert(firstScreen.includes(esc(teaching.zh)),`${card.id}: T1 retains every authored Chinese teaching point in the core or memory fold`);
     assert.doesNotMatch(firstScreen,new RegExp(esc(card.title.en)),`${card.id}: legacy English session does not change visible language`);
   }
   return {cards:source.cards.length,units:all.length,questions:questionCount};
@@ -118,9 +118,11 @@ async function checkLearningUI(){
     assert(await next.evaluate(element=>{const box=element.getBoundingClientRect();const hit=document.elementFromPoint(box.left+box.width/2,box.top+box.height/2);return hit===element||element.contains(hit);}),`first Continue button must not be covered`);
 
     await page.locator('[data-academy=home]').click();
-    await page.locator('[data-academy=level][data-value=A]').click();
+    await courseUI.catalog(page,'A');
     for(const [id,count,minHeight] of [['A05',5,300],['A06',10,390]]){
       await courseUI.open(page,id);
+      assert.equal(await page.locator('.academy-image-space').count(),0,'method opening shows only its explanation before the case');
+      for(let i=0;i<(id==='A05'?1:12);i++)await page.locator('[data-academy=next]').click();
       const layout=await page.locator(`.academy-layout-${id}`).evaluate(element=>({display:getComputedStyle(element).display,height:element.getBoundingClientRect().height,count:element.querySelectorAll('figure').length}));
       assert.equal(layout.display,'grid',`${id}: authored spread remains a grid`);
       assert.equal(layout.count,count,`${id}: all spread positions remain visible`);
@@ -130,8 +132,11 @@ async function checkLearningUI(){
     }
 
     await courseUI.open(page,'p08');
-    assert.equal(await page.locator('.academy-teaching-points section').count(),3,'a card visibly teaches meaning, image cue and memory cue before Q1');
-    assert.match(await page.locator('.academy-teaching-points').innerText(),/核心意思[\s\S]*画面线索[\s\S]*记忆线索/);
+    assert.equal(await page.locator('.academy-teaching-points section').count(),1,'default card task teaches its core meaning before Q1');
+    assert.equal(await page.locator('.academy-memory[open]').count(),0,'image and memory explanations begin folded');
+    assert.match(await page.locator('.academy-teaching-points').innerText(),/核心意思/);
+    await page.locator('.academy-memory > summary').click();assert.equal(await page.locator('.academy-memory > section').count(),2,'authored visual and memory explanations remain available before Q1');
+    assert.match(await page.locator('.academy-memory').innerText(),/画面线索[\s\S]*记忆线索/);
     await page.locator('[data-academy=next]').click();
     assert.match(await page.locator('.academy-copy>.eyebrow').innerText(),/做一道练习/,'Q1 follows visible teaching');
     assert.deepEqual(errors,[]);

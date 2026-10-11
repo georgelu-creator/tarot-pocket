@@ -2,8 +2,8 @@
   "name": "星纱塔罗",
   "appid": "",
   "description": "抽牌解读、每日一牌、独立牌库与逐牌学习",
-  "versionName": "0.2.0",
-  "versionCode": "200",
+  "versionName": "0.3.0",
+  "versionCode": "300",
   "transformPx": false,
   "vueVersion": "3",
   "mp-weixin": {

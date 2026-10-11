@@ -19,6 +19,7 @@ import { createApp } from 'vue';
 component.render = render;
 const setup = component.setup;
 component.setup = (props, context) => { const bindings = setup(props, context); window.lesson = bindings; return bindings };
+window.lessonKnowledge = knowledge;
 createApp(component).mount('#app');`
 const scratch = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'tarot-learning-'))
 fs.writeFileSync(path.join(scratch, 'hooks.cjs'), `exports.onShow = cb => window.hooks.show.push(cb); exports.onHide = cb => window.hooks.hide.push(cb); exports.onUnload = cb => window.hooks.unload.push(cb);`)
@@ -40,6 +41,24 @@ fs.rmdirSync(scratch)
    return page
   }
   const page = await mount()
+  const knowledgeCount = await page.evaluate(async () => {
+   const l = window.lesson, a = l.academy
+   let count = 0
+   for (const id of a.cardPath) for (const [mode, index] of [['foundation',0],['application',0],['application',2],['integration',0]]) {
+    l.data.value = a.blank()
+    l.data.value.session = {unitId:id,mode,index,startedAt:1000,seed:37,contentVersion:a.version,answers:{},support:null,hint:false,complete:false,lang:'zh'}
+    l.view.value = 'lesson'
+    const before = JSON.stringify(l.data.value)
+    await Promise.resolve()
+    const expected = a.knowledgeLesson(window.lessonKnowledge,id,a.stepFor(l.data.value.session))
+    if (!expected || !document.querySelector('.knowledge')?.textContent.includes(expected.text)) throw Error(id+' missing '+mode+' knowledge in real Vue lesson')
+    if (JSON.stringify(l.data.value)!==before) throw Error('Knowledge rendering changed learning evidence')
+    count++
+   }
+   l.data.value = a.blank(); l.view.value = 'home'; await Promise.resolve()
+   return count
+  })
+  assert.equal(knowledgeCount,312)
   const due = await page.evaluate(async () => {
    const l = window.lesson, a = l.academy, at = window.clock
    // Complete the actual beginner route so that only time determines the next item.
@@ -79,7 +98,7 @@ fs.rmdirSync(scratch)
   })
   assert.equal(resumed.restored, resumed.snapshot, 'stage switch and onShow preserve answer/index/scroll when resuming')
   assert.equal(resumed.view, 'lesson')
-  await page.evaluate(() => { const l = window.lesson; l.data.value = l.academy.blank(); l.selectLevel('A'); l.start({ id: 'A06', mode: 'learn' }) })
+  await page.evaluate(() => { const l = window.lesson; l.data.value = l.academy.blank(); l.selectLevel('A'); l.start({ id: 'A06', mode: 'learn' }); for(let i=0;i<12;i++)l.nextStep() })
   const layout = await page.evaluate(() => {
    const cards = [...document.querySelectorAll('.cards .card-item')]
    const box = element => { const r = element.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height } }
@@ -97,13 +116,14 @@ fs.rmdirSync(scratch)
   assert.equal(await page.locator('.zoom .zoom-picture.reversed').count(), 0, 'horizontal crossing does not imply reversed zoom')
   await page.locator('.zoom-close').dispatchEvent('tap')
   // Stress the crossing transform with an inverted face; horizontal placement stays separate from semantic orientation.
-  await page.evaluate(() => { window.lesson.session.value.mode = 'reverse' })
+  await page.evaluate(() => { const l = window.lesson; window.originalStepFor = l.academy.stepFor; l.academy.stepFor = s => ({ ...window.originalStepFor(s), reversed: true }); l.data.value.session = { ...l.session.value } })
   assert.equal(await page.locator('.crossing .card-picture.reversed').count(), 1)
   assert.equal(await page.locator('.crossing .card-picture').evaluate(el => getComputedStyle(el).transform), 'matrix(0, -1, 1, 0, 0, 0)')
   await page.locator('.crossing .card-picture').dispatchEvent('tap')
   assert.equal(await page.locator('.zoom .zoom-picture.reversed').count(), 1)
   assert.match(await page.locator('.zoom').innerText(), /逆位/)
   await page.locator('.zoom-close').dispatchEvent('tap')
+  await page.evaluate(() => { const l = window.lesson; l.academy.stepFor = window.originalStepFor; l.data.value.session = { ...l.session.value } })
   const orientations = await page.evaluate(() => {
    const l = window.lesson, cases = []
    for (const mode of ['application', 'practice', 'reverse', 'reverse-review']) {
