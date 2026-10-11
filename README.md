@@ -18,19 +18,19 @@ Start each card upright, apply it in a situation, then explore reversals. Follow
 
 ## Find the question you want answered
 
-Twenty-five entries are grouped into basics, love, work, study and life. Start with one card or an open three-card reading, or choose Yes/No, two or three choices, relationships, reunion, job search or exams. Each entry explains when to use it and what it answers. The introduction shows the whole spread and every position together.
+Forty entries are displayed in common, love, work, study, life and professional groups. Start with one card or an open three-card reading, or choose Yes/No, two or three choices, relationships, reunion, job search or exams. Each entry explains when to use it and what it answers. The introduction shows the whole spread and every position together.
 
-Use the preset question directly or add details. Shuffle, cut and select on one continuous table. Swipe through all 78 backs, zoom, and tap once to choose. Reversals are included by default and the group reveals together.
+Use the preset question directly or add details. Shuffle, cut, select and reveal remain separate animated stages. Swipe through all 78 backs and zoom; tap to preview, then confirm or change the card before placing it. Reversals are included by default.
 
 <img src="docs/images/reading-v17-en.png" width="290" alt="Reading scenarios"><img src="docs/images/reading-guide-v17-en.png" width="290" alt="Complete spread purpose and positions"><img src="docs/images/ritual-select-v17-en.png" width="290" alt="Swipeable fan of card backs">
 
 Revealing the group first produces a local interpretation of the question, spread, positions and orientations. Yes/No does not vote by orientation, open three cards do not invent hidden roles, and choice readings compare every option on the same goal. Online AI remains a separate, explicit action. Waiting is cancellable; retries keep the same cards. An old reply cannot overwrite a newly edited question.
 
-Completed answers save locally. Card details and spread information return to the same reading. Offline drawing, card references and saved answers remain available; offline references are never labeled as AI answers.
+Only the current reading saves locally; a new reading replaces it without keeping history. Card details and spread information return to the same reading. Offline drawing, card references and saved answers remain available; offline references are never labeled as AI answers.
 
 ## A card for today
 
-The daily calendar highlights the saved date, complete artwork, card meaning and advice, with orientation-specific Embrace/Avoid reminders. The same day keeps the same card, and earlier days remain accessible. No sharing or streak task is required. These are card-inspired reminders, not traditional almanac predictions.
+The daily calendar highlights the saved date, complete artwork, card meaning and advice, with orientation-specific Embrace/Avoid reminders. The same day keeps the same card, and previous daily cards are removed at midnight. No sharing or streak task is required. These are card-inspired reminders, not traditional almanac predictions.
 
 <img src="docs/images/daily-v17-en.png" width="290" alt="Daily card calendar">
 
@@ -39,8 +39,8 @@ The daily calendar highlights the saved date, complete artwork, card meaning and
 - The hosted product opens directly. Learning, drawing cards and the local spread-aware reading need no account or invitation.
 - Online AI is requested only after the reader presses the separate deep-reading button. Provider credentials remain on the server, and a connection failure does not remove the local answer, cards or question.
 - In Records, download and verify offline content, then use Safari’s Add to Home Screen. Test offline use on your own phone before travelling.
-- The current public interface is Chinese-only. Stable IDs, older records and the verified historical RWS artwork remain compatible.
-- Records stay in the current browser. Export JSON before changing devices. Older learning and reading backups remain supported. Use the update entry above without clearing site data.
+- The current public interface is Chinese-only. Stable IDs, learning progress and the verified historical RWS artwork remain compatible.
+- Records stay in the current browser. Export JSON before changing devices. Backups retain learning, the current reading and today’s daily card; migration and import discard past reading archives. Use the update entry above without clearing site data.
 
 [Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [Implementation and validation](docs/RELEASE_1_9.md)
 

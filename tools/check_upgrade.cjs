@@ -5,8 +5,21 @@ const root=path.resolve(__dirname,'..'),keys=['tarot-pocket-demo-v1','tarot-lear
 const releaseAt=web=>JSON.parse(fs.readFileSync(path.join(web,'sw.js'),'utf8').match(/^const RELEASE = (.+);$/m)[1]);
 const types={'.js':'text/javascript','.html':'text/html','.css':'text/css','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'};
 // New releases may add optional schema fields; every existing field and array
-// must remain byte-for-byte equivalent in meaning, including private readings.
+// must remain equivalent in meaning, except the explicitly retired draw history.
 function retained(actual,expected,label){if(expected&&typeof expected==='object'&&!Array.isArray(expected)){assert(actual&&typeof actual==='object',label);for(const key of Object.keys(expected))retained(actual[key],expected[key],label+'.'+key);}else assert.deepEqual(actual,expected,label);}
+function retainedRecords(actual,expected,label,today){
+ for(const key of keys.slice(0,2))retained(actual[key],expected[key],label+'.'+key);
+ const got=actual[keys[2]],old=expected[keys[2]];assert(got,label+' current reading storage exists');
+ retained(got.settings,old.settings,label+' current reading settings');
+ if(old.draft?.dailyDate){assert.equal(got.draft,null,label+' daily draft migrates out of the ordinary current slot');if(old.draft.dailyDate===today){const {answerHistory,...currentDaily}=old.draft;retained(got.daily[0],currentDaily,label+' active today daily fields');}}
+ else if(old.draft){const {answerHistory,...currentDraft}=old.draft;retained(got.draft,currentDraft,label+' current draw fields');assert.equal(got.draft.answerHistory,undefined);}
+ else assert.equal(got.draft,null);
+ assert.deepEqual(got.history,[],label+' no drawing history survives');assert.deepEqual(got.practice,[],label+' no retired draw exercise archive survives');
+ assert(got.daily.length<=1,label+' at most today’s daily remains');assert(got.daily.every(d=>d.dailyDate===today),label+' all retained daily entries belong to today');
+ const oldToday=(old.daily||[]).find(d=>d.dailyDate===today);if(oldToday&&!old.draft?.dailyDate){const {answerHistory,...currentDaily}=oldToday;retained(got.daily[0],currentDaily,label+' today’s daily fields');}
+ assert(Object.keys(got.ui.inputs).length<=1,label+' at most one editing form remains');for(const key of Object.keys(got.ui.inputs)){assert.equal(key,got.ui.scenarioId||got.ui.guideId,label+' only current editing form remains');if(old.ui?.inputs?.[key])retained(got.ui.inputs[key],old.ui.inputs[key],label+' current form fields');}
+ assert.equal(got.ui.historyId,undefined);assert.equal(got.ui.dailyHistory,undefined);assert.equal(got.ui.historyOpen,undefined);
+}
 const hash=value=>crypto.createHash('sha256').update(value).digest('hex');
 async function upgradeCheck(web=path.join(root,'dist')){
  const temp=fs.mkdtempSync(path.join(os.tmpdir(),'tarot-upgrade-')),oldRoot=path.join(temp,'old'),current=path.join(temp,'current');fs.mkdirSync(oldRoot);fs.cpSync(web,current,{recursive:true});
@@ -59,7 +72,7 @@ async function upgradeCheck(web=path.join(root,'dist')){
  assert.equal(await updatePage.locator('#continue').innerText(),'保留记录，进入新版','?lang=en keeps the recovery flow in Chinese');
  await updatePage.locator('#continue').click();await updatePage.waitForURL(u=>u.pathname==='/tarot-pocket/'&&u.searchParams.get('v')===release.revision).catch(async error=>{console.error('Activation diagnostic',JSON.stringify(await updatePage.evaluate(async()=>({url:location.href,state:window.TarotUpdate?.state,reg:await navigator.serviceWorker.getRegistration().then(r=>({active:r.active?.state,waiting:r.waiting?.state,installing:r.installing?.state}))}))));throw error;});await updatePage.waitForFunction(()=>window.TarotOffline?.state.ready);
  assert.equal(await updatePage.locator('meta[name=tarot-build]').getAttribute('content'),release.revision);
- retained(await updatePage.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'every legacy record field survives explicit update');
+ retainedRecords(await updatePage.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'explicit update',await updatePage.evaluate(()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}));
  assert.equal(await page.locator('meta[name=tarot-build]').getAttribute('content'),oldRelease.revision,'explicit upgrade still does not reload other tabs');
  const cachesAfter=await updatePage.evaluate(()=>caches.keys());assert(cachesAfter.includes('unrelated-project-cache'));assert(cachesAfter.some(k=>k.endsWith(oldRelease.revision)),'old-tab assets remain available');
  const inventory=await updatePage.evaluate(async revision=>{const key=(await caches.keys()).find(k=>k.endsWith(revision)),cache=await caches.open(key),out=[];for(const request of await cache.keys()){const response=await cache.match(request);out.push({url:request.url,integrity:response.headers.get('X-Tarot-Integrity'),hash:[...new Uint8Array(await crypto.subtle.digest('SHA-256',await response.arrayBuffer()))].map(x=>x.toString(16).padStart(2,'0')).join('')});}return out;},release.revision);
@@ -68,11 +81,11 @@ async function upgradeCheck(web=path.join(root,'dist')){
  const priorScript=await updatePage.evaluate(async revision=>{const response=await fetch('app.js?v='+revision);return {status:response.status,text:await response.text()};},oldRelease.revision);assert.equal(priorScript.status,200);assert.equal(hash(priorScript.text),oldRelease.assets.find(a=>a.path==='app.js').sha256);
  const wrongVersion=await updatePage.evaluate(async()=>{const response=await fetch('app.js?v=unknown-build');return response.status;});assert.equal(wrongVersion,409,'missing historical version never silently receives a new script');
  await context.setOffline(true);await updatePage.reload();await updatePage.waitForFunction(()=>window.TarotOffline?.state.ready);
- retained(await updatePage.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'offline reopen retains all three old records');
+ retainedRecords(await updatePage.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,JSON.parse(localStorage.getItem(k))])),keys),before,'offline reopen',await updatePage.evaluate(()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}));
  const restored=await updatePage.evaluate(()=>JSON.parse(localStorage.getItem('tarot-pocket-demo-v1')).journey.session);assert.deepEqual(restored,oldSession,'unfinished card resumes with the same question and answer');
  await updatePage.evaluate(async()=>{const image=new Image();image.src='assets/cards/p14.webp';await image.decode();});
  assert.deepEqual(errors,[]);await context.close();
- return {status:'PASS',from:oldRelease.revision,to:release.revision,checks:['actual v1.0 cached query URL reproduced','independent recovery page bypasses old cache','?lang=en recovery remains zh-CN with no language toggle','matching CSP hash','versioned runtime resources','interrupted update keeps previous package','explicit activation only','no other-tab reload','old-version asset isolation','three records and unfinished lesson preserved exactly','complete SHA256 cache inventory','offline reopen and unfamiliar card','unrelated caches preserved']};
+ return {status:'PASS',from:oldRelease.revision,to:release.revision,checks:['actual v1.0 cached query URL reproduced','independent recovery page bypasses old cache','?lang=en recovery remains zh-CN with no language toggle','matching CSP hash','versioned runtime resources','interrupted update keeps previous package','explicit activation only','no other-tab reload','old-version asset isolation','both learning records and current drawing preserved; historical draws retired','complete SHA256 cache inventory','offline reopen and unfamiliar card','unrelated caches preserved']};
  }finally{await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 }
 module.exports=upgradeCheck;

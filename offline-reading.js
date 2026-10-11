@@ -21,7 +21,7 @@
 })(typeof window === 'object' ? window : globalThis, function (root) {
   'use strict';
 
-  const VERSION = 'OR-1.4.0';
+  const VERSION = 'OR-1.5.0';
   const LANGUAGES = new Set(['zh', 'en']);
   const TOPICS = new Set(['general', 'love', 'career', 'study', 'life', 'self', 'choice']);
   const ROLE_CONTEXT = {state: 'state', tension: 'tension', advice: 'advice', trend: 'state', outcome: 'state'};
@@ -211,7 +211,18 @@
           'other-perspective': `可借“${themes}”探索对方可能的角度，仍需与其实际表达核对`,
           'own-perspective': `“${themes}”提示你怎样理解关系，不等于双方的共识`,
           'daily-body': `可从“${themes}”观察日常节奏与实际体验，不据此判断健康状况`,
-          values: `“${themes}”提示你觉得值得投入的东西，还需看实际安排`
+          values: `“${themes}”提示你觉得值得投入的东西，还需看实际安排`,
+          approach: `可把“${themes}”用于考虑表达好感的方式，不把回应当作保证`,
+          coordination: `可把“${themes}”用于协调双方需要，而不是要求一方单独迁就`,
+          'relationship-tension': `相处中与“${themes}”有关的模式，可能形成需要处理的困难`,
+          'repair-condition': `“${themes}”提示重新开始所需的修复条件，不代表条件已经具备`,
+          'continue-condition': `继续相处这条路径，需要观察“${themes}”怎样影响日常互动`,
+          'separate-condition': `结束关系这条路径，需要面对与“${themes}”有关的变化和安排`,
+          'crisis-support': `“${themes}”提示处理矛盾时可以核对的支持，不等于支持已经可用`,
+          'first-step': `可以把“${themes}”用于眼前的一步，回应核心卡点`,
+          'search-memory': `借“${themes}”回想最后使用时的动作与情境，不据此确定物品地点`,
+          'search-overlooked': `借“${themes}”检查寻找过程里的遗漏，不推断被谁拿走`,
+          'search-next': `借“${themes}”选择下一项可核对的搜索行动，不保证找回`
         }[item.position.scope];
         if (scoped) return scoped;
       }
@@ -699,7 +710,17 @@
       'other-perspective': `这里从对方立场作象征性的观察。${name}的“${themes}”提供一种可能的理解角度，适合与对方实际表达相互对照，而不是代替对方发言。`,
       'own-perspective': `这里看你怎样理解这段关系。${name}的“${themes}”可帮助辨认自己的关注、期待与判断；再与对方立场比较，不把个人看法自动当成双方共识。`,
       'daily-body': `这里看日常节奏与实际体验。${name}的“${themes}”可用于观察行动、休息和生活安排怎样被感受，不从牌面判断疾病或身体检查结果。`,
-      values: `这里看让你觉得值得投入的东西。${name}的“${themes}”帮助探索意义感与优先级；再看思想与日常安排是否给这些重视的东西留下了空间。`
+      values: `这里看让你觉得值得投入的东西。${name}的“${themes}”帮助探索意义感与优先级；再看思想与日常安排是否给这些重视的东西留下了空间。`,
+      approach: `这里看表达和靠近的方式。${name}的“${themes}”需要放回自己的期待与对方实际回应之间：这种做法能否让表达更清楚，同时给对方自由回应的空间。${direction.roles.advice}建议只属于你可以选择的部分，不代表对方一定接受。`,
+      coordination: `这里看双方需要怎样协调。${name}把“${themes}”带入协调方式，应当回应前两张指出的不同关注。${direction.roles.advice}把这种做法转成双方能讨论的具体安排；协调需要双方愿意参与，不能让一个人的需要自动覆盖另一个人。`,
+      'repair-condition': `这里看重新建立关系需要的条件。${name}的“${themes}”是可以考虑的修复资源：${direction.roles.resource}回到未解决的问题，观察这种条件能否改变原来的相处方式；尚未确认具备的支持不能直接写成已经具备，也不把你的努力等同对方同意。`,
+      'continue-condition': `这里仅看继续相处这一条路径。${name}的“${themes}”提示继续后需要面对的相处体验与条件：${direction.roles.trend}把它与目前的困难联系起来，区分舒服的一面和仍需处理的事情。再用相同时间范围与结束路径比较，不把这张牌直接当作应该留下的命令。`,
+      'separate-condition': `这里仅看结束关系这一条路径。${name}的“${themes}”提示结束之后需要面对的变化与条件：${direction.roles.trend}它不证明另一条路更好，也不预告一定孤独、轻松或遇到新人。与继续路径使用同一现实标准，已知的联系与生活安排仍需实际处理。`,
+      'crisis-support': `这里看处理矛盾时可使用的支持。${name}的“${themes}”提供一类可核对的资源：${direction.roles.resource}支持可能帮助理解问题、明确安排或减少负担，但应当先确认是否真的可用，再让最后一张建议使用它；不凭牌补造帮助者。`,
+      'first-step': `这里看眼前可以先做的一步。${name}的“${themes}”必须回应第二张所指的卡点，并考虑第三张支持能否使用。${direction.roles.advice}先选一种可以实行的回应，再观察实际变化；没有结果位，不能保证这样做之后矛盾就会消失。`,
+      'search-memory': `这里把${name}的“${themes}”作为回想的提示。它可以帮助你从最后一次确定见到物品的活动、手上做的动作或转场情境重新梳理经过。回想时只保留自己能确认的事实；牌面里的过去含义不是物品行程证据，也不能从人物或画面认定它被谁拿走。`,
+      'search-overlooked': `这里把${name}的“${themes}”用于检查寻找方式的盲点。可留意自己是否因为预先认定物品在哪里，而跳过某一段真实行程、交接或换包的环节。这里说的是有待检查的可能遗漏，不是断言你确实遗漏了某处；第二张也不是失物所在位置。`,
+      'search-next': `这里把${name}的“${themes}”转为下一项可核对的搜索步骤。先结合前两张想到的真实情境，选择一个尚未核查的环节：按行程逐段检查、确认收纳和交接、联系去过的场所都可以作为搜索方法，选择与已知经过有关的一项。牌的象征只帮助整理搜索，不提供方位、磁场或找回保证。`
     };
     const text = lenses[scope];
     if (!text) return null;
@@ -875,9 +896,36 @@
     return {overview, sections: [section('evidence', '为什么这样判断', evidence, items)]};
   }
 
+  // These application-authored structures retain every named task. In
+  // particular, two separation paths are conditions rather than one outcome,
+  // and searching prompts never turn into a claimed location or accusation.
+  function authoredSceneReading(items, spread, input, language, tr) {
+    const mode = spread.readingMode;
+    if (!mode || language !== 'zh') return null;
+    const lines = items.map(item => itemClause(item, input.topic, language, tr));
+    const byId = id => items.find(item => item.position.id === id);
+    let overview;
+    if (mode === 'reunion-four') {
+      const trend = byId('reunion-trend');
+      const lead = input.question && asksAboutFuture(input.question, language) ? resultLead([trend], input, language, true, undefined, tr) : '';
+      overview = `${lead}“重新开始的趋势”由${cardName(trend, language)}${orientationLabel(trend, language)}说明：${withoutFinalPunctuation(shortPositionMeaning(trend, input.topic, language, tr))}。这个方向需要连同目前的联系、未解决的问题和修复条件理解，怀念或一次联系本身并不等于恢复关系。`;
+    } else if (mode === 'separation-four') {
+      overview = `${itemClause(byId('continue'), input.topic, language, tr)}；${itemClause(byId('separate'), input.topic, language, tr)}。两条路径都要放回${cardName(items[0], language)}所呈现的现况，以及${cardName(items[1], language)}指出的困难比较；牌面分别给出要面对的条件，不替双方作去留决定。`;
+    } else if (mode === 'lost-object-three') {
+      overview = `这组三张依次辅助回想最后使用的情境、检查漏查环节、选择下一步搜索：${lines.join('；')}。它们是整理搜索的方法线索，不是失物位置的证据。`;
+    } else {
+      const intro = {'crush-three':'先分清自己的期待与对方呈现的态度，再考虑怎样靠近', 'hidden-attitude-three':'先看外在表达，再核对可能的态度和互动落差', 'love-triangle':'先分别理解双方需要，再考虑协调方式', 'crisis-four':'从眼前局面、核心卡点和可用支持，找到可以先做的一步'}[mode];
+      overview = `${intro}：${lines.join('；')}。`;
+      if (input.question && asksAboutFuture(input.question, language)) overview += '这组牌没有未来或结果位，以上解释只能回应当前互动与可考虑的做法，不能据此确定之后是否在一起。';
+    }
+    return {overview, sections: [section('authored-throughline', '牌位之间怎样联系', spread.readingTip, items)]};
+  }
+
   function buildSections(branch, items, spread, language, tr, input, risk) {
     const en = language === 'en';
     if (risk) return highRiskReading(items, input, language, risk);
+    const authored = authoredSceneReading(items, spread, input, language, tr);
+    if (authored) return authored;
     if (branch === 'yes-no') {
       return yesNoReading(items[0], input, language, tr, risk);
     }

@@ -2249,3 +2249,547 @@ window.TAROT_SPREAD_CONTENT.spreads.push(...[
     if (['lovers-pyramid','gypsy-cross'].includes(id)) { spread.topic = 'love'; spread.topics = ['love']; }
   }
 })();
+
+// Screenshot-inspired purposes with explicitly authored position definitions.
+window.TAROT_SPREAD_CONTENT.spreads.push(...[
+  {
+    "id": "crush-three",
+    "name": "暗恋牌阵",
+    "layout": "authored-row",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "还没确认彼此心意时，看看自己的期待、对方呈现的态度和适合怎样靠近。",
+    "bestFor": "还没确认彼此心意时，看看自己的期待、对方呈现的态度和适合怎样靠近。",
+    "description": "还没确认彼此心意时，看看自己的期待、对方呈现的态度和适合怎样靠近。",
+    "version": "2",
+    "readingMode": "crush-three",
+    "positions": [
+      {
+        "id": "self-expectation",
+        "label": "我的期待",
+        "role": "state",
+        "scope": "own-perspective",
+        "question": "我希望这份好感怎样发展？",
+        "description": "先分清自己盼望什么、如何理解已有互动。与第二张比较时，留意哪些是自己的想象、哪些有实际回应；第三张给出的靠近方式应当照顾这种差别。"
+      },
+      {
+        "id": "other-attitude",
+        "label": "对方呈现的态度",
+        "role": "unknown",
+        "scope": "other-perspective",
+        "question": "对方在已有互动中呈现怎样的态度？",
+        "description": "用牌义探索对方可能的互动风格，再与实际联系的频率、回应和行动核对。这里不是对方内心的事实，也不能由一张牌断言对方已经喜欢你或另有对象。"
+      },
+      {
+        "id": "approach",
+        "label": "靠近的方式",
+        "role": "advice",
+        "scope": "approach",
+        "question": "我可以怎样自然地表达或接近？",
+        "description": "结合自己的期待和对方呈现的态度，考虑一种不过度施压的回应。它是自己可以选择的做法，不保证得到好感；若真实回应与期待不同，需要尊重对方的边界。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 1
+    },
+    "readingTip": "先分别读自己的期待与对方呈现的态度，再让第三张回应两者的差别。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创3牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "hidden-attitude-three",
+    "name": "真心窥探",
+    "layout": "authored-row",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "把表面表达、尚待确认的态度与互动中的落差分开看，帮助你知道该核对什么。",
+    "bestFor": "把表面表达、尚待确认的态度与互动中的落差分开看，帮助你知道该核对什么。",
+    "description": "把表面表达、尚待确认的态度与互动中的落差分开看，帮助你知道该核对什么。",
+    "version": "2",
+    "readingMode": "hidden-attitude-three",
+    "positions": [
+      {
+        "id": "expression",
+        "label": "表面表达",
+        "role": "state",
+        "scope": "expression",
+        "question": "对方在相处中表现出怎样的表达方式？",
+        "description": "观察外在的表达和行为：牌面可以提示直接、克制、热情或疏离等方式，但必须与真实互动核对。它与第二张不同；表达风格不自动等于内心的全部。"
+      },
+      {
+        "id": "unconfirmed-attitude",
+        "label": "待确认的态度",
+        "role": "unknown",
+        "scope": "other-perspective",
+        "question": "这份表达背后有哪些可能的态度需要确认？",
+        "description": "把牌义当成一种可询问的理解角度，而不是读心结论。与第一张对照时，差异表示值得通过交流核对的地方，不证明对方说谎、隐藏感情或欺骗。"
+      },
+      {
+        "id": "gap",
+        "label": "互动中的落差",
+        "role": "tension",
+        "scope": "relationship-tension",
+        "question": "表达与理解之间，哪里容易出现误会或落差？",
+        "description": "看前两张可能在哪里被误读，或哪种互动习惯让关系难以被理解。这里找的是可以观察的沟通问题，不把怀疑当证据，也不凭牌补造第三者。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 1
+    },
+    "readingTip": "先区分可观察的表达和未确认的态度，再看两者之间可能产生什么落差。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创3牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "love-triangle",
+    "name": "爱情三角",
+    "layout": "authored-triangle",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "从自己的需要、对方可能的需要和协调方式三个角度，理解如何相处。",
+    "bestFor": "从自己的需要、对方可能的需要和协调方式三个角度，理解如何相处。",
+    "description": "从自己的需要、对方可能的需要和协调方式三个角度，理解如何相处。",
+    "version": "2",
+    "readingMode": "love-triangle",
+    "positions": [
+      {
+        "id": "my-needs",
+        "label": "我的关系需要",
+        "role": "state",
+        "scope": "expectation",
+        "question": "我在这段关系里最重视什么？",
+        "description": "辨认自己重视的相处方式与情感需要。它不等于关系已经满足这些需要；与第二张比较时，应当允许双方重视不同的事。第三张需要回应这些差异，而不只是笼统要求多沟通。"
+      },
+      {
+        "id": "other-needs",
+        "label": "对方可能的需要",
+        "role": "unknown",
+        "scope": "other-expectation",
+        "question": "对方可能重视什么，需要通过交流确认？",
+        "description": "从牌面探索对方可能看重的关系主题，仍要通过对方的真实表达确认。不要将自己的期待投射给对方，也不把这张牌当成第三者或另一段关系。"
+      },
+      {
+        "id": "coordination",
+        "label": "协调彼此的方式",
+        "role": "advice",
+        "scope": "coordination",
+        "question": "我们可以怎样协调不同的需要？",
+        "description": "第三张回应前两张的需要：哪些可以共同满足，哪些需要分开安排或谈清边界。它描述可以尝试的协调办法，不能代替双方同意，也不保证关系结果。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 2
+    },
+    "readingTip": "三角表示需要、需要、协调这三个观察角度；不是三个人或第三者。将第三张放回双方需要的差异里解读。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创3牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "reunion-four",
+    "name": "复合评估",
+    "layout": "authored-diamond",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "分开之后，分别看目前的联系、旧问题、修复条件与重新开始的趋势。",
+    "bestFor": "分开之后，分别看目前的联系、旧问题、修复条件与重新开始的趋势。",
+    "description": "分开之后，分别看目前的联系、旧问题、修复条件与重新开始的趋势。",
+    "version": "2",
+    "readingMode": "reunion-four",
+    "positions": [
+      {
+        "id": "present-contact",
+        "label": "目前的联系",
+        "role": "state",
+        "scope": "relationship-state",
+        "question": "分开后，现在形成了怎样的联系与相处状态？",
+        "description": "先看分开后当前的互动背景。怀念、联系与重新交往是不同的事；现状位只能描述当下，不能单凭一张怀念的牌就推断复合。当前联系是否能持续，要连同问题位和修复条件一起理解。"
+      },
+      {
+        "id": "old-difficulty",
+        "label": "尚未解决的问题",
+        "role": "tension",
+        "scope": "relationship-tension",
+        "question": "哪些问题可能再次妨碍相处？",
+        "description": "观察如果重新接近，哪些相处模式仍可能带来阻力。与现状位连接，避免凭牌反推具体分手原因；只有已知经历支持的部分才可用来解释过去。"
+      },
+      {
+        "id": "repair-condition",
+        "label": "修复所需的条件",
+        "role": "resource",
+        "scope": "repair-condition",
+        "question": "重新建立关系需要什么支持或变化？",
+        "description": "这里看修复需要具备的条件，不等于条件已经满足。与问题位一起读：这种支持为什么有用、谁能做到、是否需要双方同意，不能把一个人的努力当作两个人的承诺。"
+      },
+      {
+        "id": "reunion-trend",
+        "label": "重新开始的趋势",
+        "role": "trend",
+        "scope": "relationship-trend",
+        "question": "在当前联系和修复条件下，重新开始更可能走向哪里？",
+        "description": "综合目前联系、未解决的问题和修复条件，再看重新开始的方向。趋势不是保证；不要把想念等同复合、把一次联系等同恢复关系，也不从牌号给出日期。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0.5
+      },
+      {
+        "x": 1,
+        "y": 0.5
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 3
+    },
+    "readingTip": "先看当下，再看旧问题是否有新的处理条件，最后读重新开始的趋势。不要跳过第二、第三张只用结果牌给答案。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创4牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "separation-four",
+    "name": "分手抉择",
+    "layout": "authored-diamond",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "整理关系现况和主要困难，对照继续与结束各自需要面对的事情。",
+    "bestFor": "整理关系现况和主要困难，对照继续与结束各自需要面对的事情。",
+    "description": "整理关系现况和主要困难，对照继续与结束各自需要面对的事情。",
+    "version": "2",
+    "readingMode": "separation-four",
+    "positions": [
+      {
+        "id": "relationship-now",
+        "label": "关系现况",
+        "role": "state",
+        "scope": "relationship-state",
+        "question": "现在这段关系是怎样维持的？",
+        "description": "给两条路径提供相同的出发点。现况中的感受、安排与互动应分清；自己的愿望不自动等于关系仍然可行，也不等于结束更好。比较两条路径时，都应回应这张牌所呈现的实际主题。"
+      },
+      {
+        "id": "main-difficulty",
+        "label": "主要困难",
+        "role": "tension",
+        "scope": "relationship-tension",
+        "question": "最影响这次去留判断的困难是什么？",
+        "description": "理解当前最需要正视的相处问题。与两条路径比较：继续是否需要处理它，结束是否仍需处理现实牵连；不要把困难牌变成命令对方分手。"
+      },
+      {
+        "id": "continue",
+        "label": "继续所需面对的事",
+        "role": "trend",
+        "scope": "continue-condition",
+        "question": "如果继续这段关系，需要面对什么？",
+        "description": "按同一时间范围观察继续相处的条件与可能体验。这里不是建议留下，也不是保证改善；应回看主要困难是否仍在，以及改善需要的配合是否真实存在。"
+      },
+      {
+        "id": "separate",
+        "label": "结束所需面对的事",
+        "role": "trend",
+        "scope": "separate-condition",
+        "question": "如果结束这段关系，需要面对什么？",
+        "description": "按与继续路径相同的时间范围，观察结束之后需要面对的变化和安排。它不是命令离开，也不能保证立刻轻松或遇到新人；不凭牌推断未知的安全、财产或家庭事实。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0.5
+      },
+      {
+        "x": 1,
+        "y": 0.5
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 3
+    },
+    "readingTip": "用同一个问题、时间范围和现实条件比较继续与结束。两张路径牌都要读，不把某一张的情绪直接等同最终选择。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创4牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "crisis-four",
+    "name": "危机处理",
+    "layout": "authored-diamond",
+    "category": "love",
+    "categories": [
+      "love"
+    ],
+    "topic": "love",
+    "topics": [
+      "love"
+    ],
+    "contextEnabled": true,
+    "summary": "相处出现矛盾时，看清眼下的问题、核心卡点、可用支持和第一步。",
+    "bestFor": "相处出现矛盾时，看清眼下的问题、核心卡点、可用支持和第一步。",
+    "description": "相处出现矛盾时，看清眼下的问题、核心卡点、可用支持和第一步。",
+    "version": "2",
+    "readingMode": "crisis-four",
+    "positions": [
+      {
+        "id": "present",
+        "label": "眼前的局面",
+        "role": "state",
+        "scope": "relationship-state",
+        "question": "眼前的矛盾处在怎样的状态？",
+        "description": "先描述现在发生的互动，而不是急着归责给某个人。与核心卡点比较，可以区分事件表面和让它反复的模式。这里不推断未知事实。最后一步也应针对这个局面，而非讨论一段无关的关系。"
+      },
+      {
+        "id": "core-block",
+        "label": "核心卡点",
+        "role": "tension",
+        "scope": "relationship-tension",
+        "question": "最妨碍处理矛盾的环节是什么？",
+        "description": "从牌义解释问题为什么难以被处理，例如回应方式、边界或责任不清。需要与真实相处核对，不把一张牌变成对某一方人格的定论。后两张应说明怎样使用支持处理这个具体卡点。"
+      },
+      {
+        "id": "support",
+        "label": "可用的支持",
+        "role": "resource",
+        "scope": "crisis-support",
+        "question": "有哪些条件或支持可以帮助缓和矛盾？",
+        "description": "辨认能够使用的支持与条件，再核对它是否真的可用。支持可以来自更清楚的规则、时间或愿意参与的协助，不自动证明某个人会帮忙，也不能取代必要的现实支持。"
+      },
+      {
+        "id": "first-step",
+        "label": "先做的一步",
+        "role": "advice",
+        "scope": "first-step",
+        "question": "针对眼前卡点，可以先采取什么做法？",
+        "description": "让这张建议直接回应核心卡点，并利用第三张提供的支持。只提出自己可以选择的第一步，不保证对方配合；遇到威胁、暴力或现实危险时，先使用现实求助与安全措施。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0.5
+      },
+      {
+        "x": 1,
+        "y": 0.5
+      },
+      {
+        "x": 0.5,
+        "y": 1
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 3
+    },
+    "readingTip": "按局面→卡点→支持→第一步来读。这是相处矛盾的处理牌阵，没有未来或结果位；现实危险需要现实帮助。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能把象征线索当作他人内心、已经发生的事件或确定结果。",
+    "variant": "本应用采用的原创4牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  },
+  {
+    "id": "lost-object-three",
+    "name": "失物寻找",
+    "layout": "authored-row",
+    "category": "life",
+    "categories": [
+      "life"
+    ],
+    "topic": "life",
+    "topics": [
+      "life"
+    ],
+    "contextEnabled": true,
+    "summary": "用三张牌辅助回想最后使用的情境、容易漏查的环节和下一步寻找办法。",
+    "bestFor": "用三张牌辅助回想最后使用的情境、容易漏查的环节和下一步寻找办法。",
+    "description": "用三张牌辅助回想最后使用的情境、容易漏查的环节和下一步寻找办法。",
+    "version": "2",
+    "readingMode": "lost-object-three",
+    "positions": [
+      {
+        "id": "last-use",
+        "label": "最后使用的情境",
+        "role": "past",
+        "scope": "search-memory",
+        "question": "最后一次确定见到它时，有什么场景或动作值得回想？",
+        "description": "把这张牌用作回想线索，沿着最后一次确定见到物品的事实复盘。牌义可以提醒活动、交接、收纳或移动等方向，但不能证明物品曾出现在一个未知地点。"
+      },
+      {
+        "id": "overlooked",
+        "label": "容易漏查的环节",
+        "role": "tension",
+        "scope": "search-overlooked",
+        "question": "寻找时，哪些检查方式或环节可能被忽略？",
+        "description": "关注寻找过程里容易忽略的地方，而不是断言物品位置。例如是否只查了习惯位置、是否遗漏换包或交接环节；具体去哪里查仍以真实行程和记录为依据。"
+      },
+      {
+        "id": "next-search",
+        "label": "下一步寻找办法",
+        "role": "advice",
+        "scope": "search-next",
+        "question": "接下来可以怎样缩小寻找范围？",
+        "description": "将前两张的回忆与漏查环节转成一项实际搜索步骤，例如按行程逐段检查、询问接触过的人或联系场所失物招领。这张牌不提供方位、磁场频率或保证找回。"
+      }
+    ],
+    "layoutPositions": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0.5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      }
+    ],
+    "layoutGrid": {
+      "columns": 3,
+      "rows": 1
+    },
+    "readingTip": "先从确实记得的最后使用情境回溯，再检查漏查环节，最后选择下一项搜索行动。不把图像方位或牌号当作物品所在地。",
+    "compareTip": "按照实际牌位的任务理解每张牌，未知事实仍需核对。",
+    "avoid": "不能据此确定物品方位、指认取走物品的人或保证找回。",
+    "variant": "本应用采用的原创3牌版本。名称参考用户提供的功能截图；截图没有给出牌位定义，因此不声称复现原小程序或唯一传统版本。",
+    "source": {
+      "title": "Tarot Pocket · 原创场景牌阵",
+      "url": "",
+      "note": "名称与用途参考用户提供的功能截图；牌位、布局与说明由本应用原创，不复制其他小程序的文案或未公开规则。"
+    }
+  }
+]);

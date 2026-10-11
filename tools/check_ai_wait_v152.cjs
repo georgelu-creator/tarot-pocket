@@ -82,12 +82,13 @@ async function fixture(page){
    await page.clock.fastForward(30000);assert.equal(requests.length,before+2,'completed waiting timer causes no requests or UI regression');
    assert.equal(await page.locator('.ai-waiting').count(),0);
    // A reply that arrives after choosing another spread must not enter its draft or visible UI.
-   await fixture(page);mode='hold';await requestReading(page);await until(()=>requests.length===before+3,'navigation scenario has one held request');
+   await fixture(page);mode='hold';await page.evaluate(()=>{window.__originalAIRequest=TarotReadingAI.request;TarotReadingAI.request=(...args)=>(window.__navigationAI=window.__originalAIRequest(...args));});await requestReading(page);await until(()=>requests.length===before+3,'navigation scenario has one held request');
    await page.locator('[data-reading=pause]').first().click();
    const next=page.locator('[data-reading=guide]:not([data-value="decision-five"])').first();const nextId=await next.getAttribute('data-value');await next.click();
    await page.locator('[data-reading=start]').click();
    for(const res of held.splice(0))reply(res);
-   await until(async()=>await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).history.some(r=>r.id==='fixture-ai-wait-v152'&&r.ai?.length),KEY),'late reply stays with the archived original spread');
+   await page.evaluate(async()=>{await window.__navigationAI;TarotReadingAI.request=window.__originalAIRequest;delete window.__navigationAI;delete window.__originalAIRequest;});
+   const retained=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.deepEqual(retained.history,[],'late reply cannot resurrect retired reading history');assert(!JSON.stringify(retained).includes('fixture-ai-wait-v152'),'the replaced reading is not archived when its reply arrives');
    const draft=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft,KEY);
    assert.equal(draft.spreadId,nextId);assert.notEqual(draft.id,'fixture-ai-wait-v152');assert.equal(draft.ai?.length||0,0,'new spread receives no old answer');
    assert.equal(await page.locator('.ai-answer,.ai-waiting').count(),0,'late response does not replace the new spread UI');

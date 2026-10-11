@@ -16,13 +16,17 @@
   </view>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { dailyDisplay, todayReading, blankReading, validateReading, READING_KEY } from '../../core/drawing'
-import { cardImage, readStore, writeStore, notify } from '../../core/platform'
+import { dailyDisplay, todayReading } from '../../core/drawing'
+import { cardImage, loadReadingStore, writeStore, notify } from '../../core/platform'
 const latestDaily=ref<any>(null)
 const todayCard=computed(()=>dailyDisplay(latestDaily.value))
-onShow(()=>{try{const raw=readStore(READING_KEY,null);latestDaily.value=raw && validateReading(raw) ? todayReading(raw) : null}catch{latestDaily.value=null;notify('暂时无法读取日运记录')}})
+function refreshDaily(){try{latestDaily.value=todayReading(loadReadingStore())}catch{latestDaily.value=null;notify('暂时无法整理日运，请检查储存空间')}}
+onShow(refreshDaily)
+onMounted(()=>uni.$on('reading-day-changed',refreshDaily))
+onBeforeUnmount(()=>uni.$off('reading-day-changed',refreshDaily))
+
 function openTab(page: string) { uni.switchTab({ url: '/pages/' + page + '/index' }) }
 function openDraw(daily: boolean) { try{writeStore('tarot-miniapp-entry-v1', { daily }); openTab('draw')}catch{notify('暂时无法保存入口，请检查储存空间后重试')} }
 </script>
