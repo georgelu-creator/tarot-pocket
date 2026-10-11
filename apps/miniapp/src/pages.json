@@ -29,12 +29,6 @@
       "style": {
         "navigationBarTitleText": "牌义"
       }
-    },
-    {
-      "path": "pages/records/index",
-      "style": {
-        "navigationBarTitleText": "记录"
-      }
     }
   ],
   "globalStyle": {
@@ -62,10 +56,6 @@
       {
         "pagePath": "pages/library/index",
         "text": "牌库"
-      },
-      {
-        "pagePath": "pages/records/index",
-        "text": "记录"
       }
     ]
   }

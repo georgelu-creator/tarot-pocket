@@ -34,7 +34,7 @@ cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], 
   }
  }
  const pages=JSON.parse(fs.readFileSync(path.join(base,'src/pages.json')));
- const nav=pages.tabBar.list.map(p=>p.text);assert.ok(nav.indexOf('抽牌')<nav.indexOf('学牌'));
+ const nav=pages.tabBar.list.map(p=>p.text);assert.ok(!nav.includes('记录'));assert.ok(!pages.pages.some(p=>p.path.includes('/records/')));assert.ok(nav.indexOf('抽牌')<nav.indexOf('学牌'));
  const home=fs.readFileSync(path.join(base,'src/pages/home/index.vue'),'utf8');assert.ok(home.indexOf('开始抽牌')<home.indexOf('开始学牌'));
  assert.ok(home.includes('塔罗日运')); assert.ok(!/今日塔罗|今日一牌/.test(home));
  for(const page of pages.pages) assert.ok(fs.existsSync(path.join(base,'src',page.path+'.vue')),page.path);

@@ -39,7 +39,7 @@ const input = (spreadId, additions = {}) => {
   };
 };
 
-assert.equal(api.VERSION, 'OR-1.4.0');
+assert.equal(api.VERSION, 'OR-1.5.0');
 const offlineSource = fs.readFileSync(path.join(root, 'offline-reading.js'), 'utf8');
 assert.doesNotMatch(offlineSource, /SIGNAL_WORDS|countSignals|semanticScore|propositionScore/, 'result tendencies must not scan or repeatedly score natural-language substrings');
 for (const spread of spreads) {

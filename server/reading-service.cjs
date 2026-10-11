@@ -171,7 +171,8 @@ function validateReading(body, catalog) {
 
 // Rule selection never changes cards, labels or the user's text. It only selects
 // authored, fixed prompt paragraphs; the model resolves nuanced/mixed questions.
-const SCENE_MODULES = Object.freeze({sc01:'09',sc02:'09',sc03:'09',sc04:'09',sc05:'06',sc06:'10',sc07:'01',sc08:'02',sc09:'03',sc10:'04',sc11:'05',sc12:'06',sc13:'07',sc14:'07',sc15:'08',sc16:'06',sc17:'08',sc18:'09',sc19:'11',sc20:'01',sc21:'12',sc22:'13',sc23:'01',sc24:'14',sc25:'15'});
+const SCENE_MODULES = Object.freeze({sc01:'09',sc02:'09',sc03:'09',sc04:'09',sc05:'06',sc06:'10',sc07:'01',sc08:'02',sc09:'03',sc10:'04',sc11:'05',sc12:'06',sc13:'07',sc14:'07',sc15:'08',sc16:'06',sc17:'08',sc18:'09',sc19:'11',sc20:'01',sc21:'12',sc22:'13',sc23:'01',sc24:'14',sc25:'15',sc34:'16',sc35:'17',sc36:'18',sc37:'19',sc38:'20',sc39:'21',sc40:'22'});
+const AUTHORED_SCENE_MODULES = Object.freeze({'crush-three':'16','hidden-attitude-three':'17','love-triangle':'18','reunion-four':'19','separation-four':'20','crisis-four':'21','lost-object-three':'22'});
 const DOMAIN_LABELS = Object.freeze({love:'感情',career:'工作',study:'学习',life:'生活',medical:'医疗',legal:'法律',finance:'高风险财务'});
 function focusedQuestion(value) {
   const source = String(value || '').trim();
@@ -302,8 +303,9 @@ function domainScene(domain, focus) {
 function spreadMismatch(reading, domain) {
   if (!domain) return null;
   const relationalQuestion = /关系|相处|互动|配合|对方|朋友|亲人|同事|relationship|get along|interaction|friend|coworker/i.test(focusedQuestion(reading.question));
-  if ((/^relationship/.test(reading.spread.id) || /relation/.test(reading.spread.layout || '')) && domain !== 'love' && !relationalQuestion) return 'relationship';
+  if ((/^relationship/.test(reading.spread.id) || /relation/.test(reading.spread.layout || '') || (AUTHORED_SCENE_MODULES[reading.spread.id] && reading.spread.id !== 'lost-object-three')) && domain !== 'love' && !relationalQuestion) return 'relationship';
   if (reading.spread.id === 'new-love' && (domain !== 'love' || /前任|复合|和好|重新在一起|回到一起|现任|现在的(?:对象|伴侣)|这段关系|get back together|reconcile|ex-partner|current partner/i.test(reading.question))) return 'new-love';
+  if (reading.spread.id === 'lost-object-three' && domain !== 'life') return 'search';
   if (reading.spread.id === 'career-six' && (domain !== 'career' || /面试|录用|入职|求职|拿到\s*offer|收到\s*offer|辞职|离职|跳槽|新工作|两份工作|两个工作|哪份工作|哪个工作|工作选择|job search|interview|job offer|hired|resign|new job|compare jobs/i.test(reading.question))) return 'career';
   return null;
 }
@@ -320,14 +322,14 @@ function routingSelection(reading) {
     && !/(?:不想|不考虑|不是问|不问)[^，。？！]{0,8}(?:复合|和好|重新在一起|重新开始)/.test(focus);
   const reunionPresetChanged = reading.scenario?.id === 'sc09' && Boolean(q) && !asksForReunion;
   const scenarioIgnored = reunionPresetChanged;
-  let scene = SCENE_MODULES[reading.scenario?.id] || ({'decision-five':'06','celtic':'10','new-love':'11','three-options':'12','career-six':'13','relationship-three':'01','relationship-five':'02'}[reading.spread.id]) || ({love:'01',career:'05',study:'07',life:'08'}[reading.topic.id]) || '09';
+  let scene = SCENE_MODULES[reading.scenario?.id] || AUTHORED_SCENE_MODULES[reading.spread.id] || ({'decision-five':'06','celtic':'10','new-love':'11','three-options':'12','career-six':'13','relationship-three':'01','relationship-five':'02'}[reading.spread.id]) || ({love:'01',career:'05',study:'07',life:'08'}[reading.topic.id]) || '09';
   if (conflict) scene = domainScene(domain, focus);
   else if (reunionPresetChanged) scene = /结束|分手|继续下去|要不要继续|该不该继续/.test(focus) ? '02' : domainScene(domain, focus);
   const hasFuturePosition = reading.cards.some(card => card.positionRole === 'trend' || card.positionRole === 'outcome');
   const currentRelationshipOnly = /relation/.test(reading.spread.layout || '') && reading.cards.some(card => card.positionRole === 'unknown') && !hasFuturePosition;
   // A specific question may refine a generic entry, but cannot invent positions.
   if (!conflict && scene === '09' && reading.spread.id !== 'yes-no') scene = ({love:'01',career:'05',study:'07',life:'08'}[reading.topic.id]) || scene;
-  if (!conflict && !['06','10','11','12','13','14','15'].includes(scene)) {
+  if (!conflict && !['06','10','11','12','13','14','15','16','17','18','19','20','21','22'].includes(scene)) {
     if (currentRelationshipOnly) scene = '01';
     else if ((!domain || domain === 'love') && /复合|和好|回到一起|重新在一起|恢复(?:联系|关系)|get back together|reconcile|starting again/i.test(focus)) scene = '03';
     else if ((!domain || domain === 'career') && /面试|录用|入职|求职|offer|job search|interview|job offer|hired/i.test(focus)) scene = '04';
@@ -361,8 +363,9 @@ function buildPrompt(reading) {
       : `服务端已确认：所选牌阵的具体任务与用户实际的“${DOMAIN_LABELS[selected.domain] || '当前'}”问题不一致。忽略原目录的预设问题，只围绕 userContext 的实际问题判断真实牌位能回答到哪里；不要声称已经替用户切换场景。`);
   }
   if (selected.scenarioIgnored) additions.push('用户的具体问题已经改变了目录预设意图。忽略原预设问题和复合专用要求，只按用户现在写下的问题、真实牌位和实际场景模块作答。');
-  if (selected.mismatch === 'relationship') additions.push('本次真实牌位是关系角色、过去、现状与关系后续，和用户实际问题的领域不适配。开头必须直说这组位置不能用来判断该工作、学习、医疗、法律或财务事项；不得把“对方”“关系现状”“关系后续”改名为工作或决策位置，也不得给出所问结果倾向。说明这些牌位最多能回答关系互动，并建议重新选择与实际问题相符的牌阵。');
+  if (selected.mismatch === 'relationship') additions.push('本次实际牌位只用于所选的关系互动任务，和用户实际问题的领域不适配。开头必须直说这组位置不能用来判断该工作、学习、医疗、法律或财务事项；不得把“对方”“关系现状”“关系后续”改名为工作或决策位置，也不得给出所问结果倾向。说明这些牌位最多能回答关系互动，并建议重新选择与实际问题相符的牌阵。');
   if (selected.mismatch === 'new-love') additions.push('本次真实牌位只用于新恋情的准备、对象、相遇、相处与潜力，和实际问题不适配。开头必须说明结构限制，不得改名牌位或据此给出实际问题的结果倾向，并建议重新选择相符牌阵。');
+  if (selected.mismatch === 'search') additions.push('本次真实牌位仅用于回想最后使用情境、检查漏查环节和安排搜索行动，不能改名成感情、工作或考试的结果位；开头说明这组位置不适合实际问题，不给所问事件的结果倾向。');
   if (selected.mismatch === 'career') additions.push('本次真实牌位只用于当前职业路径的初衷、动力、职责、环境、收获与发展，和实际问题不适配。开头必须说明结构限制，不得改名牌位，也不得据此给出面试录用、离职跳槽、另一份工作或其他领域的结论；建议重新选择相符牌阵。');
   const instructions = [PROMPTS.base, PROMPTS.spreadScope, PROMPTS.scenes[selected.scene], ...(selected.type ? [PROMPTS.types[selected.type]] : []), ...additions,
     '场景规则仅适用于用户实际询问的事；若实际问题与场景不同，按主规则恢复，不强套场景。',

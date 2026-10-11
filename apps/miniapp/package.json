@@ -1,6 +1,6 @@
 {
   "name": "tarot-pocket-cross-platform",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "prepare:content": "node tools/prepare-content.cjs",
     "dev:h5": "npm run build:h5 && node tools/preview.cjs",

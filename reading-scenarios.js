@@ -329,5 +329,75 @@ window.TAROT_READING_SCENARIOS = [
     "description": "五张共同回应一个主题，不预设固定牌位。",
     "question": "",
     "version": "1"
+  },
+  {
+    "id": "sc34",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "crush-three",
+    "name": "暗恋牌阵",
+    "description": "还没确认彼此心意时，看看自己的期待、对方呈现的态度和适合怎样靠近。",
+    "question": "这份好感目前怎样，我可以怎样自然地靠近？",
+    "version": "1"
+  },
+  {
+    "id": "sc35",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "hidden-attitude-three",
+    "name": "真心窥探",
+    "description": "把表面表达、尚待确认的态度与互动中的落差分开看，帮助你知道该核对什么。",
+    "question": "对方的表达和态度有哪些值得核对的地方？",
+    "version": "1"
+  },
+  {
+    "id": "sc36",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "love-triangle",
+    "name": "爱情三角",
+    "description": "从自己的需要、对方可能的需要和协调方式三个角度，理解如何相处。",
+    "question": "我们各自重视什么，怎样让彼此的需要更协调？",
+    "version": "1"
+  },
+  {
+    "id": "sc37",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "reunion-four",
+    "name": "复合评估",
+    "description": "分开之后，分别看目前的联系、旧问题、修复条件与重新开始的趋势。",
+    "question": "按目前的情况，我们重新开始需要什么条件，有怎样的趋势？",
+    "version": "1"
+  },
+  {
+    "id": "sc38",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "separation-four",
+    "name": "分手抉择",
+    "description": "整理关系现况和主要困难，对照继续与结束各自需要面对的事情。",
+    "question": "继续或结束这段关系，各有什么需要面对的条件？",
+    "version": "1"
+  },
+  {
+    "id": "sc39",
+    "category": "love",
+    "topic": "love",
+    "spreadId": "crisis-four",
+    "name": "危机处理",
+    "description": "相处出现矛盾时，看清眼下的问题、核心卡点、可用支持和第一步。",
+    "question": "这段关系眼前的矛盾卡在哪里，我可以先怎样处理？",
+    "version": "1"
+  },
+  {
+    "id": "sc40",
+    "category": "life",
+    "topic": "life",
+    "spreadId": "lost-object-three",
+    "name": "失物寻找",
+    "description": "用三张牌辅助回想最后使用的情境、容易漏查的环节和下一步寻找办法。",
+    "question": "我可以从哪些回忆和漏查环节着手寻找这件物品？",
+    "version": "1"
   }
 ];

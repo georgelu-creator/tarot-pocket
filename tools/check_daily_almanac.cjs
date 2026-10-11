@@ -50,10 +50,10 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
     await p.locator('.daily-reference>summary').click();assert(await p.locator('.daily-provenance').isVisible());
     const before=await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).daily,KEY);
     await p.locator('[data-reading=finish]').click();assert.match(await p.locator('[data-reading=daily]').innerText(),/塔罗日运/);assert.doesNotMatch(await p.locator('[data-reading=daily]').innerText(),/今日塔罗|今日一牌/);await p.locator('[data-reading=daily]').click();
-    assert.deepEqual(await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).draft.pool,KEY),before[0].pool,'same-day revisit preserves cards');
+    assert.deepEqual(await p.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).daily[0].pool,KEY),before[0].pool,'same-day revisit preserves cards');
     assert.equal(await p.locator('.daily-almanac').evaluate(e=>getComputedStyle(e).animationName),'none','reduced motion disables arrival');
    }
-   const q=await ctx.newPage();q.on('pageerror',e=>errors.push(e.message));await q.addInitScript(({ids,KEY})=>{
+   const q=await ctx.newPage();await q.clock.setFixedTime(new Date('2001-02-03T12:00:00'));q.on('pageerror',e=>errors.push(e.message));await q.addInitScript(({ids,KEY})=>{
     const draft={id:'historical-daily',at:981172800000,spreadId:'daily',topic:'career',questionId:'own',questionText:'',contextEnabled:false,reversals:true,pool:ids.map(id=>({id,reversed:true})),picked:[0],revealed:[0],active:0,phase:'read',dailyDate:'2001-02-03'};
     localStorage.setItem(KEY,JSON.stringify({version:1,settings:{topic:'career',spreadId:'daily',questionId:'own',reversals:true},draft,history:[],practice:[],daily:[draft],ui:{view:'table',category:'all',guideId:'three',guideActive:0,question:''}}));
    },{ids:['p12',...cards.map(c=>c.id).filter(id=>id!=='p12')],KEY});
@@ -69,5 +69,5 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
    await q.close();assert.deepEqual(errors,[]);await ctx.close();
   }finally{await browser.close();}
  }
- console.log(JSON.stringify({status:'PASS',cards:78,reminders:312,checks:['original core/advice retained','card-specific upright/reversed reminders','saved historical date and weekday','one result sheet, no share action','320/390/1280px Chinese-only UI','?lang=en falls back to zh-CN with no toggle','full card aspect and reversed zoom','saved deck preserved on revisit','normal/reduced motion'],physicalIPhone:false}));
+ console.log(JSON.stringify({status:'PASS',cards:78,reminders:312,checks:['original core/advice retained','card-specific upright/reversed reminders','today date and weekday across synthetic clocks','one result sheet, no share action','320/390/1280px Chinese-only UI','?lang=en falls back to zh-CN with no toggle','full card aspect and reversed zoom','saved deck preserved on revisit','normal/reduced motion'],physicalIPhone:false}));
 })().catch(e=>{console.error(e);process.exitCode=1;});
