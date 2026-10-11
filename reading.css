@@ -854,6 +854,7 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 .reading-theme{scroll-margin-top:24px;margin-top:30px}
 .reading-theme-nav{flex-wrap:wrap;overflow:visible;gap:8px}
 .reading-theme-nav .chip{min-height:44px;white-space:normal}
+@media(max-width:600px){.reading-theme-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.reading-theme-nav .chip{width:100%;padding-inline:8px}}
 .reading-theme[id=reading-theme-professional]{padding-top:26px;border-top:1px solid var(--line)}
 .fan-coach{display:flex;align-items:center;gap:12px;margin:14px 16px;padding:14px 12px;background:var(--soft);border:1px solid var(--line);border-radius:14px;color:var(--ink);font-size:13px;line-height:1.6}
 .fan-coach>div{flex:1;min-width:0}.fan-coach strong{font-weight:600}.fan-coach p{margin:3px 0 0!important;font-size:12px!important;color:var(--muted)}
