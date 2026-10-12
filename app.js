@@ -329,7 +329,7 @@
   window.addEventListener('pagehide',persist);
   if(state.session && state.session.phase!=='complete')page='home';
   window.TAROT_LEARNING.units.push(...window.TAROT_SPREAD_CONTENT.units);
-  const reading = window.createTarotReading({esc,img,icon,go,toast,now});
+  const reading = window.createTarotReading({esc,img,icon,go,toast,now,showReference:showCard});
   const learning = window.createTarotLearning({esc,img,icon,shuffle,go,now,toast,cardMap});
   const journey = window.TarotJourney.create({esc,img,icon,go,toast,now,cardMap,get:()=>state.journey,set:value=>{state.journey=value;persist();}});
   const academy = window.TarotAcademy.create({esc,img,icon,go,toast,now,cardMap,get:()=>state.journey.academy,set:value=>{state.journey.academy=value;persist();}});
