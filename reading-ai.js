@@ -48,7 +48,7 @@ window.TarotReadingAI = (() => {
   }
   function offlineHtml(s,result=offline(s)){
     if(!result)return '<section class="reading-offline"><h2>先看这组牌</h2><p>本地解读暂时无法生成，可以先点开每张牌查看牌义。</p></section>';
-    if(!trackedOffline.has(s.id)){trackedOffline.add(s.id);queueMicrotask(()=>window.TarotAnalytics?.track('offline_reading_view',{spread:s.spreadId,source:'local'},'reading-result'));}
+    if(!trackedOffline.has(s.id)){trackedOffline.add(s.id);queueMicrotask(()=>window.TarotAnalytics?.track('offline_reading_view',{spread:s.spreadId,source:s.source==='manual'?'manual':s.dailyDate?'daily':'local'},'reading-result'));}
     const positionDetails=result.positions.map(position=>`<article class="offline-position"><h3>${esc(position.positionLabel)} · ${esc(position.cardName)} · ${position.orientation==='reversed'?'逆位':'正位'}</h3><p><strong>暗语</strong> · ${esc(position.message)}</p>${position.details?.length?position.details.map(block=>`<section class="offline-position-detail"><h4>${esc(block.title)}</h4>${block.paragraphs.map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section>`).join(''):`<p>${esc(position.reading)}</p>`}</article>`).join('');
     if(result.display==='positions')return `<section class="reading-offline"><h2>牌阵里的提示</h2>${positionDetails}</section>`;
     if(!result.basis.question && result.spread.branch==='yes-no' && !result.safety)return `<section class="reading-offline"><h2>${esc(result.overview.text.split(' · ')[0])}</h2><p>${esc(result.overview.text.includes(' · ')?result.overview.text.split(' · ').slice(1).join(' · '):result.overview.text)}</p>${positionDetails}</section>`;
@@ -74,6 +74,8 @@ window.TarotReadingAI = (() => {
     if(pending||!endpoint()||s.phase!=='read'||window.TAROT_STANDALONE||offline(s)?.safety)return;
     const language=locale();if(s.ai?.some(x=>x.language===language))return;
     const controller=new AbortController(),job={id:s.id,controller,startedAt:Date.now(),current};pending=job;error='';patch(s);job.tipTimer=setInterval(()=>updateWaiting(job),1000);
+    window.TarotAnalytics?.track('ai_confirm',{spread:s.spreadId},'ai');
+    const outcome=status=>{if(job.tracked)return;job.tracked=true;window.TarotAnalytics?.track('ai_result',{spread:s.spreadId,status,duration:String(Math.min(Date.now()-job.startedAt,180000))},'ai');};job.outcome=outcome;
     const timeout=setTimeout(()=>{job.timeout=true;controller.abort();},125000);
     try{
       const session=await window.TarotAccess?.ensureSession?.();if(!session)throw Error('UNAVAILABLE');
@@ -85,10 +87,10 @@ window.TarotReadingAI = (() => {
       const bytes=new Uint8Array(size);let offset=0;for(const c of chunks){bytes.set(c,offset);offset+=c.byteLength;}const result=JSON.parse(new TextDecoder().decode(bytes));
       if(!response.ok)throw Error(Object.hasOwn(messages,result.error)?result.error:'UPSTREAM_ERROR');
       let answer;try{answer=clean([{language,text:result.text,model:result.model,provider:result.provider,at:Date.now()}])[0];}catch(_){throw Error('UPSTREAM_ERROR');}
-      if(!job.cancelled&&pending===job&&JSON.stringify(buildRequest(s,language))===requestContext)save(s.id,answer,requestContext);
-    }catch(e){if(!job.cancelled&&pending===job){error=job.timeout?'TIMEOUT':Object.hasOwn(messages,e.message)?e.message:'UNAVAILABLE';if(error==='AUTH_REQUIRED')window.TarotAccess?.clear();}}
+      if(!job.cancelled&&pending===job&&JSON.stringify(buildRequest(s,language))===requestContext){save(s.id,answer,requestContext);outcome(answer.provider==='safety'?'safety':'success');}
+    }catch(e){if(!job.cancelled&&pending===job){outcome('failure');error=job.timeout?'TIMEOUT':Object.hasOwn(messages,e.message)?e.message:'UNAVAILABLE';if(error==='AUTH_REQUIRED')window.TarotAccess?.clear();}}
     finally{clearTimeout(timeout);clearInterval(job.tipTimer);if(pending===job)pending=null;const visible=current();if(visible?.id===s.id&&visible.phase==='read')patch(visible);}
   }
-  window.addEventListener('pagehide',()=>{if(pending){pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();}});
-  return {render,clean,buildRequest,request,cancel(s){if(pending){pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
+  window.addEventListener('pagehide',()=>{if(pending){pending.outcome?.('cancelled');pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();}});
+  return {render,clean,buildRequest,request,cancel(s){if(pending){pending.outcome?.('cancelled');pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
 })();
