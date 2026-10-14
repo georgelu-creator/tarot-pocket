@@ -8,6 +8,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const {createHash, createHmac, randomBytes, timingSafeEqual} = require('node:crypto');
 const {createTelemetry} = require('./telemetry.cjs');
+const {parseRange}=require('./product-metrics.cjs');
 
 const PROMPTS = require('./reading-prompts.cjs');
 const ROOT = path.resolve(__dirname, '..');
@@ -585,6 +586,8 @@ function createReadingHandler({config = loadConfig(), catalog = loadCatalog(), f
       const body = await req.readBody(controller.signal);
       const reading = validateReading(body, catalog);
       if ([reading.question, reading.optionA, reading.optionB, reading.optionC, reading.timeframe].some(value => containsCredential(value, config))) fail('INVALID_REQUEST');
+      // Transport receives only an allowlisted ID after full payload validation.
+      req.onValidatedSpread?.(reading.spread.id);
       if (controller.signal.aborted) fail('TIMEOUT');
       const risk = [reading.question, reading.optionA, reading.optionB, reading.optionC].map(value => highRiskDecision(value, reading.language)).find(Boolean);
       if (risk) return send(200, {text: safetyBoundary(risk, reading.language), model: 'safety-boundary', provider: 'safety'});
@@ -683,14 +686,21 @@ function createReadingServer(options = {}) {
         const auth=String(req.headers.authorization||'');
         if(!telemetry){res.writeHead(503,common);res.end(JSON.stringify({error:'NOT_CONFIGURED'}));return;}
         if(!auth.startsWith('Bearer ')||!telemetry.authorize(auth.slice(7))){res.writeHead(401,common);res.end(JSON.stringify({error:'AUTH_REQUIRED'}));return;}
-        res.writeHead(200,common);res.end(JSON.stringify(telemetry.summary(30)));return;
+        const filters=Object.fromEntries(url.searchParams);
+        try {
+          if([...url.searchParams.keys()].some(key=>url.searchParams.getAll(key).length!==1))throw RangeError('INVALID_RANGE');
+          parseRange(filters,options.now?options.now():Date.now());
+          const summary=telemetry.summary(30,filters);res.writeHead(200,common);res.end(JSON.stringify(summary));
+        } catch(error) { if(!(error instanceof RangeError))throw error;res.writeHead(400,common);res.end(JSON.stringify({error:'INVALID_RANGE'})); }
+        return;
       }
-      const started=Date.now();
+      const started=Date.now();let validatedSpread='';
       const result = await handle({method: req.method, url: req.url, headers: req.headers,
         clientIp: req.socket.remoteAddress, signal: controller.signal,
+        onValidatedSpread: id=>{validatedSpread=id;},
         readBody: signal => readBody(req, signal)});
       if(url.pathname==='/api/reading'&&req.method==='POST'&&telemetry){
-        telemetry.recordServer(result.status===200?'ai_backend_success':'ai_backend_failure',{status:String(result.status),duration:String(Math.min(Date.now()-started,180000))});
+        telemetry.recordServer(result.status===200?'ai_backend_success':'ai_backend_failure',{status:String(result.status),duration:String(Math.min(Date.now()-started,180000)),...(validatedSpread?{spread:validatedSpread}:{})});
       }
       if (!res.destroyed && !res.writableEnded) {
         res.writeHead(result.status, result.headers);

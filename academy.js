@@ -305,6 +305,7 @@
     function showSession(){
       const s=current(),scroll=s?.scroll||0;
       go('academy');
+      if(s&&!s.complete)window.TarotAnalytics?.track('learning_start',{mode:s.mode},'academy');
       window.requestAnimationFrame?.(()=>{if(current()===s&&document.querySelector('.academy-shell'))window.scrollTo(0,scroll);});
     }
     function start(id,mode='learn',options={}){
@@ -485,7 +486,7 @@
       if(action==='guided-card'){const node=courseItem(el.dataset.id);if(node){const skills=skillState(status(node.id)),required=['foundation','application','integration'].slice(0,['foundation','application','integration'].indexOf(node.mode));enterCourse({...node,mode:required.find(key=>!skills[key])||node.mode});}return;}
       if(action==='new'){newCard();return;}
       if(action==='review'){review();return;}
-      if(action==='continue'){pauseAnimation();const scroll=current()?.scroll||0;go(active()?'academy':'courses');requestAnimationFrame(()=>window.scrollTo(0,scroll));return;}
+      if(action==='continue'){pauseAnimation();if(active())showSession();else go('courses');return;}
       if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}go('courses');return;}
       if(action==='level'){selectLevel(el.dataset.value);refresh();return;}
       if(action==='course-choice'){catalogOpen=true;go('courses');return;}
@@ -494,7 +495,7 @@
       if(action==='next-level'){selectLevel(el.dataset.value);guidedNext();return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
       if(action==='answer'){if(answer(d,el.dataset.value,now())){
-        save(d);
+        save(d);window.TarotAnalytics?.track('learning_answer',{mode:s.mode},'courses');
         const step=currentStep(s),a=s.answers[step.question.id],options=document.querySelector('.academy-options');
         if(options){
           for(const option of options.querySelectorAll('[data-academy="answer"]')){
@@ -512,8 +513,8 @@
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
       if(action==='next'){
         pauseAnimation();
-        if(s.support?.key==='review-summary'){if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode});refresh(true);}return;}
-        if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode});refresh(true);}return;
+        if(s.support?.key==='review-summary'){if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode},'courses');refresh(true);}return;}
+        if(advance(d,now())){save(d);if(s.complete)window.TarotAnalytics?.track('learning_complete',{mode:s.mode},'courses');refresh(true);}return;
       }
     });
     // Save scrolling without a write for every scroll event. Restoring the unit

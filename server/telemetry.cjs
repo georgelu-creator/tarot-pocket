@@ -4,10 +4,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {createHmac, timingSafeEqual, createHash, randomBytes} = require('node:crypto');
 const {DatabaseSync} = require('node:sqlite');
+const {productMetrics,parseRange,isKnownSpread}=require('./product-metrics.cjs');
 
 const EVENT_NAMES = new Set([
   'page_view','home_learn','home_read','reading_category','spread_open','reading_start',
-  'reading_pick','reading_reveal','offline_reading_view','ai_confirm','ai_cancel',
+  'reading_cut','reading_pick','reading_reveal','offline_reading_view','ai_confirm','ai_cancel','ai_result',
   'learning_start','learning_answer','learning_complete','dossier_open','feature_click','screen_view','screen_exit'
 ]);
 const PROP_KEYS = new Set(['spread','category','source','status','mode','phase','lang','feature','duration']);
@@ -58,6 +59,8 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     if ((raw.visitorId || '').length < 16 || (raw.sessionId || '').length < 16) return null;
     const props = raw.props === undefined ? {} : raw.props;
     if (!props || typeof props !== 'object' || Array.isArray(props) || Object.keys(props).some(key => !PROP_KEYS.has(key) || !safe(String(props[key])))) return null;
+    if(props.spread!==undefined&&!isKnownSpread(props.spread))return null;
+    if(raw.name==='ai_result'&&!['success','failure','cancelled','safety'].includes(props.status))return null;
     return {stamp, day:new Date(stamp).toISOString().slice(0,10), visitor:hash('visitor',raw.visitorId,stamp), session:hash('session',raw.sessionId,stamp), name:raw.name, page:raw.page || '', props:JSON.stringify(props)};
   }
   function recordFeedback(raw) {
@@ -81,12 +84,18 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     insert.run(item.stamp,item.day,item.visitor,item.session,item.name,item.page,item.props);return true;
   }
   function recordServer(name, props={}) {
+    if(!['ai_backend_success','ai_backend_failure'].includes(name)||!props||typeof props!=='object'||Array.isArray(props)||Object.keys(props).some(key=>!['spread','status','duration'].includes(key)||!safe(String(props[key]))))return false;
+    if(props.spread!==undefined&&!isKnownSpread(props.spread))return false;
+    if(props.status!==undefined&&!/^\d{3}$/.test(String(props.status)))return false;
+    if(props.duration!==undefined&&(!Number.isFinite(Number(props.duration))||Number(props.duration)<0||Number(props.duration)>180000))return false;
     const stamp=now(),day=new Date(stamp).toISOString().slice(0,10);
     cleanup(stamp);
-    insert.run(stamp,day,null,null,name,'/api/reading',JSON.stringify(props));
+    insert.run(stamp,day,null,null,name,'/api/reading',JSON.stringify(props));return true;
   }
-  function summary(days=30) {
+  function summary(days=30,filters={}) {
     cleanup(now());
+    // Fail closed on invalid query ranges before any aggregate work.
+    parseRange(filters,now(),days);
     const start=new Date(now()-Math.max(1,Math.min(days,90))*86400000).toISOString().slice(0,10);
     const overview=db.prepare("SELECT COUNT(*) events, COUNT(DISTINCT CASE WHEN name='page_view' THEN visitor END) uv, SUM(CASE WHEN name='page_view' THEN 1 ELSE 0 END) pv FROM events WHERE day>=?").get(start);
     const daily=db.prepare("SELECT day, SUM(CASE WHEN name='page_view' THEN 1 ELSE 0 END) pv, COUNT(DISTINCT CASE WHEN name='page_view' THEN visitor END) uv FROM events WHERE day>=? GROUP BY day ORDER BY day").all(start);
@@ -119,7 +128,8 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     const exitCounts=new Map(), paths=[];
     for(const [session,events]of sessions){const screens=events.filter(e=>['screen_view','screen_exit','page_view'].includes(e.name));const last=events.at(-1);if(now()-last.occurred_at<30*60000)continue;const exit=screens.at(-1)?.page||last.page||'unknown';exitCounts.set(exit,(exitCounts.get(exit)||0)+1);paths.push({session:session.slice(0,10),at:last.occurred_at,exit,steps:events.slice(-40).map(e=>({at:e.occurred_at,page:e.page,event:e.name,feature:JSON.parse(e.props||'{}').feature||''}))});}
     const feedback=db.prepare('SELECT id,occurred_at AS at,question FROM query_feedback ORDER BY occurred_at DESC LIMIT 100').all();
-    return {retention,features:[...clicks].map(([feature,count])=>({feature,count})).sort((a,b)=>b.count-a.count),exits:[...exitCounts].map(([page,count])=>({page,count})),paths:paths.sort((a,b)=>b.at-a.at).slice(0,50),feedback,generatedAt:now(),rangeDays:days,overview:{events:Number(overview.events||0),pv:Number(overview.pv||0),uv:Number(overview.uv||0)},daily,events,funnel:funnels,ai};
+    const product=productMetrics(db.prepare('SELECT id,occurred_at,day,visitor,session,name,page,props FROM events ORDER BY occurred_at,id').all(),filters,now(),days);
+    return {product,retention,features:[...clicks].map(([feature,count])=>({feature,count})).sort((a,b)=>b.count-a.count),exits:[...exitCounts].map(([page,count])=>({page,count})),paths:paths.sort((a,b)=>b.at-a.at).slice(0,50),feedback,generatedAt:now(),rangeDays:days,overview:{events:Number(overview.events||0),pv:Number(overview.pv||0),uv:Number(overview.uv||0)},daily,events,funnel:funnels,ai};
   }
   return {record,recordFeedback,deleteFeedback,recordServer,summary,authorize:value=>Boolean(adminToken)&&equal(value,adminToken),close:()=>db.close()};
 }
