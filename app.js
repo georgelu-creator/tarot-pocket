@@ -115,6 +115,7 @@
     return {page,reading:['reading','spread-guide'].includes(page)?reading.navigationState():null,academy:page==='courses'?academy.navigationState():null,overlay:document.getElementById('overlay').children.length?{type:modal?.type||'sheet',id:modal?.id||'',knowledge:modal?.knowledge||''}:null};
   }
   function navigationKey(location){const normalized={...location,page:location.page==='spread-guide'?'reading':location.page};return JSON.stringify(normalized);}
+  function navigationBaseKey(location){const base={...location,overlay:null};if(base.reading){const {dialog,index,zoomed,...readingLocation}=base.reading;base.reading=readingLocation;}return navigationKey(base);}
   function navigationSnapshot(){const location=navigationLocation();return {location,key:navigationKey(location),y:document.getElementById('overlay').children.length?modalPageY:window.scrollY,sheet:location.overlay?captureSheet():null,trail:[...cardTrail],zoom:zoomReturn};}
   function rememberNavigation(){if(!navigationReady||navigationRestoring||navigationPending)return;const current=navigationEntries.get(navigationIndex);if(current&&current.key===navigationKey(navigationLocation()))navigationEntries.set(navigationIndex,navigationSnapshot());}
   function navigationState(snapshot){return {[NAVIGATION_KEY]:true,index:navigationIndex,location:snapshot.location,y:snapshot.y};}
@@ -147,12 +148,13 @@
     fallback?.();return false;
   }
   function restoreNavigation(location,snapshot){
+    const sameBase=navigationReady&&navigationBaseKey(navigationLocation())===navigationBaseKey(location);
     navigationRestoring=true;closeModal();
     const allowed=['home','courses','academy','journey','learning','study','spread','library','reading','spread-guide','me'];
     page=allowed.includes(location?.page)?location.page:'home';
-    if(['reading','spread-guide'].includes(page))reading.restoreNavigation(location.reading);
+    if(!sameBase&&['reading','spread-guide'].includes(page))reading.restoreNavigation(location.reading);
     if(page==='courses')academy.restoreNavigation(location.academy);
-    render();
+    if(!sameBase)render();
     if(['reading','spread-guide'].includes(page))reading.restoreNavigationDialog(location.reading);
     if(snapshot?.sheet&&location.overlay){showModal('');restoreSheet(snapshot.sheet);cardTrail=[...snapshot.trail];zoomReturn=snapshot.zoom;}
     else if(location.overlay?.type==='card'&&cardMap[location.overlay.id])showCard(location.overlay.id);

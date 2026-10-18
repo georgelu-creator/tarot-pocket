@@ -122,7 +122,7 @@ async function assertChineseShell(page){
     assert(fan.overlap>0&&fan.overlap<fan.cardWidth*.65,`fan is not densely overlapped: ${JSON.stringify(fan)}`);
     assert(fan.viewport.bottom<=568&&fan.viewport.height>=170,`fan must fit the first 320 x 568 view: ${JSON.stringify(fan.viewport)}`);
     assert(fan.scrollWidth<=320,'pick view must not overflow horizontally');
-    await minimumTarget(page,'[data-reading="fan-out"],[data-reading="fan-in"],[data-reading="pause"]','pick controls');
+    await minimumTarget(page,'[data-reading="fan-out"],[data-reading="fan-in"],[data-reading="parent"]','pick controls');
     // Capture the true initial state before the reachability probes scroll to card 78.
     await page.screenshot({path:screenshotPick,fullPage:true});
     for(const index of [0,39,77]){

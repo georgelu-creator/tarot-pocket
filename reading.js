@@ -289,10 +289,13 @@ window.createTarotReading = function (bridge) {
     persist();
   }
   function restoreNavigationDialog(location){
+    if(location?.dialog!=='pick')cancelPending();
+    if(location?.dialog!=='detail')closeDetail();
+    if(location?.dialog!=='manual')document.querySelector('.manual-picker')?.close();
     const index=Number(location?.index);if(!Number.isInteger(index)||index<0)return;
-    if(location.dialog==='detail'){openDetail(index,document.querySelector(`[data-reading="card"][data-index="${index}"]`));if(location.zoomed)document.querySelector('.reading-detail-portrait')?.classList.add('zoomed');}
-    if(location.dialog==='pick'){const button=document.querySelector(`[data-reading="pick"][data-index="${index}"]`);if(button)pick(index,button);}
-    if(location.dialog==='manual')document.querySelector(`[data-manual="pick"][data-index="${index}"]`)?.click();
+    if(location.dialog==='detail'){if(!document.querySelector('[data-reading-dialog]')?.open||detailIndex!==index)openDetail(index,document.querySelector(`[data-reading="card"][data-index="${index}"]`));document.querySelector('.reading-detail-portrait')?.classList.toggle('zoomed',location.zoomed===true);}
+    if(location.dialog==='pick'&&(!document.querySelector('[data-reading-pick-dialog]')?.open||pendingSelection?.index!==index)){cancelPending();const button=document.querySelector(`[data-reading="pick"][data-index="${index}"]`);if(button)pick(index,button);}
+    if(location.dialog==='manual'&&!document.querySelector('.manual-picker')?.open)document.querySelector(`[data-manual="pick"][data-index="${index}"]`)?.click();
   }
   const feedbackReceipts=new Map();
   try{for(const [id,r]of JSON.parse(localStorage.getItem('tarot-query-receipts')||'[]'))if(r&&typeof r.id==='string'&&typeof r.deletionToken==='string'&&Number.isFinite(r.at)&&r.at>Date.now()-30*86400000)feedbackReceipts.set(id,r);}catch(_){}
