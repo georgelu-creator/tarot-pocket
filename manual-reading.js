@@ -41,6 +41,13 @@ window.createTarotManualReading = function (bridge) {
     document.querySelector(`[data-manual="pick"][data-index="${picking}"]`)?.focus({preventScroll:true});
     picking=null;query='';
   }
+  function restoreFocus(selector) {
+    requestAnimationFrame(()=>{
+      const focused=document.activeElement;
+      if(focused&&focused!==document.body&&focused!==document.documentElement&&focused.isConnected)return;
+      document.querySelector(selector)?.focus({preventScroll:true});
+    });
+  }
   document.addEventListener('cancel',e=>{if(e.target.matches?.('.manual-picker')){e.preventDefault();close();}},true);
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-manual]');if(!b||b.disabled||!get())return;
@@ -55,9 +62,9 @@ window.createTarotManualReading = function (bridge) {
     if(b.dataset.manual==='choose'){
       const id=b.dataset.id;if(picking===null||!byId[id]||m.cards.some((c,n)=>n!==picking&&c?.id===id))return;
       const focus=picking;m.cards[picking]={id,reversed:false};set(m);close();redraw(window.scrollY);
-      requestAnimationFrame(()=>document.querySelector(`[data-manual="pick"][data-index="${focus}"]`)?.focus({preventScroll:true}));return;
+      restoreFocus(`[data-manual="pick"][data-index="${focus}"]`);return;
     }
-    if(b.dataset.manual==='orientation'&&m.cards[i]){m.cards[i].reversed=!m.cards[i].reversed;set(m);redraw(window.scrollY);requestAnimationFrame(()=>document.querySelector(`[data-manual="orientation"][data-index="${i}"]`)?.focus({preventScroll:true}));return;}
+    if(b.dataset.manual==='orientation'&&m.cards[i]){m.cards[i].reversed=!m.cards[i].reversed;set(m);redraw(window.scrollY);restoreFocus(`[data-manual="orientation"][data-index="${i}"]`);return;}
     if(b.dataset.manual==='submit'){const valid=clean(m);if(valid?.cards.every(Boolean))submit(valid);}
   });
   document.addEventListener('change',e=>{

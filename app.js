@@ -114,7 +114,7 @@
   function navigationLocation(){
     return {page,reading:['reading','spread-guide'].includes(page)?reading.navigationState():null,academy:page==='courses'?academy.navigationState():null,overlay:document.getElementById('overlay').children.length?{type:modal?.type||'sheet',id:modal?.id||'',knowledge:modal?.knowledge||''}:null};
   }
-  function navigationKey(location){const normalized={...location,page:location.page==='spread-guide'?'reading':location.page};return JSON.stringify(normalized);}
+  function navigationKey(location){const normalized={...location,page:location.page==='spread-guide'?'reading':location.page};if(normalized.reading){const {guideId,scenarioId,guideReturn,...readingLocation}=normalized.reading;normalized.reading=readingLocation;if(readingLocation.view==='detail')Object.assign(normalized.reading,{guideId,scenarioId,guideReturn});if(readingLocation.view==='gallery')normalized.reading.dailyActive=false;}return JSON.stringify(normalized);}
   function navigationBaseKey(location){const base={...location,overlay:null};if(base.reading){const {dialog,index,zoomed,...readingLocation}=base.reading;base.reading=readingLocation;}return navigationKey(base);}
   function navigationSnapshot(){const location=navigationLocation();return {location,key:navigationKey(location),y:document.getElementById('overlay').children.length?modalPageY:window.scrollY,sheet:location.overlay?captureSheet():null,trail:[...cardTrail],zoom:zoomReturn};}
   function rememberNavigation(){if(!navigationReady||navigationRestoring||navigationPending)return;const current=navigationEntries.get(navigationIndex);if(current&&current.key===navigationKey(navigationLocation()))navigationEntries.set(navigationIndex,navigationSnapshot());}
