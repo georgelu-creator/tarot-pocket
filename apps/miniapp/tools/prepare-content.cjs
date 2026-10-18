@@ -30,6 +30,25 @@ const cardOut = path.resolve(__dirname, '../src/pages/card/generated');
 fs.mkdirSync(cardOut, {recursive: true});
 fs.writeFileSync(path.join(cardOut, 'knowledge.mjs'), '// Generated full reference; only imported by the card subpackage.\nexport const knowledge = ' + JSON.stringify(chinese(sandbox.window.TAROT_CARD_KNOWLEDGE)) + ';\n');
 fs.writeFileSync(path.join(out,'content.mjs'), bundle);
+// Public WeChat edition: an explicit cultural projection, not a renamed reading engine.
+const imageCards = sandbox.window.TAROT_READING_DECK.cards.map(card => {
+  const article = sandbox.window.TAROT_CARD_REFERENCE.byId[card.id];
+  const notes = sandbox.window.TAROT_CARD_KNOWLEDGE.byId[card.id];
+  return {
+    id: card.id, name: card.name, suit: card.suit, number: card.number,
+    keywords: [...card.keywords], observation: article.observation,
+    // Use the individually authored standalone theme; reference.core includes
+    // positional reading instructions and is not cultural-edition content.
+    core: card.core,
+    symbols: article.symbols.map(symbol => ({label:symbol.detail, meaning:symbol.meaning})),
+    foundation: {...notes.learning.foundation}
+  };
+});
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/manifest.json'),'utf8'));
+const provenance={edition:'Rider–Waite–Smith · 1910 Pam-A',artist:'Pamela Colman Smith',
+  note:'这些图像来自历史塔罗卡牌。本版本围绕图像、象征与文化知识开展学习，不提供占卜、运势预测或现实决策解答。',
+  sources:manifest.items.map(item=>({id:item.card_id,url:item.source_page,license:item.license_status_as_listed}))};
+fs.writeFileSync(path.join(out,'mengyu.mjs'), '// Generated allowlisted image-learning fields; no spreads, readings, daily guidance or prediction engine.\nexport const cards = '+JSON.stringify(imageCards)+';\nexport const provenance = '+JSON.stringify(provenance)+';\n');
 const originalAcademy = fs.readFileSync(path.join(root,'academy.js'),'utf8');
 const start = originalAcademy.indexOf('  const DAY=');
 const end = originalAcademy.indexOf('  function create(bridge)');

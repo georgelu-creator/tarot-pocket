@@ -13,7 +13,7 @@ const FEATURES={
 Object.assign(FEATURES, {
  face:'切换正逆位','pick-change':'换一张牌',undo:'撤回刚选的牌',
  'fan-help':'查看选牌提示','fan-help-close':'关闭选牌提示','fan-in':'放大牌扇','fan-out':'缩小牌扇',
- pause:'返回抽牌首页','result-guide':'查看本次牌阵说明','edit-question':'补充或修改问题',
+ pause:'返回抽牌首页',parent:'返回上一级','result-guide':'查看本次牌阵说明','edit-question':'补充或修改问题',
  'save-question':'保存问题','edit-back':'返回本次解读','close-reference':'关闭单牌参考',
  'full-reference':'打开完整牌义','detail-zoom':'放大牌面',zoom:'放大牌面','close-zoom':'关闭牌面放大',
  'manual-close':'关闭录入选牌','manual-choose':'确认录入牌','course-choice':'选择其他课程',

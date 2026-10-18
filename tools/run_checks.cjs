@@ -15,6 +15,7 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   await run(process.execPath,['tools/check_product_metrics.cjs']);
   await run(process.execPath,['tools/check_admin_dashboard.cjs']);
   await run(process.execPath,['tools/check_analytics_instrumentation.cjs']);
+  await run(process.execPath,['tools/check_web_back_navigation.cjs']);
   await run(process.execPath,['tools/check_guided_learning.cjs']);
   await run(process.execPath,['tools/check_course_route.cjs']);
   await run(process.execPath,['tools/check_analytics_depth.cjs']);

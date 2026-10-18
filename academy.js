@@ -268,7 +268,7 @@
   const rawStep=stepFor;
   function currentStep(s){return rawStep(s);}
   function create(bridge){
-    const {esc,img,icon,go,toast,now,get,set}=bridge;
+    const {esc,img,icon,go,back,toast,now,get,set}=bridge;
     let catalogOpen=false;
     // Display guidance is separate from lesson evidence and exported progress.
     const ZOOM_TIP_KEY='tarot-academy-zoom-tip-v1';
@@ -487,11 +487,11 @@
       if(action==='new'){newCard();return;}
       if(action==='review'){review();return;}
       if(action==='continue'){pauseAnimation();if(active())showSession();else go('courses');return;}
-      if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}go('courses');return;}
+      if(action==='home'){pauseAnimation();const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}if(back&&document.querySelector('.academy-shell'))back(()=>go('courses'));else go('courses');return;}
       if(action==='level'){selectLevel(el.dataset.value);refresh();return;}
       if(action==='course-choice'){catalogOpen=true;go('courses');return;}
       if(action==='catalog'){catalogOpen=true;refresh(true);return;}
-      if(action==='catalog-back'){catalogOpen=false;refresh(true);return;}
+      if(action==='catalog-back'){if(back)back(()=>{catalogOpen=false;refresh(true);});else{catalogOpen=false;refresh(true);}return;}
       if(action==='next-level'){selectLevel(el.dataset.value);guidedNext();return;}
       const d=data(),s=d.session;if(!s||s.complete)return;
       if(action==='answer'){if(answer(d,el.dataset.value,now())){
@@ -524,7 +524,7 @@
     window.addEventListener?.('pagehide',()=>{if(!document.querySelector('.academy-shell'))return;const d=data();if(d.session){d.session.scroll=window.scrollY;d.session.animation.paused=true;save(d);}});
     document.addEventListener('tarot-language-change',()=>{pauseAnimation();const d=data();if(d.session){d.session.lang=lang();d.session.animation.paused=true;save(d);}if(document.querySelector('.academy-shell,.academy-home'))refresh();});
     function dashboard(){return `<section class="section" data-i18n-ignore><h2>${copy('课程学习','Course learning')}</h2><p>${source.lessons.filter(u=>status(u.id)?.completedAt).length} / 20 课完成初学 · ${completedCards().length} / 78 张牌完成初学 · ${masteredCards().length} 张已巩固</p><p class="tiny muted">“已巩固”表示学过正位与逆位，并独立完成两次间隔回访；仍可继续复习，不代表陌生情境都会。</p>${button('home','继续学习','Continue learning')}${due().length?button('review','回访学过的内容','Revisit earlier learning'):''}</section>`;}
-    return {home,render,start,guidedNext,guidedSummary,newCard,review,current,active,status,completedCards,masteredCards,learningState,due,recommendation,dashboard,pause:pauseAnimation};
+    return {navigationState:()=>({catalogOpen}),restoreNavigation:n=>{catalogOpen=n?.catalogOpen===true;},home,render,start,guidedNext,guidedSummary,newCard,review,current,active,status,completedCards,masteredCards,learningState,due,recommendation,dashboard,pause:pauseAnimation};
   }
   window.TarotAcademy={coursePurpose,learningVisual,knowledgeLesson,practiceVariants,guidedQueue,courseRoute,stageNext,skillState,blank,validate,planFor,stepFor:currentStep,answer,advance,masteryState,cardPath:[...CARD_PATH],units,create,version};
 })();
