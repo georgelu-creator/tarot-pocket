@@ -18,7 +18,7 @@ const root=path.resolve(__dirname,'..'),out=path.join(root,'docs/images');
   await p.locator('[data-academy=home]').first().click();await p.locator('.bottomnav [data-page=reading]').click();await capture('reading');
   await p.locator('[data-reading=guide][data-scenario=sc05]').click();await capture('reading-guide',{full:true});
   await h.click(p,'start');await h.toPick(p);await h.pick(p,33);await h.center(p,40);await p.evaluate(()=>window.scrollTo(0,0));await capture('ritual-select');
-  await h.click(p,'pause');await h.click(p,'daily');await h.toPick(p);
+  await h.returnToGallery(p);await h.click(p,'daily');await h.toPick(p);
   const sunIndex=(await h.state(p)).draft.pool.findIndex(c=>c.id==='m19');await h.pick(p,sunIndex);await h.reveal(p);await capture('daily',{full:true});
   assert.deepEqual(errors,[]);assert.deepEqual(external,[],'no production or provider traffic');await ctx.close();
  }

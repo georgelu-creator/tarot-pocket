@@ -1,7 +1,7 @@
 /* One continuous reading table. Card identities are shuffled once; gestures never re-deal. */
 window.createTarotReading = function (bridge) {
   'use strict';
-  const {esc,img,icon,go,toast,now,showReference}=bridge;
+  const {esc,img,icon,go,back,toast,now,showReference}=bridge;
   const catalog=window.TAROT_READING_DECK,content=window.TAROT_SPREAD_CONTENT;
   const cards=Object.fromEntries(catalog.cards.map(c=>[c.id,c]));
   const spreads=Object.fromEntries(content.spreads.map(s=>[s.id,s]));
@@ -22,9 +22,9 @@ window.createTarotReading = function (bridge) {
   const localDay=()=>{const d=new Date(now());return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
   const cleanText=(v,n=3000)=>typeof v==='string'?v.slice(0,n):'';
   const blank=()=>({version:1,settings:{topic:'general',spreadId:'three',questionId:'own',reversals:true,contextEnabled:false},draft:null,history:[],practice:[],daily:[],ui:{view:'gallery',category:'all',guideId:'three',scenarioId:'',question:'',pendingQuestion:'',inputs:{},galleryY:0,resultY:0,guideReturn:'gallery',dailyActive:false}});
-  let data=blank(),storageOK=true,motion=null,revealTimer=null,selectionTimer=null,fanRAF=0,fanSave=null,detailFocus=null,questionConflictVisible=false,expiryTimer=null;
+  let data=blank(),storageOK=true,motion=null,revealTimer=null,selectionTimer=null,fanRAF=0,fanSave=null,detailFocus=null,detailIndex=null,manualPickerIndex=null,questionConflictVisible=false,expiryTimer=null;
   const active=()=>data.ui.dailyActive?data.daily[0]:data.draft;
-  const manual=window.createTarotManualReading({esc,img,icon,positionName:numberedPositionName,get:()=>data.ui.manual,set:m=>{data.ui.manual=m;persist();},redraw,submit:commitManual,back:toResult=>{data.ui.view=toResult&&data.draft?'table':'gallery';data.ui.dailyActive=false;persist();redraw(toResult?data.ui.resultY:data.ui.galleryY);}});
+  const manual=window.createTarotManualReading({esc,img,icon,positionName:numberedPositionName,get:()=>data.ui.manual,set:m=>{data.ui.manual=m;persist();},redraw,submit:commitManual,back:toResult=>returnOneLevel(()=>{data.ui.view=toResult&&data.draft?'table':'gallery';data.ui.dailyActive=false;persist();redraw(toResult?data.ui.resultY:data.ui.galleryY);})});
   function commitManual(m){
     const previous=structuredClone(data),d=spreads[m.spreadId],chosen=new Map(m.cards.map(c=>[c.id,c]));
     cancelTimers();window.TarotReadingAI?.cancel(active());
@@ -101,7 +101,9 @@ window.createTarotReading = function (bridge) {
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=randomInt(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
   function cancelTimers(){cancelPending();document.querySelectorAll('.fan-flying-card').forEach(el=>el.remove());if(motion){clearTimeout(motion.timer);const s=active();if(s?.id===motion.id)s.motionRemaining=Math.max(0,motion.remaining-(performance.now()-motion.started));motion=null;}clearTimeout(selectionTimer);selectionTimer=null;}
   function redraw(y=0,page='reading'){go(page);requestAnimationFrame(()=>{window.scrollTo(0,y);mountFan();requestAnimationFrame(()=>document.body.classList.remove('nav-away'));});}
+  function returnOneLevel(fallback){if(back)back(fallback);else fallback();}
   function leaveTable(){cancelTimers();data.ui.dailyActive=false;data.ui.view='gallery';persist();redraw(data.ui.galleryY);}
+  function parentTable(){const s=active();if(!s||s.dailyDate){leaveTable();return;}if(s.source==='manual'){manual.open(s);data.ui.view='manual';persist();redraw();return;}data.ui.guideId=s.spreadId;data.ui.scenarioId=s.scenarioId||'';data.ui.guideReturn='gallery';data.ui.question=s.userQuestion||'';data.ui.view='detail';saveInputs();redraw(0,'spread-guide');}
   function ensureMotion(){const s=active();if(!s||data.ui.view!=='table'||s.motionPaused||motion||!['shuffling','cutting'].includes(s.phase))return;const remaining=reduced()?0:s.motionRemaining??(s.phase==='shuffling'?SHUFFLE_MS:CUT_MS);const job={id:s.id,remaining,started:performance.now(),timer:null};motion=job;job.timer=setTimeout(()=>{if(motion!==job)return;motion=null;advanceMotion();},remaining);}
   function advanceMotion(){const s=active();if(!s||!['shuffling','cutting'].includes(s.phase))return;cancelTimers();s.phase=s.phase==='shuffling'?'cut':'pick';s.motionPaused=false;delete s.motionRemaining;persist();if(data.ui.view==='table')redraw();}
   function pauseMotion(){const s=active();if(!s)return;if(s.motionPaused)s.motionPaused=false;else{cancelTimers();s.motionPaused=true;}persist();const stage=document.querySelector('[data-motion-stage]');stage?.classList.toggle('motion-paused',s.motionPaused);const button=document.querySelector('[data-reading=motion-pause]');if(button)button.textContent=s.motionPaused?text('继续洗牌','Resume shuffling'):text('暂停洗牌','Pause shuffling');const status=stage?.querySelector('[role=status]');if(status)status.textContent=s.motionPaused?text('洗牌已暂停','Shuffling paused'):s.phase==='shuffling'?text('正在洗牌…','Shuffling…'):text('牌叠正在合拢…','Gathering the deck…');if(!s.motionPaused)ensureMotion();}
@@ -219,7 +221,7 @@ window.createTarotReading = function (bridge) {
     const d=spreads[data.ui.guideId],sc=scenario(data.ui.scenarioId),readOnly=data.ui.guideReturn==='table',s=active();
     return `<article class="reading-v2 compact-spread-guide"><header class="reading-header"><button class="iconbtn" data-reading="guide-back" aria-label="返回">${icon('back')}</button><div><small>${cardCount(d.positions.length)}</small><h1>${esc(chineseCopy(readOnly&&s?name(s):sc?.name||d.name))}</h1></div></header><section class="reading-guide-overview"><p class="reading-purpose">${esc(sc?.description||d.bestFor)}</p><h2>每张牌代表什么</h2><div class="reading-guide-diagram">${introDiagram(d)}</div><ol class="reading-position-list">${d.positions.map((p,i)=>`<li><span>${i+1}</span><div><strong>${esc(positionName(p,i))}</strong><p>${esc(p.question)}</p></div></li>`).join('')}</ol></section>${readOnly?'':`<section class="reading-question-setup">${sc?.question?`<div class="reading-preset"><small>这次的问题</small><p>${esc(sc.question)}</p></div>`:''}<label class="question-field"><span>${d.id==='yes-no'?'想问得更具体？可以写下那件事。':'想问得更具体？可以写在这里。'}</span><textarea data-reading-question data-i18n-ignore maxlength="3000" rows="3" placeholder="${esc(text('例如：接下来一个月，我的求职有机会顺利吗？'))}">${esc(data.ui.question)}</textarea><small>${sc?.question?'不填写，就按上面的问题解读。':d.id==='one'?'不填写，就看这张牌给你的提醒。':d.id==='yes-no'?'不填写，就按是／否牌位给出一般倾向；写清楚事情会更贴合。':'不填写，就按牌阵给你一些一般提示。'}</small></label>${['decision-five','three-options'].includes(d.id)?`<div class="reading-options">${['A','B',...(d.id==='three-options'?['C']:[])].map(k=>`<label><span>${k} <span>是什么？（可选）</span></span><input data-reading-option="option${k}" data-i18n-ignore maxlength="120" value="${esc(data.ui['option'+k]||'')}"></label>`).join('')}</div>`:''}<button class="primary wide" data-reading="start">开始洗牌 ${icon('arrow')}</button></section>`}<details class="reading-source"><summary>牌阵说明与来源</summary><p>${esc(chineseCopy(d.description||d.summary||d.bestFor))}</p>${d.legacy?'<p>这是旧版记录使用的牌阵。</p>':''}${d.source?`<p>${esc(chineseCopy(d.source.note||''))}</p>${/^https:\/\//.test(d.source.url||'')?`<a href="${esc(d.source.url)}" target="_blank" rel="noopener noreferrer">查看原始来源</a>`:''}`:''}</details></article>`;
   }
-  function header(s){return `<header class="reading-header"><button class="iconbtn" data-reading="pause" aria-label="返回抽牌首页">${icon('back')}</button><div><small>${s.dailyDate?esc(s.dailyDate):text('你的牌桌','Your reading table')}</small><h1>${esc(name(s))}</h1></div></header>`;}
+  function header(s){return `<header class="reading-header"><button class="iconbtn" data-reading="parent" aria-label="返回上一级">${icon('back')}</button><div><small>${s.dailyDate?esc(s.dailyDate):text('你的牌桌','Your reading table')}</small><h1>${esc(name(s))}</h1></div></header>`;}
   function ritual(s){
     const phase=s.phase,steps=['洗牌','切牌','选牌','揭牌'],n={shuffling:0,cut:1,cutting:1,pick:2,reveal:3}[phase];
     const progress=`<ol class="ritual-progress">${steps.map((label,i)=>`<li class="${i===n?'current':i<n?'done':''}"><span>${i+1}</span>${label}</li>`).join('')}</ol>`;
@@ -267,8 +269,34 @@ window.createTarotReading = function (bridge) {
   function revealAll(){const s=active();if(!s||s.phase!=='reveal'||s.revealed.length||s.picked.length!==spreads[s.spreadId].positions.length)return;s.revealed=s.picked.map((_,i)=>i);s.revealPending=null;persist();redraw();const id=s.id;const finish=()=>{revealTimer=null;if(active()?.id!==id)return;s.phase='read';persist();window.TarotAnalytics?.track('reading_reveal',{spread:s.spreadId,source:s.dailyDate?'daily':'random'},'reading');if(data.ui.view==='table')redraw();};if(reduced())finish();else revealTimer=setTimeout(finish,1100);}
   function resultCards(s){const d=spreads[s.spreadId];return `<div class="reading-board reading-result-cards layout-${esc(d.layout)} count-${s.picked.length} phase-read" ${gridAttrs(d)} aria-label="${s.source==='manual'?'这次录入的牌':'这次抽到的牌'}">${s.picked.map((n,i)=>{const c=s.pool[n];return `<button class="reading-result-card reading-slot slot-${i+1}" style="${cellStyle(d,i)}" data-reading="card" data-index="${i}" aria-label="${esc(cards[c.id].name)} ${c.reversed?'逆位':'正位'}"><span class="reading-card ${c.reversed?'is-reversed':''}">${img(c.id)}</span><span class="reading-label">${esc(numberedPositionName(d.positions[i],i))}</span><small>${esc(cards[c.id].name)} · <span>${c.reversed?'逆位':'正位'}</span></small></button>`;}).join('')}</div>`;}
   function detail(s,i){const draw=s.pool[s.picked[i]],c=cards[draw.id],p=spreads[s.spreadId].positions[i],face=draw.reversed?'逆位':'正位',other=draw.reversed?'正位基础':'也看看逆位';return `<button class="iconbtn reading-detail-close" data-reading="close-reference" aria-label="返回刚才的位置">${icon('back')}</button><div class="reading-detail-portrait"><button data-reading="detail-zoom" aria-label="放大牌面">${img(c.id,draw.reversed?'class="reversed-img"':'')}</button><div><h2 id="reading-detail-title">${esc(c.name)}</h2><p>${face} · ${esc(positionName(p,i))}</p></div></div><section><h3>核心意思</h3><p>${esc(c.core)}</p></section><section><h3>这次的${face}怎么读</h3><p>${esc(draw.reversed?c.reversed:c.upright)}</p></section><section><h3>画面里的线索</h3><p>${esc(c.observation)}</p></section><details><summary>${other}</summary><p>${esc(draw.reversed?c.upright:c.reversed)}</p></details><section><h3>这张牌在这里回答什么</h3><p>${esc(p.question)}</p></section>${s.source==='manual'?`<button class="secondary wide" data-reading="full-reference" data-index="${i}">查看牌库完整资料</button>`:''}<button class="secondary wide" data-reading="close-reference">返回刚才的位置</button>`;}
-  function openDetail(i,button){const s=active();if(!s||s.phase!=='read'||s.picked[i]===undefined)return;const dialog=document.querySelector('[data-reading-dialog]');if(!dialog)return;detailFocus=button;dialog.innerHTML=detail(s,i);dialog.showModal();dialog.onclick=e=>{if(e.target===dialog)closeDetail();};}
-  function closeDetail(){document.querySelector('[data-reading-dialog]')?.close();detailFocus?.focus({preventScroll:true});}
+  function openDetail(i,button){const s=active();if(!s||s.phase!=='read'||s.picked[i]===undefined)return;const dialog=document.querySelector('[data-reading-dialog]');if(!dialog)return;detailIndex=i;detailFocus=button;dialog.innerHTML=detail(s,i);dialog.showModal();dialog.onclick=e=>{if(e.target===dialog)returnOneLevel(closeDetail);};}
+  function closeDetail(){document.querySelector('[data-reading-dialog]')?.close();detailIndex=null;detailFocus?.focus({preventScroll:true});}
+  function navigationState(){
+    const ui=data.ui,dialog=document.querySelector('[data-reading-pick-dialog][open]')?'pick':document.querySelector('[data-reading-dialog][open]')?'detail':document.querySelector('.manual-picker[open]')?'manual':'';
+    return {view:ui.view,dailyActive:ui.dailyActive===true,guideId:ui.guideId,scenarioId:ui.scenarioId||'',guideReturn:ui.guideReturn==='table'?'table':'gallery',dialog,index:dialog==='pick'?pendingSelection?.index:dialog==='detail'?detailIndex:dialog==='manual'?manualPickerIndex:null,zoomed:dialog==='detail'&&document.querySelector('.reading-detail-portrait')?.classList.contains('zoomed')===true};
+  }
+  function restoreNavigation(location){
+    cancelTimers();closeDetail();window.TarotReadingAI?.cancel(active());questionConflictVisible=false;
+    const n=location||{},view=['gallery','detail','manual','table','edit'].includes(n.view)?n.view:'gallery';
+    data.ui.dailyActive=n.dailyActive===true&&!!data.daily[0];
+    if(spreads[n.guideId])data.ui.guideId=n.guideId;
+    data.ui.scenarioId=scenario(n.scenarioId)?n.scenarioId:'';data.ui.guideReturn=n.guideReturn==='table'?'table':'gallery';
+    data.ui.view=view;
+    if(view==='manual'&&!data.ui.manual){if(data.draft?.source==='manual')manual.open(data.draft);else data.ui.view='gallery';}
+    if(['table','edit'].includes(view)&&!active())data.ui.view='gallery';
+    if(n.dailyActive&&!data.daily[0]&&['table','edit'].includes(view))data.ui.view='gallery';
+    if(view==='detail'){const input=data.ui.inputs[inputKey()];if(input)Object.assign(data.ui,input);}
+    persist();
+  }
+  function restoreNavigationDialog(location){
+    if(location?.dialog!=='pick')cancelPending();
+    if(location?.dialog!=='detail')closeDetail();
+    if(location?.dialog!=='manual')document.querySelector('.manual-picker')?.close();
+    const index=Number(location?.index);if(!Number.isInteger(index)||index<0)return;
+    if(location.dialog==='detail'){if(!document.querySelector('[data-reading-dialog]')?.open||detailIndex!==index)openDetail(index,document.querySelector(`[data-reading="card"][data-index="${index}"]`));document.querySelector('.reading-detail-portrait')?.classList.toggle('zoomed',location.zoomed===true);}
+    if(location.dialog==='pick'&&(!document.querySelector('[data-reading-pick-dialog]')?.open||pendingSelection?.index!==index)){cancelPending();const button=document.querySelector(`[data-reading="pick"][data-index="${index}"]`);if(button)pick(index,button);}
+    if(location.dialog==='manual'&&!document.querySelector('.manual-picker')?.open)document.querySelector(`[data-manual="pick"][data-index="${index}"]`)?.click();
+  }
   const feedbackReceipts=new Map();
   try{for(const [id,r]of JSON.parse(localStorage.getItem('tarot-query-receipts')||'[]'))if(r&&typeof r.id==='string'&&typeof r.deletionToken==='string'&&Number.isFinite(r.at)&&r.at>Date.now()-30*86400000)feedbackReceipts.set(id,r);}catch(_){}
   function saveFeedbackReceipts(){try{localStorage.setItem('tarot-query-receipts',JSON.stringify([...feedbackReceipts]));}catch(_){toast('撤回凭证未能保存在本机，请先留在此页重试。');}}
@@ -292,7 +320,8 @@ window.createTarotReading = function (bridge) {
   function dashboard(){return `<section class="section"><div class="sectionhead"><h2>我的牌桌</h2></div><button class="secondary wide" data-reading="gallery">打开当前牌桌</button></section>${!window.TAROT_STANDALONE&&feedbackReceipts.size?`<section class="section feedback-management"><h2>已提交的问题反馈</h2><p>反馈凭证独立保存在此浏览器。即使修改问题或开始新的抽牌，仍可在这里撤回；提交满 30 天后服务端自动删除。</p>${[...feedbackReceipts].map(([id,r])=>`<div class="setting-row"><span>${new Date(r.at).toLocaleDateString('zh-CN')} 提交</span><button class="linkbtn" data-reading="withdraw-feedback" data-value="${esc(id)}">撤回反馈</button></div>`).join('')}<p data-feedback-status role="status"></p></section>`:''}`;}
   function learningHub(){return `<section class="section"><h2>认识牌阵</h2>${content.spreads.filter(s=>!s.legacy).map(s=>`<button class="practice-row" data-reading="guide" data-value="${s.id}"><strong>${esc(s.name)}</strong><span>${cardCount(s.positions.length)}</span>${icon('arrow')}</button>`).join('')}</section>`;}
   document.addEventListener('input',e=>{const el=e.target;if(el.matches('[data-reading-question]')&&data.ui.view==='detail'){data.ui.question=el.value.slice(0,3000);saveInputs();refreshQuestionConflict();}if(el.matches('[data-reading-option]')&&data.ui.view==='detail'&&['optionA','optionB','optionC'].includes(el.dataset.readingOption)){data.ui[el.dataset.readingOption]=el.value.slice(0,120);saveInputs();}if(el.matches('[data-reading-edit]')&&data.ui.view==='edit'){data.ui.editText=el.value.slice(0,3000);document.querySelector('[data-reading-edit-conflict]')?.remove();persist();}});
-  document.addEventListener('cancel',e=>{if(e.target.matches?.('[data-reading-pick-dialog]')){e.preventDefault();cancelPending();}},true);
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-manual="pick"]');if(b)manualPickerIndex=Number(b.dataset.index);},true);
+  document.addEventListener('cancel',e=>{if(e.target.matches?.('[data-reading-pick-dialog]')){e.preventDefault();cancelPending();}else if(e.target.matches?.('[data-reading-dialog]')){e.preventDefault();returnOneLevel(closeDetail);}},true);
   document.addEventListener('click',e=>{const b=e.target.closest('[data-reading]');if(!b||b.disabled)return;if(prunePastDraws()){cancelTimers();persist();if(b.dataset.reading!=='daily'){redraw();return;}}const a=b.dataset.reading,v=b.dataset.value,i=Number(b.dataset.index),s=active();
     if(a==='send-feedback'||a==='withdraw-feedback'){
       const panel=b.closest('.query-feedback,.feedback-management'),status=panel?.querySelector('[data-feedback-status]'),withdraw=a==='withdraw-feedback',receiptKey=withdraw?b.dataset.value:s?.id;
@@ -311,13 +340,14 @@ window.createTarotReading = function (bridge) {
 
     if(a==='manual'||a==='manual-edit'){cancelTimers();window.TarotReadingAI?.cancel(s);data.ui.galleryY=window.scrollY;if(a==='manual-edit')data.ui.resultY=window.scrollY;manual.open(a==='manual-edit'?s:null);data.ui.dailyActive=false;data.ui.view='manual';persist();redraw();return;}
     if(a==='guide'){openGuide(v,b.dataset.scenario||'');return;}
-    if(a==='guide-back'){questionConflictVisible=false;if(data.ui.guideReturn==='table'){data.ui.view='table';persist();redraw(data.ui.resultY);}else{data.ui.view='gallery';persist();redraw(data.ui.galleryY);}return;}
+    if(a==='guide-back'){returnOneLevel(()=>{questionConflictVisible=false;if(data.ui.guideReturn==='table'){data.ui.view='table';persist();redraw(data.ui.resultY);}else{data.ui.view='gallery';persist();redraw(data.ui.galleryY);}});return;}
     if(a==='category'){if(!groups.some(g=>g[0]===v))return;data.ui.category=v;persist();document.querySelectorAll('[data-reading=category]').forEach(el=>el.classList.toggle('active',el.dataset.value===v));document.getElementById('reading-theme-'+v)?.scrollIntoView({behavior:reduced()?'instant':'smooth',block:'start'});return;}
     if(a==='start'){saveInputs();const conflict=questionConflict();if(conflict){showQuestionConflict(conflict);return;}questionConflictVisible=false;prepare();return;}
     if(a==='use-preset-question'){const sc=scenario(data.ui.scenarioId);if(!sc?.question)return;data.ui.question='';saveInputs();questionConflictVisible=false;prepare();return;}
     if(a==='change-spread'){saveInputs();data.ui.pendingQuestion=data.ui.question;questionConflictVisible=false;data.ui.view='gallery';persist();redraw(data.ui.galleryY);return;}
     if(a==='daily'){data.ui.galleryY=window.scrollY;openDaily();return;}
     if(a==='resume'){data.ui.dailyActive=false;data.ui.view='table';persist();redraw();return;}
+    if(a==='parent'){returnOneLevel(parentTable);return;}
     if(a==='pause'||a==='gallery'||a==='finish'||a==='new'){leaveTable();return;}
     if(a==='motion-pause'){pauseMotion();return;}if(a==='motion-replay'){replayMotion();return;}if(a==='skip-animation'){advanceMotion();return;}if(a==='cut'){cut(i);return;}
     if(a==='fan-help'){const host=document.querySelector('[data-fan-help-host]');if(host)host.innerHTML=fanHelp();return;}if(a==='fan-help-close'){dismissFanHelp();return;}if(a==='pick-confirm'){confirmPick();return;}if(a==='pick-change'){cancelPending();return;}
@@ -325,15 +355,15 @@ window.createTarotReading = function (bridge) {
     if(a==='reveal'||a==='reveal-all'||a==='reveal-ai'){revealAll();return;}
     if(a==='ai-request'){requestAI(s);return;}if(a==='ai-cancel'){window.TarotReadingAI?.cancel(s);return;}
     if(a==='full-reference'&&s?.source==='manual'&&s.picked[i]!==undefined){const c=s.pool[s.picked[i]];closeDetail();showReference(c.id,c.reversed?'reversed':'upright');return;}
-    if(a==='card'){openDetail(i,b);return;}if(a==='detail-zoom'){document.querySelector('.reading-detail-portrait')?.classList.toggle('zoomed');return;}if(a==='close-reference'){closeDetail();return;}
+    if(a==='card'){openDetail(i,b);return;}if(a==='detail-zoom'){document.querySelector('.reading-detail-portrait')?.classList.toggle('zoomed');return;}if(a==='close-reference'){returnOneLevel(closeDetail);return;}
     if(a==='result-guide'&&s){openGuide(s.spreadId,s.scenarioId,true);return;}
     if(a==='edit-question'&&s){window.TarotReadingAI?.cancel(s);data.ui.resultY=window.scrollY;data.ui.editText=s.questionText||'';data.ui.view='edit';persist();redraw();return;}
-    if(a==='edit-back'){data.ui.editText='';data.ui.view='table';persist();redraw(data.ui.resultY);return;}
+    if(a==='edit-back'){returnOneLevel(()=>{data.ui.editText='';data.ui.view='table';persist();redraw(data.ui.resultY);});return;}
     if(a==='edit-change-spread'&&s){const q=data.ui.editText.trim();if(!q)return;data.ui.pendingQuestion=q;data.ui.view='gallery';persist();redraw(data.ui.galleryY);return;}
     if(a==='save-question'&&s){window.TarotReadingAI?.cancel(s);const q=data.ui.editText.trim(),conflict=editedQuestionConflict(s,q);if(conflict){showEditQuestionConflict(conflict);return;}if(q!==s.questionText){s.questionText=q;s.userQuestion=q;s.ai=[];data.ui.question=q;data.ui.guideId=s.spreadId;data.ui.scenarioId=s.scenarioId||'';data.ui.pendingQuestion='';saveInputs();for(const copy of [data.draft,...data.daily])if(copy?.id===s.id)Object.assign(copy,structuredClone(s));}data.ui.editText='';data.ui.view='table';persist();redraw();return;}
     if(a==='save-again'){persist();redraw(window.scrollY);}
   });
   document.addEventListener('tarot-language-change',()=>{if(data.ui.view==='table'&&active()?.phase==='read')window.TarotReadingAI?.refresh(active());});
   window.addEventListener('pagehide',()=>{cancelTimers();const s=active();if(s?.phase==='reveal'&&s.revealed.length===s.picked.length){clearTimeout(revealTimer);revealTimer=null;s.phase='read';}persist();});
-  return {referenceDiagram:introDiagram,isFocused:()=>data.ui.view!=='gallery',render,renderGuide,learningHub,dashboard,openDaily,validate,export:()=>{persist();return structuredClone(data);},restore:raw=>{cancelTimers();data=validate(raw);persist();},reset:()=>{cancelTimers();data=blank();persist();}};
+  return {navigationState,restoreNavigation,restoreNavigationDialog,referenceDiagram:introDiagram,isFocused:()=>data.ui.view!=='gallery',render,renderGuide,learningHub,dashboard,openDaily,validate,export:()=>{persist();return structuredClone(data);},restore:raw=>{cancelTimers();data=validate(raw);persist();},reset:()=>{cancelTimers();data=blank();persist();}};
 };

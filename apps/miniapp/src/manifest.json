@@ -1,9 +1,9 @@
 {
-  "name": "星纱塔罗",
+  "name": "秘境梦屿",
   "appid": "",
-  "description": "抽牌解读、每日一牌、独立牌库与逐牌学习",
-  "versionName": "0.3.0",
-  "versionCode": "300",
+  "description": "探索经典卡牌的画面、象征与故事。查阅78张图像资料，跟着短课看图、做题、复习，逐步建立自己的理解。",
+  "versionName": "0.4.0",
+  "versionCode": "400",
   "transformPx": false,
   "vueVersion": "3",
   "mp-weixin": {

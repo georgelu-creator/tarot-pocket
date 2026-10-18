@@ -30,7 +30,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  await p.locator('[data-reading=start]').click();
  const before=(await state(p)).draft;
  assert.equal(await p.locator('.bottomnav').count(),0,'focused draw retains an exit instead of persistent navigation');
- assert(await p.locator('[data-reading=pause]').isVisible());
+ assert(await p.locator('[data-reading=parent]').isVisible());
  await p.locator('[data-reading=cut][data-index="26"]').waitFor();
  assert.equal(await p.locator('[data-reading=skip-animation],[data-reading=motion-pause],[data-reading=motion-replay]').count(),0,'the ritual does not add effect controls');
  assert.deepEqual((await state(p)).draft.pool,before.pool,'the automatic shuffle keeps its original randomized pool');
@@ -45,7 +45,7 @@ function contrast(a,b){const L=s=>{const c=s.match(/[\d.]+/g).slice(0,3).map(Num
  assert.equal(await p.locator('.reveal-group.is-revealing-group .group-flip-back').count(),3);
  assert.equal(await p.locator('.is-revealing-group .reveal-group-face').first().evaluate(el=>getComputedStyle(el).animationName),'group-face-arrive');
  const saved=(await state(p)).draft;
- await p.locator('[data-reading=pause]').first().click();await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
+ await h.returnToGallery(p);await p.reload();await p.locator('.bottomnav [data-page=reading]').click();
  assert.deepEqual((await state(p)).draft.pool,saved.pool);assert.deepEqual((await state(p)).draft.revealed,[0,1,2]);
  await p.locator('[data-reading=resume]').click();assert.equal((await state(p)).history.length,0,'completed current draw never becomes history');await ctx.setOffline(true);await p.emulateMedia({reducedMotion:'reduce'});
  assert.equal((await state(p)).draft.phase,'read');assert.equal(await p.locator('.bottomnav').count(),0);

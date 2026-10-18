@@ -27,6 +27,8 @@
   let restoreReadingCandidate = null;
   let zoomReturn = null;
   let modalPageY=0,cardTrail=[];
+  let navigationReady=false,navigationRestoring=false,navigationPending=false,navigationIndex=0;
+  const navigationEntries=new Map(),NAVIGATION_KEY='tarot-pocket-navigation-v1';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const path = id => `assets/cards/${id}.webp`;
   const img = (id,extra='') => {
@@ -106,7 +108,74 @@
     root.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.alt='图片未能载入，请使用完整离线文件';image.classList.add('image-load-failed');},{once:true}));
   }
   let navLastY=0;window.addEventListener('scroll',()=>{const y=Math.max(0,window.scrollY),delta=y-navLastY;if(Math.abs(delta)>8){document.body.classList.toggle('nav-away',delta>0&&y>100&&y+innerHeight<document.documentElement.scrollHeight-90);navLastY=y;}},{passive:true});
-  function go(destination){document.body.classList.remove('nav-away');page=destination==='practice'?'home':destination;closeModal();render();window.TarotAnalytics?.view(page);window.scrollTo(0,0);}
+  function go(destination){document.body.classList.remove('nav-away');page=destination==='practice'?'home':destination;closeModal();render();window.TarotAnalytics?.view(page);window.scrollTo(0,0);syncNavigation();}
+  // Navigation keeps only locations. Committed answers, card identities and
+  // ritual progress remain in their existing stores and are never rolled back.
+  function navigationLocation(){
+    return {page,reading:['reading','spread-guide'].includes(page)?reading.navigationState():null,academy:page==='courses'?academy.navigationState():null,overlay:document.getElementById('overlay').children.length?{type:modal?.type||'sheet',id:modal?.id||'',knowledge:modal?.knowledge||''}:null};
+  }
+  function navigationKey(location){const normalized={...location,page:location.page==='spread-guide'?'reading':location.page};if(normalized.reading){const {guideId,scenarioId,guideReturn,...readingLocation}=normalized.reading;normalized.reading=readingLocation;if(readingLocation.view==='detail')Object.assign(normalized.reading,{guideId,scenarioId,guideReturn});if(readingLocation.view==='gallery')normalized.reading.dailyActive=false;}return JSON.stringify(normalized);}
+  function navigationBaseKey(location){const base={...location,overlay:null};if(base.reading){const {dialog,index,zoomed,...readingLocation}=base.reading;base.reading=readingLocation;}return navigationKey(base);}
+  function navigationSnapshot(){const location=navigationLocation();return {location,key:navigationKey(location),y:document.getElementById('overlay').children.length?modalPageY:window.scrollY,sheet:location.overlay?captureSheet():null,trail:[...cardTrail],zoom:zoomReturn};}
+  function rememberNavigation(){if(!navigationReady||navigationRestoring||navigationPending)return;const current=navigationEntries.get(navigationIndex);if(current&&current.key===navigationKey(navigationLocation()))navigationEntries.set(navigationIndex,navigationSnapshot());}
+  function navigationState(snapshot){return {[NAVIGATION_KEY]:true,index:navigationIndex,location:snapshot.location,y:snapshot.y};}
+  function syncNavigation(){
+    if(!navigationReady||navigationRestoring||navigationPending)return;
+    const next=navigationSnapshot(),current=navigationEntries.get(navigationIndex);
+    if(current?.key===next.key){navigationEntries.set(navigationIndex,next);return;}
+    // Closing a layer consumes its entry instead of creating a second visit to
+    // its parent. This also covers native dialog close and Escape.
+    if(navigationEntries.get(navigationIndex-1)?.key===next.key){navigationPending=true;history.back();return;}
+    for(const index of navigationEntries.keys())if(index>navigationIndex)navigationEntries.delete(index);
+    // A resumed table still belongs to its spread settings. Build these parent
+    // locations when entering the module from elsewhere, without replaying it.
+    const parents=[];
+    if(next.location.reading&&!current?.location.reading&&next.location.reading.view!=='gallery'){
+      const base={...next.location,page:'reading',overlay:null,reading:{...next.location.reading,view:'gallery',dialog:'',index:null,dailyActive:false}};
+      parents.push(base);
+      if(['table','edit'].includes(next.location.reading.view)&&!next.location.reading.dailyActive){
+        const session=reading.export().draft;
+        if(session?.source==='manual')parents.push({...base,reading:{...base.reading,view:'manual'}});
+        else if(session)parents.push({...base,page:'spread-guide',reading:{...base.reading,view:'detail',guideId:session.spreadId,scenarioId:session.scenarioId||'',guideReturn:'gallery'}});
+      }
+    }
+    if(next.location.page==='academy'&&!['courses','academy'].includes(current?.location.page))parents.push({page:'courses',reading:null,academy:{catalogOpen:false},overlay:null});
+    for(const location of parents){const parent={location,key:navigationKey(location),y:0,sheet:null,trail:[],zoom:null};navigationIndex++;navigationEntries.set(navigationIndex,parent);history.pushState(navigationState(parent),'');}
+    navigationIndex++;navigationEntries.set(navigationIndex,next);history.pushState(navigationState(next),'');
+  }
+  function navigationBack(fallback){
+    if(navigationReady&&navigationIndex>0){rememberNavigation();navigationPending=true;history.back();return true;}
+    fallback?.();return false;
+  }
+  function restoreNavigation(location,snapshot){
+    const sameBase=navigationReady&&navigationBaseKey(navigationLocation())===navigationBaseKey(location);
+    navigationRestoring=true;closeModal();
+    const allowed=['home','courses','academy','journey','learning','study','spread','library','reading','spread-guide','me'];
+    page=allowed.includes(location?.page)?location.page:'home';
+    if(!sameBase&&['reading','spread-guide'].includes(page))reading.restoreNavigation(location.reading);
+    if(page==='courses')academy.restoreNavigation(location.academy);
+    if(!sameBase)render();
+    if(['reading','spread-guide'].includes(page))reading.restoreNavigationDialog(location.reading);
+    if(snapshot?.sheet&&location.overlay){showModal('');restoreSheet(snapshot.sheet);cardTrail=[...snapshot.trail];zoomReturn=snapshot.zoom;}
+    else if(location.overlay?.type==='card'&&cardMap[location.overlay.id])showCard(location.overlay.id);
+    else if(location.overlay?.type==='reference-spread')showReferenceSpread(location.overlay.id);
+    else if(location.overlay?.type==='knowledge')showKnowledge(location.overlay.knowledge);
+    else if(location.overlay?.type==='sources')sources();
+    const y=snapshot?.y||0;modalPageY=y;if(document.getElementById('overlay').children.length)document.body.style.top=`-${y}px`;requestAnimationFrame(()=>{if(!document.getElementById('overlay').children.length){navLastY=y;window.scrollTo(0,y);navLastY=Math.max(0,window.scrollY);document.body.classList.remove('nav-away');}});
+    document.body.classList.remove('nav-away');window.TarotAnalytics?.view(page);navigationRestoring=false;
+  }
+  window.addEventListener('popstate',event=>{
+    if(!event.state?.[NAVIGATION_KEY])return;
+    navigationPending=false;navigationIndex=Number.isInteger(event.state.index)?event.state.index:0;
+    const snapshot=navigationEntries.get(navigationIndex);restoreNavigation(event.state.location,snapshot||{y:Number(event.state.y)||0});
+    const actual=navigationSnapshot();navigationEntries.set(navigationIndex,actual);
+    // Chapter/face changes and ordinary Back only update the in-memory view.
+    // WebKit rate-limits History writes, including replaceState, during fast use.
+    if(navigationKey(event.state.location)!==actual.key)history.replaceState(navigationState(actual),'');
+  });
+  document.addEventListener('click',()=>{syncNavigation();rememberNavigation();setTimeout(syncNavigation,0);},true);
+  document.addEventListener('cancel',()=>{rememberNavigation();setTimeout(syncNavigation,0);},true);
+  document.addEventListener('close',()=>setTimeout(syncNavigation,0),true);
   function renderHome(){
     const id=academy.recommendation(), c=cardMap[id]||cardMap.m17;
     const due=academy.due().length, finished=academy.completedCards().length, mastered=academy.masteredCards().length;
@@ -200,7 +269,7 @@
   }
   function captureSheet(){return {modal:{...modal},nodes:[...document.getElementById('overlay').childNodes],scroll:document.querySelector('#overlay .sheet')?.scrollTop||0,focus:document.activeElement};}
   function restoreSheet(snapshot){document.getElementById('overlay').replaceChildren(...snapshot.nodes);modal=snapshot.modal;if(modal?.type==='card')patchCardDetail();const sheet=document.querySelector('#overlay .sheet');if(sheet)sheet.scrollTop=snapshot.scroll;if(snapshot.focus?.isConnected)snapshot.focus.focus({preventScroll:true});}
-  function dismissOverlay(){if(modal?.type==='zoom'&&zoomReturn){const back=zoomReturn;zoomReturn=null;restoreSheet(back);}else closeModal();}
+  function dismissOverlay(){navigationBack(()=>{if(modal?.type==='zoom'&&zoomReturn){const back=zoomReturn;zoomReturn=null;restoreSheet(back);}else if(cardTrail.length)restoreSheet(cardTrail.pop());else closeModal();});}
   function sheetHead(title){return `<div class="sheethead"><h2>${esc(title)}</h2><button class="iconbtn" data-action="close" aria-label="关闭">${icon('close')}</button></div>`;}
   const detailTopics={love:'感情',career:'事业',study:'学业'};
   const detailRoles={present:'现状',obstacle:'阻碍',advice:'建议'};
@@ -264,7 +333,7 @@
   function feedback(){modal={type:'feedback'};showModal(`${sheetHead('这次体验怎么样？')}<p class="muted">点击一个最接近的感受，记录在当前浏览器。你也可以直接回到对话告诉我。</p><div class="buttonstack">${['顺手，愿意继续学','选项有挑战，解析也有帮助','题目太难，需要更多先学内容','解析太长，想更快看重点','操作不顺，想调整页面'].map(t=>`<button class="secondary" data-action="feedback-save" data-text="${t}">${t}</button>`).join('')}</div><p class="subtleline">本机已记录 ${state.feedback.length} 条体验感受，导出学习记录时会一并带上。</p>`);}
   document.addEventListener('click',event=>{
     const el=event.target.closest('[data-action]');
-    if(!el){if(event.target.dataset.backdrop)closeModal();return;}
+    if(!el){if(event.target.dataset.backdrop)dismissOverlay();return;}
     const action=el.dataset.action;
     if(action==='number-family'){const n=Number(el.dataset.value);if(n>=1&&n<=10){overlay.querySelector('[data-number-family]').innerHTML=numberFamily(n);overlay.querySelectorAll('[data-action=number-family]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.value)===n)));}}
     else if(action==='nav')go(el.dataset.page);
@@ -280,7 +349,7 @@
     else if(action==='dossier-lens'&&modal?.type==='card'){const n=Number(el.dataset.value);if(Number.isInteger(n)&&n>=0&&n<3){modal.lens=n;patchCardDetail();}}
     else if(action==='detail-topic'&&modal?.type==='card'&&detailTopics[el.dataset.value]){modal.topic=el.dataset.value;const node=overlay.querySelector('[data-dossier-context]');node.innerHTML=dossierContext(cardMap[modal.id],modal.topic);patchCardDetail();}
     else if(action==='close')dismissOverlay();
-    else if(action==='card-back'&&cardTrail.length)restoreSheet(cardTrail.pop());
+    else if(action==='card-back'&&cardTrail.length)dismissOverlay();
     else if(action==='status')checkStatus();
     else if(action==='sources')sources();
     else if(action==='draw'){const c=cardMap[currentQuestion().cardId];state.session.phase=seenIDs().includes(c.id)?'question':'intro';persist();render();window.scrollTo(0,0);}
@@ -329,10 +398,16 @@
   window.addEventListener('pagehide',persist);
   if(state.session && state.session.phase!=='complete')page='home';
   window.TAROT_LEARNING.units.push(...window.TAROT_SPREAD_CONTENT.units);
-  const reading = window.createTarotReading({esc,img,icon,go,toast,now,showReference:showCard});
+  const reading = window.createTarotReading({esc,img,icon,go,back:navigationBack,toast,now,showReference:showCard});
   const learning = window.createTarotLearning({esc,img,icon,shuffle,go,now,toast,cardMap});
   const journey = window.TarotJourney.create({esc,img,icon,go,toast,now,cardMap,get:()=>state.journey,set:value=>{state.journey=value;persist();}});
-  const academy = window.TarotAcademy.create({esc,img,icon,go,toast,now,cardMap,get:()=>state.journey.academy,set:value=>{state.journey.academy=value;persist();}});
+  const academy = window.TarotAcademy.create({esc,img,icon,go,back:navigationBack,toast,now,cardMap,get:()=>state.journey.academy,set:value=>{state.journey.academy=value;persist();}});
+  // Registered after module handlers so a rapid system Back sees the newly
+  // opened sheet/dialog before the next task starts.
+  document.addEventListener('click',syncNavigation);
   document.addEventListener('input',event=>{if(!event.target.matches('[data-library-search]'))return;librarySearch=event.target.value;document.querySelector('[data-library-results]').innerHTML=libraryCards();});
+  const savedNavigation=history.state;
+  if(savedNavigation?.[NAVIGATION_KEY])navigationIndex=Number.isInteger(savedNavigation.index)?savedNavigation.index:0;
   render();
+  navigationReady=true;const initialNavigation=navigationSnapshot();navigationEntries.set(navigationIndex,initialNavigation);history.replaceState(navigationState(initialNavigation),'');
 })();

@@ -1,6 +1,6 @@
 {
   "name": "tarot-pocket-cross-platform",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "scripts": {
     "prepare:content": "node tools/prepare-content.cjs",
     "dev:h5": "npm run build:h5 && node tools/preview.cjs",
@@ -9,7 +9,7 @@
     "build:mp-weixin": "npm run prepare:content && uni build -p mp-weixin && node tools/check-package.cjs",
     "type-check": "vue-tsc --noEmit",
     "test": "node tools/check-core.cjs && node tools/check-drawing.cjs",
-    "test:ui": "npm run build:h5 && node ../../tools/check-learning-page.cjs && node ../../tools/check-miniapp-ui.cjs && node ../../tools/check_miniapp_reference_depth.cjs && node tools/check-preview.cjs",
+    "test:ui": "npm run build:h5 && node ../../tools/check-learning-page.cjs && node ../../tools/check_mengyu_learning.cjs && node ../../tools/check-miniapp-ui.cjs && node ../../tools/check_miniapp_reference_depth.cjs && node tools/check-preview.cjs",
     "preview:h5": "node tools/preview.cjs"
   },
   "dependencies": {

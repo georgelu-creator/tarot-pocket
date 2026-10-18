@@ -36,12 +36,14 @@ cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], 
   }
  }
  const pages=JSON.parse(fs.readFileSync(path.join(base,'src/pages.json')));
- const nav=pages.tabBar.list.map(p=>p.text);assert.ok(!nav.includes('记录'));assert.ok(!pages.pages.some(p=>p.path.includes('/records/')));assert.ok(nav.indexOf('抽牌')<nav.indexOf('学牌'));
- const home=fs.readFileSync(path.join(base,'src/pages/home/index.vue'),'utf8');assert.ok(home.indexOf('开始抽牌')<home.indexOf('开始学牌'));
- assert.ok(home.includes('塔罗日运')); assert.ok(!/今日塔罗|今日一牌/.test(home));
+ const nav=pages.tabBar.list.map(p=>p.text);assert.deepEqual(nav,['首页','学习','图鉴']);
+ assert.deepEqual(pages.pages.map(p=>p.path),['pages/mengyu/home','pages/mengyu/learn','pages/mengyu/library']);
+ const manifest=JSON.parse(fs.readFileSync(path.join(base,'src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');
+ const {cards:images,provenance}=await imp('mengyu.mjs');assert.equal(images.length,78);assert.equal(new Set(images.map(c=>c.id)).size,78);assert.equal(provenance.sources.length,78);
+ for(const image of images){assert.deepEqual(Object.keys(image).sort(),['id','name','suit','number','keywords','observation','core','symbols','foundation'].sort());assert.ok(image.observation&&image.symbols.length>=2&&image.foundation.text);assert.equal(image.core,deck.cards.find(c=>c.id===image.id).core);assert(!/占卜|预测|运势|日运|牌阵|正位|逆位|解牌|解读|建议位|牌位|旁边的牌|抽到/.test(JSON.stringify(image)),image.id+' visual-only projection');assert(artwork[image.id]);}
  for(const page of [...pages.pages,...(pages.subPackages || []).flatMap(pack=>pack.pages.map(p=>({...p,path:pack.root+'/'+p.path})))]) assert.ok(fs.existsSync(path.join(base,'src',page.path+'.vue')),page.path);
- assert.equal(pages.subPackages[0].root,'pages/card');
+ assert.equal(pages.subPackages[0].root,'pages/artwork');
  const {knowledge:fullKnowledge}=await import(pathToFileURL(path.join(base,'src/pages/card/generated/knowledge.mjs')).href);
  for(const card of deck.cards){assert.deepEqual(knowledge.byId[card.id].learning,fullKnowledge.byId[card.id].learning);assert.equal(knowledge.byId[card.id].domains,undefined);assert.equal(Object.keys(fullKnowledge.byId[card.id].domains).length,5);}
- console.log('PASS: 78 cards × 3 course stages; active spreads × 2 orientations; draw-first home/navigation; all routes exist.');
+ console.log('PASS: preserved shared 78-card/3-stage and spread engines; public Mengyu profile uses only 78 image/symbol projections, explicit provenance, 3 cultural routes and artwork subpackage.');
 })().catch(error=>{console.error(error);process.exitCode=1});
