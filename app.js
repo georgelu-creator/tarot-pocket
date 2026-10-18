@@ -161,7 +161,7 @@
     else if(location.overlay?.type==='reference-spread')showReferenceSpread(location.overlay.id);
     else if(location.overlay?.type==='knowledge')showKnowledge(location.overlay.knowledge);
     else if(location.overlay?.type==='sources')sources();
-    const y=snapshot?.y||0;modalPageY=y;if(document.getElementById('overlay').children.length)document.body.style.top=`-${y}px`;requestAnimationFrame(()=>{if(!document.getElementById('overlay').children.length)window.scrollTo(0,y);});
+    const y=snapshot?.y||0;modalPageY=y;if(document.getElementById('overlay').children.length)document.body.style.top=`-${y}px`;requestAnimationFrame(()=>{if(!document.getElementById('overlay').children.length){navLastY=y;window.scrollTo(0,y);navLastY=Math.max(0,window.scrollY);document.body.classList.remove('nav-away');}});
     document.body.classList.remove('nav-away');window.TarotAnalytics?.view(page);navigationRestoring=false;
   }
   window.addEventListener('popstate',event=>{

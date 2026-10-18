@@ -11,6 +11,10 @@ const game=s=>({id:s.id,at:s.at,source:s.source,spreadId:s.spreadId,topic:s.topi
  const browser=await engine.launch(options);try{
  const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',serviceWorkers:'block',extraHTTPHeaders:{DNT:'1'}}),p=await ctx.newPage(),errors=[];
  p.on('pageerror',e=>errors.push(e.message));await p.goto(server.url);
+ await p.locator('[data-action="choose-cards"]').click();const deepCard=p.locator('.library-card[data-id="c10"]');await deepCard.scrollIntoViewIfNeeded();const libraryY=await p.evaluate(()=>scrollY);assert(libraryY>100,'the return case is below the top of the library');await deepCard.click();await p.keyboard.press('Escape');await p.locator('#overlay .sheet').waitFor({state:'detached'});
+ await p.waitForFunction(y=>Math.abs(scrollY-y)<2,libraryY);await nav(p,'courses');await wait(p,'.academy-home');assert.equal(await p.locator('#overlay').textContent(),'','return exposes usable bottom navigation');
+ await p.goBack();await wait(p,'.library-grid');await p.waitForFunction(y=>Math.abs(scrollY-y)<2,libraryY);assert.equal(await p.evaluate(()=>document.body.classList.contains('nav-away')),false,'restoring library scroll is not treated as a new downward swipe');
+ await p.goto(server.url);await wait(p,'.home-simple');
  await nav(p,'library');await p.locator('.library-card[data-id="p08"]').click();await wait(p,'.card-dossier');
  const firstTitle=await p.locator('#overlay h2').first().textContent();
  await p.locator('[data-dossier-section="use"] summary').click();await p.locator('#overlay [data-action="card"]').first().scrollIntoViewIfNeeded();const sheetY=await p.locator('#overlay .sheet').evaluate(e=>e.scrollTop);await p.locator('#overlay [data-action="card"]').first().click();
