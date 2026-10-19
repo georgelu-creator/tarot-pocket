@@ -690,7 +690,7 @@ function createReadingServer(options = {}) {
         try {
           if([...url.searchParams.keys()].some(key=>url.searchParams.getAll(key).length!==1))throw RangeError('INVALID_RANGE');
           parseRange(filters,options.now?options.now():Date.now());
-          const summary=telemetry.summary(30,filters);res.writeHead(200,common);res.end(JSON.stringify(summary));
+          const summary=telemetry.summary(7,filters);res.writeHead(200,common);res.end(JSON.stringify(summary));
         } catch(error) { if(!(error instanceof RangeError))throw error;res.writeHead(400,common);res.end(JSON.stringify({error:'INVALID_RANGE'})); }
         return;
       }

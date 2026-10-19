@@ -905,3 +905,5 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 @media(max-width:360px){.manual-slots{grid-template-columns:1fr 1fr;gap:10px}.manual-slot{padding:10px}.manual-face{width:min(100%,86px);height:auto}.manual-picker{padding:14px}}
 
 .manual-slots.count-1{grid-template-columns:minmax(0,200px);justify-content:center}.manual-slots.count-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.manual-slots.count-3 .manual-slot{padding:10px 6px}.manual-slots.count-3 h2{font-size:.9rem}.manual-slots.count-3 .manual-orientation{padding:8px;font-size:.9rem}.manual-reading select{height:52px}.manual-position-help{margin:16px 0 24px}.manual-position-help summary{min-height:44px;cursor:pointer}
+
+.ai-query-consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.75;color:var(--muted);margin:16px 0}.ai-query-consent input{flex:0 0 auto;margin-top:5px}.ai-query-status{font-size:13px;line-height:1.75;color:var(--muted);padding:12px 0}

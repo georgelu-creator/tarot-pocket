@@ -1,4 +1,4 @@
-/* Privacy-limited first-party product events. Questions, cards and learning records are never sent. */
+/* Privacy-limited first-party product events. Ordinary events never send questions, cards or learning records; explicit consent feedback is separate. */
 window.TarotAnalytics = (() => {
   'use strict';
   const VISITOR_KEY='tarot-pocket-anon-v1',SESSION_KEY='tarot-pocket-tab-v1';
@@ -52,9 +52,9 @@ window.TarotAnalytics = (() => {
     screen=next;screenAt=Date.now();track('screen_view',{},screen);
   }
   window.addEventListener('pagehide',()=>{track('screen_exit',{duration:String(Math.min(86400,Math.round((Date.now()-screenAt)/1000)))},screen);flush();});
-  async function feedback(question,receipt){
+  async function feedback(question,receipt,context){
     if(!endpoint())throw Error('反馈仅在正式网站可用');
-    const response=await fetch(new URL('/api/query-feedback',endpoint()),{method:receipt?'DELETE':'POST',headers:{'Content-Type':'application/json'},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',body:JSON.stringify(receipt||{question,consent:true,consentVersion:'query-feedback-1'})});
+    const response=await fetch(new URL('/api/query-feedback',endpoint()),{method:receipt?'DELETE':'POST',headers:{'Content-Type':'application/json'},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',body:JSON.stringify(receipt||(context?{question,consent:true,consentVersion:'query-analysis-2',context}:{question,consent:true,consentVersion:'query-feedback-1'}))});
     if(!response.ok)throw Error('暂时无法提交，请稍后重试');return response.json();
   }
   requestAnimationFrame(()=>track('page_view',{lang:document.documentElement.lang==='en'?'en':'zh'}));

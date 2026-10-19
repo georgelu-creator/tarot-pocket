@@ -20,6 +20,8 @@ const run=(cmd,args,env=process.env)=>new Promise((resolve,reject)=>{
   await run(process.execPath,['tools/check_course_route.cjs']);
   await run(process.execPath,['tools/check_analytics_depth.cjs']);
   await run(process.execPath,['tools/check_feedback_api.cjs']);
+  await run(process.execPath,['tools/check_query_analysis.cjs']);
+  await run(process.execPath,['tools/check_query_consent_ui.cjs']);
   await run(process.execPath,['tools/check_feedback_ui.cjs']);
   await run(process.execPath,['tools/check_entry_redirect.cjs']);
   await run(process.execPath,['tools/check_legacy_redirect_browser.cjs']);
