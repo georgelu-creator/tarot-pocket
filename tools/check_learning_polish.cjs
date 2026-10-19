@@ -17,7 +17,7 @@ const template = compileTemplate({ source: descriptor.template.content, filename
 assert.deepEqual(template.errors, [])
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'tarot-learning-polish-'))
 const hooks = path.join(scratch, 'hooks.cjs'), platform = path.join(scratch, 'platform.cjs')
-fs.writeFileSync(hooks, 'exports.onShow = cb => {}; exports.onHide = cb => {}; exports.onUnload = cb => {};')
+fs.writeFileSync(hooks, 'exports.onBackPress = cb => {}; exports.onShow = cb => {}; exports.onHide = cb => {}; exports.onUnload = cb => {};')
 fs.writeFileSync(platform, `exports.readStore = (key, fallback) => window.stores[key] ?? fallback; exports.writeStore = (key, data) => { window.stores[key] = data; window.writes.push({ key, data }); }; exports.notify = text => {}; exports.cardImage = id => 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';`)
 const miniSource = script.content.replace('export default', 'const component =').replace("'../../core/platform'", "'test-platform'") + '\n' + template.code.replace('export function render', 'function render') + `
 import { createApp } from 'vue'; component.render = render;

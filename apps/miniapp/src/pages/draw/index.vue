@@ -1,5 +1,6 @@
 <template>
  <view class="page">
+  <button v-if="draft || record || !selectingSpread" class="text-button parent-back" @tap="back">‹ 返回上一级</button>
   <view class="heading"><text class="title">{{ !draft && !record && selectingSpread ? '抽一组牌，听听自己' : (selectedScene?.spreadId === currentSpread.id && !record ? selectedScene.name : currentSpread.name) }}</text><button v-if="draft || record || !selectingSpread" class="text-button" @tap="showSelector">选择牌阵</button></view>
   <template v-if="!draft && !record">
    <template v-if="selectingSpread">
@@ -8,7 +9,7 @@
    </template>
    <view v-else class="setup">
     <text class="muted intro">{{ currentSpread.summary }}</text>
-    <view v-if="currentSpread.topics?.length > 1" class="topics"><button v-for="t in topicOptions" :key="t.id" :class="{ active: topic === t.id }" @tap="topic = t.id">{{ t.label }}</button></view><text class="label">这次想问什么？（选填）</text><textarea v-model="question" maxlength="3000" auto-height placeholder="写下你的处境或疑问" class="question"/><button class="primary" @tap="start">开始抽牌</button>
+    <view v-if="currentSpread.topics?.length > 1" class="topics"><button v-for="t in topicOptions" :key="t.id" :class="{ active: topic === t.id }" @tap="topic = t.id">{{ t.label }}</button></view><text class="label">这次想问什么？（选填）</text><textarea v-model="question" maxlength="3000" auto-height placeholder="写下你的处境或疑问" class="question"/><button class="primary" @tap="start">{{ existingSpreadDraft ? '回到当前牌局' : '开始抽牌' }}</button>
    </view>
   </template>
   <template v-else-if="draft && (draft.phase !== 'read' || revealing) && !record">
@@ -59,12 +60,13 @@
 </template>
 <script setup lang="ts">
 import { computed,ref,getCurrentInstance,nextTick,onMounted,onBeforeUnmount } from 'vue'
-import { onShow,onHide,onUnload } from '@dcloudio/uni-app'
+import { onShow,onHide,onUnload,onBackPress } from '@dcloudio/uni-app'
 import { deck } from '../../core/catalogs'
 import { readStore,writeStore,cardImage,notify,loadReadingStore } from '../../core/platform'
 import { availableScenes,isProfessionalScene,beginShuffle,beginCut,finishMotion,SHUFFLE_MS,CUT_MS,blankReading,normalizeReading,currentRecord,todayReading,createDraft,pickCard,finishReading,dailyDisplay,interpretRecord,getSpread,boardLayout,localDate,READING_KEY,ENTRY_KEY } from '../../core/drawing'
 import type { Draft,RecordItem,ReadingStore } from '../../core/drawing'
 const store=ref<ReadingStore>(blankReading()),draft=ref<Draft|null>(null),record=ref<RecordItem|null>(null),chosen=ref('one'),question=ref(''),fanStart=ref(0),blocked=ref(false),topic=ref('general')
+const returnToDraft=ref(false)
 const selectingSpread=ref(true),selectedScene=ref<any>(null),pending=ref<number|null>(null),showGuide=ref(false),paused=ref(false),cutChoice=ref(-1),flying=ref<any>(null),arrivingSlot=ref(-1),revealing=ref(false),freshResult=ref(false)
 const instance=getCurrentInstance()
 const GUIDE_KEY='tarot-miniapp-pick-guide-v1'
@@ -97,6 +99,7 @@ function loadGuide(){try{showGuide.value=!readStore(GUIDE_KEY,false)}catch{showG
 
 const topicOptions=[{id:'general',label:'通用'},{id:'love',label:'感情'},{id:'career',label:'工作'},{id:'study',label:'学业'},{id:'life',label:'生活'}]
 const day=computed(()=>dailyDisplay(record.value))
+const existingSpreadDraft=computed(()=>{if(!returnToDraft.value)return false;const d=chosen.value==='daily'?store.value.dailyDraft:store.value.draft;return d&&d.spreadId===chosen.value&&d.question===question.value&&d.topic===topic.value})
 const currentSpread=computed(()=>getSpread(record.value?.spreadId || draft.value?.spreadId || chosen.value))
 const result=computed(()=>{if(!record.value)return null;try{return interpretRecord(record.value)}catch{return null}})
 const layout=computed(()=>boardLayout(currentSpread.value))
@@ -110,9 +113,16 @@ function save(){if(blocked.value){notify('当前牌局格式异常，暂未覆�
 function restoreActive(){draft.value=store.value.active==='daily'?store.value.dailyDraft:store.value.draft;record.value=store.value.active==='daily'?todayReading(store.value):currentRecord(store.value)}
 function resume(){try{const next={...store.value,active:'ordinary' as const};writeStore(READING_KEY,next);store.value=next}catch{notify('暂时无法切换牌局，请检查储存空间');return}stopVisuals();restoreActive();if(draft.value&&['shuffling','cutting'].includes(draft.value.phase))paused.value=true;if(draft.value?.phase==='pick')loadGuide()}
 
-function showSelector(){stopVisuals();selectingSpread.value=true;record.value=null;draft.value=null;/* preserve the unfinished draft until a new drawing starts */}
+function showSelector(){returnToDraft.value=false;stopVisuals();selectingSpread.value=true;record.value=null;draft.value=null;/* preserve the unfinished draft until a new drawing starts */}
+function back(){
+ if(pending.value!==null){changeCard();return true}
+ if(draft.value||record.value){const current=record.value||draft.value;if(!current)return false;returnToDraft.value=true;chosen.value=current.spreadId;question.value=current.question;topic.value=current.topic;stopVisuals();record.value=null;draft.value=null;selectingSpread.value=false;uni.pageScrollTo({scrollTop:0,duration:0});return true}
+ if(!selectingSpread.value){showSelector();return true}
+ return false
+}
+onBackPress(back)
 function chooseSpread(id:string){chosen.value=id;selectingSpread.value=false;uni.pageScrollTo({scrollTop:0,duration:200})}
-function start(){if(draft.value)return;if(blocked.value)return notify('当前牌局需要恢复后才能保存新牌');draft.value=createDraft(chosen.value,question.value,null,topic.value);record.value=null;fanStart.value=0;cutChoice.value=-1;if(beginShuffle(draft.value)){if(save())runMotion();else paused.value=true}}
+function start(){if(draft.value)return;const existing=chosen.value==='daily'?store.value.dailyDraft:store.value.draft;if(returnToDraft.value&&existing&&existing.spreadId===chosen.value&&existing.question===question.value&&existing.topic===topic.value){draft.value=existing;record.value=existing.phase==='read'?(chosen.value==='daily'?todayReading(store.value):currentRecord(store.value)):null;if(['shuffling','cutting'].includes(existing.phase))paused.value=true;else if(existing.phase==='pick')loadGuide();return;}if(blocked.value)return notify('当前牌局需要恢复后才能保存新牌');returnToDraft.value=false;draft.value=createDraft(chosen.value,question.value,chosen.value==='daily'?localDate():null,topic.value);record.value=null;fanStart.value=0;cutChoice.value=-1;if(beginShuffle(draft.value)){if(save())runMotion();else paused.value=true}}
 function chooseCard(index:number){if(Date.now()<suppressTapUntil||flying.value||pending.value!==null||!draft.value||draft.value.phase!=='pick'||draft.value.picked.includes(index))return;pending.value=index;dismissGuide();
  // #ifdef H5
  previousFocus=document.activeElement as HTMLElement;nextTick(()=>document.querySelector<HTMLElement>('.pending-sheet')?.focus())

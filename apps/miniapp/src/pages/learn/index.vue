@@ -1,8 +1,9 @@
 <template>
   <scroll-view class="screen" scroll-y :scroll-top="scrollTop" :scroll-into-view="scrollTarget" :scroll-with-animation="scrollAnimated" @scroll="onScroll">
     <view class="page">
+      <view v-if="saveStatus" class="save-status" role="status"><text>{{ saveStatus }}</text><button v-if="readableStore" class="link" @tap="save">重试保存</button></view>
       <template v-if="view !== 'lesson'">
-        <view class="header"><text class="title">{{ view === 'catalog' ? '选择课程' : savedSession ? '接着上次学' : '今天，学会一张牌' }}</text><button v-if="view === 'catalog'" class="link" @tap="goHome">返回上课</button></view>
+        <view class="header"><text class="title">{{ view === 'catalog' ? '选择课程' : savedSession ? '接着上次学' : '今天，学会一张牌' }}</text><button v-if="view === 'catalog'" class="link" @tap="back">返回上课</button></view>
         <view v-if="view === 'catalog'" class="stages"><button v-for="s in stages" :key="s.key" class="stage" :class="{ selected: level === s.key }" @tap="selectLevel(s.key)"><text class="stage-name">{{ s.name }}</text><text class="stage-sub">{{ s.subtitle }}</text></button></view>
         <template v-if="view === 'home'">
           <view class="panel current">
@@ -23,7 +24,7 @@
         </template>
       </template>
       <template v-else-if="session && unit">
-        <view class="lesson-header"><button class="link" @tap="goHome">‹ 返回课程</button><text class="lesson-heading">{{ text(unit.title) }}</text><text class="small muted">{{ Math.min(session.index + 1, plan.length) }} / {{ plan.length }}</text></view>
+        <view class="lesson-header"><button class="link" @tap="back">‹ 返回课程</button><text class="lesson-heading">{{ text(unit.title) }}</text><text class="small muted">{{ Math.min(session.index + 1, plan.length) }} / {{ plan.length }}</text></view>
         <view class="progress"><view class="fill" :style="{ width: session.index / plan.length * 100 + '%' }" /></view>
         <text v-if="visual.note && !session.complete" class="visual-note">{{ visual.note }}</text>
         <view v-if="unit.id === 'B03' && step?.key === 'T1' && !step.support && !session.complete" class="suits"><view v-for="suit in suits" :key="suit[0]"><text>{{ suit[0] }}</text><text class="muted">{{ suit[1] }}</text></view></view>
@@ -35,7 +36,7 @@
           <text class="small muted">本轮学习完成</text><text class="heading">{{ text(unit.title) }}</text><text class="paragraph">{{ text(unit.summary) }}</text>
           <text v-if="unit.kind === 'card'" class="result-label">{{ academy.masteryState(data.progress[unit.id]).label }}</text>
           <text v-if="hasPending" class="paragraph muted">需要再练的内容已安排复习，下次继续巩固。</text>
-          <button class="primary" @tap="continueCourse">继续下一课</button><view class="completion-links"><button class="link" @tap="openCatalog">选择其他课程</button><button class="link" @tap="goHome">返回课程</button></view>
+          <button class="primary" @tap="continueCourse">继续下一课</button><view class="completion-links"><button class="link" @tap="openCatalog">选择其他课程</button><button class="link" @tap="back">返回课程</button></view>
         </view>
         <view v-else-if="step" :key="lessonKey" class="panel lesson-content">
           <template v-if="step.kind !== 'question'">
@@ -65,7 +66,7 @@
 
 <script setup lang="ts">
 import { computed, ref, nextTick } from 'vue'
-import { onShow, onHide, onUnload } from '@dcloudio/uni-app'
+import { onShow, onHide, onUnload, onBackPress } from '@dcloudio/uni-app'
 import { academy, knowledge } from '../../core/catalogs'
 import { readStore, writeStore, cardImage, notify } from '../../core/platform'
 
@@ -85,6 +86,17 @@ function dismissZoomTip() { zoomTipDismissed.value = true; try { writeStore(ZOOM
 function openZoom(id: string) { dismissZoomTip(); zoom.value = { id, reversed: reversedCard(id) } }
 const openedChapter = ref('大阿卡纳')
 const zoom = ref<any>(null)
+const saveStatus = ref(readableStore ? '' : '原学习记录读取失败，本次进度暂未保存。')
+const navigation: { view: 'home' | 'catalog' | 'lesson', scroll: number, chapter: string }[] = []
+let currentScroll = 0
+function rememberParent() { navigation.push({ view: view.value, scroll: currentScroll, chapter: openedChapter.value }) }
+function back() {
+  if (zoom.value) { zoom.value = null; return true }
+  const parent = navigation.pop()
+  if (!parent) { if (view.value === 'home') return false; goHome(); return true }
+  save(); view.value = parent.view; openedChapter.value = parent.chapter; moveScroll(parent.scroll); return true
+}
+onBackPress(back)
 const stages = [{ key: 'B', name: '初级', subtitle: '看懂画面' }, { key: 'I', name: '中级', subtitle: '正逆位应用' }, { key: 'A', name: '高级', subtitle: '辨析与解读' }]
 const suits = [['权杖', '火'], ['圣杯', '水'], ['宝剑', '风'], ['星币', '土']]
 const text = (value: any): string => typeof value === 'string' ? value : value?.zh || ''
@@ -131,8 +143,8 @@ function cardCaption(id: string, index: number) { return visual.value.captions[i
 function cardPosition(index: number) { if (!fullChoice.value && !fullCross.value) return {}; const layouts: any = { A05: [[2, 3], [1, 2], [3, 2], [1, 1], [3, 1]], A06: [[2, 2], [2, 2], [2, 1], [2, 3], [1, 2], [4, 2], [5, 4], [5, 3], [5, 2], [5, 1]] }; const p = layouts[unit.value?.id]?.[index]; return p ? { gridColumn: String(p[0]), gridRow: String(p[1]) } : {} }
 function chapterNodes(chapter: string) { return route.value.filter(n => n.chapter === chapter) }
 function chapterDone(chapter: string) { return chapterNodes(chapter).filter(n => n.done).length }
-function save() { if (!readableStore) { notify('原学习记录读取失败，本次进度暂未保存。'); return }; data.value.contentVersion = academy.version; try { writeStore(STORE, JSON.parse(JSON.stringify(data.value))) } catch { notify('学习记录未能保存，请检查存储空间。') } }
-function moveScroll(value = 0) { scrollAnimated.value = false; scrollTarget.value = ''; scrollTop.value = value + 0.1; nextTick(() => { scrollTop.value = value }) }
+function save() { if (!readableStore) { saveStatus.value = '原学习记录读取失败，本次进度暂未保存。'; return false }; data.value.contentVersion = academy.version; try { writeStore(STORE, JSON.parse(JSON.stringify(data.value))); saveStatus.value = ''; return true } catch { saveStatus.value = '进度尚未保存，请检查存储空间后重试。'; notify('学习记录未能保存，请检查存储空间。'); return false } }
+function moveScroll(value = 0) { currentScroll = value; scrollAnimated.value = false; scrollTarget.value = ''; scrollTop.value = value + 0.1; nextTick(() => { scrollTop.value = value }) }
 async function focusFeedback() {
   const savedSession = session.value, questionId = step.value?.question?.id
   scrollTarget.value = ''
@@ -142,12 +154,13 @@ async function focusFeedback() {
   scrollAnimated.value = true
   scrollTarget.value = 'lesson-feedback'
 }
-function onScroll(event: any) { if (view.value === 'lesson' && session.value) session.value.scroll = event.detail.scrollTop }
-function goHome() { save(); view.value = 'home'; moveScroll() }
+function onScroll(event: any) { currentScroll = event.detail.scrollTop; if (view.value === 'lesson' && session.value) session.value.scroll = event.detail.scrollTop }
+function goHome() { navigation.length = 0; save(); view.value = 'home'; moveScroll() }
 function selectLevel(key: string) { data.value.courseLevel = key; save(); moveScroll() }
-function openCatalog() { openedChapter.value = currentChapter.value || '大阿卡纳'; view.value = 'catalog'; moveScroll() }
+function openCatalog() { if (view.value !== 'catalog') rememberParent(); openedChapter.value = currentChapter.value || '大阿卡纳'; view.value = 'catalog'; moveScroll() }
 function start(item: any) {
   if (!item || !academy.units[item.id]) return
+  if (view.value !== 'lesson') rememberParent()
   const d = data.value, s = d.session, practiceKey = item.mode === 'practice' ? item.key || 'V1' : null
   if (s && !s.complete && s.unitId === item.id && s.mode === item.mode && (item.mode !== 'practice' || s.practiceKey === practiceKey)) { s.courseLevel = level.value; view.value = 'lesson'; save(); moveScroll(s.scroll || 0); return }
   if (s && !s.complete) d.paused[s.unitId + ':' + s.mode + (s.mode === 'practice' ? ':' + s.practiceKey : '')] = JSON.parse(JSON.stringify(s))
@@ -168,6 +181,8 @@ onUnload(save)
 </script>
 
 <style scoped>
+.save-status{padding:18rpx 22rpx;margin-bottom:18rpx;border:1rpx solid #cbb7cd;border-radius:18rpx;background:#eee5ee;line-height:1.7;font-size:26rpx}.save-status .link{display:block;margin-top:8rpx}
+
 .knowledge{margin:28rpx 0;padding:0 24rpx;border:1px solid #e1d7df;background:#fffdf8;border-radius:20rpx;overflow-wrap:anywhere}.knowledge-toggle{display:flex;justify-content:space-between;gap:16rpx;align-items:center;width:100%;padding:20rpx 0;background:transparent;color:#6b526e;font-size:26rpx;text-align:left}.knowledge .section-title{padding-top:8rpx}.knowledge .paragraph{margin-bottom:24rpx}.visual-note{display:block;font-size:27rpx;line-height:1.7;color:#6b526e;margin:26rpx 0 16rpx}.completion-links{display:flex;justify-content:space-between;gap:24rpx;margin-top:20rpx}
 
 .screen{height:100vh;background:#f6f1e8;color:#302a32}.page{padding:24rpx 28rpx 72rpx;box-sizing:border-box;max-width:900px;margin:auto}button{font-size:28rpx;line-height:1.5;margin:0;box-sizing:border-box;border-radius:20rpx}button::after{border:0}text{overflow-wrap:anywhere}.header,.row,.lesson-header,.catalog-link,.chapter-heading,.lesson-link{display:flex;align-items:center;justify-content:space-between;gap:16rpx}.header{margin:12rpx 0 28rpx}.title{font-size:40rpx;font-weight:700}.stages{display:flex;gap:12rpx;margin-bottom:24rpx}.stage{flex:1;min-width:0;padding:18rpx 6rpx;background:#fffcf7;color:#67516b;border:1px solid #dfd4df}.stage.selected{background:#66506c;color:#fff9f0}.stage-name,.stage-sub{display:block}.stage-name{font-weight:700}.stage-sub{font-size:22rpx;margin-top:6rpx}.panel{background:#fffcf7;border:1px solid #e1d7df;border-radius:28rpx;padding:28rpx}.row{font-size:25rpx}.muted{color:#827985}.small{font-size:24rpx}.progress{height:8rpx;background:#e9e0e8;border-radius:10rpx;overflow:hidden;margin:22rpx 0}.fill{height:100%;background:#8d7391}.course-cover{display:flex;gap:24rpx;align-items:center;margin:30rpx 0}.cover{width:145rpx;height:240rpx;flex-shrink:0}.course-info{min-width:0;flex:1}.course-title{display:block;font-size:36rpx;font-weight:700;margin:10rpx 0}.description{display:block;line-height:1.7;font-size:27rpx;color:#7c7180}.primary{background:#66506c;color:#fffaf2;padding:23rpx 20rpx;width:100%;font-weight:600;margin-top:24rpx}.secondary{background:#eee6ee;color:#66506c;padding:20rpx;margin-top:16rpx}.link{background:transparent;color:#6b526e;padding:10rpx 0;font-size:25rpx;flex-shrink:0}.up-next{margin:36rpx 0}.section-title{font-size:29rpx;font-weight:600;display:block}.next-row{display:flex;justify-content:space-between;gap:20rpx;font-size:27rpx;padding:22rpx 0;border-bottom:1px solid #e2d8df}.catalog-link{background:transparent;width:100%;text-align:left;padding:24rpx 0}.chapter{padding:0 24rpx;margin-bottom:20rpx}.chapter-heading{background:transparent;width:100%;padding:26rpx 0;text-align:left;font-weight:600}.lesson-link{width:100%;text-align:left;background:transparent;border-top:1px solid #eee6ec;padding:20rpx 0}.number{width:52rpx;flex-shrink:0;font-size:25rpx;color:#7e6683}.lesson-label{flex:1;min-width:0}.lesson-label text{display:block}.lesson-label .small{margin-top:4rpx}.lesson-header{align-items:center}.lesson-heading{font-size:28rpx;font-weight:600;flex:1;min-width:0}.cards{display:flex;justify-content:center;gap:20rpx;flex-wrap:wrap;margin:26rpx 0}.card-item{width:165rpx;text-align:center;min-width:0}.card-picture{width:100%;height:265rpx}.reversed{transform:rotate(180deg)}.card-caption{display:block;font-size:22rpx;line-height:1.5;margin-top:10rpx}.cards.many{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18rpx}.cards.many .card-item{width:100%}.cards.many .card-picture{height:170rpx}.cards.cross{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,210rpx);gap:12rpx}.cards.cross .card-picture{height:140rpx}.cards.cross .card-caption{font-size:20rpx}.cards.cross .crossing{position:relative;z-index:2;align-self:start;padding-top:32rpx}.cards.cross .crossing .card-picture{transform:rotate(90deg)}.cards.cross .crossing .card-picture.reversed{transform:rotate(270deg)}.cards.cross .crossing .card-caption{position:absolute;left:calc(100% + 4rpx);top:40rpx;width:100%;padding:4rpx;background:#f6f1e8;border-radius:6rpx;box-sizing:border-box}.lesson-content{margin-top:26rpx;padding:28rpx}.heading{display:block;font-size:36rpx;font-weight:700;margin:18rpx 0}.paragraph{display:block;font-size:30rpx;line-height:1.9;white-space:pre-wrap;margin:18rpx 0}.teaching{margin-top:26rpx}.question{display:block;font-size:33rpx;line-height:1.7;font-weight:600;margin:20rpx 0 26rpx}.option{display:block;width:100%;text-align:left;background:#f7f1f8;border:1px solid #dacddc;padding:24rpx;margin:16rpx 0;color:#382f3b;font-size:29rpx;line-height:1.7}.option[disabled]{color:#514556;opacity:1}.option.correct{border-color:#668776;background:#e9f0e9}.option.incorrect{border-color:#ac7e86;background:#f4e6e7}.feedback,.hint{padding:24rpx;margin-top:24rpx;background:#eee5ee;border-radius:18rpx}.hint-link{margin-top:20rpx}.result-label{display:inline-block;padding:10rpx 20rpx;background:#ece3ee;border-radius:14rpx;color:#68506d}.suits{display:grid;grid-template-columns:repeat(2,1fr);gap:16rpx;margin:28rpx 0}.suits view{padding:24rpx;background:#eee5ef;border-radius:18rpx;display:flex;justify-content:space-between}.zoom{position:fixed;inset:0;z-index:20;background:rgba(30,23,34,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff7eb;padding:36rpx;box-sizing:border-box}.zoom-close{position:absolute;right:32rpx;top:30rpx;background:transparent;color:#fff7eb}.zoom-picture{width:85vw;height:72vh;max-width:600px}.zoom>text{margin-top:24rpx;font-size:30rpx}

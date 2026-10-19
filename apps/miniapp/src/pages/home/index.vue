@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <text class="eyebrow">星纱塔罗</text>
+    <text class="eyebrow">秘境梦屿</text>
     <text class="title">从一张牌，听见心里的答案</text>
     <text class="intro">带着问题来，或让牌给今天一点启发。</text>
     <view class="hero">

@@ -1,6 +1,7 @@
 <template>
   <scroll-view class="screen" scroll-y>
     <view v-if="card && article && detail" class="page">
+      <button class="source-link parent-back" @tap="back">‹ 返回上一级</button>
       <view class="hero"><image class="picture" :class="{ reversed: orientation === 'reversed' }" :src="cardImage(card.id)" mode="aspectFit" @tap="preview" /><view class="hero-copy"><text class="title">{{ card.name }}</text><text class="meta">{{ card.suit }}{{ card.element !== '—' ? ' · ' + card.element + '元素' : '' }}</text><text class="keywords">{{ card.keywords.join(' · ') }}</text><text class="tradition">{{ article.encyclopedia?.tradition }}</text></view></view>
       <text class="core">{{ article.core }}</text>
       <view class="section"><text class="heading">画面与象征</text><text class="paragraph">{{ article.observation }}</text><view v-for="symbol in article.symbols" :key="symbol.detail" class="symbol"><text class="label">{{ symbol.detail }}</text><text class="paragraph">{{ symbol.meaning }}</text></view></view>
@@ -39,7 +40,7 @@ onLoad((query: any) => { id.value = typeof query?.id === 'string' ? query.id : '
 function preview() { if (card.value) uni.previewImage({ urls: [cardImage(card.value.id)] }) }
 function openComparison(cardId: string) { if (cardName(cardId)) uni.navigateTo({ url: '/pages/card/index?id=' + encodeURIComponent(cardId) }) }
 function copySource(url: string) { uni.setClipboardData({ data: url, success: () => notify('来源网址已复制'), fail: () => notify('暂时无法复制来源网址') }) }
-function back() { uni.switchTab({ url: '/pages/library/index' }) }
+function back() { if (getCurrentPages().length > 1) uni.navigateBack({ delta: 1 }); else uni.switchTab({ url: '/pages/library/index' }) }
 </script>
 
 <style scoped>
