@@ -1,21 +1,27 @@
 {
   "pages": [
     {
-      "path": "pages/mengyu/home",
+      "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "秘境梦屿"
       }
     },
     {
-      "path": "pages/mengyu/learn",
+      "path": "pages/learn/index",
       "style": {
-        "navigationBarTitleText": "图像学习"
+        "navigationBarTitleText": "学牌"
       }
     },
     {
-      "path": "pages/mengyu/library",
+      "path": "pages/draw/index",
       "style": {
-        "navigationBarTitleText": "图像资料"
+        "navigationBarTitleText": "抽牌"
+      }
+    },
+    {
+      "path": "pages/library/index",
+      "style": {
+        "navigationBarTitleText": "牌库"
       }
     }
   ],
@@ -30,27 +36,31 @@
     "backgroundColor": "#fffdf8",
     "list": [
       {
-        "pagePath": "pages/mengyu/home",
+        "pagePath": "pages/home/index",
         "text": "首页"
       },
       {
-        "pagePath": "pages/mengyu/learn",
-        "text": "学习"
+        "pagePath": "pages/draw/index",
+        "text": "抽牌"
       },
       {
-        "pagePath": "pages/mengyu/library",
-        "text": "图鉴"
+        "pagePath": "pages/learn/index",
+        "text": "学牌"
+      },
+      {
+        "pagePath": "pages/library/index",
+        "text": "牌库"
       }
     ]
   },
   "subPackages": [
     {
-      "root": "pages/artwork",
+      "root": "pages/card",
       "pages": [
         {
           "path": "index",
           "style": {
-            "navigationBarTitleText": "图像与象征"
+            "navigationBarTitleText": "牌义"
           }
         }
       ]

@@ -1,9 +1,9 @@
 {
   "name": "秘境梦屿",
   "appid": "",
-  "description": "探索经典卡牌的画面、象征与故事。查阅78张图像资料，跟着短课看图、做题、复习，逐步建立自己的理解。",
-  "versionName": "0.4.0",
-  "versionCode": "400",
+  "description": "抽牌探索当下，查看塔罗日运与牌阵解读；查阅78张牌的画面、象征和正逆位资料，跟着课程边学边练。解读供娱乐与自我思考参考。",
+  "versionName": "0.5.0",
+  "versionCode": "500",
   "transformPx": false,
   "vueVersion": "3",
   "mp-weixin": {
