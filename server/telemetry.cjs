@@ -5,6 +5,7 @@ const path = require('node:path');
 const {createHmac, timingSafeEqual, createHash, randomBytes} = require('node:crypto');
 const {DatabaseSync} = require('node:sqlite');
 const {productMetrics,parseRange,isKnownSpread}=require('./product-metrics.cjs');
+const {summarizeQueries}=require('./query-analysis.cjs');
 
 const EVENT_NAMES = new Set([
   'page_view','home_learn','home_read','reading_category','spread_open','reading_start',
@@ -37,6 +38,7 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
       id TEXT PRIMARY KEY, occurred_at INTEGER NOT NULL, question TEXT NOT NULL,
       deletion_hash TEXT NOT NULL, consent_version TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS query_feedback_context (feedback_id TEXT PRIMARY KEY, context TEXT NOT NULL);
     CREATE INDEX IF NOT EXISTS events_day_name ON events(day, name);
     CREATE INDEX IF NOT EXISTS events_day_visitor ON events(day, visitor);
   `);
@@ -45,6 +47,7 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
   let cleanedDay='';
   const cleanup = stamp => {
     db.prepare('DELETE FROM query_feedback WHERE occurred_at <= ?').run(stamp-30*86400000);
+    db.prepare('DELETE FROM query_feedback_context WHERE feedback_id NOT IN (SELECT id FROM query_feedback)').run();
     const day=new Date(stamp).toISOString().slice(0,10);
     if(day===cleanedDay)return;
     prune.run(stamp-90*86400000);cleanedDay=day;
@@ -64,11 +67,26 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     return {stamp, day:new Date(stamp).toISOString().slice(0,10), visitor:hash('visitor',raw.visitorId,stamp), session:hash('session',raw.sessionId,stamp), name:raw.name, page:raw.page || '', props:JSON.stringify(props)};
   }
   function recordFeedback(raw) {
-    if(!raw||raw.consent!==true||raw.consentVersion!=='query-feedback-1'||typeof raw.question!=='string'||raw.question.trim().length<1||raw.question.length>3000||Object.keys(raw).some(k=>!['question','consent','consentVersion'].includes(k)))return null;
+    if(!raw||typeof raw!=='object'||Array.isArray(raw)||raw.consent!==true||typeof raw.question!=='string'||raw.question.trim().length<1||raw.question.length>3000)return null;
+    let context=null;
+    if(raw.consentVersion==='query-feedback-1'){
+      if(Object.keys(raw).some(k=>!['question','consent','consentVersion'].includes(k)))return null;
+    }else if(raw.consentVersion==='query-analysis-2'){
+      if(Object.keys(raw).some(k=>!['question','consent','consentVersion','context'].includes(k)))return null;
+      const c=raw.context;
+      if(!c||typeof c!=='object'||Array.isArray(c)||Object.keys(c).some(k=>!['source','spread','topic'].includes(k))||!['ai','feedback'].includes(c.source)||!isKnownSpread(c.spread)||!['general','love','career','study','life'].includes(c.topic))return null;
+      context=JSON.stringify({source:c.source,spread:c.spread,topic:c.topic});
+    }else return null;
     cleanup(now());
     if(db.prepare('SELECT COUNT(*) n FROM query_feedback').get().n>=10000)return null;
     const id=randomBytes(18).toString('base64url'),deletionToken=randomBytes(32).toString('base64url');
-    db.prepare('INSERT INTO query_feedback VALUES(?,?,?,?,?)').run(id,now(),raw.question.trim(),digest(deletionToken).toString('hex'),'query-feedback-1');
+    // A companion table keeps the old five-column schema usable during rollback.
+    db.exec('BEGIN IMMEDIATE');
+    try{
+      db.prepare('INSERT INTO query_feedback(id,occurred_at,question,deletion_hash,consent_version) VALUES(?,?,?,?,?)').run(id,now(),raw.question.trim(),digest(deletionToken).toString('hex'),raw.consentVersion);
+      if(context)db.prepare('INSERT INTO query_feedback_context(feedback_id,context) VALUES(?,?)').run(id,context);
+      db.exec('COMMIT');
+    }catch(error){db.exec('ROLLBACK');throw error;}
     return {id,deletionToken};
   }
   function deleteFeedback(id,token) {
@@ -76,7 +94,7 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     cleanup(now());
     const row=db.prepare('SELECT deletion_hash FROM query_feedback WHERE id=?').get(id);
     if(!row||!equal(row.deletion_hash,digest(token).toString('hex')))return false;
-    db.prepare('DELETE FROM query_feedback WHERE id=?').run(id);return true;
+    db.exec('BEGIN IMMEDIATE');try{db.prepare('DELETE FROM query_feedback_context WHERE feedback_id=?').run(id);db.prepare('DELETE FROM query_feedback WHERE id=?').run(id);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}return true;
   }
   function record(raw) {
     const item=normalize(raw);if(!item)return false;
@@ -92,7 +110,7 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     cleanup(stamp);
     insert.run(stamp,day,null,null,name,'/api/reading',JSON.stringify(props));return true;
   }
-  function summary(days=30,filters={}) {
+  function summary(days=7,filters={}) {
     cleanup(now());
     // Fail closed on invalid query ranges before any aggregate work.
     parseRange(filters,now(),days);
@@ -129,7 +147,8 @@ function createTelemetry({file, secret, adminToken, now = Date.now} = {}) {
     for(const [session,events]of sessions){const screens=events.filter(e=>['screen_view','screen_exit','page_view'].includes(e.name));const last=events.at(-1);if(now()-last.occurred_at<30*60000)continue;const exit=screens.at(-1)?.page||last.page||'unknown';exitCounts.set(exit,(exitCounts.get(exit)||0)+1);paths.push({session:session.slice(0,10),at:last.occurred_at,exit,steps:events.slice(-40).map(e=>({at:e.occurred_at,page:e.page,event:e.name,feature:JSON.parse(e.props||'{}').feature||''}))});}
     const feedback=db.prepare('SELECT id,occurred_at AS at,question FROM query_feedback ORDER BY occurred_at DESC LIMIT 100').all();
     const product=productMetrics(db.prepare('SELECT id,occurred_at,day,visitor,session,name,page,props FROM events ORDER BY occurred_at,id').all(),filters,now(),days);
-    return {product,retention,features:[...clicks].map(([feature,count])=>({feature,count})).sort((a,b)=>b.count-a.count),exits:[...exitCounts].map(([page,count])=>({page,count})),paths:paths.sort((a,b)=>b.at-a.at).slice(0,50),feedback,generatedAt:now(),rangeDays:days,overview:{events:Number(overview.events||0),pv:Number(overview.pv||0),uv:Number(overview.uv||0)},daily,events,funnel:funnels,ai};
+    const queryAnalysis=summarizeQueries(db.prepare('SELECT f.id,f.occurred_at AS at,f.question,c.context FROM query_feedback f LEFT JOIN query_feedback_context c ON c.feedback_id=f.id ORDER BY f.occurred_at DESC,f.id').all(),product.range);
+    return {queryAnalysis,product,retention,features:[...clicks].map(([feature,count])=>({feature,count})).sort((a,b)=>b.count-a.count),exits:[...exitCounts].map(([page,count])=>({page,count})),paths:paths.sort((a,b)=>b.at-a.at).slice(0,50),feedback,generatedAt:now(),rangeDays:days,overview:{events:Number(overview.events||0),pv:Number(overview.pv||0),uv:Number(overview.uv||0)},daily,events,funnel:funnels,ai};
   }
   return {record,recordFeedback,deleteFeedback,recordServer,summary,authorize:value=>Boolean(adminToken)&&equal(value,adminToken),close:()=>db.close()};
 }

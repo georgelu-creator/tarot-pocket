@@ -1,7 +1,7 @@
 /* Local reading first; online AI depth runs only after an explicit user action. */
 window.TarotReadingAI = (() => {
   'use strict';
-  let pending=null,error='',lastReading='';const trackedOffline=new Set();
+  let pending=null,error='',lastReading='',queryShareStatus=null;const trackedOffline=new Set();
   const locale=()=>document.documentElement.lang==='en'?'en':'zh';
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   // Parse only headings and emphasis; escape every model-authored character first.
@@ -60,18 +60,20 @@ window.TarotReadingAI = (() => {
   function render(s){
     if(lastReading!==s.id){lastReading=s.id;error='';}
     const local=offline(s),blocked=!!local?.safety,saved=s.ai?.find(x=>x.language===locale()),working=pending?.id===s.id;
+    const queryConsent=!window.TAROT_STANDALONE&&navigator.onLine&&s.userQuestion?.trim()?'<label class="ai-query-consent"><input type="checkbox" data-ai-query-consent> 自愿提交本次提问原文、牌阵和主题，用于改进解读（保留30天，可在问题反馈或我的牌桌撤回；不附带牌面与答案）。请勿包含姓名、联系方式或他人隐私；不勾选也能使用AI。</label>':'';
     const onlineSection=blocked
       ? '<section class="reading-ai reading-safety" data-reading-ai><div class="eyebrow">安全边界</div><h2>这类问题不提供 AI 深度解析</h2><p class="ai-status">请按上面的现实处理建议处理；情况紧急时立即联系当地急救、警方或身边可信任的人。</p></section>'
       : saved
       ? saved.provider==='safety'
         ? `<section class="reading-ai reading-safety" data-reading-ai><div class="eyebrow">安全边界提示</div><h2>这类问题不交给 AI 判断</h2><div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>未调用 AI</span><span> · 已随牌阵保存</span></p></section>`
         : `<section class="reading-ai" data-reading-ai><h2>AI 深度解读</h2><div class="ai-answer" data-i18n-ignore>${format(saved.text)}</div><p class="ai-attribution"><span>AI 解读</span> · <span data-i18n-ignore>${esc(saved.provider==='deepseek'?'DeepSeek':'OpenAI')} / ${esc(saved.model)}</span><span> · 已随牌阵保存</span></p></section>`
-      : `<section class="reading-ai" data-reading-ai><div class="eyebrow">可选深度解读</div><h2>${working?'正在细读这组牌':'还想看得更深一点？'}</h2>${working?waiting(s):`<p class="ai-status">${window.TAROT_STANDALONE?'离线文件保留本地解读；联网版可以按你的问题生成更深入的整组分析。':'本地解读已经完成。需要更贴合具体问题时，可以再请 AI 深度解析；只有点击下面按钮才会联网。'}</p>${!navigator.onLine?'<p class="ai-status">当前离线，本地解读仍可完整阅读。</p>':''}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p><button class="secondary" data-reading="ai-request">再试一次 AI 深度解析</button>`:!window.TAROT_STANDALONE&&navigator.onLine?'<button class="primary" data-reading="ai-request">请 AI 深度解析</button>':''}`}</section>`;
-    return offlineHtml(s,local)+onlineSection;
+      : `<section class="reading-ai" data-reading-ai><div class="eyebrow">可选深度解读</div><h2>${working?'正在细读这组牌':'还想看得更深一点？'}</h2>${working?waiting(s):`<p class="ai-status">${window.TAROT_STANDALONE?'离线文件保留本地解读；联网版可以按你的问题生成更深入的整组分析。':'本地解读已经完成。需要更贴合具体问题时，可以再请 AI 深度解析；只有点击下面按钮才会联网。'}</p>${!navigator.onLine?'<p class="ai-status">当前离线，本地解读仍可完整阅读。</p>':''}${queryConsent}${error?`<p class="ai-error" role="alert">${esc(messages[error]||messages.UNAVAILABLE)}</p><button class="secondary" data-reading="ai-request">再试一次 AI 深度解析</button>`:!window.TAROT_STANDALONE&&navigator.onLine?'<button class="primary" data-reading="ai-request">请 AI 深度解析</button>':''}`}</section>`;
+    return offlineHtml(s,local)+onlineSection+(queryShareStatus?.id===s.id?`<p class="ai-query-status" role="status">${esc(queryShareStatus.message)}</p>`:'');
   }
   function patch(s){if(!s)return;const el=document.querySelector('[data-reading-completion]');if(el)el.innerHTML=render(s);}
-  async function request(s,save,current){
+  async function request(s,save,current,shareQuery){
     if(pending||!endpoint()||s.phase!=='read'||window.TAROT_STANDALONE||offline(s)?.safety)return;
+    const shareConsent=document.querySelector('[data-ai-query-consent]')?.checked===true,consentQuestion=s.userQuestion?.trim()||'';
     const language=locale();if(s.ai?.some(x=>x.language===language))return;
     const controller=new AbortController(),job={id:s.id,controller,startedAt:Date.now(),current};pending=job;error='';patch(s);job.tipTimer=setInterval(()=>updateWaiting(job),1000);
     window.TarotAnalytics?.track('ai_confirm',{spread:s.spreadId},'ai');
@@ -80,7 +82,13 @@ window.TarotReadingAI = (() => {
     try{
       const session=await window.TarotAccess?.ensureSession?.();if(!session)throw Error('UNAVAILABLE');
       let url;try{url=new URL(endpoint(),location.href);if(url.protocol!=='https:'&&!(url.origin===location.origin&&['localhost','127.0.0.1'].includes(url.hostname)))throw Error();if(url.username||url.password||url.hash||url.search)throw Error();}catch(_){throw Error('NOT_CONFIGURED');}
+      if(job.cancelled||pending!==job)return;
       const requestContext=JSON.stringify(buildRequest(s,language));
+      const querySnapshot=JSON.parse(requestContext);
+      if(shareConsent&&consentQuestion&&querySnapshot.question===consentQuestion&&typeof shareQuery==='function'){
+        const snapshot={id:s.id,question:consentQuestion,spread:querySnapshot.spreadId,topic:querySnapshot.topic};
+        Promise.resolve().then(()=>shareQuery(snapshot)).then(message=>{queryShareStatus={id:snapshot.id,message};if(current()?.id===snapshot.id)patch(current());}).catch(()=>{queryShareStatus={id:snapshot.id,message:'问题分析样本未能提交，不影响AI解读。可以稍后在问题反馈区重试。'};if(current()?.id===snapshot.id)patch(current());});
+      }
       const response=await fetch(url.href,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session},body:requestContext,signal:controller.signal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error'});
       if(Number(response.headers.get('content-length'))>150000)throw Error('UPSTREAM_ERROR');
       const reader=response.body.getReader(),chunks=[];let size=0;for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>150000){await reader.cancel();throw Error('UPSTREAM_ERROR');}chunks.push(value);}
@@ -92,5 +100,5 @@ window.TarotReadingAI = (() => {
     finally{clearTimeout(timeout);clearInterval(job.tipTimer);if(pending===job)pending=null;const visible=current();if(visible?.id===s.id&&visible.phase==='read')patch(visible);}
   }
   window.addEventListener('pagehide',()=>{if(pending){pending.outcome?.('cancelled');pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();}});
-  return {render,clean,buildRequest,request,cancel(s){if(pending){pending.outcome?.('cancelled');pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
+  return {render,clean,buildRequest,request,queryWithdrawn(id){if(queryShareStatus?.id===id)queryShareStatus={id,message:'问题分析样本已撤回。'};},cancel(s){if(pending){pending.outcome?.('cancelled');pending.cancelled=true;clearInterval(pending.tipTimer);pending.controller.abort();pending=null;}error='';patch(s);},refresh:patch};
 })();

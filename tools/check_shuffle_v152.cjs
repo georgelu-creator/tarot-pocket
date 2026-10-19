@@ -12,6 +12,9 @@ const key='tarot-reading-v3';
  p.on('pageerror',e=>errors.push(e.message));await p.goto(url);await p.locator('.bottomnav [data-page=reading]').click();await h.intro(p,'three');await p.locator('[data-reading=start]').click();await p.evaluate(()=>{const b=document.createElement('button');b.dataset.reading='motion-pause';document.body.append(b);b.click();b.remove();});
  const pool=await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).draft.pool,key);
  const stage=p.locator('[data-motion-stage=shuffling]'),cards=p.locator('.ritual-pack>.reading-back');assert.equal(await cards.count(),18);
+ // CSS pause is pending until the animation timeline commits it. Observe only
+ // after that native readiness signal; keep the exact stationary-frame check.
+ await stage.evaluate(el=>Promise.all(el.getAnimations({subtree:true}).map(animation=>animation.ready)));
  const pseudo=await stage.evaluate(el=>['::before','::after'].map(part=>{const s=getComputedStyle(el,part);return {part,name:s.animationName,play:s.animationPlayState,opacity:s.opacity,transform:s.transform}}));
  for(const decoration of pseudo){assert.notEqual(decoration.name,'none',`${decoration.part} has an actual ritual animation`);assert.equal(decoration.play,'paused',`${decoration.part} obeys the stage pause`)}
  await p.waitForTimeout(120);assert.deepEqual(await stage.evaluate(el=>['::before','::after'].map(part=>{const s=getComputedStyle(el,part);return {part,name:s.animationName,play:s.animationPlayState,opacity:s.opacity,transform:s.transform}})),pseudo,'paused ring and marker remain visually stationary');
