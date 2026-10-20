@@ -17,7 +17,7 @@ const template = compileTemplate({ source: descriptor.template.content, filename
 assert.deepEqual(template.errors, [])
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'tarot-learning-polish-'))
 const hooks = path.join(scratch, 'hooks.cjs'), platform = path.join(scratch, 'platform.cjs')
-fs.writeFileSync(hooks, 'exports.onShow = cb => {}; exports.onHide = cb => {}; exports.onUnload = cb => {};')
+fs.writeFileSync(hooks, 'exports.onShow = cb => {}; exports.onHide = cb => {}; exports.onUnload = cb => {}; exports.onBackPress = cb => window.lessonBack = cb;')
 fs.writeFileSync(platform, `exports.readStore = (key, fallback) => window.stores[key] ?? fallback; exports.writeStore = (key, data) => { window.stores[key] = data; window.writes.push({ key, data }); }; exports.notify = text => {}; exports.cardImage = id => 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';`)
 const miniSource = script.content.replace('export default', 'const component =').replace("'../../core/platform'", "'test-platform'") + '\n' + template.code.replace('export function render', 'function render') + `
 import { createApp } from 'vue'; component.render = render;
@@ -30,10 +30,11 @@ try {
 ;(async () => {
  const browser = await chromium.launch({ headless: true })
  try {
+  const runtimeErrors = []
   const context = await browser.newContext({ viewport: { width: 320, height: 568 } })
   await context.route('https://lesson.test/**', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><div id="app"></div>' }))
   async function webPage(reduced = false) {
-   const page = await context.newPage(); await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' }); await page.goto('https://lesson.test/')
+   const page = await context.newPage(); page.on('pageerror', error => runtimeErrors.push(error.message)); await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' }); await page.goto('https://lesson.test/')
    await page.addStyleTag({ content: ':root{--paper:#fffcf7;--ink:#302a32;--line:#dfd4df;--accent:#66506c;--soft:#eee5ee}body{margin:0}.linkbtn{background:none;border:0}' + fs.readFileSync(path.join(root, 'academy.css'), 'utf8') })
    for (const file of ['academy-content.js', 'academy.js']) await page.addScriptTag({ content: fs.readFileSync(path.join(root, file), 'utf8') })
    await page.evaluate(() => {
@@ -73,10 +74,13 @@ try {
   await reduced.close(); await context.close()
 
   const page = await browser.newPage({ viewport: { width: 320, height: 568 } })
+  page.on('pageerror', error => runtimeErrors.push(error.message))
   await page.setContent('<div id="app"></div>')
   await page.addStyleTag({ content: 'view,scroll-view{display:block}image{display:inline-block}body{margin:0}' + descriptor.styles.map(s => s.content).join('\n').replace(/([\d.]+)rpx/g, (_, n) => Number(n) / 2 + 'px') })
   await page.evaluate(() => { window.stores = {}; window.writes = [] })
   await page.addScriptTag({ content: bundle })
+  assert.deepEqual(runtimeErrors, [], 'the actual lesson SFC mounts without runtime errors')
+  assert.equal(await page.evaluate(() => typeof window.lessonBack), 'function', 'the uni parent-return lifecycle boundary is registered')
   await page.evaluate(() => window.lesson.start({ id: 'm00', mode: 'foundation' }))
   assert.equal(await page.locator('.zoom-tip').count(), 1)
   const miniBeforeTip = await page.evaluate(() => JSON.stringify(window.lesson.data.value))
@@ -98,6 +102,7 @@ try {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   assert.equal(await page.locator('.lesson-content').evaluate(el => getComputedStyle(el).animationName), 'none')
   await page.close()
+  assert.deepEqual(runtimeErrors, [], 'both lesson surfaces remain free of runtime errors')
   console.log('PASS learning polish: separate persistent guidance, unchanged evidence, retained web card DOM, explicit feedback/continue, Vue scroll-view target and reduced-motion content. Physical WeChat gestures/scroll timing still need device acceptance.')
  } finally { await browser.close() }
 })().catch(error => { console.error(error); process.exitCode = 1 })
