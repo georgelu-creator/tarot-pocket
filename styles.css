@@ -239,7 +239,7 @@ small{font-size:12px}
 .clue span{font-size:13px;color:var(--muted)}
 .segmented{background:var(--soft);border-radius:12px;padding:4px;display:flex;gap:3px;margin:12px 0}
 .segmented button{background:none;border:0;border-radius:9px;flex:1;min-height:38px;font-size:13px}
-.segmented button.active{background:var(--paper);color:var(--accent)}
+.segmented button.active,.segmented button[aria-pressed="true"]{background:var(--paper);color:var(--accent)}
 .zoom-backdrop{position:fixed;inset:0;background:#302c32f5;z-index:65;display:flex;align-items:center;justify-content:center;overflow:auto;padding:70px 22px 25px}
 .zoom-backdrop img{max-width:95%;max-height:calc(100dvh - 110px);object-fit:contain;touch-action:pinch-zoom}
 .zoom-backdrop .iconbtn{position:fixed;right:18px;top:15px;color:white;background:#ffffff14}

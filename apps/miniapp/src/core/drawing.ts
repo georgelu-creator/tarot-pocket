@@ -2,7 +2,7 @@ import { deck, spreadContent, scenarios, offlineReading, daily, reference } from
 export const READING_KEY = 'tarot-miniapp-reading-v1'
 export const ENTRY_KEY = 'tarot-miniapp-entry-v1'
 export type DrawCard = { id: string; reversed: boolean }
-export type Draft = { id: string; at: number; spreadId: string; question: string; topic: string; dailyDate: string | null; pool: DrawCard[]; picked: number[]; phase: 'shuffle' | 'shuffling' | 'cut' | 'cutting' | 'pick' | 'reveal' | 'read'; motionRemaining?: number }
+export type Draft = { id: string; at: number; spreadId: string; question: string; topic: string; dailyDate: string | null; pool: DrawCard[]; picked: number[]; phase: 'shuffle' | 'shuffling' | 'cut' | 'cutting' | 'pick' | 'reveal' | 'read'; motionRemaining?: number; fanOffset?:number; fanZoom?:number; fanIntroSeen?:true }
 export type RecordItem = { id: string; at: number; spreadId: string; question: string; topic: string; dailyDate: string | null; cards: DrawCard[] }
 export type ReadingStore = { version: 2; draft: Draft | null; dailyDraft: Draft | null; todayDaily: RecordItem | null; active: 'ordinary' | 'daily' }
 export const blankReading = (): ReadingStore => ({ version: 2, draft: null, dailyDraft: null, todayDaily: null, active: 'ordinary' })
@@ -34,7 +34,10 @@ function validDraft(d: any): d is Draft | null {
 function copyDraft(d: Draft): Draft {
  return {id:d.id,at:d.at,spreadId:d.spreadId,question:d.question,topic:d.topic,dailyDate:d.dailyDate,
   pool:d.pool.map(c=>({id:c.id,reversed:c.reversed})),picked:[...d.picked],phase:d.phase,
-  ...(d.motionRemaining === undefined ? {} : {motionRemaining:d.motionRemaining})}
+  ...(d.motionRemaining === undefined ? {} : {motionRemaining:d.motionRemaining}),
+  ...(Number.isFinite(d.fanOffset)&&d.fanOffset!>=0&&d.fanOffset!<=100000?{fanOffset:d.fanOffset}:{}),
+  ...(d.fanIntroSeen===true?{fanIntroSeen:true as const}:{}),
+  ...(Number.isFinite(d.fanZoom)&&d.fanZoom!>=1&&d.fanZoom!<=2.4?{fanZoom:d.fanZoom}:{})}
 }
 function copyDaily(r: RecordItem): RecordItem {
  return {id:r.id,at:r.at,spreadId:'daily',question:'',topic:'general',dailyDate:r.dailyDate,cards:r.cards.map(c=>({id:c.id,reversed:c.reversed}))}

@@ -674,7 +674,7 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 .reading-v2 .reading-motion-actions{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:14px 0 0;position:relative;z-index:3}
 .reading-v2 .reading-motion-actions button{min-height:44px;font-size:13px;padding:9px 12px}
 .reading-v2 .motion-paused *{animation-play-state:paused!important}
-.reading-v2 .cut-piles{height:240px;margin:15px auto 0;max-width:360px}
+.reading-v2 .cut-piles{height:240px;margin:15px auto 0;max-width:360px;align-items:center}.reading-v2 .ritual-table .cut-pile{height:auto;min-height:0;aspect-ratio:3/5}
 .reading-v2 .reading-fan-table{margin:0;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at 50% 75%,#91709018,transparent 70%),var(--paper);overflow:hidden;padding:20px 0 12px}
 .reading-v2 .reading-fan-table>.ritual-selection-heading{padding:0 18px;margin:0;gap:10px;align-items:start}
 .reading-v2 .reading-fan-table h2{font-size:19px;line-height:1.55;margin:0}
@@ -690,7 +690,7 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 .fan-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 14px;font-size:11px;color:var(--muted)}
 .fan-toolbar>div{display:flex;gap:4px}
 .fan-toolbar .iconbtn{width:44px;min-width:44px;height:44px;font-size:22px;background:var(--paper);border:1px solid var(--line);box-shadow:none}
-.reading-fan-viewport{--fan-scale:1;width:100%;height:calc(255px * var(--fan-scale));max-height:370px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;scroll-behavior:auto;position:relative;contain:layout;cursor:grab}
+.reading-fan-viewport{--fan-scale:1;width:100%;height:calc(255px * var(--fan-scale));max-height:370px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;scroll-behavior:auto;position:relative;contain:layout paint;cursor:grab}
 .reading-fan-viewport::-webkit-scrollbar{display:none}
 .reading-fan-track{display:flex;align-items:flex-start;gap:0;width:max-content;padding:18px max(94px,calc(50vw - 48px)) 70px 52px;min-height:240px}
 .reading-fan-card{display:block;position:relative;flex:0 0 calc(68px * var(--fan-scale));width:calc(68px * var(--fan-scale));height:calc(120px * var(--fan-scale));margin:22px calc(-31px * var(--fan-scale)) 0 0;padding:0;border:0;background:none;transform-origin:50% 100%;isolation:isolate;-webkit-tap-highlight-color:transparent;cursor:pointer;transition:opacity .22s}
@@ -907,3 +907,15 @@ html[lang=en] .daily-sign p{font-size:17px;line-height:1.45;overflow-wrap:normal
 .manual-slots.count-1{grid-template-columns:minmax(0,200px);justify-content:center}.manual-slots.count-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.manual-slots.count-3 .manual-slot{padding:10px 6px}.manual-slots.count-3 h2{font-size:.9rem}.manual-slots.count-3 .manual-orientation{padding:8px;font-size:.9rem}.manual-reading select{height:52px}.manual-position-help{margin:16px 0 24px}.manual-position-help summary{min-height:44px;cursor:pointer}
 
 .ai-query-consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.75;color:var(--muted);margin:16px 0}.ai-query-consent input{flex:0 0 auto;margin-top:5px}.ai-query-status{font-size:13px;line-height:1.75;color:var(--muted);padding:12px 0}
+
+/* Directory tiles have a bounded reading width instead of full-screen ribbons. */
+.reading-v2 .reading-spread-choice{min-height:144px;align-items:center}
+@media(min-width:900px){.reading-scenario-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.reading-v2 .reading-spread-choice{height:100%;min-height:152px;padding:14px;gap:14px}}
+
+/* The original 300×500 back always keeps its shape, including narrow grids. */
+.reading-v2 .reading-fan-card{height:auto;aspect-ratio:3/5}
+.reading-v2 .selection-board .reading-card{height:auto;aspect-ratio:3/5;box-sizing:border-box}
+.reading-v2 .reveal-group-face{aspect-ratio:3/5}
+.fan-unfold>.reading-back{animation:fan-unfold 1.8s cubic-bezier(.22,.68,.22,1) both}
+@keyframes fan-unfold{0%{transform:translateX(var(--fan-open-x)) translateY(24px) scale(.92);opacity:0}80%,100%{transform:translateX(0) translateY(0) scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.fan-unfold>.reading-back{animation:none}}

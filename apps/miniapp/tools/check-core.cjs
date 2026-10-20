@@ -39,7 +39,7 @@ cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], 
  const nav=pages.tabBar.list.map(p=>p.text);assert.deepEqual(nav,['首页','抽牌','学牌','牌库']);
  assert.deepEqual(pages.tabBar.list.map(p=>p.pagePath),['pages/home/index','pages/draw/index','pages/learn/index','pages/library/index']);
  assert.deepEqual(pages.pages.map(p=>p.path),['pages/home/index','pages/learn/index','pages/draw/index','pages/library/index']);
- const manifest=JSON.parse(fs.readFileSync(path.join(base,'src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');assert.equal(manifest.versionName,'0.5.2');assert.equal(manifest.versionCode,'502');
+ const manifest=JSON.parse(fs.readFileSync(path.join(base,'src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');assert.equal(manifest.versionName,'0.5.3');assert.equal(manifest.versionCode,'503');
  assert.equal(manifest.description,'从基础牌型到进阶策略，提供玩法规则图解速览，分阶拆解玩法要点，配合真实对局场景模拟，从入门到精通。','preserve user-specified metadata copy verbatim');
  assert.equal(pages.pages[0].style.navigationBarTitleText,'秘境梦屿');
  const home=fs.readFileSync(path.join(base,'src/pages/home/index.vue'),'utf8');// Verify action order, not incidental occurrences of these words in the intro.
@@ -64,5 +64,5 @@ cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], 
  assert.equal(pages.subPackages.length,1);assert.equal(pages.subPackages[0].root,'pages/card');assert.deepEqual(pages.subPackages[0].pages.map(p=>p.path),['index']);
  const {knowledge:fullKnowledge}=await import(pathToFileURL(path.join(base,'src/pages/card/generated/knowledge.mjs')).href);
  for(const card of deck.cards){assert.deepEqual(knowledge.byId[card.id].learning,fullKnowledge.byId[card.id].learning);assert.equal(knowledge.byId[card.id].domains,undefined);assert.equal(Object.keys(fullKnowledge.byId[card.id].domains).length,5);}
- console.log('PASS: 78 cards × 3 stages, all 40 scenes and 20 method lessons; draw-first four-tab public Mengyu 0.5.2, full card subpackage, no hidden audit/network switch; preserved 78 cultural projections and legacy store boundaries.');
+ console.log('PASS: 78 cards × 3 stages, all 40 scenes and 20 method lessons; draw-first four-tab public Mengyu 0.5.3, full card subpackage, no hidden audit/network switch; preserved 78 cultural projections and legacy store boundaries.');
 })().catch(error=>{console.error(error);process.exitCode=1});

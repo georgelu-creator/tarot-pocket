@@ -10,4 +10,7 @@ const declarations = block[1].replace(/url\("assets\/design\/card-back\.svg"\)/,
 fs.mkdirSync(out, { recursive: true })
 fs.writeFileSync(path.join(out, 'web-tokens.css'), `/* Generated from design-tokens.css and the original card-back.svg. */\npage {${declarations}\n}\n/* #ifdef H5 */\n:root {${declarations}\n}\n/* #endif */\n`)
 fs.copyFileSync(path.join(root,'spread-thumbnail.css'),path.join(out,'spread-thumbnail.css'))
+const {thumbnailGeometry}=require(path.join(root,'spread-thumbnail.js'))
+fs.writeFileSync(path.join(out,'spread-thumbnail.mjs'),'// Generated from shared spread-thumbnail.js.\nexport const thumbnailGeometry='+thumbnailGeometry.toString()+';\n')
+fs.writeFileSync(path.join(out,'spread-thumbnail.d.mts'),'export function thumbnailGeometry(layout: {columns:number;rows:number;cells:({column:number;row:number}|[number,number])[]}): Record<string,string>[];\n')
 console.log('Shared web design tokens and original card back prepared for miniapp.')
