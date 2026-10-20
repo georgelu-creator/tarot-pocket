@@ -1,0 +1,625 @@
+{
+  "asOf": "2026-10-20",
+  "count": 50,
+  "sources": [
+    {
+      "id": "L-CARD-m00",
+      "title": "塔罗牌解析-愚人节话“愚人”",
+      "url": "https://www.sohu.com/a/227074874_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-m00条目。",
+      "limitations": "仅确认公开署名；作者资质和独立原创权未经认证。图像象征为作者解释，需核对现用RWS原图。不得把健康、未来关系事件作为事实。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "m00"
+      ]
+    },
+    {
+      "id": "L-CARD-m02",
+      "title": "塔罗牌 女祭司 女教皇 正位 逆位",
+      "url": "https://m.sohu.com/n/478100178/",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-m02条目。",
+      "limitations": "署名可核实，不证明版权权属。处女座、双鱼座等对应说法需辨别流派；性别本质化、不孕及疾病判断不采用。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "m02"
+      ]
+    },
+    {
+      "id": "L-CARD-m10",
+      "title": "最全解读：塔罗牌 生命之轮",
+      "url": "https://m.sohu.com/n/482495433/",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-m10条目。",
+      "limitations": "描述命运女神及斯芬克斯等混合图像，必须核对版本。好运、收入和疾病不是由牌可验证的结论；顾客故事不构成效果证据。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "m10"
+      ]
+    },
+    {
+      "id": "L-CARD-w01",
+      "title": "塔罗牌 权杖首牌 权杖一 正位 逆位",
+      "url": "https://www.douban.com/note/716057692/",
+      "category": "逐牌文章",
+      "access": "search_excerpt",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-w01条目。",
+      "limitations": "直接打开不可访问，只有搜索索引摘录；未完成全文逐段核验。不能称已获取文章全文或按摘录确认所有分支。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "w01"
+      ]
+    },
+    {
+      "id": "L-CARD-w12",
+      "title": "塔罗牌 权杖骑士 正位逆位",
+      "url": "https://www.sohu.com/a/316834558_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-w12条目。",
+      "limitations": "与用户竞品截图存在文字重合，只能证明局部内容相同，不能证明权属或整套78张一致。投资、健康及确定事件不宜导入。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "w12"
+      ]
+    },
+    {
+      "id": "L-CARD-c01",
+      "title": "塔罗牌 圣杯王牌 正位 逆位",
+      "url": "https://www.sohu.com/a/317025666_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-c01条目。",
+      "limitations": "宗教象征需注明传统与作者联想；不把外遇、健康和财运当作由单牌确定的事实。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "c01"
+      ]
+    },
+    {
+      "id": "L-CARD-c02",
+      "title": "塔罗牌 圣杯二 正位 逆位",
+      "url": "https://www.sohu.com/a/317550170_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-c02条目。",
+      "limitations": "性别角色描述是作者读法，不是男女普遍事实。不能由逆位直接断离婚，也不能以牌确认他人心意、健康或收入。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "c02"
+      ]
+    },
+    {
+      "id": "L-CARD-c03",
+      "title": "塔罗牌 圣杯三 正位逆位",
+      "url": "https://www.sohu.com/a/322515506_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-c03条目。",
+      "limitations": "不能以三张人物或逆位指认第三者；健康和财富判断不采用。页面署名并不确认原创权属。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "c03"
+      ]
+    },
+    {
+      "id": "L-CARD-c04",
+      "title": "塔罗牌 圣杯四 正位逆位",
+      "url": "https://www.sohu.com/a/322926711_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-c04条目。",
+      "limitations": "所有建筑均四方体的说法不成立；保留作者象征读法的条件，排除外遇和健康断语。页面仍见图片占位与删除字样。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "c04"
+      ]
+    },
+    {
+      "id": "L-CARD-c05",
+      "title": "塔罗牌 圣杯五 正位逆位",
+      "url": "https://www.sohu.com/a/323453180_570791",
+      "category": "逐牌文章",
+      "access": "full_text",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-CARD-c05条目。",
+      "limitations": "不能把归责方向当单牌唯一差异；逆位桥断属于想象而非原画变化。复合和健康不作确定预测。",
+      "author": "洛书塔罗占星",
+      "cards": [
+        "c05"
+      ]
+    },
+    {
+      "id": "L-OVERVIEW-20170112",
+      "title": "神奇的七十八张塔罗牌！",
+      "url": "https://mt.sohu.com/20170112/n478574694.shtml",
+      "category": "框架/同牌异文",
+      "access": "search_excerpt",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-OVERVIEW-20170112条目。",
+      "limitations": "打开返回页面框架但未取得完整可核对正文；采用索引摘录层级。标题78张不等于78篇详解，不计完整牌义覆盖。",
+      "author": "洛书塔罗占星",
+      "cards": []
+    },
+    {
+      "id": "L-FOOL-20170105",
+      "title": "愚人 塔罗牌 正位 逆位",
+      "url": "https://m.sohu.com/n/477905335/",
+      "category": "框架/同牌异文",
+      "access": "search_excerpt",
+      "summary": "简短评议见SOURCE_CARD_AUDIT.json的L-FOOL-20170105条目。",
+      "limitations": "本轮未逐段阅读，不重复计数；主对照使用2018年全文。",
+      "author": "洛书塔罗占星",
+      "cards": []
+    },
+    {
+      "id": "LS-T01",
+      "title": "初/中阶塔罗牌课程开放报名，洛书老师亲授",
+      "url": "https://www.sohu.com/a/302039569_570791",
+      "category": "教学框架",
+      "access": "full_text",
+      "summary": "公开课纲包含牌组、宫廷、逆位、实战，以及作业与答疑；是付费课程的招生介绍。",
+      "limitations": "能核对课纲，不能据此复原课程正文、认定准确率或学习效果。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-T02",
+      "title": "塔罗学习心得分享来啦！听听洛书的优秀学员怎么说",
+      "url": "https://www.sohu.com/a/861577516_570791",
+      "category": "学习反馈",
+      "access": "full_text",
+      "summary": "作者刊载的学员自述谈到系统学习、情境差异和解法不唯一。",
+      "limitations": "宣传渠道中的自述，不是独立学习测评；不能推出变现、疗愈或教学成效。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-R01",
+      "title": "洛书100个塔罗案例故事：塔罗寻物，找回游泳眼镜",
+      "url": "https://i.ifeng.com/c/8HkAXzNmgSo",
+      "category": "寻物案例",
+      "access": "search_expanded_text",
+      "summary": "作者叙述在已知泳镜留在储物柜的前提下抽牌，随后返回场所并与工作人员协调取回。",
+      "limitations": "会话内搜索展开正文可读，本轮直接打开超时；不是不知道位置后凭牌定位的实验，也没有固定三牌寻物定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "w02",
+        "p09"
+      ]
+    },
+    {
+      "id": "LS-R02",
+      "title": "洛书塔罗案例002：用几百元的塔罗预测避免12万元损失",
+      "url": "https://www.sohu.com/a/580586860_570791",
+      "category": "多牌案例",
+      "access": "full_text",
+      "summary": "作者展示三张逆位牌分析合作，并叙述后续取消签约。",
+      "limitations": "自述案例不是反事实证明；不采用从全逆位推出不可靠或替代法律判断的做法。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "s05",
+        "c02",
+        "c07"
+      ]
+    },
+    {
+      "id": "LS-R03",
+      "title": "四季牌阵公开文章",
+      "url": "https://www.sohu.com/a/129456147_570791",
+      "category": "牌阵",
+      "access": "prior_search_excerpt",
+      "summary": "先前检索涉及四季牌阵及Marcia Masino资料线索。",
+      "limitations": "本轮直接打开超时；未逐项核实牌位，不新增固定日期限制或声称唯一传统版本。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-B01",
+      "title": "洛书微课堂：塔罗第①讲塔罗牌结构和原理",
+      "url": "https://www.bilibili.com/video/BV1UT4y1874L/",
+      "category": "入门教学",
+      "access": "prior_metadata",
+      "summary": "先前搜索页显示同名上传者及系列入口。",
+      "limitations": "本轮直接访问412；未观看、无转录、无时间码，不从标题推断完整教学顺序。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-B02",
+      "title": "洛书说：塔罗师成长四步走第一步之解牌只是入门",
+      "url": "https://www.bilibili.com/video/BV1DJYszHEEP/",
+      "category": "综合解读与沟通",
+      "access": "prior_metadata",
+      "summary": "先前搜索页显示解读之外的问答和沟通主题。",
+      "limitations": "本轮直接访问412；只作候选教学来源，不认定已核实视频中的具体论证。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D01",
+      "title": "洛书塔罗疗愈主页（抖音号luoshu999999）",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAANRxQzZ21IFzLhCyoQXV_RM4vkKdCufr8j45HIpP2lv8",
+      "category": "账号目录",
+      "access": "profile_and_captions",
+      "summary": "登录后核实主页与公开作品目录；页面显示388作品。账号标识与搜狐招生文、微博公开介绍相符。",
+      "limitations": "名称与公开标识交叉匹配，不是平台实名归属证明；388是所有作品数，不是388条教学或78牌覆盖。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D02",
+      "title": "星币八：生活场景记忆教学",
+      "url": "https://www.douyin.com/video/7563978983780535606",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介用专注练习与机械应付的对照帮助记忆。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "p08"
+      ]
+    },
+    {
+      "id": "LS-D03",
+      "title": "权杖骑士：行动与冲动的记忆教学",
+      "url": "https://www.douyin.com/video/7586990755707260169",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介将果断行动与准备不足的冒进作对照。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "w12"
+      ]
+    },
+    {
+      "id": "LS-D04",
+      "title": "圣杯六：回忆与停留过去的记忆教学",
+      "url": "https://www.douyin.com/video/7563241929429765418",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介将童年回忆与沉溺过去作对照。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "c06"
+      ]
+    },
+    {
+      "id": "LS-D05",
+      "title": "教皇：传统与反叛的记忆教学",
+      "url": "https://www.douyin.com/video/7565837895861308682",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介用生活规则与挑战旧规的片段帮助理解。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "m05"
+      ]
+    },
+    {
+      "id": "LS-D06",
+      "title": "倒吊人：停顿与换角度的记忆教学",
+      "url": "https://www.douyin.com/video/7585515648437013811",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介对照换角度后的停顿与无效忙碌。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "m12"
+      ]
+    },
+    {
+      "id": "LS-D07",
+      "title": "抽1张牌就能得到答案？单牌阵教学",
+      "url": "https://www.douyin.com/video/7592561369661066559",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介面向新手介绍单张牌的提问与指引。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D08",
+      "title": "用两张牌理解得失：两牌阵教学",
+      "url": "https://www.douyin.com/video/7595527067756727615",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介明确第一张看失去、第二张看获得。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D09",
+      "title": "学员用表情包辅助记忆牌义",
+      "url": "https://www.douyin.com/video/7601086424389111091",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介展示把抽象含义联系到生活场景的记忆方法。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D10",
+      "title": "若鱼学员专访：上集",
+      "url": "https://www.douyin.com/video/7620315191540870626",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D11",
+      "title": "若鱼学员专访：中集",
+      "url": "https://www.douyin.com/video/7638126588437135503",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D12",
+      "title": "若鱼学员专访：下集",
+      "url": "https://www.douyin.com/video/7638292031673118016",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-D13",
+      "title": "2025年度作者复盘",
+      "url": "https://www.douyin.com/video/7606990210636047075",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为作者年度回顾。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P01",
+      "title": "洛书塔罗占星搜狐主页",
+      "url": "https://m.sohu.com/media/570791",
+      "category": "账号目录",
+      "access": "prior_metadata",
+      "summary": "同媒体作者与公开文章的查找入口。",
+      "limitations": "未完整遍历历史文章目录，不保证文章仍可访问或系列完整。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P02",
+      "title": "洛书塔罗占星微博公开介绍",
+      "url": "https://www.sina.cn/media/1796397021",
+      "category": "账号身份",
+      "access": "profile_text",
+      "summary": "本轮页面可读，公开账号标识与抖音及搜狐介绍相符。",
+      "limitations": "只核实公开介绍；不采集私信、关注或私人账号资料。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P03",
+      "title": "第三方收藏的洛书牌义条目",
+      "url": "https://www.douban.com/doulist/142434708/",
+      "category": "转载线索",
+      "access": "prior_metadata",
+      "summary": "先前检索得到的第三方收藏入口。",
+      "limitations": "收藏者不等于原作者；未读取列表全部条目，不据此计单牌覆盖。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P04",
+      "title": "非常运势塔罗频道",
+      "url": "https://tarot.99166.com/",
+      "category": "月运线索",
+      "access": "prior_metadata",
+      "summary": "先前检索出现洛书月运标题。",
+      "limitations": "门户包含多作者，不能整站归入洛书；未作为单牌证据。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P05",
+      "title": "你的名字与圣杯二的影视联想线索",
+      "url": "https://www.zhihu.com/en/article/24425404",
+      "category": "情境示例线索",
+      "access": "prior_metadata",
+      "summary": "先前搜索出现洛书署名和影视类比。",
+      "limitations": "未阅读全文，暂不写入教学结论。",
+      "author": "洛书相关公开标识",
+      "cards": [
+        "c02"
+      ]
+    },
+    {
+      "id": "LS-P06",
+      "title": "塔罗历史文章线索",
+      "url": "https://www.sohu.com/a/123526470_570791",
+      "category": "历史资料线索",
+      "access": "prior_metadata",
+      "summary": "先前检索中的历史叙述入口。",
+      "limitations": "没有史料校勘；不能把作者历史叙述直接当作RWS或塔罗起源事实。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P07",
+      "title": "紫微与塔罗对应文章线索",
+      "url": "https://www.sohu.com/a/121188697_570791",
+      "category": "跨体系线索",
+      "access": "prior_metadata",
+      "summary": "先前检索涉及不同体系的对应解释。",
+      "limitations": "未全文核实；跨体系对应不进入RWS初级必学或牌义默认规则。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P08",
+      "title": "洛书塔罗占星同名抖音账号（774146682）",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAA8NT0-ggycLkZ3U8WGKdoLuFW8JolcCoau4zGq1ZY_KU",
+      "category": "账号候选",
+      "access": "profile_only",
+      "summary": "本轮主页显示1个作品；另一个同名账号候选。",
+      "limitations": "不能只因同名将两个账号的内容归属完全等同；未纳入单牌比较。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "LS-P09",
+      "title": "公众号洛书塔罗占星",
+      "url": null,
+      "category": "账号线索",
+      "access": "no_article_url",
+      "summary": "公开文章及用户截图提到该公众号名称。",
+      "limitations": "没有已核实的具体公众号文章URL或完整历史目录，不批量声称取得。",
+      "author": "洛书相关公开标识",
+      "cards": []
+    },
+    {
+      "id": "HY-01",
+      "title": "专业塔罗牌小程序首页的宏洋引导",
+      "url": null,
+      "category": "竞品账号线索",
+      "access": "user_screenshot",
+      "summary": "截图明确引导至抖音宏洋专业塔罗牌。",
+      "limitations": "公开全网与登录后站内搜索均未定位可核实主页；与洛书关系未证实。",
+      "author": "用户截图中的竞品；作者待核",
+      "cards": []
+    },
+    {
+      "id": "HY-02",
+      "title": "专业塔罗牌小程序权杖七逆位截图",
+      "url": null,
+      "category": "竞品牌义样本",
+      "access": "user_screenshot",
+      "summary": "可见逆位压力、信心与调整方向及感情事业段落。",
+      "limitations": "只见截图局部；不能代替完整条目或认定作者，更不能外推78张。",
+      "author": "用户截图中的竞品；作者待核",
+      "cards": [
+        "w07"
+      ]
+    },
+    {
+      "id": "HY-03",
+      "title": "专业塔罗牌小程序权杖骑士逆位截图",
+      "url": null,
+      "category": "竞品牌义样本",
+      "access": "user_screenshot",
+      "summary": "可见冲动、耐心、计划和热情变化等表述。",
+      "limitations": "与公开洛书文章部分文字重合不证明原创归属、授权或整个小程序内容来源。",
+      "author": "用户截图中的竞品；作者待核",
+      "cards": [
+        "w12"
+      ]
+    },
+    {
+      "id": "EXT-R01",
+      "title": "Reflecta寻物五牌说明",
+      "url": "https://reflecta.cards/en/learn/tarot/spreads/lost-item/",
+      "category": "寻物牌阵",
+      "access": "full_text",
+      "summary": "位置区分遗失情境、先查哪里、观察盲点、帮助和行动。",
+      "limitations": "作者非洛书；正文和例子较模板化，不能当成成熟教学效果证据或固定行业标准。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    },
+    {
+      "id": "EXT-R02",
+      "title": "Lumi寻物五牌说明",
+      "url": "https://tarot.yobzh.com/blog/tarot-spread-to-find-lost-objects",
+      "category": "寻物牌阵",
+      "access": "full_text",
+      "summary": "提出上次使用情境、环境线索、障碍、行动、结果五个位置。",
+      "limitations": "作者非洛书；不能把花色对应房间或结果牌当作已知地点、是否找回的证明。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    },
+    {
+      "id": "EXT-R03",
+      "title": "Tarot Forum：The Lost & Found Spread",
+      "url": "https://www.tarotforum.net/threads/the-lost-found-spread.233388/",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    },
+    {
+      "id": "EXT-R04",
+      "title": "Quareia：A Tarot Companion",
+      "url": "https://www.quareia.com/s/JM-tarot-companion.pdf",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    },
+    {
+      "id": "EXT-R05",
+      "title": "Utopia：Finding Lost Items",
+      "url": "https://utopiastore.ca/blog/u-tarot-spread-for-finding-lost-items.html",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    },
+    {
+      "id": "EXT-R06",
+      "title": "内田奏：寻物三牌方法线索",
+      "url": "https://note.com/kanade_uchida31/n/n3f687c3581a1?hl=en",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "author": "其他公开作者（非洛书）",
+      "cards": []
+    }
+  ],
+  "excluded_attributions": [
+    {
+      "id": "EX-WORK-BIDIOU",
+      "title": "洛书塔罗案例03：工作选A还是选B？寻找未来出路很难怎么办？",
+      "url": "https://www.sohu.com/a/612678759_570791",
+      "access_level": "search_excerpt",
+      "reason": "虽发布于洛书账号，正文明确署名工作室塔罗师比丢；不归入洛书本人单牌语料。"
+    },
+    {
+      "id": "EX-TV-BIDIOU",
+      "title": "《点燃我，温暖你》塔罗剧情分析：如果是你，会选择彼此救赎的爱情吗？",
+      "url": "https://www.sohu.com/a/608506389_570791",
+      "access_level": "search_excerpt",
+      "reason": "正文作者为洛书工作坊塔罗师比丢，账号归属不能替代个人署名。"
+    },
+    {
+      "id": "EX-SCREENSHOT-w07",
+      "title": "专业塔罗牌：权杖七逆位用户截图",
+      "card_ids": [
+        "w07"
+      ],
+      "url": null,
+      "access_level": "unavailable",
+      "reason": "仅用户截图，没有核实同作者原文；不得因权杖骑士文字重合推断权杖七或全部牌均属于洛书。"
+    }
+  ]
+}

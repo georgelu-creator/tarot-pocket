@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "asOf": "2026-10-20",
+  "scope": "已发现资料分类；不代表完整抓取或产品采用",
+  "sources": [
+    {
+      "id": "LS-T01",
+      "title": "初/中阶塔罗牌课程开放报名，洛书老师亲授",
+      "url": "https://www.sohu.com/a/302039569_570791",
+      "platform": "搜狐",
+      "category": "教学框架",
+      "access": "full_text",
+      "summary": "公开课纲包含牌组、宫廷、逆位、实战，以及作业与答疑；是付费课程的招生介绍。",
+      "limitations": "能核对课纲，不能据此复原课程正文、认定准确率或学习效果。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-T02",
+      "title": "塔罗学习心得分享来啦！听听洛书的优秀学员怎么说",
+      "url": "https://www.sohu.com/a/861577516_570791",
+      "platform": "搜狐",
+      "category": "学习反馈",
+      "access": "full_text",
+      "summary": "作者刊载的学员自述谈到系统学习、情境差异和解法不唯一。",
+      "limitations": "宣传渠道中的自述，不是独立学习测评；不能推出变现、疗愈或教学成效。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-R01",
+      "title": "洛书100个塔罗案例故事：塔罗寻物，找回游泳眼镜",
+      "url": "https://i.ifeng.com/c/8HkAXzNmgSo",
+      "platform": "凤凰",
+      "category": "寻物案例",
+      "access": "search_expanded_text",
+      "summary": "作者叙述在已知泳镜留在储物柜的前提下抽牌，随后返回场所并与工作人员协调取回。",
+      "limitations": "会话内搜索展开正文可读，本轮直接打开超时；不是不知道位置后凭牌定位的实验，也没有固定三牌寻物定义。",
+      "cardIds": [
+        "w02",
+        "p09"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-R02",
+      "title": "洛书塔罗案例002：用几百元的塔罗预测避免12万元损失",
+      "url": "https://www.sohu.com/a/580586860_570791",
+      "platform": "搜狐",
+      "category": "多牌案例",
+      "access": "full_text",
+      "summary": "作者展示三张逆位牌分析合作，并叙述后续取消签约。",
+      "limitations": "自述案例不是反事实证明；不采用从全逆位推出不可靠或替代法律判断的做法。",
+      "cardIds": [
+        "s05",
+        "c02",
+        "c07"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-R03",
+      "title": "四季牌阵公开文章",
+      "url": "https://www.sohu.com/a/129456147_570791",
+      "platform": "搜狐",
+      "category": "牌阵",
+      "access": "prior_search_excerpt",
+      "summary": "先前检索涉及四季牌阵及Marcia Masino资料线索。",
+      "limitations": "本轮直接打开超时；未逐项核实牌位，不新增固定日期限制或声称唯一传统版本。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-B01",
+      "title": "洛书微课堂：塔罗第①讲塔罗牌结构和原理",
+      "url": "https://www.bilibili.com/video/BV1UT4y1874L/",
+      "platform": "哔哩哔哩",
+      "category": "入门教学",
+      "access": "prior_metadata",
+      "summary": "先前搜索页显示同名上传者及系列入口。",
+      "limitations": "本轮直接访问412；未观看、无转录、无时间码，不从标题推断完整教学顺序。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-B02",
+      "title": "洛书说：塔罗师成长四步走第一步之解牌只是入门",
+      "url": "https://www.bilibili.com/video/BV1DJYszHEEP/",
+      "platform": "哔哩哔哩",
+      "category": "综合解读与沟通",
+      "access": "prior_metadata",
+      "summary": "先前搜索页显示解读之外的问答和沟通主题。",
+      "limitations": "本轮直接访问412；只作候选教学来源，不认定已核实视频中的具体论证。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D01",
+      "title": "洛书塔罗疗愈主页（抖音号luoshu999999）",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAANRxQzZ21IFzLhCyoQXV_RM4vkKdCufr8j45HIpP2lv8",
+      "platform": "抖音",
+      "category": "账号目录",
+      "access": "profile_and_captions",
+      "summary": "登录后核实主页与公开作品目录；页面显示388作品。账号标识与搜狐招生文、微博公开介绍相符。",
+      "limitations": "名称与公开标识交叉匹配，不是平台实名归属证明；388是所有作品数，不是388条教学或78牌覆盖。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D02",
+      "title": "星币八：生活场景记忆教学",
+      "url": "https://www.douyin.com/video/7563978983780535606",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介用专注练习与机械应付的对照帮助记忆。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [
+        "p08"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D03",
+      "title": "权杖骑士：行动与冲动的记忆教学",
+      "url": "https://www.douyin.com/video/7586990755707260169",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介将果断行动与准备不足的冒进作对照。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [
+        "w12"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D04",
+      "title": "圣杯六：回忆与停留过去的记忆教学",
+      "url": "https://www.douyin.com/video/7563241929429765418",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介将童年回忆与沉溺过去作对照。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [
+        "c06"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D05",
+      "title": "教皇：传统与反叛的记忆教学",
+      "url": "https://www.douyin.com/video/7565837895861308682",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介用生活规则与挑战旧规的片段帮助理解。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [
+        "m05"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D06",
+      "title": "倒吊人：停顿与换角度的记忆教学",
+      "url": "https://www.douyin.com/video/7585515648437013811",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介对照换角度后的停顿与无效忙碌。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [
+        "m12"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D07",
+      "title": "抽1张牌就能得到答案？单牌阵教学",
+      "url": "https://www.douyin.com/video/7592561369661066559",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介面向新手介绍单张牌的提问与指引。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D08",
+      "title": "用两张牌理解得失：两牌阵教学",
+      "url": "https://www.douyin.com/video/7595527067756727615",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介明确第一张看失去、第二张看获得。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D09",
+      "title": "学员用表情包辅助记忆牌义",
+      "url": "https://www.douyin.com/video/7601086424389111091",
+      "platform": "抖音",
+      "category": "教学方法",
+      "access": "caption_only",
+      "summary": "简介展示把抽象含义联系到生活场景的记忆方法。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D10",
+      "title": "若鱼学员专访：上集",
+      "url": "https://www.douyin.com/video/7620315191540870626",
+      "platform": "抖音",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D11",
+      "title": "若鱼学员专访：中集",
+      "url": "https://www.douyin.com/video/7638126588437135503",
+      "platform": "抖音",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D12",
+      "title": "若鱼学员专访：下集",
+      "url": "https://www.douyin.com/video/7638292031673118016",
+      "platform": "抖音",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为学员与助教经验访谈。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-D13",
+      "title": "2025年度作者复盘",
+      "url": "https://www.douyin.com/video/7606990210636047075",
+      "platform": "抖音",
+      "category": "访谈与宣传",
+      "access": "caption_only",
+      "summary": "作品简介为作者年度回顾。",
+      "limitations": "仅核实公开标题与简介，未完整播放或转录，无可引用时间码；生活例子不能当作该牌全部定义。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P01",
+      "title": "洛书塔罗占星搜狐主页",
+      "url": "https://m.sohu.com/media/570791",
+      "platform": "搜狐",
+      "category": "账号目录",
+      "access": "prior_metadata",
+      "summary": "同媒体作者与公开文章的查找入口。",
+      "limitations": "未完整遍历历史文章目录，不保证文章仍可访问或系列完整。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P02",
+      "title": "洛书塔罗占星微博公开介绍",
+      "url": "https://www.sina.cn/media/1796397021",
+      "platform": "微博/新浪",
+      "category": "账号身份",
+      "access": "profile_text",
+      "summary": "本轮页面可读，公开账号标识与抖音及搜狐介绍相符。",
+      "limitations": "只核实公开介绍；不采集私信、关注或私人账号资料。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P03",
+      "title": "第三方收藏的洛书牌义条目",
+      "url": "https://www.douban.com/doulist/142434708/",
+      "platform": "豆瓣",
+      "category": "转载线索",
+      "access": "prior_metadata",
+      "summary": "先前检索得到的第三方收藏入口。",
+      "limitations": "收藏者不等于原作者；未读取列表全部条目，不据此计单牌覆盖。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P04",
+      "title": "非常运势塔罗频道",
+      "url": "https://tarot.99166.com/",
+      "platform": "非常运势",
+      "category": "月运线索",
+      "access": "prior_metadata",
+      "summary": "先前检索出现洛书月运标题。",
+      "limitations": "门户包含多作者，不能整站归入洛书；未作为单牌证据。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P05",
+      "title": "你的名字与圣杯二的影视联想线索",
+      "url": "https://www.zhihu.com/en/article/24425404",
+      "platform": "知乎",
+      "category": "情境示例线索",
+      "access": "prior_metadata",
+      "summary": "先前搜索出现洛书署名和影视类比。",
+      "limitations": "未阅读全文，暂不写入教学结论。",
+      "cardIds": [
+        "c02"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P06",
+      "title": "塔罗历史文章线索",
+      "url": "https://www.sohu.com/a/123526470_570791",
+      "platform": "搜狐",
+      "category": "历史资料线索",
+      "access": "prior_metadata",
+      "summary": "先前检索中的历史叙述入口。",
+      "limitations": "没有史料校勘；不能把作者历史叙述直接当作RWS或塔罗起源事实。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P07",
+      "title": "紫微与塔罗对应文章线索",
+      "url": "https://www.sohu.com/a/121188697_570791",
+      "platform": "搜狐",
+      "category": "跨体系线索",
+      "access": "prior_metadata",
+      "summary": "先前检索涉及不同体系的对应解释。",
+      "limitations": "未全文核实；跨体系对应不进入RWS初级必学或牌义默认规则。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P08",
+      "title": "洛书塔罗占星同名抖音账号（774146682）",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAA8NT0-ggycLkZ3U8WGKdoLuFW8JolcCoau4zGq1ZY_KU",
+      "platform": "抖音",
+      "category": "账号候选",
+      "access": "profile_only",
+      "summary": "本轮主页显示1个作品；另一个同名账号候选。",
+      "limitations": "不能只因同名将两个账号的内容归属完全等同；未纳入单牌比较。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "LS-P09",
+      "title": "公众号洛书塔罗占星",
+      "url": null,
+      "platform": "微信",
+      "category": "账号线索",
+      "access": "no_article_url",
+      "summary": "公开文章及用户截图提到该公众号名称。",
+      "limitations": "没有已核实的具体公众号文章URL或完整历史目录，不批量声称取得。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "HY-01",
+      "title": "专业塔罗牌小程序首页的宏洋引导",
+      "url": null,
+      "platform": "用户截图",
+      "category": "竞品账号线索",
+      "access": "user_screenshot",
+      "summary": "截图明确引导至抖音宏洋专业塔罗牌。",
+      "limitations": "公开全网与登录后站内搜索均未定位可核实主页；与洛书关系未证实。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "HY-02",
+      "title": "专业塔罗牌小程序权杖七逆位截图",
+      "url": null,
+      "platform": "用户截图",
+      "category": "竞品牌义样本",
+      "access": "user_screenshot",
+      "summary": "可见逆位压力、信心与调整方向及感情事业段落。",
+      "limitations": "只见截图局部；不能代替完整条目或认定作者，更不能外推78张。",
+      "cardIds": [
+        "w07"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "HY-03",
+      "title": "专业塔罗牌小程序权杖骑士逆位截图",
+      "url": null,
+      "platform": "用户截图",
+      "category": "竞品牌义样本",
+      "access": "user_screenshot",
+      "summary": "可见冲动、耐心、计划和热情变化等表述。",
+      "limitations": "与公开洛书文章部分文字重合不证明原创归属、授权或整个小程序内容来源。",
+      "cardIds": [
+        "w12"
+      ],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R01",
+      "title": "Reflecta寻物五牌说明",
+      "url": "https://reflecta.cards/en/learn/tarot/spreads/lost-item/",
+      "platform": "Reflecta",
+      "category": "寻物牌阵",
+      "access": "full_text",
+      "summary": "位置区分遗失情境、先查哪里、观察盲点、帮助和行动。",
+      "limitations": "作者非洛书；正文和例子较模板化，不能当成成熟教学效果证据或固定行业标准。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R02",
+      "title": "Lumi寻物五牌说明",
+      "url": "https://tarot.yobzh.com/blog/tarot-spread-to-find-lost-objects",
+      "platform": "Lumi",
+      "category": "寻物牌阵",
+      "access": "full_text",
+      "summary": "提出上次使用情境、环境线索、障碍、行动、结果五个位置。",
+      "limitations": "作者非洛书；不能把花色对应房间或结果牌当作已知地点、是否找回的证明。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R03",
+      "title": "Tarot Forum：The Lost & Found Spread",
+      "url": "https://www.tarotforum.net/threads/the-lost-found-spread.233388/",
+      "platform": "其他公开来源",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R04",
+      "title": "Quareia：A Tarot Companion",
+      "url": "https://www.quareia.com/s/JM-tarot-companion.pdf",
+      "platform": "其他公开来源",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R05",
+      "title": "Utopia：Finding Lost Items",
+      "url": "https://utopiastore.ca/blog/u-tarot-spread-for-finding-lost-items.html",
+      "platform": "其他公开来源",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    },
+    {
+      "id": "EXT-R06",
+      "title": "内田奏：寻物三牌方法线索",
+      "url": "https://note.com/kanade_uchida31/n/n3f687c3581a1?hl=en",
+      "platform": "其他公开来源",
+      "category": "寻物扩展线索",
+      "access": "search_excerpt",
+      "summary": "搜索中发现的寻物读法线索。",
+      "limitations": "非洛书；正文未完整核实，不写入78同作者对照，不采用未经检验的定位结论。",
+      "cardIds": [],
+      "checkedAt": "2026-10-20"
+    }
+  ]
+}

@@ -55,8 +55,8 @@ async function assertChineseShell(page){
   const manifest=JSON.parse(fs.readFileSync(path.join(repo,'manifest.webmanifest'),'utf8'));
   assert(!/<(?:title|meta)[^>]*(?:Tarot Pocket|English and Chinese|中英双语)/i.test(index),'public index metadata must describe the Chinese-only release');
   assert(!/>\s*TAROT POCKET\s*</i.test(update),'public update page must not expose the English brand eyebrow');
-  assert.equal(manifest.name,'塔罗随身学','installed app name must be Chinese-only');
-  assert.equal(manifest.short_name,'塔罗随身学','installed short name must be Chinese-only');
+  assert.equal(manifest.name,'秘境梦屿','installed app name must be Chinese-only');
+  assert.equal(manifest.short_name,'秘境梦屿','installed short name must be Chinese-only');
   const server=await h.server();
   const browser=await chromium.launch(require('./browser_options.cjs'));
   try{

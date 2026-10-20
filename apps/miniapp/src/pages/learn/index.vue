@@ -41,6 +41,7 @@
         <view v-else-if="step" :key="lessonKey" class="panel lesson-content">
           <template v-if="step.kind !== 'question'">
             <text class="small muted eyebrow">{{ step.kind === 'summary' ? '把刚才的要点连起来' : step.support ? '换个例子，继续理解' : step.key === 'T2' && unit.kind === 'card' ? '看看怎样用' : step.reversed ? '在这个例子里读逆位' : '先看讲解' }}</text><text class="lesson-title">{{ step.kind === 'summary' ? '先记住这点，再往下学' : text(unit.title) }}</text>
+            <view v-show="!recallActive" class="lesson-explanation">
             <template v-if="foundationStep">
               <view class="teaching teaching-core"><text class="section-title">核心意思</text><text class="paragraph">{{ text(step.content[0]) }}</text></view>
               <view class="knowledge foundation-memory"><button class="knowledge-toggle" :aria-expanded="insightOpen" @tap="toggleInsight"><text>看图怎么记</text><text>{{ insightOpen ? '−' : '+' }}</text></button><view v-show="insightOpen"><view v-for="(paragraph, index) in step.content.slice(1)" :key="index" class="teaching"><text class="section-title">{{ ['画面线索', '记忆线索'][index] || '理解这张牌' }}</text><text class="paragraph">{{ text(paragraph) }}</text></view><template v-if="lessonInsight"><text class="section-title">{{ lessonInsight.title }}</text><text class="paragraph">{{ lessonInsight.text }}</text></template></view></view>
@@ -49,7 +50,19 @@
               <view v-for="(paragraph, index) in step.content" :key="index" class="teaching"><text class="paragraph">{{ text(paragraph) }}</text></view>
               <view v-if="lessonInsight" class="knowledge"><button class="knowledge-toggle" :aria-expanded="insightOpen" @tap="toggleInsight"><text>再看一个例子</text><text>{{ insightOpen ? '−' : '+' }}</text></button><view v-show="insightOpen"><text class="section-title">{{ lessonInsight.title }}</text><text class="paragraph">{{ lessonInsight.text }}</text></view></view>
             </template>
+            </view>
             <button class="primary" @tap="nextStep">{{ step.kind === 'summary' ? '继续学习' : '继续' }}</button>
+            <view v-if="lessonInsight?.recall" class="recall-area">
+              <button v-if="!recallActive" class="link recall-entry" @tap="setRecall('think')">合上讲解，试着回忆</button>
+              <view v-else class="recall panel" aria-label="看图回忆">
+                <text class="section-title recall-title">看图回忆</text><text class="paragraph">{{ lessonInsight.recall.prompt }}</text><text class="recall-note">先在心里说一说，再核对。也可以直接继续上课。</text>
+                <view v-if="recallReason" class="recall-reason" role="status"><text class="section-title">对照刚才的讲解</text><text v-for="(paragraph, index) in lessonInsight.recall.reason" :key="index" class="paragraph">{{ paragraph }}</text></view>
+                <button v-else class="recall-button" @tap="setRecall('reason')">核对画面与牌义</button>
+                <button v-if="recallReason && !recallExample" class="recall-button" @tap="setRecall('example')">{{ lessonInsight.recall.exampleTitle }}</button>
+                <view v-if="recallExample" class="recall-example" role="status"><text class="section-title">{{ lessonInsight.recall.exampleTitle }}</text><text class="paragraph">{{ lessonInsight.recall.example }}</text></view>
+                <view class="recall-actions"><button v-if="recallReason" class="link" @tap="setRecall('think')">再回想一次</button><button class="link" @tap="setRecall('close')">返回讲解</button></view>
+              </view>
+            </view>
           </template>
           <template v-else>
             <text class="small muted eyebrow">{{ step.key === 'Q4' ? '把整张牌连起来理解' : step.support ? '换个例子试试' : '做一道练习' }}</text><text class="question">{{ text(step.question.prompt) }}</text>
@@ -132,6 +145,22 @@ const lessonKey = computed(() => [session.value?.unitId, session.value?.mode, se
 const disclosureKey = computed(() => foundationStep.value ? 'memory' : step.value?.key)
 const insightOpen = computed(() => session.value?.disclosures?.[disclosureKey.value] === true)
 function toggleInsight() { const current = session.value, key = disclosureKey.value; if (!current || !['memory', 'T2', 'T3', 'T4'].includes(key)) return; (current.disclosures ||= {})[key] = !insightOpen.value; save() }
+// These are disclosure choices, not answers or evidence of mastery.
+const recallActive = computed(() => !!lessonInsight.value?.recall && session.value?.disclosures?.['recall-' + step.value?.key] === true)
+const recallReason = computed(() => session.value?.disclosures?.['reason-' + step.value?.key] === true)
+const recallExample = computed(() => session.value?.disclosures?.['example-' + step.value?.key] === true)
+function setRecall(phase: string) {
+  const current = session.value, key = step.value?.key
+  if (!current || !lessonInsight.value?.recall || !['think', 'reason', 'example', 'close'].includes(phase)) return
+  const state = current.disclosures ||= {}
+  if (['reason', 'example'].includes(phase) && !state['recall-' + key]) return
+  if (phase === 'example' && !state['reason-' + key]) return
+  state['recall-' + key] = phase !== 'close'
+  if (phase === 'think' || phase === 'close') { state['reason-' + key] = false; state['example-' + key] = false }
+  if (phase === 'reason') state['reason-' + key] = true
+  if (phase === 'example') state['example-' + key] = true
+  save()
+}
 const answered = computed(() => step.value?.question ? session.value.answers[step.value.question.id] : null)
 function hash(value: string) { let h = 0; for (const c of value) h = (Math.imul(h, 31) + c.charCodeAt(0)) | 0; return h }
 const options = computed<any[]>(() => [...(step.value?.question?.options || [])].sort((a, b) => hash(a.id + session.value.seed) - hash(b.id + session.value.seed)))
@@ -228,6 +257,10 @@ button::after{border:0}text{overflow-wrap:anywhere}
 @media(min-width:800px){.lesson-page{padding-inline:28px}}
 @media(max-width:360px){.course-home,.course-catalog{padding-inline:20px}.cards.cross .crossing .card-caption{left:calc(100% + 2px);width:36px;max-width:36px;padding:2px;font-size:9px;line-height:1.15}}
 @media(max-width:540px) and (max-height:650px){.page{padding-top:8px}.course-home{padding-top:12px}.course-catalog{padding-top:0}.card-intro .cards:not(.choice):not(.cross){height:125px;margin-bottom:8px}.card-intro .cards:not(.choice):not(.cross) .card-item{width:64px;max-width:64px}.card-intro .cards:not(.choice):not(.cross) .card-picture{width:64px;height:104px}.card-intro .zoom-tip,.card-intro .lesson-title,.card-intro .lesson-content>.small{display:none}.card-intro .lesson-content.panel{margin-top:0}.card-intro .teaching-core{padding:0;border:0;background:transparent}.card-intro .teaching-core .section-title{margin:0 0 6px}.card-intro .teaching-core .paragraph{margin:0;font-size:14px;line-height:1.65}.card-intro .lesson-content>.primary{margin-top:10px;min-height:46px;padding:10px 24px;line-height:1.5}.card-intro .progress{margin-bottom:10px}.card-intro .knowledge{margin:10px 0}}
+
+
+/* Same optional recall aid as the web classroom; primary lesson flow stays intact. */
+.recall-entry{width:100%;min-height:44px;margin-top:8px;font-size:14px;text-align:center}.recall{padding:16px;margin:18px 0;border-radius:13px;overflow-wrap:anywhere}.recall-title{color:var(--accent)}.recall .paragraph{font-size:15px;line-height:1.8;margin:10px 0}.recall .section-title{font-size:15px;line-height:1.6}.recall>.recall-title{font-size:16px;line-height:1.5;margin-bottom:10px}.recall-note{display:block;font-size:13px;line-height:1.8;color:var(--muted);margin:10px 0}.recall-reason,.recall-example{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}.recall-button{width:100%;min-height:44px;margin-top:10px;padding:10px 12px;background:transparent;color:var(--accent);border:1px solid var(--line);border-radius:var(--radius-button);font-size:14px;white-space:normal}.recall-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px}.recall-actions .link{font-size:13px;padding:8px 0}
 
 /* Keep the first explanation and Continue above the 70px floating navigation
    on compact phones without shrinking artwork, reading type or touch targets. */

@@ -6,7 +6,14 @@
   function knowledgeLesson(catalog,id,step){
     if(!step||step.kind!=='teach'||step.support)return null;
     const key={T1:'foundation',T2:'application',T3:'reversal',T4:'integration'}[step.key];
-    return catalog?.byId?.[id]?.learning?.[key]||null;
+    const lesson=catalog?.byId?.[id]?.learning?.[key],u=units[id];
+    if(!lesson||u?.kind!=='card')return lesson||null;
+    // A short recall aid uses only this lesson's authored teaching and curated
+    // excerpt. Library articles and reading scenarios never become prerequisites.
+    const zh=value=>typeof value==='string'?value:value?.zh||'',name=zh(u.title);
+    const prompts={T1:`看着${name}的牌图，哪一处细节能帮助你想起刚才的核心意思？`,T2:`刚才${name}的例子里，什么做法体现了这张牌？换个场景时，仍要保留哪个重点？`,T3:`${name}的这个逆位例子，具体是什么情况发生了变化？为什么不能只说“逆位就是不好”？`,T4:`如果只用自己的话说清${name}，你会保留刚才讲过的哪些重点？`};
+    const reason=(step.key==='T1'?u.teachings.slice(0,2):step.content).map(zh).filter(Boolean);
+    return {...lesson,recall:{prompt:prompts[step.key],reason,exampleTitle:{T1:'一个生活例子',T2:'换个角度理解',T3:'不同背景会怎样',T4:'分清相近的意思'}[step.key],example:step.key==='T1'?zh(u.application):lesson.text}};
   }
   const CARD_PATH=(()=>{
     const byId=new Map(source.cards.map(card=>[card.id,card]));
@@ -167,7 +174,7 @@
     const mode=['learn','review','reverse','reverse-review',...GUIDED_MODES].includes(s.mode)?s.mode:'learn',u=units[s.unitId];
     if(mode.startsWith('reverse')&&u.kind!=='card')return null;
     const plan=planFor(u,mode,s), index=Number.isInteger(s.index)?Math.max(0,Math.min(s.index,plan.length)):0;
-    const out={unitId:u.id,mode,index,startedAt:number(s.startedAt),seed:number(s.seed,1),contentVersion:version,answers:{},support:null,hint:!!s.hint,complete:!!s.complete&&index===plan.length,lang:s.lang==='en'?'en':'zh',animation:{frame:0,static:true,paused:true},scroll:number(s.scroll),disclosures:Object.fromEntries(Object.entries(s.disclosures||{}).filter(([key,value])=>['memory','T2','T3','T4'].includes(key)&&typeof value==='boolean'))};
+    const out={unitId:u.id,mode,index,startedAt:number(s.startedAt),seed:number(s.seed,1),contentVersion:version,answers:{},support:null,hint:!!s.hint,complete:!!s.complete&&index===plan.length,lang:s.lang==='en'?'en':'zh',animation:{frame:0,static:true,paused:true},scroll:number(s.scroll),disclosures:Object.fromEntries(Object.entries(s.disclosures||{}).filter(([key,value])=>(['memory','T2','T3','T4'].includes(key)||/^(recall|reason|example)-T[1-4]$/.test(key))&&typeof value==='boolean'))};
     if(['B','I','A'].includes(s.courseLevel))out.courseLevel=s.courseLevel;
     out.practiceKey=['Q1','Q2','Q3','Q4','V1'].includes(s.practiceKey)?s.practiceKey:'V1';out.variant=Math.floor(number(s.variant));
     const allowed=new Map([...Object.values(u.questions),u.revisit,...Object.values(u.remediation).map(r=>r.question),...(u.kind==='card'?['Q1','Q2','Q3','Q4','V1'].flatMap(key=>practiceVariants(u,key)):[])].map(q=>[q.id,q]));
@@ -414,6 +421,12 @@
       const otherWrong=q.options.filter(o=>o.id!==a.selected&&o.id!==q.correct);
       return `<section class="academy-feedback ${a.correct?'is-correct':'is-incorrect'}" role="status"><h2>${a.correct?copy('答对了','Correct'):copy('这题不对，我们看一下原因','Not quite — here is why')}</h2><p>${esc(t(selected.feedback))}</p>${a.correct?'':`<p><strong>${copy('这题应选：','Supported answer: ')}</strong>${esc(t(correct.text))}</p>${t(selected.feedback)===t(correct.feedback)?'':`<p>${esc(t(correct.feedback))}</p>`}`}${otherWrong.length?`<details><summary>${copy('看看其他选项为什么不合适','Why the other option does not fit')}</summary>${otherWrong.map(o=>`<p><b>${esc(t(o.text))}</b><br>${esc(t(o.feedback))}</p>`).join('')}</details>`:''}${button('next','继续','Continue','','primary wide')}</section>`;
     }
+    function recallCard(insight,s,step){
+      if(!insight?.recall)return '';
+      const state=s.disclosures||{},key=step.key,active=state['recall-'+key],reason=state['reason-'+key],example=state['example-'+key],r=insight.recall;
+      if(!active)return `<div class="academy-recall-entry">${button('recall','合上讲解，试着回忆','','data-recall="think"','linkbtn')}</div>`;
+      return `<section class="academy-recall" aria-label="看图回忆"><h2>看图回忆</h2><p>${esc(r.prompt)}</p><p class="academy-recall-note">先在心里说一说，再核对。也可以直接继续上课。</p>${reason?`<div class="academy-recall-reason" role="status"><h3>对照刚才的讲解</h3>${r.reason.map(text=>`<p>${esc(text)}</p>`).join('')}</div>`:button('recall','核对画面与牌义','','data-recall="reason"','secondary wide')}${reason&&!example?button('recall',r.exampleTitle,'','data-recall="example"','secondary wide'):''}${example?`<div class="academy-recall-example" role="status"><h3>${esc(r.exampleTitle)}</h3><p>${esc(r.example)}</p></div>`:''}<div class="academy-recall-actions">${reason?button('recall','再回想一次','','data-recall="think"','linkbtn'):''}${button('recall','返回讲解','','data-recall="close"','linkbtn')}</div></section>`;
+    }
     function render(){
       const s=current();if(!s)return home();const u=units[s.unitId],plan=planFor(u,s.mode,s),step=currentStep(s);
       const head=`<header class="academy-top">${button('home','返回课程','Back to courses','','linkbtn')}<span>${esc(t(u.title))}</span><span>${Math.min(s.index+1,plan.length)} / ${plan.length}</span></header><div class="academy-progress" role="progressbar" aria-label="${copy('本节进度','Lesson progress')}" aria-valuemin="0" aria-valuemax="${plan.length}" aria-valuenow="${s.index}"><i style="width:${s.index/plan.length*100}%"></i></div>`;
@@ -427,7 +440,7 @@
         const insight=u.kind==='card'?knowledgeLesson(window.TAROT_CARD_KNOWLEDGE,u.id,step):null;
         const content=firstCard?`<div class="academy-teaching-points"><section><h2>核心意思</h2><p>${esc(t(step.content[0]))}</p></section></div>`:step.content.map(p=>`<p>${esc(t(p))}</p>`).join('');
         const extra=firstCard?`<details class="academy-memory" data-disclosure="memory" ${s.disclosures?.memory?'open':''}><summary>看图怎么记</summary>${step.content.slice(1).map((p,i)=>`<section><h2>${['画面线索','记忆线索'][i]||'帮助理解'}</h2><p>${esc(t(p))}</p></section>`).join('')}${insight?`<aside class="academy-knowledge" data-card-knowledge="${step.key}"><h2>${esc(insight.title)}</h2><p>${esc(insight.text)}</p></aside>`:''}</details>`:insight?`<details class="academy-knowledge" data-card-knowledge="${step.key}" data-disclosure="${step.key}" ${s.disclosures?.[step.key]?'open':''}><summary>再看一个例子</summary><h2>${esc(insight.title)}</h2><p>${esc(insight.text)}</p></details>`:'';
-        body=`<section class="academy-copy academy-content-enter"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${content}${extra}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}</section>`;
+        body=`<section class="academy-copy academy-content-enter"><span class="eyebrow">${labels}</span><h1>${step.kind==='summary'?copy('先记住这点，再往下学','Take this point with you'):esc(t(u.title))}</h1>${insight?.recall?`<div class="academy-explanation" ${s.disclosures?.['recall-'+step.key]?'hidden':''}>${content}${extra}</div>`:content+extra}${button('next',step.kind==='summary'?'继续学习':'继续',step.kind==='summary'?'Continue learning':'Continue','','primary wide')}${recallCard(insight,s,step)}</section>`;
       }else{
         const q=step.question,a=s.answers[q.id],ordered=[...q.options].sort((x,y)=>hash(x.id+s.seed)-hash(y.id+s.seed));
         const hint=step.key==='Q2'&&u.application?[u.application]:step.reversed?[u.reversal]:u.teachings;
@@ -510,6 +523,25 @@
         }else refresh();
         requestAnimationFrame(()=>document.querySelector('.academy-feedback')?.scrollIntoView({block:'start',behavior:'instant'}));
       }return;}
+      if(action==='recall'){
+        const step=currentStep(s),insight=units[s.unitId].kind==='card'?knowledgeLesson(window.TAROT_CARD_KNOWLEDGE,s.unitId,step):null;
+        if(!insight?.recall)return;
+        const phase=el.dataset.recall,key=step.key,state=s.disclosures||={};
+        if(!['think','reason','example','close'].includes(phase))return;
+        if(['reason','example'].includes(phase)&&!state['recall-'+key])return;
+        if(phase==='example'&&!state['reason-'+key])return;
+        state['recall-'+key]=phase!=='close';
+        if(phase==='think'||phase==='close'){state['reason-'+key]=false;state['example-'+key]=false;}
+        if(phase==='reason')state['reason-'+key]=true;
+        if(phase==='example')state['example-'+key]=true;
+        save(d);
+        // Update just the optional aid: keep the lesson/card and focus stable.
+        const explanation=document.querySelector('.academy-explanation');if(explanation)explanation.hidden=phase!=='close';
+        const previous=document.querySelector('.academy-recall,.academy-recall-entry');if(previous)previous.outerHTML=recallCard(insight,s,step);
+        const target=document.querySelector('.academy-recall,.academy-recall-entry');target?.querySelector('button')?.focus({preventScroll:true});
+        target?.scrollIntoView({block:'nearest',behavior:'instant'});
+        return;
+      }
       if(action==='hint'){s.hint=true;save(d);refresh();return;}
       if(action==='next'){
         pauseAnimation();

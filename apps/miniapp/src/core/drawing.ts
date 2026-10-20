@@ -119,7 +119,9 @@ export function dailyDisplay(record: RecordItem | null) {
  if (!record?.dailyDate || !validRecord(record)) return null
  const draw = record.cards[0], card = deck.cards.find((c:any)=>c.id===draw.id)
  const direction = draw.reversed ? 'reversed' : 'upright'
- return {id:draw.id, name:card.name, reversed:draw.reversed, date:record.dailyDate,
+ const [year,month,day]=record.dailyDate.split('-')
+ const weekday=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][new Date(Number(year),Number(month)-1,Number(day),12).getDay()]
+ return {year,month,day,weekday,observation:card.observation,id:draw.id, name:card.name, reversed:draw.reversed, date:record.dailyDate,
   message:reference.byId[draw.id][direction].message, core:card.core,
   advice:card[direction], do:daily[draw.id][direction].do, avoid:daily[draw.id][direction].avoid}
 }

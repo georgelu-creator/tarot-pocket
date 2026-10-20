@@ -55,13 +55,15 @@ export default defineComponent({
   scheduleIntro(animationName:string){
    const control=this.introControl
    if(!this.introEnabled||control.stopped||animationName==='none'||this.initialOffset>0||this.initialZoom>1||this.picked.length)return
+   // Join the 1.8 s unfold while it is still moving: 1.15 s -> 2.35 s.
+   // The forward motion stays compositor/DOM-owned, never a per-frame Vue update.
    control.timer=setTimeout(()=>{
     control.timer=null;if(control.stopped)return
     const target=Math.max(24,Math.min(36,this.width/9))*4.5
     if(control.forward)control.forward(target,1200)
     else if(control.context)control.context.scrollTo({left:target,animated:true,duration:1200})
     else{this.introFallback=true;this.requestedLeft=target}
-   },1350)
+   },1150)
   },
   async onFanZoom(payload:{zoom:number,left:number}){
    // Sync once after a pinch; native inertia and WXS own every intermediate frame.
@@ -105,7 +107,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .continuous-fan{width:100%;min-width:0;overflow:hidden}.continuous-fan-scroll{width:100%;white-space:nowrap;touch-action:pan-x;overscroll-behavior-x:contain}.continuous-fan-strip{position:relative;box-sizing:border-box;min-height:238px;padding:0;overflow:hidden;transform-origin:left center}.continuous-fan-plane{position:relative;width:100%;height:100%;will-change:transform;transform:translate3d(0,0,0)}.continuous-fan-card{box-sizing:border-box;position:absolute;top:34px;display:block;width:var(--fan-card-width);height:var(--fan-card-height);min-height:0;padding:0;margin:0;line-height:1;border:0;border-radius:6px;overflow:visible;background:transparent;transition:none;transform-origin:50% 85%;backface-visibility:hidden;will-change:transform;color:var(--muted);font:var(--fan-label-size)/1.4 var(--font-body)}.continuous-fan-pick{position:relative;display:block;box-sizing:border-box;width:100%;height:100%;padding:0;margin:0;min-height:0;border:0;border-radius:6px;overflow:visible;background:transparent;transition:none;opacity:1}.continuous-fan-pick::after{border:0}.continuous-fan-back{width:100%;height:100%;box-sizing:border-box;background-image:var(--card-back);background-size:100% 100%;background-repeat:no-repeat;border-radius:6px;box-shadow:0 2px 4px #37273e25,0 0 0 1px #f2e2ab55;backface-visibility:hidden}.continuous-fan-number{position:absolute;left:0;right:0;top:-23px;text-align:center;pointer-events:none;color:var(--accent);font-size:var(--fan-label-size);font-variant-numeric:tabular-nums;opacity:var(--fan-label-opacity,0);transition:opacity .18s ease}.continuous-fan-card.picked .continuous-fan-back{opacity:.22}.continuous-fan-card.picked .continuous-fan-number{color:var(--muted)}.continuous-fan-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 14px 5px;white-space:normal}.continuous-fan-hint{font:11px/1.65 var(--font-body);color:var(--muted)}.continuous-fan-zoom{display:flex;align-items:center;flex-shrink:0;gap:2px}.continuous-fan-zoom-button{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:40px;height:44px;min-height:44px;padding:0;margin:0;background:transparent;border:0;color:var(--accent);font:20px/1 var(--font-body)}.continuous-fan-zoom-button::after{border:0}.continuous-fan-zoom-button.is-disabled{opacity:.35}.continuous-fan-scale{min-width:32px;text-align:center;font:10px/1.5 var(--font-body);color:var(--muted)}
-.intro .continuous-fan-back{animation:fan-unfold 950ms cubic-bezier(.2,.65,.25,1) both;animation-delay:var(--unfold-delay)}
+.intro .continuous-fan-back{animation:fan-unfold 1800ms cubic-bezier(.2,.65,.25,1) both;animation-delay:var(--unfold-delay)}
 @keyframes fan-unfold{from{opacity:.1;transform:translateX(var(--unfold-x)) translateY(12px) rotate(-7deg)}to{opacity:1;transform:translateX(0) translateY(0) rotate(0)}}
 
 @media(prefers-reduced-motion:reduce){.intro .continuous-fan-back,.intro .continuous-fan-strip{animation:none!important}}

@@ -82,7 +82,8 @@ function configure(config, oldConfig, owner) {
  }
  if(state.restoring)return;
  if (Math.abs(config.zoom-state.zoom)>0.001) {
-  stopIntro(owner);
+  // Input cancels automatic scrolling through onFanInteraction. Keep an already
+  // running inner unfold on its timeline instead of snapping its matrix to zero.
   var anchor = (state.left+oldWidth/2-40*oldZoom) / (clamp(oldWidth/9,24,36)*Math.pow(oldZoom,1.65));
   state.zoom = config.zoom;
   state.left = clamp(edge(state)+anchor*step(state)-state.width/2,0,maximum(state));
@@ -108,10 +109,10 @@ function scroll(event, owner) {
  if(state.syncing){if(Math.abs(state.nativeLeft-state.syncTarget)>=1){strip(owner,state,state.nativeLeft-state.left);return;}state.syncing=false;}
  state.left = state.nativeLeft;strip(owner,state,0);state.lastScroll = now();
  if (state.active) state.moved = true;
- if (!state.frame) {
-  state.frame = true;
-  owner.requestAnimationFrame(function(){state.frame=false;paint(owner,state);});
- }
+ // Native scrolling has already moved the strip when this callback arrives.
+ // Paint its visible arc now; deferring again exposes an old curve at the new
+ // horizontal offset for a frame, especially during fast direction changes.
+ paint(owner,state);
  scheduleSettled(owner,state);
 }
 function scheduleSettled(owner,state) {
@@ -140,7 +141,8 @@ function beginPinch(touches, owner, state) {
 function start(event, owner) {
  var state=stateOf(owner),touches=event.touches || [];
  state.restoring=false;state.syncing=false;
- stopIntro(owner);
+ // Do not remove the intro class mid-animation: CSS continues settling while
+ // the native scroller takes input immediately. Auto-forward cancels below.
  if(!state.interacted){state.interacted=true;owner.callMethod('onFanInteraction',{left:state.left});}
  if (!touches.length) return;
  if (!state.active) {

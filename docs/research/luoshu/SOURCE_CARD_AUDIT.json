@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "checked_date": "2026-10-20",
+  "scope": "洛书署名公开单牌来源核验；不等同专业塔罗牌小程序内容全集。",
+  "method": "检索已知地址、作者与牌名，逐页打开；圣杯1/2/4/5初次超时后重试成功。仅独立单牌详解计入覆盖。未复制长篇原文，未取得转载授权。",
+  "summary": {
+    "single_card_sources": 10,
+    "full_text_sources": 9,
+    "search_excerpt_sources": 1,
+    "unique_card_coverage": 10,
+    "deck_card_count": 78,
+    "cards_without_dedicated_source": 68,
+    "all_78_comparison_complete": false
+  },
+  "sources": [
+    {
+      "id": "L-CARD-m00",
+      "card_ids": [
+        "m00"
+      ],
+      "title": "塔罗牌解析-愚人节话“愚人”",
+      "url": "https://www.sohu.com/a/227074874_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2018-04-02",
+      "access_level": "full_text",
+      "summary_original": "以悬崖、行囊、玫瑰和犬形成出发场景，再讲自由探索与缺乏经验的风险，适合观察画面后连接含义。正位已包含过度冒险，逆位则偏向退缩和缺乏信心，提示同一主题可有不同表现。另列健康、爱情与事业应用，其中健康无问题等断言不具备现实证据。",
+      "comparison_dimensions": [
+        "图像如何形成含义",
+        "开放与鲁莽的区别",
+        "逆位退缩分支",
+        "关系与事业应用"
+      ],
+      "section_anchor": "牌面意思；牌面解读；正位解析；逆位解析；不同方面代表意思",
+      "limitations": "仅确认公开署名；作者资质和独立原创权未经认证。图像象征为作者解释，需核对现用RWS原图。不得把健康、未来关系事件作为事实。"
+    },
+    {
+      "id": "L-CARD-m02",
+      "card_ids": [
+        "m02"
+      ],
+      "title": "塔罗牌 女祭司 女教皇 正位 逆位",
+      "url": "https://m.sohu.com/n/478100178/",
+      "author": "洛书塔罗占星",
+      "published_date": "2017-01-08",
+      "access_level": "full_text",
+      "summary_original": "由卷轴、帷幕、双柱和月亮展开直觉与内在探索，并串联星星、月亮和节制的水意象。逆位既讨论忽略直觉，也讨论独处后重新参与外界，可借鉴多路径讲法。正文同时带有性别角色、星座及健康生育推断，且星座对应不统一，不能当作唯一的基础牌义。",
+      "comparison_dimensions": [
+        "符号解释",
+        "沉思与封闭的区别",
+        "逆位内化或恢复行动",
+        "跨牌图像联系"
+      ],
+      "section_anchor": "对应星象；女祭司/女教皇正位；逆位；两性关系上的意义",
+      "limitations": "署名可核实，不证明版权权属。处女座、双鱼座等对应说法需辨别流派；性别本质化、不孕及疾病判断不采用。"
+    },
+    {
+      "id": "L-CARD-m10",
+      "card_ids": [
+        "m10"
+      ],
+      "title": "最全解读：塔罗牌 生命之轮",
+      "url": "https://m.sohu.com/n/482495433/",
+      "author": "洛书塔罗占星",
+      "published_date": "2017-03-06",
+      "access_level": "full_text",
+      "summary_original": "围绕循环、时机和外部改变说明正逆位，并在后段强调表面有害的变化也可能带来成长，适合对照不同视角下的意义。涉及工作、关系和资源应用及顾客故事，但叙述混合多种轮盘图像，并有命定相逢、意外收入等断语，不能整体视作同版RWS的可靠说明。",
+      "comparison_dimensions": [
+        "变化与主观评价",
+        "正逆位条件",
+        "关系工作应用",
+        "图像版本一致性"
+      ],
+      "section_anchor": "牌面；牌面解释；正位解释；逆位解释；大体上的意义",
+      "limitations": "描述命运女神及斯芬克斯等混合图像，必须核对版本。好运、收入和疾病不是由牌可验证的结论；顾客故事不构成效果证据。"
+    },
+    {
+      "id": "L-CARD-w01",
+      "card_ids": [
+        "w01"
+      ],
+      "title": "塔罗牌 权杖首牌 权杖一 正位 逆位",
+      "url": "https://www.douban.com/note/716057692/",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-04-27",
+      "access_level": "search_excerpt",
+      "summary_original": "搜索索引把新芽权杖、云中手和远处城堡连到创造冲动、潜力及新行动，再用火的蓄势解释正位。逆位包含热情减弱、力量方向错误、尚未行动等路径，适合比较潜力与实际结果的差别。摘录也把图像直接延伸到生育、房屋安全与健康，因此只能选择性借鉴，不能据此诊断或预警。",
+      "comparison_dimensions": [
+        "图像与元素记忆",
+        "潜力与结果的区别",
+        "逆位受阻或消退",
+        "领域讲解"
+      ],
+      "section_anchor": "搜索索引中的牌面解释、牌义解释、正位含义、逆位含义",
+      "limitations": "直接打开不可访问，只有搜索索引摘录；未完成全文逐段核验。不能称已获取文章全文或按摘录确认所有分支。"
+    },
+    {
+      "id": "L-CARD-w12",
+      "card_ids": [
+        "w12"
+      ],
+      "title": "塔罗牌 权杖骑士 正位逆位",
+      "url": "https://www.sohu.com/a/316834558_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-05-27",
+      "access_level": "full_text",
+      "summary_original": "以骑士人马向前、火焰形态及红色连接行动热情，随后讲挑战、改变与旅行。逆位分别写冲动冒进、热度下降、准备不足、计划中断和缺乏耐心，可作为分支辨识的参考。文章还直接推向职业选择、投资品种和组合必定出国，这些超出了画面与已知情境能够支持的程度。",
+      "comparison_dimensions": [
+        "行动与准备的张力",
+        "逆位多分支",
+        "宫廷风格和人物映射",
+        "领域与组合解读"
+      ],
+      "section_anchor": "牌面解释；牌义解释；正位含义；逆位含义；对应生活各层面",
+      "limitations": "与用户竞品截图存在文字重合，只能证明局部内容相同，不能证明权属或整套78张一致。投资、健康及确定事件不宜导入。"
+    },
+    {
+      "id": "L-CARD-c01",
+      "card_ids": [
+        "c01"
+      ],
+      "title": "塔罗牌 圣杯王牌 正位 逆位",
+      "url": "https://www.sohu.com/a/317025666_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-05-28",
+      "access_level": "full_text",
+      "summary_original": "通过托杯之手、溢水、白鸽和水池说明情感接纳与交流，并延展至友情和关系的新阶段。逆位讨论内心匮乏、表里不一致、依赖及交流困难，有助于区分感受、表达和互动。正文也有外遇、健康和财务满足的直接判断，教学应保留推理链而不沿用这些结果断语。",
+      "comparison_dimensions": [
+        "符号到概念的解释链",
+        "情感与关系事件区别",
+        "逆位多种表现",
+        "跨领域应用"
+      ],
+      "section_anchor": "牌面解释；推测；正位含义；逆位含义；生活各层面",
+      "limitations": "宗教象征需注明传统与作者联想；不把外遇、健康和财运当作由单牌确定的事实。"
+    },
+    {
+      "id": "L-CARD-c02",
+      "card_ids": [
+        "c02"
+      ],
+      "title": "塔罗牌 圣杯二 正位 逆位",
+      "url": "https://www.sohu.com/a/317550170_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-05-30",
+      "access_level": "full_text",
+      "summary_original": "把双人持杯读为互惠、平等和共同目标，明确说明并不限于爱情，也可用于友谊与合作。逆位讨论失衡、控制、承诺差异与关系中的消耗，并提示结合周围牌。可借鉴同一机制跨场景迁移，但文章以性别分配主动被动、直接推断健康和收入的部分不应成为统一教学结论。",
+      "comparison_dimensions": [
+        "爱情之外的应用",
+        "互惠与控制的区别",
+        "与恋人牌的比较",
+        "动作到互动机制"
+      ],
+      "section_anchor": "牌面解释；推测；正位含义；逆位含义；生活各层面",
+      "limitations": "性别角色描述是作者读法，不是男女普遍事实。不能由逆位直接断离婚，也不能以牌确认他人心意、健康或收入。"
+    },
+    {
+      "id": "L-CARD-c03",
+      "card_ids": [
+        "c03"
+      ],
+      "title": "塔罗牌 圣杯三 正位逆位",
+      "url": "https://www.sohu.com/a/322515506_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-06-24",
+      "access_level": "full_text",
+      "summary_original": "从举杯、花果和团体活动讲庆祝、友谊及合作，逆位展开过度享乐、表面和谐、群体分歧及期待落差。这种从同一团体机制看不同表现的方式可用于情境练习。短句含义与长正文不完全一致，且出现第三者等推断，比较时要保留内部差异，不能把长文或断言直接当权威。",
+      "comparison_dimensions": [
+        "双人与群体的区别",
+        "共同庆祝与表面社交",
+        "逆位不同路径",
+        "关键词与长文一致性"
+      ],
+      "section_anchor": "含义；牌面解释；正位含义；逆位含义；生活各层面",
+      "limitations": "不能以三张人物或逆位指认第三者；健康和财富判断不采用。页面署名并不确认原创权属。"
+    },
+    {
+      "id": "L-CARD-c04",
+      "card_ids": [
+        "c04"
+      ],
+      "title": "塔罗牌 圣杯四 正位逆位",
+      "url": "https://www.sohu.com/a/322926711_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-06-26",
+      "access_level": "full_text",
+      "summary_original": "以树下人物、交臂姿态和未接之杯说明不满足、退缩及忽略机会，再联系稳定也可能令人乏味。逆位既写重新参与，也写麻木后被迫转向，适合设计分支判断与现实线索练习。数字四的建筑比喻过于绝对，外遇和健康推断也不能照搬；页面的编辑残留更不适合模仿。",
+      "comparison_dimensions": [
+        "暂缓与拒绝的区别",
+        "稳定与停滞",
+        "逆位恢复或加重",
+        "条件化分支教学"
+      ],
+      "section_anchor": "牌面解释；推测；正位；逆位；生活各层面",
+      "limitations": "所有建筑均四方体的说法不成立；保留作者象征读法的条件，排除外遇和健康断语。页面仍见图片占位与删除字样。"
+    },
+    {
+      "id": "L-CARD-c05",
+      "card_ids": [
+        "c05"
+      ],
+      "title": "塔罗牌 圣杯五 正位逆位",
+      "url": "https://www.sohu.com/a/323453180_570791",
+      "author": "洛书塔罗占星",
+      "published_date": "2019-06-28",
+      "access_level": "full_text",
+      "summary_original": "由倒杯、立杯和桥说明失去与仍有资源并存，重点是关注损失时可能忽略支持。逆位兼写走出悲伤与悲伤加重，并比较宝剑三的自责与向外归因，提供了近似牌辨析入口。但严格的归责分法及逆位桥断都是作者解释，不是固定规则；恢复、复合和健康结果也不能据牌保证。",
+      "comparison_dimensions": [
+        "失去与剩余资源并存",
+        "逆位恢复或加重",
+        "与宝剑三比较",
+        "支持条件与情境案例"
+      ],
+      "section_anchor": "牌面解释；牌义解释；正位含义；逆位含义；生活各层面",
+      "limitations": "不能把归责方向当单牌唯一差异；逆位桥断属于想象而非原画变化。复合和健康不作确定预测。"
+    }
+  ],
+  "context_sources": [
+    {
+      "id": "L-OVERVIEW-20170112",
+      "title": "神奇的七十八张塔罗牌！",
+      "url": "https://mt.sohu.com/20170112/n478574694.shtml",
+      "author": "洛书塔罗占星",
+      "published_date": "2017-01-12",
+      "access_level": "search_excerpt",
+      "summary_original": "整副牌结构与大牌关键词的框架参考。",
+      "limitations": "打开返回页面框架但未取得完整可核对正文；采用索引摘录层级。标题78张不等于78篇详解，不计完整牌义覆盖。"
+    },
+    {
+      "id": "L-FOOL-20170105",
+      "title": "愚人 塔罗牌 正位 逆位",
+      "url": "https://m.sohu.com/n/477905335/",
+      "author": "洛书塔罗占星",
+      "published_date": "2017-01-05",
+      "access_level": "search_excerpt",
+      "summary_original": "愚人较早版本，留作同牌异文线索。",
+      "limitations": "本轮未逐段阅读，不重复计数；主对照使用2018年全文。"
+    }
+  ],
+  "excluded_attributions": [
+    {
+      "id": "EX-WORK-BIDIOU",
+      "title": "洛书塔罗案例03：工作选A还是选B？寻找未来出路很难怎么办？",
+      "url": "https://www.sohu.com/a/612678759_570791",
+      "access_level": "search_excerpt",
+      "reason": "虽发布于洛书账号，正文明确署名工作室塔罗师比丢；不归入洛书本人单牌语料。"
+    },
+    {
+      "id": "EX-TV-BIDIOU",
+      "title": "《点燃我，温暖你》塔罗剧情分析：如果是你，会选择彼此救赎的爱情吗？",
+      "url": "https://www.sohu.com/a/608506389_570791",
+      "access_level": "search_excerpt",
+      "reason": "正文作者为洛书工作坊塔罗师比丢，账号归属不能替代个人署名。"
+    },
+    {
+      "id": "EX-SCREENSHOT-w07",
+      "title": "专业塔罗牌：权杖七逆位用户截图",
+      "card_ids": [
+        "w07"
+      ],
+      "url": null,
+      "access_level": "unavailable",
+      "reason": "仅用户截图，没有核实同作者原文；不得因权杖骑士文字重合推断权杖七或全部牌均属于洛书。"
+    }
+  ],
+  "coverage": [
+    {
+      "card_id": "m00",
+      "dedicated_source_ids": [
+        "L-CARD-m00"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "m01",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m02",
+      "dedicated_source_ids": [
+        "L-CARD-m02"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "m03",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m04",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m05",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m06",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m07",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m08",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m09",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m10",
+      "dedicated_source_ids": [
+        "L-CARD-m10"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "m11",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m12",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m13",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m14",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m15",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m16",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m17",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m18",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m19",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m20",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "m21",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w01",
+      "dedicated_source_ids": [
+        "L-CARD-w01"
+      ],
+      "status": "search_excerpt"
+    },
+    {
+      "card_id": "w02",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w03",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w04",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w05",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w06",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w07",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w08",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w09",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w10",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w11",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w12",
+      "dedicated_source_ids": [
+        "L-CARD-w12"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "w13",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "w14",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c01",
+      "dedicated_source_ids": [
+        "L-CARD-c01"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "c02",
+      "dedicated_source_ids": [
+        "L-CARD-c02"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "c03",
+      "dedicated_source_ids": [
+        "L-CARD-c03"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "c04",
+      "dedicated_source_ids": [
+        "L-CARD-c04"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "c05",
+      "dedicated_source_ids": [
+        "L-CARD-c05"
+      ],
+      "status": "full_text"
+    },
+    {
+      "card_id": "c06",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c07",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c08",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c09",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c10",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c11",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c12",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c13",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "c14",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s01",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s02",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s03",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s04",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s05",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s06",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s07",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s08",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s09",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s10",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s11",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s12",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s13",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "s14",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p01",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p02",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p03",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p04",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p05",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p06",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p07",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p08",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p09",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p10",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p11",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p12",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p13",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    },
+    {
+      "card_id": "p14",
+      "dedicated_source_ids": [],
+      "status": "not_found"
+    }
+  ],
+  "remaining_work": [
+    "其余68张未找到可用于同作者独立单牌对照的专文，明确留白；不代表作者从未发表。",
+    "豆瓣权杖一仍需公开正文核验。",
+    "抖音及B站实际视频由独立研究轨道核验，本文件不以标题充当视频内容。",
+    "逐牌需与当前应用实际展示章节对照，区分真实缺项与已存在但折叠难发现。"
+  ]
+}

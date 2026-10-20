@@ -1,10 +1,10 @@
-# Tarot Pocket · 塔罗随身学
+# 秘境梦屿
 
 **从零开始学塔罗，也可以带着问题来抽牌。**
 
 [**手机体验 →**](https://tarot.georgelu.cn/) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases) · [English project notes](README.md)
 
-![Tarot Pocket](docs/images/hero.png)
+![秘境梦屿](docs/images/hero.png)
 
 ## 一步步学会读牌
 
@@ -83,4 +83,4 @@ npm run serve
 - **原创课程、翻译、文档与新设计牌背：**[CC BY-SA 4.0](CONTENT_LICENSE.md)。
 - **历史牌图：**独立的[牌图权利说明](ARTWORK_LICENSE.md)、[来源说明](assets/SOURCES.md)和[逐牌清单](assets/manifest.json)。来源页标注公共领域；这与代码、课程的许可分别处理。
 
-Tarot Pocket 是独立学习项目。[版本记录](CHANGELOG.md) · [安全问题](SECURITY.md) · [社区约定](CODE_OF_CONDUCT.md)
+秘境梦屿是独立学习项目。[版本记录](CHANGELOG.md) · [安全问题](SECURITY.md) · [社区约定](CODE_OF_CONDUCT.md)

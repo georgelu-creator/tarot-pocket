@@ -3,11 +3,18 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const root=path.resolve(__dirname,'..'),sandbox={window:{}};
 for(const name of ['reading-deck.js','card-reference.js','card-knowledge.js','academy-content.js','academy.js'])vm.runInNewContext(fs.readFileSync(path.join(root,name),'utf8'),sandbox,{filename:name});
 const {TAROT_CARD_KNOWLEDGE:knowledge,TAROT_READING_DECK:deck,TarotAcademy:academy}=sandbox.window;
-const ids=Array.from(deck.cards,c=>c.id),seen=new Map(),lengths=[];
+const ids=Array.from(deck.cards,c=>c.id),seen=new Map(),lengths=[];let appended=0;
 assert.deepEqual(Object.keys(knowledge.byId).sort(),ids.slice().sort());
 function prose(text,label){assert.equal(typeof text,'string',label);assert(text.trim().length>20,label+' is substantive');assert(!/[<>]/.test(text),label+' contains plain text');}
 for(const id of ids){
  const k=knowledge.byId[id];assert.equal(k.id,id);prose(k.structure,id+' structure');
+ assert.deepEqual(Object.keys(k.narrative).sort(),['example','meaning','picture']);
+ for(const [key,text] of Object.entries(k.narrative)){prose(text,id+' narrative '+key);assert.doesNotMatch(text,/寻物|失物|日运|牌位|建议位|阻碍位|抽牌|抽到/,id+' standalone narrative has no spread coupling');assert(!seen.has(text),id+' duplicated narrative');seen.set(text,id);}
+ const base=sandbox.window.TAROT_CARD_REFERENCE.byId[id].comparison;
+ const expected=[...k.comparisons];if(base&&!expected.some(item=>item.id===base.id)){expected.push(base);appended++;}
+ assert.deepEqual(JSON.parse(JSON.stringify(k.relatedCards)),JSON.parse(JSON.stringify(expected)),id+' combines both authored lists without losing base comparison');
+ assert.equal(new Set(k.relatedCards.map(item=>item.id)).size,k.relatedCards.length,id+' comparison targets unique');
+
  assert.equal(k.nuances.length,2);k.nuances.forEach(t=>prose(t,id+' nuance'));
  assert.equal(k.reversedBranches.length,3);assert.equal(new Set(k.reversedBranches.map(x=>x.title)).size,3);k.reversedBranches.forEach(x=>prose(x.text,id+' reversal '+x.title));
  assert.deepEqual(Object.keys(k.domains).sort(),['career','life','love','money','study']);
@@ -27,4 +34,5 @@ for(const id of ids){
  for(const text of texts){assert(!seen.has(text),id+' duplicates '+seen.get(text));seen.set(text,id);}
  lengths.push(texts.reduce((sum,t)=>sum+t.length,0));
 }
+assert.equal(appended,22,'all 22 missing base comparisons restored');
 console.log(`PASS: 78 detailed articles; 156 contrasts; 156 original cases; 780 orientation-specific domains; 312 stage excerpts. New reference prose ${Math.min(...lengths)}–${Math.max(...lengths)} characters per card.`);

@@ -14,7 +14,7 @@ const fallbackUrl=(()=>{const value=new URL(url);value.searchParams.set('lang','
   try{
    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[];
    p.on('pageerror',e=>errors.push(e.message));
-   await p.goto(url);assert.match(await p.locator('.reading-choice small').innerText(),/塔罗日运/);await p.locator('.bottomnav [data-page=reading]').click();
+   await p.goto(url);assert.equal(await p.title(),'秘境梦屿');assert.match(await p.locator('.home-decisions>.daily-tile').innerText(),/塔罗日运/);assert.equal(await p.locator('.home-decisions').evaluate(el=>el.firstElementChild.matches('[data-reading="daily"]')),true,'daily is the independent first home entry');await p.locator('.bottomnav [data-page=reading]').click();
    assert.match(await p.locator('[data-reading=daily]').innerText(),/塔罗日运/);
    assert.doesNotMatch(await p.locator('[data-reading=daily]').innerText(),/今日塔罗|今日一牌/);
    await p.clock.setFixedTime(new Date('2026-09-15T12:00:00'));

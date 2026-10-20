@@ -5,7 +5,7 @@
   const translate=value=>value;
   function sync(){
     document.documentElement.lang=locale;
-    document.title='塔罗随身学';
+    document.title='秘境梦屿';
   }
   function setLocale(){
     sync();

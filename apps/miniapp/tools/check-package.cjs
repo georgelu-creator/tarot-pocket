@@ -51,6 +51,11 @@ const article=fs.readFileSync(path.join(root,'pages/card/generated/knowledge.js'
 assert(article.includes('reversedBranches'),'Full reference is absent from its subpackage');
 const sourceRoot=path.resolve(__dirname,'../../../content/card-knowledge');
 const expected=Object.assign({},...['major.json','wands-cups.json','swords-pentacles.json'].map(name=>JSON.parse(fs.readFileSync(path.join(sourceRoot,name),'utf8'))));
+const referenceScope={window:{}};vm.runInNewContext(fs.readFileSync(path.join(repo,'card-reference.js'),'utf8'),referenceScope);
+for(const [id,article] of Object.entries(expected)){
+ article.relatedCards=article.comparisons.map(item=>({...item}));const base=referenceScope.window.TAROT_CARD_REFERENCE.byId[id].comparison;
+ if(base&&!article.relatedCards.some(item=>item.id===base.id))article.relatedCards.push(JSON.parse(JSON.stringify(base)));
+}
 const compiled=require(path.join(root,'pages/card/generated/knowledge.js')).knowledge.byId;
 assert.equal(Object.keys(compiled).length,78,'The card subpackage must retain all 78 articles');
 assert.deepEqual(compiled,expected,'Compiled card articles differ from their authored source');

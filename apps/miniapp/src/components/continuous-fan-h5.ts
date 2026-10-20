@@ -30,12 +30,20 @@ export function bindH5Fan(runtime:ContinuousFanWxs,root:HTMLElement,callMethod:(
  const animateForward=(target:number,duration:number)=>{
   if(!scroller)return
   cancelIntro();const start=scroller.scrollLeft,started=performance.now()
-  const frame=(timestamp:number)=>{if(!root.isConnected)return;const progress=Math.min(1,(timestamp-started)/duration),eased=progress<.5?4*progress*progress*progress:1-Math.pow(-2*progress+2,3)/2;scroller.scrollLeft=start+(target-start)*eased;if(progress<1)introFrame=requestAnimationFrame(frame);else introFrame=0}
+  const frame=(timestamp:number)=>{if(!root.isConnected)return;const progress=Math.min(1,(timestamp-started)/duration),eased=progress*progress*progress*(10-15*progress+6*progress*progress);scroller.scrollLeft=start+(target-start)*eased;if(progress<1)introFrame=requestAnimationFrame(frame);else introFrame=0}
   introFrame=requestAnimationFrame(frame)
  }
  const handlers={...runtime}
- for(const name of ['scroll','tap'] as const){
-  handlers[name]=(event:unknown)=>runtime[name](event,owner)
+ handlers.tap=(event:unknown)=>runtime.tap(event,owner)
+ // Read the actual compositor-owned DOM offset at scroll delivery. Sending it
+ // through ScrollView's custom-event normalization is unnecessary on H5.
+ // Native WeChat continues to use the WXS scroll binding unchanged.
+ const onNativeScroll=()=>{if(scroller)runtime.scroll({detail:{scrollLeft:scroller.scrollLeft}},owner)}
+ if(scroller){
+  scroller.addEventListener('scroll',onNativeScroll,{passive:true})
+  handlers.scroll=()=>{} // Do not paint or reset the settle clock twice.
+ }else{
+  handlers.scroll=(event:unknown)=>runtime.scroll(event,owner)
  }
  // H5 ScrollView stops bubbling touchmove itself. Capture gestures before that
  // native scroller handler, consuming only two-finger motion.
@@ -53,5 +61,5 @@ export function bindH5Fan(runtime:ContinuousFanWxs,root:HTMLElement,callMethod:(
  const interrupt=()=>{cancelIntro();runtime.start({touches:[]},owner)}
  for(const type of ['wheel','pointerdown','keydown'])root.addEventListener(type,interrupt,{capture:true,passive:true})
  handlers.configure=(config:unknown,oldConfig:unknown)=>runtime.configure(config,oldConfig,owner)
- return {handlers,configure:handlers.configure,animateForward,cancelIntro,dispose(){cancelIntro();for(const type of ['wheel','pointerdown','keydown'])root.removeEventListener(type,interrupt,true);for(const {type,listener} of listeners)root.removeEventListener(type,listener as EventListener,true)}}
+ return {handlers,configure:handlers.configure,animateForward,cancelIntro,dispose(){cancelIntro();scroller?.removeEventListener('scroll',onNativeScroll);for(const type of ['wheel','pointerdown','keydown'])root.removeEventListener(type,interrupt,true);for(const {type,listener} of listeners)root.removeEventListener(type,listener as EventListener,true)}}
 }

@@ -1,5 +1,11 @@
 # 78 张牌独立参考资料
 
+## 2026-10-20 · 洛书公开资料对照（研究候选，未采用到运行时）
+
+新增[资料分类与结论](research/luoshu/README.md)、[78张逐牌对照](research/luoshu/CARD_COMPARISON.md)和[教学融入候选稿](research/luoshu/TEACHING_INTEGRATION.md)。本地78张已核查；同作者独立专文仅9张全文、1张搜索摘录，另4张只有视频简介，其余外部对应资料留白。不是已取得洛书或竞品完整78篇，也不是外部教师校勘。22张已有基础近牌比较未出现在实际详情的深度比较列表，是展示覆盖发现，不是牌义缺文。
+
+所有现代作者内容保留来源及访问层级，只作短摘要和评议；没有镜像文章、视频、图片或付费课。研究建议尚未导入card-reference、card-knowledge、课程摘录或解读字段；有效教学要求与运行时内容保持。实际采用时才同步主文档、受影响脚本与验证。
+
 ## 2026-10-12 · 独立深度资料与课程摘录
 
 新增 `content/card-knowledge/{major,wands-cups,swords-pentacles}.json`，由 `tools/build_card_knowledge.py` 生成 `card-knowledge.js`（knowledge-1）。此层服务牌库与课程讲解；原 `card-reference.js` 保留解读引擎兼容字段与含义，不用更长正文暗中改变抽牌算法。
