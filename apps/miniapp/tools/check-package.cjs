@@ -5,7 +5,7 @@ assert.deepEqual(config.pages,['pages/home/index','pages/learn/index','pages/dra
 assert.deepEqual(config.tabBar.list.map(item=>item.text),['首页','抽牌','学牌','牌库']);
 assert.deepEqual(config.tabBar.list.map(item=>item.pagePath),['pages/home/index','pages/draw/index','pages/learn/index','pages/library/index']);
 const brand=JSON.parse(fs.readFileSync(path.join(root,'pages/home/index.json')));assert.equal(brand.navigationBarTitleText,'秘境梦屿');
-const manifest=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');assert.equal(manifest.versionName,'0.5.2');assert.equal(manifest.versionCode,'502');
+const manifest=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');assert.equal(manifest.versionName,'0.5.3');assert.equal(manifest.versionCode,'503');
 const packageInfo=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../package.json')));assert.equal(packageInfo.version,manifest.versionName);
 const packs=config.subPackages||config.subpackages||[];
 assert.equal(packs.length,1);assert.equal(packs[0].root,'pages/card');
@@ -54,4 +54,4 @@ const expected=Object.assign({},...['major.json','wands-cups.json','swords-penta
 const compiled=require(path.join(root,'pages/card/generated/knowledge.js')).knowledge.byId;
 assert.equal(Object.keys(compiled).length,78,'The card subpackage must retain all 78 articles');
 assert.deepEqual(compiled,expected,'Compiled card articles differ from their authored source');
-console.log('PASS generated WeChat package: '+JSON.stringify(sizes)+' bytes; Mengyu 0.5.2 four public tabs, all 40 scenes/20 methods/78 card lessons, complete articles in card subpackage, shared short course excerpts in main, no cultural or audit profile switch. Platform upload size validation remains separate.');
+console.log('PASS generated WeChat package: '+JSON.stringify(sizes)+' bytes; Mengyu 0.5.3 four public tabs, all 40 scenes/20 methods/78 card lessons, complete articles in card subpackage, shared short course excerpts in main, no cultural or audit profile switch. Platform upload size validation remains separate.');

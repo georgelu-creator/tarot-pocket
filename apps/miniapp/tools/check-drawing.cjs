@@ -99,17 +99,24 @@ for (const [name, expected] of Object.entries(presets)) {
 }
 assert.deepEqual(plain(drawing.boardLayout({ layout: 'triangle', positions: [{},{},{}] }).cells), [{column:2,row:2},{column:1,row:1},{column:3,row:1}])
 assert.ok(css.includes('.layout-triangle .slot-1{grid-row:2;grid-column:1 / 3'))
-// Evaluate the real page expression rather than duplicating its fan-window implementation.
+// The complete deck is mounted once, not exposed through 13-card windows.
 const page = fs.readFileSync(path.join(base, 'src/pages/draw/index.vue'), 'utf8')
-const fanExpression = page.match(/const visibleIndices=computed\(\(\)=>\s*(Array\.from\([^\n]+)\)/)
-assert.ok(fanExpression, 'fan expression must remain inspectable')
-const reached = new Set()
-for (let start = 0; start <= 65; start++) {
- const indices = vm.runInNewContext(fanExpression[1], { fanStart: { value: start } })
- assert.ok(indices.length <= 13)
- indices.forEach(index => { assert.ok(index >= 0 && index < 78); reached.add(index) })
-}
-assert.equal(reached.size, 78, 'all cards must be reachable through fan paging')
+const fanSource = fs.readFileSync(path.join(base,'src/components/ContinuousFan.vue'),'utf8')
+const fanExpression=fanSource.match(/indices:(Array\.from\(\{length:78\},\(_,index\)=>index\))/)
+assert.ok(fanExpression,'continuous fan indices must come from the actual component')
+const indices=vm.runInNewContext(fanExpression[1])
+assert.equal(indices.length,78)
+assert.deepEqual(Array.from(indices),Array.from({length:78},(_,i)=>i),'all78 original indices stay mounted in order')
+assert.match(page,/<ContinuousFan/)
+assert(!/上一组|下一组|visibleIndices/.test(page),'grouped selection is removed')
+const viewDraft=readyDraft('three');viewDraft.fanOffset=999;viewDraft.fanZoom=1.7;viewDraft.fanIntroSeen=true
+const viewStore=drawing.normalizeReading({...drawing.blankReading(),draft:viewDraft})
+assert.equal(viewStore.draft.fanOffset,999);assert.equal(viewStore.draft.fanZoom,1.7);assert.equal(viewStore.draft.fanIntroSeen,true,'current draft remembers introduction without creating a history record')
+assert.deepEqual(plain(viewStore.draft.pool),plain(viewDraft.pool),'restoring viewport never redraws')
+viewDraft.fanOffset=-1;viewDraft.fanZoom=9
+const sanitized=drawing.normalizeReading({...drawing.blankReading(),draft:viewDraft})
+assert.equal(sanitized.draft.fanOffset,undefined);assert.equal(sanitized.draft.fanZoom,undefined)
+assert.deepEqual(plain(sanitized.draft.pool),plain(viewDraft.pool),'bad view preferences cannot discard a valid game')
 console.log(`PASS drawing: ${drawing.availableSpreads.length} authored spreads; identities, orientations, daily date, malformed state, Web layout parity, 78-card fan reachability`)
 // Regressions: neutral topics, atomic completion and local-midnight ownership.
 const neutral = readyDraft('one')

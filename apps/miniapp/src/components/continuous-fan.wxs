@@ -1,0 +1,184 @@
+// View-layer gestures: native scroll-view owns one-finger motion and inertia.
+// Only visible cards are curved; no per-frame Vue render or JS/native bridge.
+function clamp(value, low, high) { return Math.max(low, Math.min(high, value)); }
+// H5 supplies its clock explicitly; native WXS uses its own Date factory.
+// Platform preprocessor comments are not transformed inside external WXS files.
+var browserClock = null;
+function setClock(clock) { browserClock = clock; }
+function now() { return browserClock ? browserClock() : getDate().getTime(); }
+
+function step(state) { return clamp(state.width / 9, 24, 36) * Math.pow(state.zoom, 1.65); }
+function edge(state) { return 40*state.zoom; }
+function maximum(state) { return Math.max(0, 2*edge(state) + 77 * step(state) + 72 * state.zoom - state.width); }
+function stateOf(owner) {
+ var state = owner.getState();
+ if (!state.ready) {
+  state.ready = true; state.width = 320; state.zoom = 1; state.left = 0;
+  state.nativeLeft = 0; state.lastScroll = -10000; state.blockUntil = 0;
+  state.cards = {}; state.transforms = {}; state.picked = []; state.disabled = false;
+ }
+ return state;
+}
+function strip(owner, state, compensation) {
+ var signature=state.width+':'+state.zoom;
+ var node = state.strip || owner.selectComponent('.continuous-fan-strip');
+ if (!node) return;
+ state.strip=node;
+ if(state.stripSignature!==signature){
+  state.stripSignature=signature;
+  var viewport=state.viewport || owner.selectComponent('.continuous-fan-scroll');
+  if(viewport){state.viewport=viewport;viewport.setStyle({height:(120*state.zoom+118)+'px'});}
+  // The scrollable box never moves. Only an inner plane compensates pinch sync.
+  node.setStyle({width:(2*edge(state)+77*step(state)+72*state.zoom)+'px',height:(120*state.zoom+118)+'px','--fan-edge':edge(state)+'px','--fan-step':step(state)+'px','--fan-card-width':(72*state.zoom)+'px','--fan-card-height':(120*state.zoom)+'px','--fan-label-size':Math.round(11+5*(state.zoom-1))+'px','--fan-label-opacity':state.zoom>1.08?'1':'0'});
+ }
+ if(state.compensation!==compensation){
+  var plane=state.plane || owner.selectComponent('.continuous-fan-plane');
+  if(plane){state.plane=plane;state.compensation=compensation;plane.setStyle({transform:'translate3d('+compensation+'px,0,0)'});}
+ }
+}
+
+function paint(owner, state) {
+ var spacing = step(state);
+ var first = Math.max(0, Math.floor((state.left-72*state.zoom-edge(state))/spacing)-2);
+ var last = Math.min(77, Math.ceil((state.left+state.width-edge(state))/spacing)+2);
+ for (var index = first; index <= last; index++) {
+  var key = 'c'+index;
+  var node = state.cards[key] || owner.selectComponent('.fan-item-'+index);
+  if (!node) continue;
+  state.cards[key] = node;
+  var unit = clamp((edge(state)+index*spacing+36*state.zoom-state.left-state.width/2)/(state.width/2),-1.2,1.2);
+  var transform='translate3d(0,'+(Math.round(3000*unit*unit)/100)+'px,0) rotate('+(Math.round(1700*unit)/100)+'deg)';
+  if(state.transforms[key]!==transform){state.transforms[key]=transform;node.setStyle({transform:transform});}
+ }
+}
+function stopIntro(owner) {
+ var root = owner.selectComponent('.continuous-fan');
+ if (root) root.removeClass('intro');
+}
+function configure(config, oldConfig, owner) {
+ if (!config) return;
+ var state = stateOf(owner);
+ var oldZoom = state.zoom;
+ var oldWidth = state.width;
+ state.width = config.width || 320; state.pageLeft=config.pageLeft || 0; state.disabled = config.disabled;
+ state.picked = config.picked || [];
+ if (!state.configured) {
+  state.configured=true;state.zoom=clamp(config.zoom || 1,1,2.4);
+  state.restoring=config.left>0 || config.zoom>1;state.restoreLeft=Math.max(0,config.left || 0);state.restoreMeasured=false;
+  state.left=state.restoreLeft;state.nativeLeft=0;
+  if(config.skipIntro || state.left>0 || state.zoom>1)stopIntro(owner);
+  strip(owner,state,0);paint(owner,state);return;
+ }
+ if(state.restoring && !state.restoreMeasured && config.revision>0){
+  // The first render uses a provisional width. Reapply saved position only once
+  // the actual viewport is measured, so the last card also restores exactly.
+  state.restoreMeasured=true;state.left=clamp(state.restoreLeft,0,maximum(state));state.restoreTarget=state.left;
+  strip(owner,state,state.nativeLeft-state.left);paint(owner,state);
+  owner.callMethod('onFanZoom',{zoom:state.zoom,left:state.left});return;
+ }
+ if(state.restoring)return;
+ if (Math.abs(config.zoom-state.zoom)>0.001) {
+  stopIntro(owner);
+  var anchor = (state.left+oldWidth/2-40*oldZoom) / (clamp(oldWidth/9,24,36)*Math.pow(oldZoom,1.65));
+  state.zoom = config.zoom;
+  state.left = clamp(edge(state)+anchor*step(state)-state.width/2,0,maximum(state));
+  strip(owner,state,state.nativeLeft-state.left);
+  paint(owner,state);
+  state.blockUntil = now()+250;state.syncing=true;state.syncTarget=state.left;
+  owner.callMethod('onFanZoom',{zoom:state.zoom,left:state.left});
+  return;
+ }
+ if (!state.active) {
+  // Final pinch sync acknowledges the native scroll-left prop, then clears compensation.
+  strip(owner,state,state.nativeLeft-state.left);paint(owner,state);
+ }
+}
+function scroll(event, owner) {
+ var state = stateOf(owner);
+ state.nativeLeft = Math.max(0,event.detail.scrollLeft || 0);
+ if(state.restoring){
+  if(!state.restoreMeasured || Math.abs(state.nativeLeft-state.restoreTarget)>=1)return;
+  state.restoring=false;strip(owner,state,0);
+ }
+ if (state.pinching) { strip(owner,state,state.nativeLeft-state.left); return; }
+ if(state.syncing){if(Math.abs(state.nativeLeft-state.syncTarget)>=1){strip(owner,state,state.nativeLeft-state.left);return;}state.syncing=false;}
+ state.left = state.nativeLeft;strip(owner,state,0);state.lastScroll = now();
+ if (state.active) state.moved = true;
+ if (!state.frame) {
+  state.frame = true;
+  owner.requestAnimationFrame(function(){state.frame=false;paint(owner,state);});
+ }
+ scheduleSettled(owner,state);
+}
+function scheduleSettled(owner,state) {
+ if(state.settling)return;
+ state.settling=true;
+ function check(){
+  if(state.active || now()-state.lastScroll<200){owner.requestAnimationFrame(check);return;}
+  state.settling=false;
+  owner.callMethod('onFanViewport',{offset:state.left,zoom:state.zoom});
+ }
+ owner.requestAnimationFrame(check);
+}
+function distance(touches) {
+ var x = touches[0].pageX-touches[1].pageX;
+ var y = touches[0].pageY-touches[1].pageY;
+ return Math.sqrt(x*x+y*y);
+}
+function beginPinch(touches, owner, state) {
+ state.pinching=true;state.moved=true;state.startDistance=Math.max(1,distance(touches));
+ state.startZoom=state.zoom;
+ // pageX midpoint minus the measured component left, from the Vue setup pass.
+ var middle = (touches[0].pageX+touches[1].pageX)/2-(state.pageLeft || 0);
+ state.middle=clamp(middle,0,state.width);
+ state.anchor=(state.left+state.middle-edge(state))/step(state);
+}
+function start(event, owner) {
+ var state=stateOf(owner),touches=event.touches || [];
+ state.restoring=false;state.syncing=false;
+ stopIntro(owner);
+ if(!state.interacted){state.interacted=true;owner.callMethod('onFanInteraction',{left:state.left});}
+ if (!touches.length) return;
+ if (!state.active) {
+  state.active=true;state.moved=now()-state.lastScroll<180;state.ended=false;
+  state.started=now();state.x=touches[0].pageX;state.y=touches[0].pageY;
+ }
+ if (touches.length>1) beginPinch(touches,owner,state);
+}
+function move(event, owner) {
+ var state=stateOf(owner),touches=event.touches || [];
+ if (!state.active || !touches.length) return;
+ if (touches.length>1) {
+  if (!state.pinching) beginPinch(touches,owner,state);
+  state.zoom=clamp(state.startZoom*distance(touches)/state.startDistance,1,2.4);
+  state.left=clamp(edge(state)+state.anchor*step(state)-state.middle,0,maximum(state));
+  strip(owner,state,state.nativeLeft-state.left);paint(owner,state);
+  // Consume only a pinch; returning false here prevents native/page zoom and scroll.
+  return false;
+ }
+ if (Math.abs(touches[0].pageX-state.x)>7 || Math.abs(touches[0].pageY-state.y)>7) state.moved=true;
+ if (state.pinching) return false;
+}
+function end(event, owner) {
+ var state=stateOf(owner);
+ if (event.touches && event.touches.length) return;
+ state.active=false;state.ended=true;state.endedAt=now();
+ if (state.pinching) {
+  state.pinching=false;state.blockUntil=now()+300;state.syncing=true;state.syncTarget=state.left;
+  owner.callMethod('onFanZoom',{zoom:state.zoom,left:state.left});
+ } else if (state.moved) state.blockUntil=now()+220;
+ scheduleSettled(owner,state);
+}
+function cancel(event,owner) {
+ var state=stateOf(owner);state.moved=true;
+ end({touches:[]},owner);state.ended=false;state.blockUntil=now()+300;
+}
+function tap(event,owner) {
+ var state=stateOf(owner),index=event.currentTarget.dataset.index*1;
+ if (state.disabled || index<0 || index>77 || state.picked.indexOf(index)>=0 || state.active || now()<state.blockUntil) return;
+ // A screen-reader activation has no touch session. A touch activation must be a fresh settled tap.
+ if (state.ended && now()-state.endedAt<=700 && (state.moved || state.endedAt-state.started>700 || now()-state.lastScroll<180)) return;
+ state.ended=false;state.blockUntil=now()+180;
+ owner.callMethod('onFanChoose',{index:index});
+}
+module.exports={setClock:setClock,configure:configure,scroll:scroll,start:start,move:move,end:end,cancel:cancel,tap:tap};

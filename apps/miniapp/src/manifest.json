@@ -2,8 +2,8 @@
   "name": "秘境梦屿",
   "appid": "",
   "description": "从基础牌型到进阶策略，提供玩法规则图解速览，分阶拆解玩法要点，配合真实对局场景模拟，从入门到精通。",
-  "versionName": "0.5.2",
-  "versionCode": "502",
+  "versionName": "0.5.3",
+  "versionCode": "503",
   "transformPx": false,
   "vueVersion": "3",
   "mp-weixin": {
