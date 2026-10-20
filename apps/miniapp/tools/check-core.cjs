@@ -7,7 +7,7 @@ const base = path.resolve(__dirname, '..');
 cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], {stdio:'inherit'});
 (async () => {
  const imp = name => import(pathToFileURL(path.join(base,'src/core/generated',name)).href);
- const {deck,reference,knowledge,spreadContent,scenarios} = await imp('content.mjs');
+ const {deck,reference,knowledge,spreadContent,scenarios,academyContent} = await imp('content.mjs');
  const {academy} = await imp('academy.mjs');
  const {offlineReading} = await imp('reading.mjs');
  assert.equal(deck.cards.length,78); assert.equal(new Set(deck.cards.map(c=>c.id)).size,78);
@@ -36,14 +36,33 @@ cp.execFileSync(process.execPath, [path.join(__dirname,'prepare-content.cjs')], 
   }
  }
  const pages=JSON.parse(fs.readFileSync(path.join(base,'src/pages.json')));
- const nav=pages.tabBar.list.map(p=>p.text);assert.deepEqual(nav,['首页','学习','图鉴']);
- assert.deepEqual(pages.pages.map(p=>p.path),['pages/mengyu/home','pages/mengyu/learn','pages/mengyu/library']);
- const manifest=JSON.parse(fs.readFileSync(path.join(base,'src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');
+ const nav=pages.tabBar.list.map(p=>p.text);assert.deepEqual(nav,['首页','抽牌','学牌','牌库']);
+ assert.deepEqual(pages.tabBar.list.map(p=>p.pagePath),['pages/home/index','pages/draw/index','pages/learn/index','pages/library/index']);
+ assert.deepEqual(pages.pages.map(p=>p.path),['pages/home/index','pages/learn/index','pages/draw/index','pages/library/index']);
+ const manifest=JSON.parse(fs.readFileSync(path.join(base,'src/manifest.json')));assert.equal(manifest.name,'秘境梦屿');assert.equal(manifest.versionName,'0.5.2');assert.equal(manifest.versionCode,'502');
+ assert.equal(manifest.description,'从基础牌型到进阶策略，提供玩法规则图解速览，分阶拆解玩法要点，配合真实对局场景模拟，从入门到精通。','preserve user-specified metadata copy verbatim');
+ assert.equal(pages.pages[0].style.navigationBarTitleText,'秘境梦屿');
+ const home=fs.readFileSync(path.join(base,'src/pages/home/index.vue'),'utf8');// Verify action order, not incidental occurrences of these words in the intro.
+ assert.ok(home.includes('@tap="openDraw(false)"') && home.includes("@tap=\"openTab('learn')\""));
+ assert.ok(home.indexOf('@tap="openDraw(false)"') < home.indexOf("@tap=\"openTab('learn')\""));
+ assert.ok(home.includes('塔罗日运'));assert.ok(!/今日塔罗|今日一牌/.test(home));
+ assert.ok(!nav.includes('记录'));assert.ok(!pages.pages.some(p=>p.path.includes('/records/')));
+ assert.equal(scenarios.length,40);assert.equal(new Set(scenarios.map(scene=>scene.id)).size,40);
+ assert.equal(academyContent.lessons.length,20);assert.equal(new Set(academyContent.lessons.map(lesson=>lesson.id)).size,20);
+ assert.equal(academyContent.cards.length,78);
+ for(const scene of scenarios)assert.ok(spreadContent.spreads.some(spread=>spread.id===scene.spreadId),scene.id+' has its authored spread');
+ // All public behavior is shipped directly; no account/version/remote audit switch.
+ const publicSources=['App.vue','main.ts','core/catalogs.ts','core/platform.ts','core/drawing.ts',...pages.pages.map(p=>p.path+'.vue'),'pages/card/index.vue'];
+ for(const source of publicSources){const text=fs.readFileSync(path.join(base,'src',source),'utf8');
+  assert(!/getAccountInfoSync|envVersion|(?:audit|review|culture|cultural)Mode|(?:is|enable|show)(?:Audit|Review|Culture|Cultural)|审核(?:开关|模式)|过审/.test(text),source+' contains a hidden audit/profile switch');
+  assert(!/(?:uni|wx)\s*\.\s*(?:request|connectSocket|uploadFile|downloadFile|cloud)\b|\b(?:fetch|XMLHttpRequest|WebSocket)\s*\(/.test(text),source+' introduces a network service');
+  for(const url of text.match(/https?:\/\/[^'"\s)]+/g)||[])assert.equal(url,'https://tarot.georgelu.cn/',source+' only uses documented artwork host');
+ }
  const {cards:images,provenance}=await imp('mengyu.mjs');assert.equal(images.length,78);assert.equal(new Set(images.map(c=>c.id)).size,78);assert.equal(provenance.sources.length,78);
  for(const image of images){assert.deepEqual(Object.keys(image).sort(),['id','name','suit','number','keywords','observation','core','symbols','foundation'].sort());assert.ok(image.observation&&image.symbols.length>=2&&image.foundation.text);assert.equal(image.core,deck.cards.find(c=>c.id===image.id).core);assert(!/占卜|预测|运势|日运|牌阵|正位|逆位|解牌|解读|建议位|牌位|旁边的牌|抽到/.test(JSON.stringify(image)),image.id+' visual-only projection');assert(artwork[image.id]);}
  for(const page of [...pages.pages,...(pages.subPackages || []).flatMap(pack=>pack.pages.map(p=>({...p,path:pack.root+'/'+p.path})))]) assert.ok(fs.existsSync(path.join(base,'src',page.path+'.vue')),page.path);
- assert.equal(pages.subPackages[0].root,'pages/artwork');
+ assert.equal(pages.subPackages.length,1);assert.equal(pages.subPackages[0].root,'pages/card');assert.deepEqual(pages.subPackages[0].pages.map(p=>p.path),['index']);
  const {knowledge:fullKnowledge}=await import(pathToFileURL(path.join(base,'src/pages/card/generated/knowledge.mjs')).href);
  for(const card of deck.cards){assert.deepEqual(knowledge.byId[card.id].learning,fullKnowledge.byId[card.id].learning);assert.equal(knowledge.byId[card.id].domains,undefined);assert.equal(Object.keys(fullKnowledge.byId[card.id].domains).length,5);}
- console.log('PASS: preserved shared 78-card/3-stage and spread engines; public Mengyu profile uses only 78 image/symbol projections, explicit provenance, 3 cultural routes and artwork subpackage.');
+ console.log('PASS: 78 cards × 3 stages, all 40 scenes and 20 method lessons; draw-first four-tab public Mengyu 0.5.2, full card subpackage, no hidden audit/network switch; preserved 78 cultural projections and legacy store boundaries.');
 })().catch(error=>{console.error(error);process.exitCode=1});

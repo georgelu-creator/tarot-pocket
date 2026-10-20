@@ -1,15 +1,18 @@
 {
   "name": "秘境梦屿",
   "appid": "",
-  "description": "探索经典卡牌的画面、象征与故事。查阅78张图像资料，跟着短课看图、做题、复习，逐步建立自己的理解。",
-  "versionName": "0.4.0",
-  "versionCode": "400",
+  "description": "从基础牌型到进阶策略，提供玩法规则图解速览，分阶拆解玩法要点，配合真实对局场景模拟，从入门到精通。",
+  "versionName": "0.5.2",
+  "versionCode": "502",
   "transformPx": false,
   "vueVersion": "3",
   "mp-weixin": {
     "appid": "wx0824a8b48e0e8b90",
     "setting": {
-      "urlCheck": true
+      "urlCheck": true,
+      "minified": true,
+      "minifyWXSS": true,
+      "minifyWXML": true
     },
     "usingComponents": true
   },

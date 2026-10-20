@@ -48,7 +48,7 @@ jobs:
             apps/miniapp/package-lock.json
       - run: npm ci
       - run: npm ci --prefix apps/miniapp
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm test --prefix apps/miniapp
       - run: npm run type-check --prefix apps/miniapp
       - run: npm run build:mp-weixin --prefix apps/miniapp
