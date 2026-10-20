@@ -9,10 +9,14 @@ const assert=require('node:assert/strict'),{chromium,webkit}=require('playwright
    const ids=await page.locator('.library-card').evaluateAll(xs=>xs.map(x=>x.dataset.id));assert.equal(ids.length,78);
    for(const id of ids){
     await page.locator(`.library-card[data-id="${id}"]`).click();
-    assert.equal(await page.locator('[data-knowledge-section]').count(),3);
+    assert.equal(await page.locator('[data-knowledge-section]').count(),4);
+    const authored=await page.evaluate(id=>TAROT_CARD_KNOWLEDGE.byId[id],id);
+    for(const text of Object.values(authored.narrative))assert((await page.locator('[data-knowledge-section=narrative]').innerText()).includes(text),id+' narrative visible without expanding');
+    await page.locator('[data-dossier-section=use]>summary').click();
+    assert.deepEqual(await page.locator('[data-related-card]').evaluateAll(nodes=>nodes.map(node=>node.dataset.relatedCard)),authored.relatedCards.map(item=>item.id),id+' all merged comparisons rendered');
     for(const key of ['contexts','money'])await page.locator(`[data-reference-section=${key}]>summary`).click();
     for(const key of ['structure','examples','history'])await page.locator(`[data-knowledge-section=${key}]>summary`).click();
-    assert.equal(await page.locator('.reference-example').count(),2);
+    assert.equal(await page.locator('[data-knowledge-section=examples] .reference-example').count(),2);
     const sources=await page.locator('.reference-source a').evaluateAll(xs=>xs.map(x=>({url:x.href,target:x.target,rel:x.rel})));
     assert(sources.length);assert(sources.every(s=>s.url.startsWith('https:')&&s.target==='_blank'&&s.rel.includes('noopener')));
     const upright=await page.locator('[data-reference-body]').innerText();

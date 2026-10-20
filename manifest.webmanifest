@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "塔罗随身学",
-  "short_name": "塔罗随身学",
+  "name": "秘境梦屿",
+  "short_name": "秘境梦屿",
   "description": "从零开始学懂78张塔罗牌，也可以带着问题抽牌和解牌。",
   "start_url": "./?source=homescreen",
   "scope": "./",

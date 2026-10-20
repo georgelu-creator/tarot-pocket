@@ -1,0 +1,64 @@
+'use strict';
+// Synthetic fixtures only. Run after the shared Web + miniapp build; --static checks sources/data without a build.
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..'),mini=path.join(root,'apps/miniapp');
+const source=fs.readFileSync(path.join(mini,'src/pages/draw/index.vue'),'utf8');
+const home=fs.readFileSync(path.join(mini,'src/pages/home/index.vue'),'utf8');
+assert(home.indexOf('<button class="daily"')<home.indexOf('<view class="hero">'),'daily is first in source and accessibility order');
+assert(home.indexOf('<view class="hero">')<home.indexOf('class="secondary home-choice learn-choice"'),'ordinary draw precedes learning');
+assert.match(home,/\.daily\{grid-column:1\/-1;grid-row:1;/,'wide layouts keep the daily tile first');
+assert.match(home,/\.learn-choice\{grid-column:2;grid-row:2\}/,'wide learning tile cannot jump ahead of daily');
+const dailyBranch=source.slice(source.indexOf('<view v-if="day" class="daily-result'),source.indexOf('<template v-else-if="result">'));
+assert.equal((dailyBranch.match(/:src="cardImage\(day.id\)"/g)||[]).length,1,'daily sheet contains one card image');
+assert(!dailyBranch.includes('result-board'),'daily result does not include the ordinary spread board');
+for(const hook of ['daily-masthead','daily-calendar','daily-card-and-signs','daily-portrait','daily-signs','daily-message','daily-advice','daily-reference','daily-footer'])assert(dailyBranch.includes(hook),hook+' is present');
+assert.match(dailyBranch,/mode="widthFix" class="daily-card-image"/,'native daily card keeps original intrinsic aspect');
+assert.match(source,/dailyZoomOpen && day[\s\S]*:class="\{reversed:day.reversed\}"/,'zoom preserves reversed orientation');
+assert.match(source,/if\(dailyZoomOpen.value\)\{dailyZoomOpen.value=false;return true\}/,'back closes zoom before leaving the day');
+for(const text of ['一日一签，留一点时间给自己。','今天，把注意力放在这里。','一件可以尝试的事','宜忌是这张牌的生活提醒，不是传统黄历的吉凶择日。','今天重新打开，仍是这张牌。日运只保留到当天结束。'])assert(dailyBranch.includes(text),text);
+const esbuild=require(require.resolve('esbuild',{paths:[mini]}));
+const bundled=esbuild.buildSync({entryPoints:[path.join(mini,'src/core/drawing.ts')],bundle:true,platform:'node',format:'cjs',write:false});
+const scope={module:{exports:{}},require,console,Math,Date,Set};scope.exports=scope.module.exports;vm.runInNewContext(bundled.outputFiles[0].text,scope);const drawing=scope.module.exports;
+const date='2026-10-20',at=new Date(2026,9,20,12).getTime();
+const dailyRecord={id:'daily-parity-fixture',at,spreadId:'daily',dailyDate:date,question:'',topic:'general',cards:[{id:'p09',reversed:true}]};
+const expected=drawing.dailyDisplay(dailyRecord);
+assert.equal(expected.weekday,'星期二');assert.equal(expected.year,'2026');assert.equal(expected.month,'10');assert.equal(expected.day,'20');assert.equal(typeof expected.observation,'string');assert(expected.observation.length>0);
+const today=drawing.normalizeReading({...drawing.blankReading(),todayDaily:dailyRecord,active:'daily'},new Date(at));
+assert.deepEqual(JSON.parse(JSON.stringify(drawing.todayReading(today,new Date(at)))),dailyRecord,'same-day card retained');
+assert.equal(drawing.normalizeReading(today,new Date(2026,9,21,0)).todayDaily,null,'next-day expiry retained');
+console.log('PASS daily sources/data: first tile, exclusive almanac, original aspect, separate zoom/back, dates and same-day retention');
+if(process.argv.includes('--static'))process.exit(0);
+const {chromium,webkit}=require('playwright'),{createPreview}=require('../apps/miniapp/tools/preview.cjs');
+(async()=>{const server=createPreview();await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`http://127.0.0.1:${server.address().port}`;
+try{for(const [engine,type] of Object.entries({chromium,webkit})){const browser=await type.launch(engine==='chromium'?require('./browser_options.cjs'):{});
+try{for(const width of [320,390,768,1200]){const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'}),page=await ctx.newPage(),errors=[];
+page.on('pageerror',e=>errors.push(e.message));await page.clock.setFixedTime(new Date(at));
+await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin===origin)return route.continue();if(u.origin==='https://tarot.georgelu.cn'&&/^\/assets\/cards\/[mcwsp]\d{2}\.webp$/.test(u.pathname))return route.fulfill({body:fs.readFileSync(path.join(root,u.pathname)),contentType:'image/webp'});return route.abort()});
+await page.addInitScript(value=>localStorage.setItem('tarot-miniapp-reading-v1',JSON.stringify({type:'object',data:value})),JSON.parse(JSON.stringify(today)));
+await page.goto(origin);await page.locator('.home-decisions').waitFor();
+const positions=await page.locator('.home-decisions').evaluate(el=>['.daily','.hero','.learn-choice'].map(s=>{const r=el.querySelector(s).getBoundingClientRect();return {top:r.top,bottom:r.bottom}}));assert(positions[0].bottom<=positions[1].top+1,'daily precedes ordinary draw visually');assert(positions[0].bottom<=positions[2].top+1,'daily precedes learning visually');
+await page.locator('.home-decisions>.daily').click();await page.locator('.daily-almanac').waitFor();
+assert.equal(await page.locator('.result-board').count(),0,'no duplicate large card before the almanac');assert.equal(await page.locator('.daily-almanac .daily-card-image').count(),1);
+assert.equal(await page.locator('.daily-edition').innerText(),'秘境梦屿');assert.equal(await page.locator('.daily-calendar-day').innerText(),'20');assert.equal(await page.locator('.daily-weekday').innerText(),'星期二');
+assert.equal(await page.locator('.daily-core').innerText(),expected.core);assert.equal(await page.locator('.daily-sign-copy').nth(0).innerText(),expected.do);assert.equal(await page.locator('.daily-sign-copy').nth(1).innerText(),expected.avoid);assert.equal(await page.locator('.daily-advice .daily-paragraph').innerText(),expected.advice);
+await page.waitForFunction(()=>{const image=document.querySelector('.daily-card-image img');return image?.complete&&image.naturalWidth>0});
+const originalAspect=await page.locator('.daily-card-image img').evaluate(image=>{const box=image.getBoundingClientRect();return Math.abs(box.width/box.height-image.naturalWidth/image.naturalHeight)});assert(originalAspect<.01,'original card image remains unstretched');
+const [portrait,signs]=await Promise.all([page.locator('.daily-portrait').boundingBox(),page.locator('.daily-signs').boundingBox()]);assert(portrait.x+portrait.width<=signs.x+1,'card stays left, reminders right');assert(signs.y<portrait.y+portrait.height,'reminders stay next to card');
+assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'daily has no horizontal overflow');
+assert.equal(await page.locator('.daily-reference-body').count(),0,'reference begins collapsed');await page.locator('.daily-reference-toggle').click();assert.equal(await page.locator('.daily-reference-body .daily-paragraph').innerText(),expected.observation);
+await page.locator('.daily-card-cover').click();await page.locator('.daily-zoom-backdrop').waitFor();assert.equal(await page.locator('.daily-zoom-image').evaluate(el=>getComputedStyle(el).transform),'matrix(-1, 0, 0, -1, 0, 0)');await page.locator('.daily-zoom-close').click();assert(await page.locator('.daily-almanac').isVisible(),'closing zoom returns to same daily');
+await page.locator('.daily-footer .primary').click();await page.locator('.daily-tile').click();await page.locator('.daily-almanac').waitFor();assert.equal(await page.locator('.daily-card-name').innerText(),expected.name,'returning to daily restores same card');
+assert.equal(await page.locator('.daily-almanac').evaluate(el=>getComputedStyle(el).animationName),'none','reduced motion respected');
+if(width===390){
+ // Keep the draw component alive across midnight: a reload after midnight would
+ // hide a stale ref bug by creating a fresh component instead of exercising it.
+ const nearMidnight=new Date(2026,9,20,23,59,45);await page.clock.install({time:nearMidnight});await page.reload();await page.locator('.daily-almanac').waitFor();
+ await page.locator('.daily-card-cover').click();await page.locator('.daily-zoom-backdrop').waitFor();
+ await page.clock.fastForward(16000);assert.equal(await page.locator('.daily-zoom-backdrop').count(),0,'midnight closes yesterday daily zoom');assert.equal(await page.locator('.daily-almanac').count(),0,'expired daily sheet is removed');
+ assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.todayDaily),null,'midnight removes only expired daily state');
+ await page.locator('.daily-tile').click();await page.clock.fastForward(5000);await page.locator('.cut-pile').nth(1).click();await page.clock.fastForward(1200);await page.locator('.fan-card').nth(4).click();await page.locator('.pending-sheet .primary').click();await page.clock.fastForward(800);await page.locator('uni-button.primary').filter({hasText:/^揭开今天的牌$/}).click();await page.clock.fastForward(700);await page.locator('.daily-almanac').waitFor();
+ assert.equal(await page.locator('.daily-almanac').getAttribute('data-daily-date'),'2026-10-21');assert.equal(await page.locator('.daily-zoom-backdrop').count(),0,'a new daily never reopens the previous day zoom automatically');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.todayDaily.dailyDate),'2026-10-21','new daily still completes and saves normally');
+ console.log('PASS '+engine+' midnight: open zoom, expire live component, draw new daily, old zoom stays closed');
+}
+assert.deepEqual(errors,[]);await ctx.close();console.log(`PASS ${engine} ${width}: daily first, almanac/wording, intrinsic art, optional sources, reversed zoom and same-day return`);
+}}finally{await browser.close()}}}finally{server.closeAllConnections();await new Promise(r=>server.close(r))}})().catch(e=>{console.error(e);process.exitCode=1});

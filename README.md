@@ -1,4 +1,4 @@
-# Tarot Pocket · 塔罗随身学
+# 秘境梦屿
 
 **Learn tarot from the beginning, or draw cards for a question on your mind.**
 
@@ -6,7 +6,7 @@ The v1.9 public product is intentionally Chinese-only while its beginner curricu
 
 [**Try the Chinese release →**](https://tarot.georgelu.cn/) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases) · [简体中文](README.zh-CN.md)
 
-![Tarot Pocket](docs/images/hero.png)
+![秘境梦屿](docs/images/hero.png)
 
 ## Learn one step at a time
 
@@ -78,4 +78,4 @@ The artwork is by **Pamela Colman Smith**, from the historical Rider–Waite–S
 - **Original lessons, translations, documentation, and the authored card back:** [CC BY-SA 4.0](CONTENT_LICENSE.md).
 - **Historical card artwork:** separate [artwork rights notice](ARTWORK_LICENSE.md), [source notes](assets/SOURCES.md), and [per-card manifest](assets/manifest.json). Source pages identify these works as public domain; that status is separate from the code and content licenses.
 
-Tarot Pocket is an independent learning project. [Changelog](CHANGELOG.md) · [Security](SECURITY.md) · [Community expectations](CODE_OF_CONDUCT.md)
+秘境梦屿 is an independent learning project. [Changelog](CHANGELOG.md) · [Security](SECURITY.md) · [Community expectations](CODE_OF_CONDUCT.md)

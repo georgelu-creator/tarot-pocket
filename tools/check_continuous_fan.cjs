@@ -88,7 +88,7 @@ clock+=300;simpleTap(40)
 assert.equal(calls.filter(call=>call.name==='onFanChoose').length,1,'selected deck slots cannot be reused')
 clock+=300;fan.start(event([touch(100)]),owner);fan.cancel(event([]),owner);tap(41)
 assert.equal(calls.filter(call=>call.name==='onFanChoose').length,1,'cancelled gestures cannot select')
-assert.ok(removed.includes('intro'),'interaction cancels introductory motion')
+assert.equal(removed.includes('intro'),false,'input preserves the in-flight inner unfold rather than snapping its animated matrix; the component cancels auto-forward separately')
 clock+=400;fan.start(event([touch(100)]),owner);fan.move(event([touch(60)]),owner);fan.end(event([]),owner);tap(41)
 assert.equal(calls.filter(call=>call.name==='onFanChoose').length,1,'the release from another drag stays blocked')
 clock+=701;tap(41)
@@ -139,16 +139,16 @@ console.log('WXS gesture logic (Node VM): 78 reachable stable slots; curved visi
  const ts=require(path.join(root,'apps/miniapp/node_modules/typescript'))
  const script=component.match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/\/\/ #ifdef H5[\s\S]*?\/\/ #endif/g,'')
  const compiled=ts.transpileModule(script,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText
- const timers=new Map(),calls=[];let serial=0
+ const timers=new Map(),timerDelays=new Map(),calls=[];let serial=0
  const nativeUni={createSelectorQuery:()=>{const query={in:()=>query,select:()=>query,scrollOffset:callback=>{query.callback=callback;return query},exec:()=>query.callback?.({scrollLeft:91})};return query}}
- const scope={exports:{},require:id=>{assert.equal(id,'vue');return{defineComponent:value=>value,markRaw:value=>value}},uni:nativeUni,setTimeout:callback=>{timers.set(++serial,callback);return serial},clearTimeout:id=>timers.delete(id)}
+ const scope={exports:{},require:id=>{assert.equal(id,'vue');return{defineComponent:value=>value,markRaw:value=>value}},uni:nativeUni,setTimeout:(callback,delay)=>{timers.set(++serial,callback);timerDelays.set(serial,delay);return serial},clearTimeout:id=>timers.delete(id)}
  vm.runInNewContext(compiled,scope)
  const options=scope.exports.default
  const context={...options.data.call({initialZoom:1,initialOffset:0,skipIntro:false}),initialZoom:1,initialOffset:0,picked:[],disabled:false,$emit(){},$nextTick:()=>Promise.resolve()}
  for(const [key,method] of Object.entries(options.methods))context[key]=method.bind(context)
  context.introControl.context={scrollTo:value=>calls.push(JSON.parse(JSON.stringify(value)))}
- context.scheduleIntro('fan-unfold');timers.values().next().value()
- assert.equal(calls[0].animated,true,'native introduction scrolls the actual context forward')
+ context.scheduleIntro('fan-unfold');assert.equal(timerDelays.get(context.introControl.timer),1150,'forward movement starts inside the 1.8 s unfold rather than after it');assert.match(component,/animation:fan-unfold 1800ms/,'unfold remains a full 1.8 s');timers.values().next().value()
+ assert.equal(calls[0].animated,true,'native introduction scrolls the actual context forward');assert.equal(calls[0].duration,1200,'native forward phase keeps its complete duration');assert.equal(calls[0].left,160,'native demonstration moves four and a half deck slots, not a whole-strip rocking transform')
  await context.resize(1)
  assert.deepEqual(calls.at(-1),{left:91,animated:false},'zoom control stops native introduction at the live offset before changing scale')
  assert.equal(context.zoom,1.35)
@@ -185,8 +185,20 @@ if(process.env.CONTINUOUS_FAN_H5)(async()=>{
   await page.locator('.cut-pile').nth(1).waitFor({timeout:10000})
   await page.locator('.cut-pile').nth(1).click()
   await page.locator('.continuous-fan-card').last().waitFor({timeout:5000})
+  await page.evaluate(()=>{
+   window.fanIntroSamples=[];
+   const root=document.querySelector('.continuous-fan'),back=root.querySelector('.continuous-fan-back'),scroller=[...root.querySelectorAll('*')].find(node=>node.scrollWidth>node.clientWidth+1&&/auto|scroll/.test(getComputedStyle(node).overflowX)),started=performance.now();
+   const sample=timestamp=>{const animation=back.getAnimations().find(animation=>animation.animationName?.startsWith('fan-unfold'));const timing=animation?.effect?.getComputedTiming();window.fanIntroSamples.push({time:timestamp-started,left:scroller.scrollLeft,unfoldTime:Number(animation?.currentTime||0),unfoldProgress:timing?.progress??1});if(timestamp-started<2700)requestAnimationFrame(sample)};requestAnimationFrame(sample)
+  })
   await page.waitForTimeout(2900)
+  const introSamples=await page.evaluate(()=>window.fanIntroSamples)
+  assert(introSamples.length>30,'continuous entry timeline has actual animation-frame samples')
+  const firstForward=introSamples.find(sample=>sample.left>.5)
+  assert(firstForward&&firstForward.unfoldProgress>0&&firstForward.unfoldProgress<1,'the actual forward scroll begins while the CSS unfold is still moving, without a stationary two-step handoff')
+  for(let index=1;index<introSamples.length;index++)assert(introSamples[index].left>=introSamples[index-1].left-.25,'entry forward never rocks backwards')
+  assert(introSamples.filter((sample,index)=>index>0&&sample.left-introSamples[index-1].left>.1).length>20,'forward indication travels through continuous intermediate offsets')
   assert.equal(await page.locator('.fan-card').count(),78)
+  console.log('H5 continuous entry timeline',JSON.stringify({frames:introSamples.length,firstForwardAtUnfoldMs:Math.round(firstForward.unfoldTime),unfoldProgressAtForward:firstForward.unfoldProgress,finalOffset:introSamples.at(-1).left,physicalDevice:false}))
   assert.equal(await page.locator('.fan-number').first().evaluate(node=>getComputedStyle(node).opacity),'0','sequence numbers stay hidden at normal size')
   const introductoryOffset=await page.locator('.fan-scroll').evaluate(root=>[...root.querySelectorAll('*')].find(node=>node.scrollWidth>node.clientWidth+1&&/auto|scroll/.test(getComputedStyle(node).overflowX)).scrollLeft)
   assert.ok(introductoryOffset>=100&&introductoryOffset<=180,`unfold actually scrolls forward several cards and stays there: ${introductoryOffset}`)
@@ -202,7 +214,21 @@ if(process.env.CONTINUOUS_FAN_H5)(async()=>{
   const bounds=await page.locator('.fan-scroll').boundingBox()
   const y=bounds.y+95
   const send=(type,points)=>session.send('Input.dispatchTouchEvent',{type,touchPoints:points.map((x,index)=>({x,y,id:index+1}))})
-  await page.evaluate(()=>{window.fanSamples=[];window.fanSampling=true;let previous=performance.now();const sample=timestamp=>{if(!window.fanSampling)return;const panel=document.querySelector('.ritual-panel').getBoundingClientRect();const root=document.querySelector('.fan-scroll'),scroller=[...root.querySelectorAll('*')].find(node=>node.scrollWidth>node.clientWidth+1&&/auto|scroll/.test(getComputedStyle(node).overflowX));window.fanSamples.push({delta:timestamp-previous,top:panel.top,width:panel.width,scrollWidth:scroller.scrollWidth});previous=timestamp;requestAnimationFrame(sample)};requestAnimationFrame(sample)})
+  await page.evaluate(()=>{
+   window.fanSamples=[];window.fanArcSamples=[];window.fanSampling=true;let previous=performance.now();
+   const fan=document.querySelector('.continuous-fan'),root=document.querySelector('.fan-scroll'),scroller=[...root.querySelectorAll('*')].find(node=>node.scrollWidth>node.clientWidth+1&&/auto|scroll/.test(getComputedStyle(node).overflowX));
+   // This observer runs after the product's direct scroll listener. Read inline
+   // transforms only: do not force a style/layout flush inside scroll delivery.
+   scroller.addEventListener('scroll',()=>{
+    if(!window.fanSampling)return;
+    const state=fan.__wxsState,spacing=Math.max(24,Math.min(36,state.width/9))*Math.pow(state.zoom,1.65),edge=40*state.zoom;
+    const index=Math.max(0,Math.min(77,Math.round((scroller.scrollLeft+state.width/2-edge-36*state.zoom)/spacing)));
+    const transform=fan.querySelector('.fan-item-'+index).style.transform,match=transform.match(/translate3d\([^,]+,\s*([-.\d]+)px[^)]*\)\s+rotate\(([-.\d]+)deg\)/);
+    const unit=Math.max(-1.2,Math.min(1.2,(edge+index*spacing+36*state.zoom-scroller.scrollLeft-state.width/2)/(state.width/2)));
+    window.fanArcSamples.push({offsetError:Math.abs(state.left-scroller.scrollLeft),verticalError:match?Math.abs(+match[1]-Math.round(3000*unit*unit)/100):Infinity,rotationError:match?Math.abs(+match[2]-Math.round(1700*unit)/100):Infinity});
+   },{passive:true});
+   const sample=timestamp=>{if(!window.fanSampling)return;const panel=document.querySelector('.ritual-panel').getBoundingClientRect();window.fanSamples.push({delta:timestamp-previous,top:panel.top,width:panel.width,scrollWidth:scroller.scrollWidth});previous=timestamp;requestAnimationFrame(sample)};requestAnimationFrame(sample)
+  })
   await send('touchStart',[bounds.x+bounds.width-40])
   for(let offset=0;offset<9;offset++){await send('touchMove',[bounds.x+bounds.width-60-offset*23]);await page.waitForTimeout(20)}
   await send('touchEnd',[])
@@ -216,8 +242,11 @@ if(process.env.CONTINUOUS_FAN_H5)(async()=>{
    for(let frame=0;frame<6;frame++){await send('touchMove',[bounds.x+bounds.width-50-frame*38]);await page.waitForTimeout(12)}
    await send('touchEnd',[]);await page.waitForTimeout(260)
   }
-  const samples=await page.evaluate(()=>{window.fanSampling=false;return window.fanSamples})
+  const {samples,arcSamples}=await page.evaluate(()=>{window.fanSampling=false;return {samples:window.fanSamples,arcSamples:window.fanArcSamples}})
   assert.ok(samples.length>10,'fast flicks sampled actual rendering frames')
+  assert.ok(arcSamples.length>10,'fast flicks produced native scroll-event geometry samples')
+  for(const sample of arcSamples){assert(sample.offsetError<1,'native scroll offset is synchronized before the next frame');assert(sample.verticalError<.02&&sample.rotationError<.02,'fast flick visible arc matches the same native offset during scroll delivery')}
+  console.log('H5 live scroll/arc synchronization',JSON.stringify({events:arcSamples.length,maxOffsetError:Math.max(...arcSamples.map(s=>s.offsetError)),maxVerticalError:Math.max(...arcSamples.map(s=>s.verticalError)),maxRotationError:Math.max(...arcSamples.map(s=>s.rotationError)),physicalDevice:false}))
   assert.ok(Math.max(...samples.map(s=>s.top))-Math.min(...samples.map(s=>s.top))<1,'fast horizontal flicks never shift the entire page vertically')
   assert.ok(Math.max(...samples.map(s=>s.width))-Math.min(...samples.map(s=>s.width))<1,'fast flicks keep a stable viewport width')
   assert.equal(Math.max(...samples.map(s=>s.scrollWidth)),Math.min(...samples.map(s=>s.scrollWidth)),'curved card corners never change the scroll boundary during fast flicks')
@@ -270,7 +299,10 @@ if(process.env.CONTINUOUS_FAN_H5)(async()=>{
    if(mode!=='reduce'){
     if(mode==='during-forward')await introPage.waitForFunction(()=>[...document.querySelector('.fan-scroll').querySelectorAll('*')].some(node=>node.scrollWidth>node.clientWidth+1&&/auto|scroll/.test(getComputedStyle(node).overflowX)&&node.scrollLeft>20))
     await introPage.locator('.fan-scroll').scrollIntoViewIfNeeded();const box=await introPage.locator('.fan-scroll').boundingBox(),input=await introContext.newCDPSession(introPage)
+    const beforeTakeover=await introPage.locator('.continuous-fan-back').first().evaluate(back=>{const animation=back.getAnimations().find(animation=>animation.animationName?.startsWith('fan-unfold'));return animation?{start:animation.startTime,current:Number(animation.currentTime)}:null})
     await input.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:box.x+box.width/2,y:box.y+5,id:1}]});await input.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await introPage.waitForTimeout(100)
+    const afterTakeover=await introPage.locator('.continuous-fan-back').first().evaluate(back=>{const animation=back.getAnimations().find(animation=>animation.animationName?.startsWith('fan-unfold'));return animation?{start:animation.startTime,current:Number(animation.currentTime)}:null})
+    if(beforeTakeover&&beforeTakeover.current<1700){assert(afterTakeover,'touch takeover does not remove the current unfold and snap the card backs');assert.equal(afterTakeover.start,beforeTakeover.start,'touch never restarts the unfold');assert(afterTakeover.current>=beforeTakeover.current,'existing CSS unfolds continue to settle while user scrolling takes over')}
     const stopped=await readOffset();await introPage.waitForTimeout(2800);assert.ok(Math.abs(await readOffset()-stopped)<1,mode+' touch cancels the actual forward animation immediately and never restarts it');assert.equal(await introPage.locator('.pending-sheet').count(),0,'interrupting blank fan space never picks a card');assert.equal(await introPage.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft.fanIntroSeen),true,'only the current draft records that introduction has been seen');await introPage.reload();await introPage.locator('.fan-card').last().waitFor();await introPage.waitForTimeout(2900);assert.ok(Math.abs(await readOffset()-stopped)<1,'reload never replays a previously cancelled introduction, including offset zero')
    }else{await introPage.waitForTimeout(2900);assert.equal(await readOffset(),0,'reduced-motion preference disables automatic forward scrolling');assert.equal(await introPage.locator('.continuous-fan-back').first().evaluate(node=>getComputedStyle(node).animationName),'none')}
    assert.deepEqual(introErrors,[]);await introContext.close()

@@ -65,3 +65,6 @@ Current source metadata lives in `spread-content.js`; scenario purposes and pres
 `layoutPositions` 按抽取顺序提供 `{x,y}` 的 0–1 归一化**中心坐标**；渲染层须为牌本体与文字预留边距。`layoutGrid` 提供建议列/行数，不得在不认识新布局时退回横排。
 
 新增牌位另有 `scope`，用于区分同属 `state` 的现况、环境、期望、内在想法与外在表现。离线解释采用真实 scope 与逐位说明，牌义背景与本位应用分开；恋人金字塔、吉普赛十字仍列基础目录，但解读领域为感情。专项检查 `tools/check_position_semantics_v2.cjs` 验证同一张太阳在不同位置不再输出同一句，并验证阻碍应用不会混入正向行动建议。
+# 2026-10-20 · 寻物及公开教学资料研究候选
+
+[抽牌、寻物与牌库融入建议](research/luoshu/READING_LIBRARY_INTEGRATION.md)区分洛书自述案例、视频简介和其他作者的公开牌阵。当前已有sc40/lost-object-three及离线、AI专属处理，不重复新增。泳镜案例发生在位置已知之后，不作为凭牌定位的效果证据。两牌得失及外部五牌寻物只登记为候选资料，不更改现有牌位、稳定ID、仪式或解读算法。本轮未实施产品变更或发布；来源与待核范围见[资料索引](research/luoshu/README.md)。
