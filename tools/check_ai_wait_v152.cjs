@@ -27,6 +27,15 @@ const server=http.createServer(async(req,res)=>{
  res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.svg':'image/svg+xml','.png':'image/png','.json':'application/json'})[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));
 });
 async function until(check,message){for(let i=0;i<100;i++){if(await check())return;await new Promise(r=>setTimeout(r,20));}assert.fail(message);}
+// A pointer left at the lower edge must not make the clickable button move
+// in and out of its own :hover hit area while real navigation waits for stability.
+async function assertStableDirectoryEdge(page,button){
+ const edge=await button.evaluate(el=>{const r=el.getBoundingClientRect(),transform=getComputedStyle(el).transform,dy=transform==='none'?0:new DOMMatrixReadOnly(transform).m42;return {x:r.x+r.width/2,y:r.bottom-dy-1};});
+ await page.mouse.move(edge.x,edge.y);
+ const frames=await button.evaluate(el=>new Promise(resolve=>{const frames=[];function sample(){const r=el.getBoundingClientRect();frames.push({x:r.x,y:r.y,width:r.width,height:r.height});if(frames.length===15)resolve(frames);else requestAnimationFrame(sample);}requestAnimationFrame(sample);}));
+ assert(await button.evaluate(el=>el.matches(':hover')),'the lower-edge regression exercises the actual hover hit area');
+ assert(frames.every(r=>r.x===frames[0].x&&r.y===frames[0].y&&r.width===frames[0].width&&r.height===frames[0].height),'directory button stays still when the pointer rests at its lower edge: '+JSON.stringify(frames));
+}
 async function requestReading(page){await page.evaluate(()=>{const control=document.createElement('button');control.dataset.reading='ai-request';document.body.append(control);control.click();control.remove();});}
 async function fixture(page){
  await page.evaluate(KEY=>{
@@ -84,7 +93,7 @@ async function fixture(page){
    // A reply that arrives after choosing another spread must not enter its draft or visible UI.
    await fixture(page);mode='hold';await page.evaluate(()=>{window.__originalAIRequest=TarotReadingAI.request;TarotReadingAI.request=(...args)=>(window.__navigationAI=window.__originalAIRequest(...args));});await requestReading(page);await until(()=>requests.length===before+3,'navigation scenario has one held request');
    await page.locator('[data-reading=pause]').first().click();
-   const next=page.locator('[data-reading=guide]:not([data-value="decision-five"])').first();const nextId=await next.getAttribute('data-value');await next.click();
+   const next=page.locator('[data-reading=guide]:not([data-value="decision-five"])').first();const nextId=await next.getAttribute('data-value');await assertStableDirectoryEdge(page,next);await next.click();
    await page.locator('[data-reading=start]').click();
    for(const res of held.splice(0))reply(res);
    await page.evaluate(async()=>{await window.__navigationAI;TarotReadingAI.request=window.__originalAIRequest;delete window.__navigationAI;delete window.__originalAIRequest;});
@@ -120,6 +129,6 @@ async function fixture(page){
    assert.equal(guard,0,'request snapshot guard rejects a changed question even without cancellation');
    assert.deepEqual(errors,[]);await context.close();
   }
-  console.log(JSON.stringify({status:'PASS',checks:['Chinese UI, including legacy lang=en URLs, at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','navigation isolates answers by spread','editing a pending question preserves cards and requires explicit confirmation before saving its new AI reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
+  console.log(JSON.stringify({status:'PASS',checks:['Chinese UI, including legacy lang=en URLs, at 320/390px','six-second tips and 25-second long-wait guidance','three animated cards and reduced motion','cancellation discards late answer','retry renders immediately with one request','directory hover-edge hit area stays stable during real navigation','navigation isolates answers by spread','editing a pending question preserves cards and requires explicit confirmation before saving its new AI reply','immutable request context blocks stale answers independently of cancellation'],limitations:['local synthetic mock responses only; no live AI quality or physical-iPhone verification']}));
  }finally{for(const res of held.splice(0))reply(res);await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});
