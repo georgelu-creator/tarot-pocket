@@ -22,7 +22,7 @@ component.setup = (props, context) => { const bindings = setup(props, context); 
 window.lessonKnowledge = knowledge;
 createApp(component).mount('#app');`
 const scratch = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'tarot-learning-'))
-fs.writeFileSync(path.join(scratch, 'hooks.cjs'), `exports.onShow = cb => window.hooks.show.push(cb); exports.onHide = cb => window.hooks.hide.push(cb); exports.onUnload = cb => window.hooks.unload.push(cb);`)
+fs.writeFileSync(path.join(scratch, 'hooks.cjs'), `exports.onBackPress = cb => window.hooks.back = cb; exports.onShow = cb => window.hooks.show.push(cb); exports.onHide = cb => window.hooks.hide.push(cb); exports.onUnload = cb => window.hooks.unload.push(cb);`)
 fs.writeFileSync(path.join(scratch, 'platform.cjs'), `exports.readStore = () => { if(window.failRead) throw Error('unavailable'); return null }; exports.writeStore = (key, data) => window.writes.push(data); exports.notify = text => window.notices.push(text); exports.cardImage = id => 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';`)
 const bundle = esbuild.buildSync({ stdin: { contents: source, loader: 'ts', resolveDir: path.dirname(filename) }, bundle: true, platform: 'browser', format: 'iife', write: false, 
  alias: { '@dcloudio/uni-app': path.join(scratch, 'hooks.cjs'), 'test-platform': path.join(scratch, 'platform.cjs') } })
@@ -36,7 +36,7 @@ fs.rmdirSync(scratch)
    page.on('pageerror', error => console.error(error))
    await page.setContent('<div id="app"></div>')
    await page.addStyleTag({ content: 'view,scroll-view{display:block}image{display:inline-block}body{margin:0}' + descriptor.styles.map(s => s.content).join('\n').replace(/([\d.]+)rpx/g, (_, n) => Number(n) / 2 + 'px') })
-   await page.evaluate(fail => { window.failRead = fail; window.hooks = { show: [], hide: [], unload: [] }; window.writes = []; window.notices = []; window.clock = 30 * 86400000; Date.now = () => window.clock }, failRead)
+   await page.evaluate(fail => { window.failRead = fail; window.hooks = { show: [], hide: [], unload: [] }; window.uni = { hideTabBar: options => options.success() }; window.writes = []; window.notices = []; window.clock = 30 * 86400000; Date.now = () => window.clock }, failRead)
    await page.addScriptTag({ content: bundle.outputFiles[0].text })
    return page
   }

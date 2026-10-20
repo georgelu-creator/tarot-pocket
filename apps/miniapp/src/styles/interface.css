@@ -1,0 +1,16 @@
+/* Native controls inherit the same paper, type and motion roles as the web. */
+page{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6}
+view,button,input,textarea,scroll-view{box-sizing:border-box}
+button{font-family:var(--font-body);color:var(--ink);font-size:15px;line-height:1.6;margin:0;border-radius:var(--radius-button);transition:transform var(--motion-press) var(--ease-settle),background var(--motion-press)}
+button::after{border:0}
+button:active:not([disabled]){transform:scale(.98)}
+button[disabled]{opacity:.55}
+text{overflow-wrap:anywhere}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.primary{background:var(--accent);color:var(--paper);border:1px solid var(--accent)}
+.secondary{background:var(--paper);color:var(--accent);border:1px solid var(--line)}
+/* #ifdef H5 */
+body:after{animation:none!important;background-image:none!important}
+.uni-page-head-shadow-grey:after,.uni-page-head-shadow-blue:after{background-image:linear-gradient(to bottom,rgba(48,44,50,.12),transparent)!important}
+/* #endif */
+@media(prefers-reduced-motion:reduce){button{transition:none}}

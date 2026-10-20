@@ -1,103 +1,76 @@
 'use strict'
-// Exercise the public cultural edition's actual H5 build; historical product flows are not public routes.
-const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path')
-const { chromium } = require('playwright'), { createPreview } = require('../apps/miniapp/tools/preview.cjs')
-const root = path.resolve(__dirname, '..'), KEY = 'mengyu-image-learning-v1'
-;(async () => {
- const server = createPreview(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
- const origin = `http://127.0.0.1:${server.address().port}`, browser = await chromium.launch(require('./browser_options.cjs'))
- try {
-  for (const width of [320, 390, 768, 1200]) {
-   const context = await browser.newContext({ viewport: { width, height: 844 } }), page = await context.newPage(), errors = [], unexpected = []
-   page.setDefaultTimeout(10000); page.on('pageerror', e => errors.push(e.message))
-   await page.route('**/*', route => { const u = new URL(route.request().url()); if (u.origin === origin) return route.continue(); if (u.origin === 'https://tarot.georgelu.cn' && /^\/assets\/cards\/[mcwsp]\d{2}\.webp$/.test(u.pathname)) return route.fulfill({ body: fs.readFileSync(path.join(root, u.pathname)), contentType: 'image/webp' }); unexpected.push(u.origin + u.pathname); return route.abort() })
-   await page.addInitScript(() => { if (!localStorage.getItem('cultural-ui-fixture')) { localStorage.setItem('tarot-miniapp-academy-v1', JSON.stringify({ type: 'object', data: { private: 'preserve-legacy-learning' } })); localStorage.setItem('tarot-miniapp-reading-v1', JSON.stringify({ type: 'object', data: { private: 'preserve-legacy-reading' } })); localStorage.setItem('cultural-ui-fixture', '1') } })
-   const tabs = page.locator('.uni-tabbar__item')
-   async function tab(label) { await tabs.filter({ hasText: new RegExp('^' + label + '$') }).click() }
-   async function noOverflow(label) { assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${width}px ${label} horizontal overflow`) }
-   async function oldUnchanged() { assert.deepEqual(await page.evaluate(() => [localStorage.getItem('tarot-miniapp-academy-v1'), localStorage.getItem('tarot-miniapp-reading-v1')]), legacy, 'culture edition never migrates or overwrites prior learning/reading stores') }
-   async function scrollPosition(screen = '.screen') { return page.locator(screen).evaluate(el => Math.max(0, ...[el, ...el.querySelectorAll('*')].map(node => node.scrollTop || 0))) }
-   await page.goto(origin); await page.locator('.hero .primary').waitFor()
-   const legacy = await page.evaluate(() => [localStorage.getItem('tarot-miniapp-academy-v1'), localStorage.getItem('tarot-miniapp-reading-v1')])
-   assert.equal(await page.title(), '秘境梦屿'); assert.equal(await tabs.count(), 3)
-   assert.deepEqual((await tabs.allTextContents()).map(text => text.trim()), ['首页', '学习', '图鉴'])
-   assert.match(await page.locator('.eyebrow').innerText(), /秘境梦屿/)
-   await noOverflow('home'); await page.locator('.hero .primary').click(); await page.locator('.current .primary').waitFor()
-   assert.equal(await page.locator('uni-button.primary').count(), 1, 'learning starts with one primary task')
-   assert.equal(await page.locator('.lesson-link').count(), 0, '78 images are not flattened onto the learning home')
-   await page.locator('.catalog-link').click(); await page.locator('.chapter-heading').first().waitFor(); await noOverflow('course directory')
-   // Enter from the secondary directory; return must restore that directory rather than leave learning.
-   await page.locator('.lesson-link').nth(2).click(); await page.locator('.lesson-content').waitFor(); const courseName = await page.locator('.lesson-title').innerText()
-   assert.equal(await page.locator('.option').count(), 0, 'observation is taught before any assessment')
-   assert.match(await page.locator('.eyebrow').innerText(), /看画面/)
-   await page.locator('.artwork-button').click(); await page.locator('.zoom').waitFor(); await page.keyboard.press('Escape'); await page.locator('.zoom').waitFor({ state: 'detached' })
-   await page.locator('.header .link').click(); await page.locator('.chapter-heading').first().waitFor()
-   assert.ok((await page.locator('.lesson-link').allInnerTexts()).some(text => text.includes(courseName) && text.includes('继续学习')))
-   await page.locator('.lesson-link').filter({ hasText: courseName }).click(); await page.locator('.lesson-content').waitFor()
-   // Fail one real H5 storage write, then retry by returning; the saved teaching step must survive reload.
-   const before = await page.evaluate(key => localStorage.getItem(key), KEY)
-   await page.evaluate(key => { window.originalStorageSet = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if (name === key) throw Error('quota'); return window.originalStorageSet.call(this, name, value) } }, KEY)
-   await page.locator('.lesson-content .primary').click(); await page.getByText('认识象征', { exact: true }).waitFor()
-   assert.equal(await page.evaluate(key => localStorage.getItem(key), KEY), before, 'failed storage write preserves last committed progress')
-   await page.evaluate(() => { Storage.prototype.setItem = window.originalStorageSet })
-   await page.locator('.header .link').click(); await page.locator('.chapter-heading').first().waitFor(); await page.reload()
-   await page.locator('.current .primary').waitFor(); assert.equal(await page.locator('.current .primary').innerText(), '继续学习')
-   await page.locator('.current .primary').click(); await page.getByText('认识象征', { exact: true }).waitFor(); assert.equal(await page.locator('.lesson-title').innerText(), courseName)
-   await page.locator('.lesson-content .primary').click(); await page.locator('.option').first().waitFor()
-   const beforeAnswer = await page.locator('.question').innerText(); await tab('首页'); await tab('学习'); assert.equal(await page.locator('.question').innerText(), beforeAnswer, 'background/foreground preserves the active recognition task')
-   // Correctness is authored, not inferred from displayed text. Read the isolated synthetic session identity only.
-   const correctText = await page.evaluate(key => { const raw = JSON.parse(localStorage.getItem(key)); const s = raw.data.session; return { id: s.id, variant: s.variant } }, KEY)
-   const { cards } = await import(require('node:url').pathToFileURL(path.join(root, 'apps/miniapp/src/core/generated/mengyu.mjs')).href)
-   const expected = cards.find(card => card.id === correctText.id).symbols[correctText.variant % cards.find(card => card.id === correctText.id).symbols.length]
-   const options = await page.locator('.option').allInnerTexts(), wrongIndex = options.findIndex(text => text !== expected.meaning)
-   assert.equal(options.length, 3); await page.locator('.option').nth(wrongIndex).click(); await page.locator('.feedback').waitFor()
-   assert.match(await page.locator('.feedback').innerText(), /再看看画中的线索/); assert.ok((await page.locator('.feedback').innerText()).includes(expected.meaning))
-   assert.equal(await page.evaluate(key => Object.keys(JSON.parse(localStorage.getItem(key)).data.progress).length, KEY), 0, 'wrong recognition awards no completion')
-   await page.locator('.feedback .primary').click(); await page.locator('.feedback').waitFor({ state: 'detached' })
-   await page.locator('.option').filter({ hasText: expected.meaning }).click()
-   const beforeCompletion = await page.evaluate(key => localStorage.getItem(key), KEY)
-   await page.evaluate(key => { window.originalStorageSet = Storage.prototype.setItem; Storage.prototype.setItem = function (name, value) { if (name === key) throw Error('quota'); return window.originalStorageSet.call(this, name, value) } }, KEY)
-   await page.locator('.feedback .primary').click(); await page.locator('.completion').waitFor(); await page.locator('.save-status .save-retry').waitFor()
-   assert.match(await page.locator('.completion').innerText(), /进度尚未保存/)
-   assert.equal(await page.evaluate(key => localStorage.getItem(key), KEY), beforeCompletion, 'completion write failure keeps the last committed exercise state')
-   await noOverflow('unsaved completed cultural lesson')
-   if (width === 390) { await page.locator('.completion').evaluate(el => Promise.all(el.getAnimations().map(animation => animation.finished))); await page.screenshot({ path: '/tmp/mengyu-unsaved-h5.png' }) }
-   await page.locator('.header .link').click(); await page.locator('.current .primary').waitFor()
-   assert.equal(await page.locator('.save-status .save-retry').isVisible(), true, 'one-level Back preserves a persistent retry action')
-   await page.evaluate(() => { Storage.prototype.setItem = window.originalStorageSet })
-   await page.locator('.save-status .save-retry').click(); await page.locator('.save-status').waitFor({ state: 'detached' })
-   const savedCompletion = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).data, KEY)
-   assert.equal(Object.keys(savedCompletion.progress).length, 1); assert.equal(savedCompletion.progress[correctText.id].visits, 1); assert.equal(savedCompletion.session.step, 3)
-   await page.reload(); await page.locator('.current .primary').waitFor()
-   assert.deepEqual(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).data, KEY), savedCompletion, 'retry and reload restore the entire completion once')
-   await noOverflow('saved learning home')
-   await tab('图鉴'); await page.locator('.card').first().waitFor(); assert.equal(await page.locator('.card').count(), 78)
-   await page.locator('.filters uni-button').filter({ hasText: /^权杖$/ }).click(); assert.equal(await page.locator('.card').count(), 14)
-   const cardTarget = page.locator('.card').nth(13); await cardTarget.scrollIntoViewIfNeeded(); const cardName = await cardTarget.locator('.name').innerText(), libraryScroll = await scrollPosition()
-   assert.ok(libraryScroll > 0, 'the fixture reaches a scrolled filtered library')
-   await cardTarget.click(); await page.locator('.identity').waitFor(); assert.equal(await page.locator('.heading .title').innerText(), cardName)
-   await page.locator('.picture-button').click(); await page.locator('.zoom').waitFor(); await page.locator('.zoom-close').click(); await page.locator('.zoom').waitFor({ state: 'detached' }); await noOverflow('artwork detail')
-   if (width === 390) await page.screenshot({ path: '/tmp/mengyu-artwork-h5.png' })
-   await page.locator('.heading .back').click(); await page.locator('.grid .card').first().waitFor(); assert.equal(await page.locator('.card').count(), 14)
-   assert.equal(await page.locator('.filters uni-button.active').innerText(), '权杖'); assert.ok(Math.abs(await scrollPosition() - libraryScroll) < 10, 'Back preserves filtered library scroll')
-   await page.locator('.search input').fill('权杖王后'); assert.equal(await page.locator('.card').count(), 1); await page.locator('.card').click(); await page.locator('.identity').waitFor(); await page.locator('.heading .back').click(); await page.locator('.search input').waitFor(); assert.equal(await page.locator('.search input').inputValue(), '权杖王后'); assert.equal(await page.locator('.card').count(), 1)
-   await oldUnchanged()
-   for (const forbidden of ['/pages/draw/index', '/pages/learn/index', '/pages/card/index?id=m00', '/pages/library/index', '/pages/history/index']) {
-    await page.goto(origin + '/#' + forbidden); await page.waitForTimeout(120)
-    assert.equal(await page.locator('textarea,.fan-card,.reading-card,.daily-result,.orientation,.stages,.ritual-panel').count(), 0, forbidden + ' cannot expose retired product behavior')
-    assert.ok(!(await page.locator('body').innerText()).includes('开始抽牌'), forbidden + ' cannot show a retired draw action')
+// Exercise the actual built H5 UI with isolated storage and verified local artwork.
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),vm=require('node:vm');
+const {chromium}=require('playwright');
+const root=path.resolve(__dirname,'..'),built=path.join(root,'apps/miniapp/dist/build/h5');
+const sceneScope={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'reading-scenarios.js'),'utf8'),sceneScope);const sourceScenes=sceneScope.window.TAROT_READING_SCENARIOS;assert.equal(sourceScenes.length,40);assert.equal(new Set(sourceScenes.map(scene=>scene.id)).size,40);
+const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.webp':'image/webp'};
+const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);const file=path.resolve(built,'.'+(pathname==='/'?'/index.html':pathname));if(!file.startsWith(built+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);res.end();return}res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res)});
+(async()=>{
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin=`http://127.0.0.1:${server.address().port}`;
+ const browser=await chromium.launch(require('./browser_options.cjs'));
+ try{
+  for(const width of [320,390,768,1200]){
+   const context=await browser.newContext({viewport:{width,height:844}});const page=await context.newPage();page.setDefaultTimeout(10000);const errors=[],unexpected=[];page.on('pageerror',e=>errors.push(e.message));
+   await page.route('**/*',async route=>{const u=new URL(route.request().url());if(u.origin===origin)return route.continue();if(u.origin==='https://tarot.georgelu.cn'&&/^\/assets\/cards\/[mcwsp]\d{2}\.webp$/.test(u.pathname))return route.fulfill({body:fs.readFileSync(path.join(root,u.pathname)),contentType:'image/webp'});unexpected.push(u.origin+u.pathname);return route.abort()});
+   await page.goto(origin);await page.locator('uni-button.primary').waitFor();
+   async function noOverflow(label){const v=await page.evaluate(()=>({w:innerWidth,s:document.documentElement.scrollWidth}));assert.ok(v.s<=v.w+1,`${width} ${label}: horizontal overflow ${v.s}/${v.w}`)}
+   assert.equal(await page.title(),'秘境梦屿');assert.match(await page.locator('.eyebrow').innerText(),/秘境梦屿/);
+   const tabs=page.locator('.floating-nav-item');assert.equal(await tabs.count(),4);assert.deepEqual((await tabs.allTextContents()).map(text=>text.trim()),['首页','抽牌','学牌','牌库']);async function tab(label){await tabs.filter({hasText:new RegExp('^'+label+'$')}).click()}
+   async function backToDirectory(){await page.locator('.parent-back').click();await page.locator('.setup').waitFor();await page.locator('.parent-back').click();await page.locator('.spread-item').first().waitFor()}
+   async function toPick(){await page.locator('.shuffle-table').waitFor();assert.equal(await page.locator('.fan-card').count(),0,'shuffle is its own stage before any selectable cards');await page.locator('.cut-table .cut-pile').first().waitFor({timeout:10000});assert.equal(await page.locator('.fan-card').count(),0,'cut waits for a separate user choice');await page.locator('.cut-table .cut-pile').nth(1).click();await page.locator('.cut-table.gathering').waitFor();await page.locator('.fan-card').last().waitFor({timeout:5000});}
+   async function tapCard(target){await target.scrollIntoViewIfNeeded();const point=await target.evaluate(el=>{const r=el.getBoundingClientRect();for(let y=r.y+2;y<r.bottom;y+=3)for(let x=r.x+2;x<r.right;x+=3)if(document.elementFromPoint(x,y)?.closest('.fan-card')===el)return{x,y};return null});assert.ok(point,'card has a visible clickable area');await page.mouse.click(point.x,point.y)}
+   let changeChecked=false;
+   async function confirmSelection(action){const before=await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1')),drawing=JSON.parse(before).data,paging=await page.locator('.paging').innerText();await action();const pending=page.locator('.pending-sheet');await pending.waitFor();assert.equal(await pending.locator('image,img').count(),0,'confirmation shows only the card back');assert.deepEqual(await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1')),before,'pending selection never commits the store');if(!changeChecked){await pending.getByText('换一张',{exact:true}).click();await pending.waitFor({state:'hidden'});assert.equal(await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1')),before,'change never modifies pool, picked cards or current daily');assert.equal(await page.locator('.paging').innerText(),paging,'change returns to the same fan group');await action();await pending.waitFor();changeChecked=true}await pending.getByText('确定',{exact:true}).click();await pending.waitFor({state:'hidden'});await page.locator('.flying-back').waitFor({state:'hidden'});const committed=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data);const originalDraft=drawing.active==='daily'?drawing.dailyDraft:drawing.draft,nextDraft=committed.active==='daily'?committed.dailyDraft:committed.draft;assert.deepEqual(nextDraft.pool,originalDraft.pool,'confirmation does not shuffle or redraw');assert.deepEqual(nextDraft.picked.slice(0,-1),originalDraft.picked,'confirmation preserves previous positions');assert.equal(nextDraft.picked.length,originalDraft.picked.length+1,'confirmation adds exactly one selection');}
+
+
+   await noOverflow('home');if(width===390)await page.screenshot({path:'/tmp/tarot-miniapp-home.png'});assert.match(await page.locator('uni-button.daily').innerText(),/塔罗日运/);
+   await page.locator('uni-button.primary').click();await page.locator('.spread-item').first().waitFor();assert.equal(await page.locator('.spread-item').count(),sourceScenes.length,'all scene choices are available without filtering');for(const scene of sourceScenes)assert.ok((await page.locator('.spread-item').allInnerTexts()).some(t=>t.includes(scene.name)),scene.id+' is reachable');assert.equal(await page.locator('textarea').count(),0,'question belongs inside a chosen spread');assert.equal(await page.locator('.setup').count(),0,'no setup before choosing a spread');await page.locator('.spread-item').first().click();await page.locator('textarea').waitFor();assert.equal(await page.locator('.spread-item').count(),0,'selected spread opens its own setup');await noOverflow('spread setup');await page.locator('textarea').fill('这周怎样安排练习？');await page.locator('.parent-back').click();assert.equal(await page.locator('textarea').count(),0);await page.locator('.spread-item').first().click();assert.equal(await page.locator('textarea').inputValue(),'这周怎样安排练习？','returning to the same spread preserves its input');await page.locator('textarea').fill('');await page.locator('uni-button.primary').click();await toPick();const initialSlots=await page.locator('.slot').count();for(let i=0;i<initialSlots;i++)await confirmSelection(()=>tapCard(page.locator('.fan-card:not(.picked)').last()));
+   // Force the real storage boundary to fail only when completing the result.
+   await page.evaluate(()=>{window.oldSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='tarot-miniapp-reading-v1')throw Error('quota');return window.oldSet.call(this,key,value)}});
+   const beforeUndoFailure=await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1'));await page.getByText('撤回刚选的一张',{exact:true}).click();assert.equal(await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).isVisible(),true,'failed undo restores the completed selection');assert.equal(await page.locator('.slot-back.filled').count(),initialSlots,'failed undo keeps every selected position');assert.equal(await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1')),beforeUndoFailure,'failed undo never changes persisted draft');
+   await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).click();await page.waitForTimeout(100);
+   assert.equal(await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).isVisible(),true,'save failure retains retry action');
+   assert.equal(await page.locator('.reading-card').count(),0,'failed write must not commit result UI');
+   await page.evaluate(()=>{Storage.prototype.setItem=window.oldSet});await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).click();await page.locator('.reading-card').first().waitFor();
+   assert.ok(!(await page.locator('.reading-card').allInnerTexts()).join(' ').includes('领域背景 · 工作与发展'),'empty generic question must not acquire career context');await noOverflow('result');
+   const ordinaryBeforeDaily=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft);
+   await tab('首页');
+   if(width===390)await page.evaluate(()=>{window.oldSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='tarot-miniapp-reading-v1')throw Error('quota');return window.oldSet.call(this,key,value)}});
+   await page.locator('uni-button.daily').click();
+   if(width===390){await page.getByText('继续洗牌',{exact:true}).waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'failed first daily initialization never overwrites ordinary');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.dailyDraft),null);await page.evaluate(()=>{Storage.prototype.setItem=window.oldSet});await page.getByText('继续洗牌',{exact:true}).click();}
+   await toPick();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'first daily ritual never replaces ordinary game');
+   if(width===390){const unfinishedDaily=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.dailyDraft);await backToDirectory();await page.locator('.reading-resume').click();await page.locator('.reading-card').first().waitFor();await page.reload();await page.locator('.reading-card').first().waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'return and reload preserve ordinary after unfinished first daily');await tab('首页');await page.locator('uni-button.daily').click();await page.locator('.fan-card').last().waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.dailyDraft),unfinishedDaily,'unfinished daily resumes its original pool');await page.reload();await page.locator('.fan-card').last().waitFor();assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.active),'daily','reopening an unfinished daily persists the active slot before another selection');}
+   if(width===390){const beforeDailyPick=await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1'));await page.locator('.fan-card').last().click();await page.locator('.pending-sheet').waitFor();await page.evaluate(()=>{window.oldSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='tarot-miniapp-reading-v1')throw Error('quota');return window.oldSet.call(this,key,value)}});await page.locator('.pending-sheet').getByText('确定',{exact:true}).click();await page.waitForTimeout(100);assert.equal(await page.locator('.pending-sheet').isVisible(),true,'failed daily selection keeps confirmation ready to retry');assert.equal(await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1')),beforeDailyPick,'failed daily selection preserves both draft slots');await page.evaluate(()=>{Storage.prototype.setItem=window.oldSet});await page.locator('.pending-sheet').getByText('换一张',{exact:true}).click();}
+   await confirmSelection(()=>page.locator('.fan-card').last().click());
+   if(width===390){await page.evaluate(()=>{window.oldSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='tarot-miniapp-reading-v1')throw Error('quota');return window.oldSet.call(this,key,value)}});await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).click();assert.equal(await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).isVisible(),true);assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'failed first daily completion preserves ordinary');await page.evaluate(()=>{Storage.prototype.setItem=window.oldSet});await page.reload();await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).waitFor();}
+   await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).click();await page.locator('.daily-result').waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'completed first daily preserves ordinary');
+   if(width===390){await backToDirectory();await page.locator('.reading-resume').click();await page.locator('.reading-card').first().waitFor();await page.reload();await page.locator('.reading-card').first().waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data.draft),ordinaryBeforeDaily,'ordinary returns unchanged after completed first daily and refresh');await tab('首页');await page.locator('uni-button.daily').click();await page.locator('.daily-result').waitFor();}
+
+   assert.match(await page.locator('.daily-signs').innerText(),/宜/);assert.match(await page.locator('.daily-signs').innerText(),/忌/);
+   const dailyName=await page.locator('.result-board .small').innerText();await tab('首页');await page.locator('.daily-cover').waitFor();assert.ok((await page.locator('.daily-name').innerText()).includes(dailyName.split(' · ')[0]));
+   await page.locator('uni-button.daily').click();await page.locator('.daily-result').waitFor();assert.equal(await page.locator('.result-board .small').innerText(),dailyName,'same-day re-entry returns same card');
+   await noOverflow('daily');
+   if(width===390){
+    await page.waitForTimeout(2000);await page.screenshot({path:'/tmp/tarot-miniapp-daily.png'});
+    await tab('牌库');await page.locator('.card').first().waitFor();assert.equal(await page.locator('.card').count(),78);await page.locator('.card').first().click();await page.locator('.orientation').waitFor();await page.getByText('逆位',{exact:true}).click();assert.match(await page.locator('.meaning').innerText(),/逆位牌义/);await noOverflow('card reference');await page.goBack();
+    await tab('抽牌');await backToDirectory();await page.locator('.spread-item').filter({hasText:'凯尔特十字'}).click();await page.getByText('开始抽牌',{exact:true}).click();await toPick();assert.equal(await page.locator('.slot').count(),10);
+    for(let i=12;i>=3;i--){const target=page.locator('.fan-card').nth(i);await target.scrollIntoViewIfNeeded();const point=await target.evaluate(el=>{const r=el.getBoundingClientRect();for(let y=r.y+2;y<r.bottom;y+=3)for(let x=r.x+2;x<r.right;x+=3)if(document.elementFromPoint(x,y)?.closest('.fan-card')===el)return{x,y};return null});assert.ok(point,'card has a visible clickable area');await confirmSelection(()=>page.mouse.click(point.x,point.y))}
+    await page.locator('uni-button').filter({hasText:/^(揭牌并查看解读|揭开今天的牌)$/}).click();await page.locator('.reading-card').first().waitFor();assert.equal(await page.locator('.result-board .slot').count(),10);await noOverflow('ten-card result');const reading=await page.locator('.reading-card').allInnerTexts();await page.reload();await page.locator('.reading-card').first().waitFor();assert.deepEqual(await page.locator('.reading-card').allInnerTexts(),reading);
+    assert.equal(await tabs.filter({hasText:/^记录$/}).count(),0,'history tab is removed');
+    const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data);assert.equal(saved.version,2);assert.ok(!('history' in saved));assert.equal(saved.draft.spreadId,'celtic');assert.ok(saved.todayDaily,'daily survives an unrelated ten-card draw');
+    // Start from a genuine version-1-shaped fixture containing an old private query.
+    await page.evaluate(()=>{const key='tarot-miniapp-reading-v1',wrapped=JSON.parse(localStorage.getItem(key)),s=wrapped.data;wrapped.data={version:1,draft:s.draft,history:[{...s.todayDaily,id:'old-private',dailyDate:null,question:'历史敏感问题必须移除'},s.todayDaily]};localStorage.setItem(key,JSON.stringify(wrapped))});
+    await page.reload();await page.locator('.reading-card').first().waitFor();assert.deepEqual(await page.locator('.reading-card').allInnerTexts(),reading,'migration preserves current result');const migrated=await page.evaluate(()=>localStorage.getItem('tarot-miniapp-reading-v1'));assert.ok(!migrated.includes('历史敏感问题必须移除'));assert.ok(!migrated.includes('"history"'));
+    await tab('首页');await page.locator('uni-button.daily').click();await page.locator('.daily-result').waitFor();assert.equal(await page.locator('.result-board .small').innerText(),dailyName,'today daily survives migration and other draws');
+    await backToDirectory();await page.locator('.reading-resume').click();await page.locator('.reading-card').first().waitFor();assert.deepEqual(await page.locator('.reading-card').allInnerTexts(),reading,'daily viewing does not replace the current ordinary game');
    }
-   await page.goto(origin); await page.locator('.hero .primary').waitFor(); await oldUnchanged(); await noOverflow('public home')
-   const protectedRaw = JSON.stringify({ type: 'object', data: { version: 99, private: 'preserve-invalid-cultural-progress' } })
-   await page.evaluate(({ key, value }) => localStorage.setItem(key, value), { key: KEY, value: protectedRaw })
-   await page.reload(); await page.locator('.hero .primary').click(); await page.locator('.save-status.protected').waitFor()
-   assert.equal(await page.locator('.save-retry').count(), 0, 'unreadable original progress has no overwrite action')
-   await page.locator('.current .primary').click(); await page.locator('.lesson-content').waitFor(); await page.locator('.lesson-content .primary').click(); await page.locator('.header .link').click(); await page.locator('.current .primary').waitFor()
-   assert.equal(await page.locator('.save-status.protected').isVisible(), true)
-   assert.equal(await page.evaluate(key => localStorage.getItem(key), KEY), protectedRaw, 'temporary learning never overwrites unreadable progress')
-   await oldUnchanged(); assert.equal(await page.locator('textarea,input[type=password]').count(), 0)
-   assert.deepEqual(errors, []); assert.deepEqual(unexpected, []); await context.close()
-   console.log(`PASS actual cultural H5 ${width}px: three public tabs, clear learning task/teaching/recognition/retry, persistent completion failure/Back/retry/exact reload/read protection/background, library filter/detail/zoom/one-level Back/scroll, retired routes inaccessible, legacy stores preserved, no overflow or extra requests`)
+   await tab('学牌');await page.locator('.current uni-button.primary').waitFor();assert.equal(await page.locator('uni-button.primary').count(),1,'learning home has one primary task');assert.equal(await page.locator('.stages').count(),0,'stage choice is deferred to course selection');assert.equal(await page.locator('.up-next').count(),0,'home does not ask new learners to interpret future course lists');assert.match(await page.locator('.course-title').innerText(),/星币八/,'first course teaches one concrete card');await page.locator('uni-button.catalog-link').click();assert.equal(await page.locator('.stage').count(),3,'all stages remain available in course selection');assert.ok(await page.locator('.lesson-link').count()>0,'course selection retains reachable lessons');await noOverflow('course selection');await page.getByText('返回上课',{exact:true}).click();await page.getByText('开始上课',{exact:true}).click();await page.locator('.lesson-content').waitFor();assert.equal(await page.locator('.card-item').count(),1,'first task shows its own card instead of unrelated examples');assert.match(await page.locator('.card-caption').innerText(),/星币八/);await noOverflow('lesson');if(width===390){await page.getByText('继续',{exact:true}).click();const lesson=await page.locator('.lesson-content').innerText();await page.reload();await page.getByText('继续上课',{exact:true}).click();await page.locator('.lesson-content').waitFor();assert.equal(await page.locator('.lesson-content').innerText(),lesson);
+    const beforeMidnight=await page.evaluate(()=>({reading:JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data,learning:localStorage.getItem('tarot-miniapp-academy-v1'),clock:new Date().setHours(23,59,58,0)}));
+    assert.ok(beforeMidnight.reading.todayDaily);assert.ok(beforeMidnight.learning);await page.clock.install({time:beforeMidnight.clock});await page.reload();await page.getByText('继续上课',{exact:true}).waitFor();await page.clock.fastForward(3000);
+    const afterMidnight=await page.evaluate(()=>({reading:JSON.parse(localStorage.getItem('tarot-miniapp-reading-v1')).data,learning:localStorage.getItem('tarot-miniapp-academy-v1')}));assert.equal(afterMidnight.reading.todayDaily,null,'foreground midnight prunes yesterday daily while learning');assert.deepEqual(afterMidnight.reading.draft,beforeMidnight.reading.draft,'current ordinary game survives midnight');assert.equal(afterMidnight.learning,beforeMidnight.learning,'midnight pruning never alters learning');await tab('首页');assert.equal(await page.locator('.daily-cover').count(),0,'expired daily cover disappears');
+    console.log('PASS library/detail, ten-card selection/result/reload, no history archive, migration/current/daily restore, foreground midnight and course reload')}
+   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);await context.close();console.log(`PASS actual H5 UI ${width}px: save retry, neutral reading, daily cover/guidance/re-entry, lesson, no overflow or unexpected requests`)
   }
- } finally { await browser.close(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)) }
-})().catch(error => { console.error(error); process.exitCode = 1 })
+ }finally{await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve))}
+})().catch(e=>{console.error(e);server.closeAllConnections();server.close();process.exitCode=1});

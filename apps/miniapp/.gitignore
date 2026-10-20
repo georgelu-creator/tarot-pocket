@@ -3,3 +3,4 @@ dist/
 src/core/generated/
 *.local
 src/pages/card/generated/
+src/styles/generated/
