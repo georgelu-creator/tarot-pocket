@@ -112,6 +112,20 @@ const keyboardState={},keyboardCalls=[]
 const keyboardOwner={...owner,getState:()=>keyboardState,callMethod:(name,payload)=>keyboardCalls.push({name,payload})}
 fan.configure({...config,skipIntro:true},null,keyboardOwner);fan.scroll({detail:{scrollLeft:100}},keyboardOwner);const tapEvent={currentTarget:{dataset:{index:4}}};fan.tap(tapEvent,keyboardOwner)
 assert.equal(keyboardCalls.filter(call=>call.name==='onFanChoose').length,1,'explicit keyboard or mouse activation after focus scrolling is not mistaken for a touch fling')
+const cancelState={},cancelCalls=[]
+const cancelOwner={...owner,getState:()=>cancelState,callMethod:(name,payload)=>cancelCalls.push({name,payload})}
+fan.configure(config,null,cancelOwner)
+fan.tap(tapEvent,cancelOwner)
+fan.configure({...config,disabled:true},config,cancelOwner)
+fan.configure(config,{...config,disabled:true},cancelOwner)
+fan.tap(tapEvent,cancelOwner)
+assert.equal(cancelCalls.filter(call=>call.name==='onFanChoose').length,2,'an explicit preview cancel permits an immediate new activation without waiting out the previous tap cooldown')
+fan.start(event([touch(160)]),cancelOwner);fan.move(event([touch(70)]),cancelOwner);fan.scroll({detail:{scrollLeft:100}},cancelOwner);fan.end(event([]),cancelOwner)
+fan.configure({...config,disabled:true},config,cancelOwner);fan.configure(config,{...config,disabled:true},cancelOwner);fan.tap(tapEvent,cancelOwner)
+assert.equal(cancelCalls.filter(call=>call.name==='onFanChoose').length,2,'unlocking selection never makes a moved touch release choose a card')
+clock+=400;fan.start(event([touch(100)]),cancelOwner);fan.cancel(event([]),cancelOwner)
+fan.configure({...config,disabled:true},config,cancelOwner);fan.configure(config,{...config,disabled:true},cancelOwner);fan.tap(tapEvent,cancelOwner)
+assert.equal(cancelCalls.filter(call=>call.name==='onFanChoose').length,2,'preview unlock preserves the touchcancel guard against a late synthetic tap')
 assert.match(component,/height:\(120\*zoom\+118\)\+'px'/,'native scroll-view has an explicit gesture viewport height')
 assert.match(component,/<view[^>]*:prop="fanConfig"[^>]*:change:prop="fan\.configure"/,'native gesture state is observed on a view, independently of the scroll-view built-in properties')
 assert.match(component,/length:78/)

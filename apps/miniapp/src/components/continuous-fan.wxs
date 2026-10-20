@@ -14,7 +14,7 @@ function stateOf(owner) {
  var state = owner.getState();
  if (!state.ready) {
   state.ready = true; state.width = 320; state.zoom = 1; state.left = 0;
-  state.nativeLeft = 0; state.lastScroll = -10000; state.blockUntil = 0;
+  state.nativeLeft = 0; state.lastScroll = -10000; state.blockUntil = 0; state.tapUntil = 0;
   state.cards = {}; state.transforms = {}; state.picked = []; state.disabled = false;
  }
  return state;
@@ -60,7 +60,11 @@ function configure(config, oldConfig, owner) {
  var state = stateOf(owner);
  var oldZoom = state.zoom;
  var oldWidth = state.width;
+ var wasDisabled = state.disabled;
  state.width = config.width || 320; state.pageLeft=config.pageLeft || 0; state.disabled = config.disabled;
+ // Returning from an explicit cancel is a new selection opportunity. Retain
+ // movement/pinch guards, but do not carry the prior tap's debounce into it.
+ if(wasDisabled && !state.disabled)state.tapUntil=0;
  state.picked = config.picked || [];
  if (!state.configured) {
   state.configured=true;state.zoom=clamp(config.zoom || 1,1,2.4);
@@ -175,10 +179,10 @@ function cancel(event,owner) {
 }
 function tap(event,owner) {
  var state=stateOf(owner),index=event.currentTarget.dataset.index*1;
- if (state.disabled || index<0 || index>77 || state.picked.indexOf(index)>=0 || state.active || now()<state.blockUntil) return;
+ if (state.disabled || index<0 || index>77 || state.picked.indexOf(index)>=0 || state.active || now()<state.blockUntil || now()<state.tapUntil) return;
  // A screen-reader activation has no touch session. A touch activation must be a fresh settled tap.
  if (state.ended && now()-state.endedAt<=700 && (state.moved || state.endedAt-state.started>700 || now()-state.lastScroll<180)) return;
- state.ended=false;state.blockUntil=now()+180;
+ state.ended=false;state.tapUntil=now()+180;
  owner.callMethod('onFanChoose',{index:index});
 }
 module.exports={setClock:setClock,configure:configure,scroll:scroll,start:start,move:move,end:end,cancel:cancel,tap:tap};
