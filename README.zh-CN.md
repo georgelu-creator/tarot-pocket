@@ -4,6 +4,14 @@
 
 [**手机体验 →**](https://tarot.georgelu.cn/) · [**离线版**](https://github.com/georgelu-creator/tarot-pocket/releases) · [English project notes](README.md)
 
+## 继续当前工作
+
+1. 先读[接力说明](docs/HANDOFF.md)的当前检查点、已验证工作、阻塞和下一步。
+2. 学牌相关改动再读[教学主文档](docs/LEARNING_MASTER.md)，抽牌相关改动读[抽牌主文档](docs/READING_MASTER.md)的当前状态、有效要求和最新变更；同时涉及两者时都读。
+3. 开发与检查方式见[开发指南](docs/DEVELOPMENT.md)。网页部署、小程序上传／审核／正式发布、真机验收分别看对应证据。
+
+本页是项目介绍。版本交付文档保留当时的实现与验证范围，不据此认定当前线上或小程序版本；1.9 的过程见[历史实现记录](docs/RELEASE_1_9.md)。
+
 ![秘境梦屿](docs/images/hero.png)
 
 ## 一步步学会读牌
@@ -47,7 +55,7 @@
 - 本期公开界面只提供中文，避免未完成的英文内容干扰学习；底层稳定ID、学习进度和历史RWS牌图保持不变。
 - 进度保存在当前浏览器。换设备前导出JSON；新版保留学习进度、当前牌局及当天日运；升级和旧备份导入会清理往期抽牌历史。更新时使用上面的手机入口，不必清空网站数据。
 
-[教学主文档](docs/LEARNING_MASTER.md) · [抽牌主文档](docs/READING_MASTER.md) · [本版实现与验证](docs/RELEASE_2_0.md)
+[当前进展与验证](docs/HANDOFF.md) · [教学主文档](docs/LEARNING_MASTER.md) · [抽牌主文档](docs/READING_MASTER.md) · [历史实现记录（2.0）](docs/RELEASE_2_0.md)
 
 自动检查覆盖内容、状态恢复、中文界面、响应式和浏览器交互；尚不证明长期学习效果或真实手机在所有网络上的表现。独立教师审稿与新人试学仍需继续。
 
