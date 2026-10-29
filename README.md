@@ -2,7 +2,15 @@
 
 **Learn tarot from the beginning, or draw cards for a question on your mind.**
 
-The v1.9 public product is intentionally Chinese-only while its beginner curriculum and reading quality are being consolidated. English source notes and legacy translations remain in the repository, but there is no English entry in this release.
+This README introduces the project. To continue work, start with the current documentation below; versioned release notes describe their historical scope and do not establish the current website or mini-program release.
+
+## Continue current work
+
+1. Read [Handoff](docs/HANDOFF.md) for the current checkpoint, verified work, blockers and next step.
+2. For learning changes, read the effective requirements and latest changes in the [Learning master](docs/LEARNING_MASTER.md); for reading changes, use the [Reading master](docs/READING_MASTER.md). Read both for changes spanning both flows.
+3. Use [Development](docs/DEVELOPMENT.md) for local checks and contribution steps. Website deployment, mini-program upload/review/release, and physical-device acceptance have separate evidence.
+
+The [v1.9 implementation record](docs/RELEASE_1_9.md) is historical reference. English source notes and legacy translations remain compatibility/reference materials; consult the master documents for the effective product and language requirements.
 
 [**Try the Chinese release →**](https://tarot.georgelu.cn/) · [**Offline edition**](https://github.com/georgelu-creator/tarot-pocket/releases) · [简体中文](README.zh-CN.md)
 
@@ -42,7 +50,7 @@ The daily calendar highlights the saved date, complete artwork, card meaning and
 - The current public interface is Chinese-only. Stable IDs, learning progress and the verified historical RWS artwork remain compatible.
 - Records stay in the current browser. Export JSON before changing devices. Backups retain learning, the current reading and today’s daily card; migration and import discard past reading archives. Use the update entry above without clearing site data.
 
-[Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [Implementation and validation](docs/RELEASE_1_9.md)
+[Current handoff and verification](docs/HANDOFF.md) · [Learning master](docs/LEARNING_MASTER.md) · [Reading master](docs/READING_MASTER.md) · [v1.9 implementation history](docs/RELEASE_1_9.md)
 
 Automated checks cover content, state recovery, the Chinese interface, responsive layouts and browser interaction. They do not establish long-term learning effectiveness or performance on every physical phone/network. Independent teacher review and beginner trials remain necessary.
 

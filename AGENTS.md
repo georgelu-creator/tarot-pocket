@@ -1,13 +1,29 @@
 # Tarot Pocket contributor and agent guide / 项目协作入口
 
-## Current scope / 当前授权（2026-09-24）
+## Start with current context / 当前接手入口
+
+Read [docs/HANDOFF.md](docs/HANDOFF.md) first for the current checkpoint,
+completed verification, blockers and next step. Then read the current status,
+effective requirements and latest changes in [docs/LEARNING_MASTER.md](docs/LEARNING_MASTER.md)
+for learning work, or [docs/READING_MASTER.md](docs/READING_MASTER.md) for reading work;
+read both when the change affects both flows. Use [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+for the development workflow. README files introduce the project; they are not
+release or deployment receipts.
+
+[docs/RELEASE_1_9.md](docs/RELEASE_1_9.md) records the historical v1.9 implementation
+and validation. Read it when that history is relevant, after the current handoff
+and applicable master document; it does not establish the current release on any platform.
+The retained decisions below do not replace the current task's explicit scope.
+
+## Retained authorization record / 历史授权记录（2026-09-24）
 
 The user explicitly authorized implementing the complete learning and reading
 plans, publishing to Git and providing a mobile test entry. The subsequent user
 decision permits replacing the older interaction framework with a more usable
 design. Earlier documentation-only scope statements below are historical and
 superseded. Preserve records and security boundaries, not obsolete UI controls.
-Read docs/RELEASE_1_9.md and both master documents' implementation records first.
+For current work, follow the handoff and applicable master documents above;
+versioned implementation records retain their historical scope.
 
 The v1.9 public product is Chinese-only. Hide language switching and make an old
 `lang=en` link fall back to Chinese, while preserving stable IDs, storage and old
@@ -22,8 +38,8 @@ than orientation voting or hidden roles.
 此前仅文档的限制已被替代。保留数据与安全边界，不必保留被否定的旧交互。
 开发、自动检查、生产部署、真人试用和教学效果仍是不同状态。
 
-This public repository is the project source. Start with README.md, then
-docs/HANDOFF.md and docs/DEVELOPMENT.md. Personal assistant configuration, private
+This public repository is the project source. Continue from docs/HANDOFF.md and
+the applicable master document, then docs/DEVELOPMENT.md. Personal assistant configuration, private
 conversations, personal readings, credentials and browser backups do not belong here.
 
 - Learning-design work starts with [docs/LEARNING_MASTER.md](docs/LEARNING_MASTER.md):
@@ -79,6 +95,7 @@ conversations, personal readings, credentials and browser backups do not belong 
 - Code: MIT. Authored content/docs/translations: CC BY-SA 4.0. Artwork: separate
   provenance. Do not copy private Forge/Abi materials into this repository.
 
-中文：先读 README.zh-CN.md、docs/HANDOFF.md 与开发说明。源码通过 Git 接力，
+中文：接手先读 docs/HANDOFF.md 的当前检查点，再读相应的教学／抽牌主文档与开发说明；
+README.zh-CN.md 是项目介绍，版本交付记录只证明当时范围。源码通过 Git 接力，
 个人进度另行导出，不上传公开仓库。本期公开界面只提供中文，保持稳定 ID 和存档兼容。
 按真实验证结果交接，不把路线图、图片齐全或 CI 通过说成完整产品已经验收。
